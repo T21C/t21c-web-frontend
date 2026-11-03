@@ -1,0 +1,102 @@
+{
+  "main": {
+    "sections": {
+      "levels": "レベル",
+      "rankings": "ランキング",
+      "creators": "クリエイター",
+      "tools": "ツール",
+      "help": "ヘルプ"
+    },
+    "links": {
+      "home": "ホーム",
+      "levels": "レベル",
+      "leaderboard": "ランキング",
+      "tournaments": "トーナメント",
+      "creators": "クリエイター",
+      "packs": "パック",
+      "info": "情報",
+      "more": "もっと見る",
+      "pass": "クリア",
+      "submission": "提出",
+      "submitPassForLevel": "このレベルのクリアを提出する",
+      "rating": "レーティング",
+      "curations": "キュレーション",
+      "signIn": "ログイン",
+      "admin": {
+        "rating": "レーティング",
+        "submissions": "提出",
+        "announcements": "アナウンス",
+        "dashboard": "ダッシュボード",
+        "difficulties": "難易度",
+        "backups": "バックアップ",
+        "back": "戻る",
+        "admin": "管理者",
+        "creators": "クリエイター"
+      }
+    },
+    "dropdowns": {
+      "levels": {
+        "listing": "レベル一覧"
+      },
+      "creators": {
+        "listing": "エイター一覧",
+        "creators": "アーティスト",
+        "artists": "アーティスト",
+        "songs": "曲"
+      },
+      "packs": {
+        "allPacks": "すべてのパック"
+      },
+      "tools": {
+        "scoreCalculator": "スコア計算機"
+      },
+      "more": {
+        "passes": "クリア",
+        "rating": "レーティング",
+        "tufHelper": "TUFHelper",
+        "tufHelperLite": "TUFHelperLite",
+        "tufExtension": "TUFExtension",
+        "tos": "利用規約",
+        "privacyPolicy": "プライバシーポリシー",
+        "aboutUs": "私たちについて",
+        "resources": "リソース",
+        "mods": "MOD",
+        "apiDocs": "APIドキュメント",
+        "assets": "資産",
+        "developers": "開発者ポータル"
+      },
+      "user": {
+        "myProfile": "私のプロフィール",
+        "tufStellar": "TUFStellar",
+        "mySubmissions": "私の提出",
+        "notifications": "通知",
+        "settings": "設定",
+        "admin": "管理者",
+        "logout": "ログアウト"
+      },
+      "admin": {
+        "rating": "レーティング",
+        "submissions": "提出",
+        "announcements": "アナウンス",
+        "difficulties": "難易度",
+        "creators": "クリエイター",
+        "tournaments": "トーナメント",
+        "backups": "バックアップ",
+        "auditLog": "監査ログ",
+        "curations": "キュレーション",
+        "requests": "リクエスト",
+        "songs": "曲",
+        "artists": "アーティスト",
+        "keyboards": "キーボード",
+        "resources": "リソース"
+      }
+    },
+    "badges": {
+      "underConstruction": "⫻現在制作中⫻"
+    }
+  },
+  "languages": {
+    "comingSoon": "(近日公開)",
+    "helpTranslate": "翻訳にご協力ください"
+  }
+}

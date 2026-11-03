@@ -1,0 +1,22 @@
+{
+  "title": "トーナメント",
+  "meta": {
+    "title": "トーナメント",
+    "description": "The Universal Forumsで公開中のトーナメント、シリーズ、順位表を閲覧できます"
+  },
+  "search": {
+    "placeholder": "トーナメントを検索…"
+  },
+  "filter": {
+    "status": "ステータス",
+    "allStatuses": "すべてのステータス"
+  },
+  "statuses": {
+    "ongoing": "開催中",
+    "completed": "終了",
+    "cancelled": "キャンセル",
+    "draft": "下書き"
+  },
+  "unseriesed": "シリーズなし",
+  "empty": "トーナメントが見つかりません"
+}

@@ -1,0 +1,100 @@
+{
+  "title": "パックの検索ヘルプ",
+  "closeButton": "閉じる",
+  "v2": {
+    "subtitle": "高度な検索では、フィールドトークンと演算子を使う簡易クエリ言語でパックを絞り込めます。",
+    "examplesTitle": "例",
+    "groups": {
+      "basics": {
+        "title": "基本（クエリの解析方法）",
+        "intro": "条件は field:value または field=value の形式で記述します。カンマはグループ内AND、| はORグループの区切りとして使用します。",
+        "examples": {
+          "and": "<b><code>name:my pack, owner:v0w4n</code></b><br/>両方の条件に一致する必要があります（AND）。",
+          "or": "<b><code>name=My Pack | name:cool pack</code></b><br/>どちらかのグループに一致すれば対象になります（OR）。",
+          "not": "<b><code>name:cool, \\!pinned:true</code></b><br/>一致する結果を除外します（NOT）。"
+        }
+      },
+      "fields": {
+        "title": "パックのフィールド",
+        "intro": "これらのフィールドはパックのデータに一致します。「:」は部分一致、「=」は完全一致に使用します。",
+        "examples": {
+          "nameOwner": "<b><code>name:cool, owner:v0w4n</code></b><br/>名前とオーナーのユーザー名を組み合わせて検索します。",
+          "levelId": "<b><code>levelId=123</code></b> は、そのレベルを含むパックを検索します。",
+          "pinned": "<b><code>owner:teo_72, pinned:true | owner:v0w4n</code></b><br/>ANDグループとORグループを組み合わせます。"
+        }
+      },
+      "viewModes": {
+        "title": "表示モード",
+        "intro": "パックの公開範囲は、誰がパックを閲覧できるかを制御します。viewMode:0 または viewMode=0 で検索できます。",
+        "examples": {
+          "public": "<b><code>viewMode=0</code></b> — 公開：誰でもこのパックを閲覧・検索できます。",
+          "linkOnly": "<b><code>viewMode=1</code></b> — リンク限定：直接リンクからは閲覧できますが、検索結果には表示されません。",
+          "private": "<b><code>viewMode=2</code></b> — 非公開：オーナーのみがこのパックを閲覧できます。",
+          "forcedPrivate": "<b><code>viewMode=3</code></b> — 強制非公開：管理者によって非公開に固定されたパックです。"
+        }
+      },
+      "tips": {
+        "title": "ヒント",
+        "intro": "検索時に知っておくと便利なこと",
+        "bullets": {
+          "caseInsensitive": "検索では大文字と小文字を区別しません。「PACK」と「pack」は同じように扱われます。",
+          "partial": "コロン（:）は部分一致に使用します。name:cool は My Cool Pack に一致します。",
+          "spacesAllowed": "値にはスペースを使用できます。例：name:my cool pack",
+          "orderDoesNotMatter": "グループ内の条件の順序は問いません。",
+          "boolean": "pinned:true や pinned:false のような真偽値は、true/false型のフィールドで使用できます。",
+          "groupingMentalModel": "(A AND B) OR (C AND D) のように考えてください。カンマでグループ内ANDを作り、| でORグループを分けます。"
+        }
+      }
+    },
+    "fields": {
+      "operatorColon": {
+        "title": "部分一致",
+        "desc": "「:」を使うとテキストの一部に一致します（例：name:cool）。"
+      },
+      "operatorEquals": {
+        "title": "完全一致",
+        "desc": "「=」を使うと完全一致で検索します（例：name=My Cool Pack）。"
+      },
+      "operatorComma": {
+        "title": "グループ内AND",
+        "desc": "カンマで項目を区切ると、そのグループ内のすべての条件を満たす結果に絞り込めます。"
+      },
+      "operatorPipe": {
+        "title": "グループ間OR",
+        "desc": "| を使ってクエリをORグループに分割します。いずれかのグループに一致したパックが表示されます。"
+      },
+      "operatorNot": {
+        "title": "NOT（除外）",
+        "desc": "語句の前に \\! を付けると、その語句を含む結果を除外できます。"
+      },
+      "id": {
+        "title": "パックID",
+        "desc": "パックIDまたは公開コードを完全一致で検索します（例：id=123）。"
+      },
+      "hashtag": {
+        "title": "公開コードのショートカット",
+        "desc": "#ABC は id:ABC と同じ意味です。"
+      },
+      "name": {
+        "title": "名前",
+        "desc": "パック名に一致します（例：name:my pack）。"
+      },
+      "owner": {
+        "title": "オーナー",
+        "desc": "パックのオーナーのユーザー名に一致します（例：owner:v0w4n）。"
+      },
+      "levelId": {
+        "title": "含まれるレベル",
+        "desc": "このレベルIDを含むパックを検索します（例：levelId=456）。"
+      },
+      "viewMode": {
+        "title": "表示モード",
+        "desc": "パックの公開範囲：0＝公開、1＝リンク限定、2＝非公開、3＝強制非公開。"
+      },
+      "pinned": {
+        "title": "ピン留め",
+        "desc": "true または false（例：pinned:true）。"
+      }
+    }
+  }
+}

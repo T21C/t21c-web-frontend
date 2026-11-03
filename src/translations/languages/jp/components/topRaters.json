@@ -1,0 +1,47 @@
+{
+  "title": "トップのレーター",
+  "loading": "トップのレーターを読み込んでいます...",
+  "noRaters": "選択された期間に該当するレーターは見つかりませんでした",
+  "filters": {
+    "title": "フィルターと統計"
+  },
+  "dateSelector": {
+    "startDate": "開始日",
+    "endDate": "終了日"
+  },
+  "sort": {
+    "label": "並べ替え",
+    "accuracy": "精度",
+    "count": "カウント"
+  },
+  "stats": {
+    "totalUsers": "ユーザー総数",
+    "averageRatingsPerDay": "1日あたりの平均レーティング",
+    "totalRatings": "合計"
+  },
+  "legend": {
+    "circleOrnament": "1日あたり5件以上のレーティング",
+    "crownOrnament": "1日あたり15件以上のレーティング"
+  },
+  "raterEntry": {
+    "unknown": "不明なユーザー",
+    "stats": {
+      "accuracy": "精度",
+      "special": "スペシャル {{score}}",
+      "totalRatings": "合計",
+      "averagePerDay": "1日あたりの平均"
+    },
+    "tooltip": {
+      "raw": "生データ {{score}} · {{n}}",
+      "weighted": "加重平均 {{score}}（順位）",
+      "special": "スペシャル {{score}} · {{n}}",
+      "provisional": "暫定 — {{min}}スコア未満のチャート",
+      "empty": "スコアが記入されていないPGUチャート"
+    }
+  },
+  "pagination": {
+    "previous": "前へ",
+    "next": "次へ",
+    "pageInfo": "{{total}}ページ中{{current}}ページ"
+  }
+}

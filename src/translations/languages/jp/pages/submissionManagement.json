@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "提出の管理",
+    "description": "The Universal Forums（TUF）のレベルおよびクリア提出を管理します"
+  },
+  "header": {
+    "title": "提出管理",
+    "refresh": "提出を更新"
+  },
+  "tabs": {
+    "levels": "レベル提出",
+    "passes": "クリア提出",
+    "autoAllow": "有効なクリアを自動承認"
+  },
+  "search": {
+    "placeholder": "曲名、アーティスト、クリエイター、プレイヤー、提出者で検索",
+    "noMatches": "一致する提出はありません"
+  },
+  "jobs": {
+    "title": "処理中",
+    "hide": "キューを非表示",
+    "loading": "キューを読み込み中…",
+    "processing": "処理中",
+    "done": "完了",
+    "emptyProcessing": "キューに項目はありません",
+    "emptyDone": "最近のジョブはありません",
+    "emptyItems": "項目はありません",
+    "requestedBy": "{{name}}",
+    "autoAllowBatch": "自動承認",
+    "closeAccepted": "閉じる",
+    "holdToCloseAll": "長押しですべて閉じる",
+    "openLevel": "レベル #{{id}}",
+    "openPass": "クリア #{{id}}",
+    "noDeclineReason": "理由が指定されていません",
+    "status": {
+      "queued": "待機中",
+      "processing": "処理中",
+      "completed": "完了",
+      "accepted": "承認済み",
+      "declined": "却下済み",
+      "failed": "失敗",
+      "skipped": "スキップ",
+      "pending": "保留中"
+    },
+    "steps": {
+      "validate": "検証",
+      "resolveEntities": "エンティティを解決",
+      "createLevel": "レベルを作成",
+      "notify": "通知",
+      "chartStats": "譜面統計",
+      "requestedTags": "リクエストされたタグ",
+      "autoTags": "自動タグ",
+      "autorate": "自動レート",
+      "cleanup": "クリーンアップ",
+      "createPass": "クリアを作成",
+      "index": "インデックス",
+      "roleSync": "ロール同期"
+    }
+  },
+  "lock": {
+    "lock": "提出をロック",
+    "unlock": "提出のロックを解除",
+    "lockedHint": "ロック中 — 承認または却下できません",
+    "failed": "提出のロックを更新できませんでした"
+  }
+}

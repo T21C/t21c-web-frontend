@@ -1,0 +1,360 @@
+{
+  "helpPopup": {
+    "title": "検索ヘルプ",
+    "closeButton": "閉じる",
+    "v2": {
+      "subtitle": "高度な検索では、フィールドトークン、演算子、範囲を使う簡易クエリ言語を使用します。条件を組み合わせて、目的のレベルをすばやく絞り込めます。",
+      "examplesTitle": "例",
+      "groups": {
+        "basics": {
+          "title": "基本（クエリの解析方法）",
+          "intro": "条件は field:value または field=value の形式で記述します。カンマはグループ内AND、| はORグループの区切りとして使用します。",
+          "examples": {
+            "and": "<b><code>song:hello, artist:camellia</code></b><br/>両方の条件に一致する必要があります（AND）。",
+            "or": "<b><code>song=goTe | song:xnor</code></b><br/>どちらかのグループに一致すれば対象になります（OR）。",
+            "not": "<b><code>song:onus, \\!nerfed</code></b><br/>指定した語句を含む結果を除外します（NOT）。"
+          }
+        },
+        "text": {
+          "title": "テキストフィールド（名前・ロール）",
+          "intro": "これらのフィールドはテキストに一致し、大文字と小文字を区別しません。「:」は部分一致、「=」は完全一致に使用します。",
+          "examples": {
+            "partialVsExact": "<b><code>song:go</code></b> は部分一致し、<b><code>song=goTe</code></b> は完全一致します。",
+            "multiWord": "<b><code>artist:Camellia (feat. Nanahira)</code></b> のように、スペースを含めて検索できます。",
+            "mixTextAndNumeric": "<b><code>song:hello, bpm:>150</code></b><br/>1つのグループ内でテキスト条件と数値条件を組み合わせられます。"
+          }
+        },
+        "numeric": {
+          "title": "数値フィールド（範囲・長さ）",
+          "intro": "数値フィールドは完全一致と比較に対応しています。範囲を指定するには >、<、>=、<= を使用します。",
+          "examples": {
+            "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> は、BPMが100より大きく200より小さいレベルを絞り込みます。",
+            "tilesMin": "<b><code>tilecount:>=1000</code></b> は、タイル数が1000以上のレベルを絞り込みます。",
+            "timeUnits": "<b><code>time:>10m15s</code></b> または <b><code>time:<50s</code></b><br/>チャートの長さには h/m/s/ms の単位を使用します。",
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>単位のない数値はミリ秒として扱われます。",
+            "likesRange": "<b><code>likes:>10</code></b> は、いいね数が10を超えるレベルを絞り込みます（完全一致と範囲指定にも対応）。",
+            "clearsRange": "<b><code>clears:>=100</code></b> は、クリア数が100以上のレベルを絞り込みます（完全一致と範囲指定にも対応）。"
+          }
+        },
+        "idsAndLinks": {
+          "title": "IDとリンク",
+          "intro": "内部IDまたはリンクのテキストで絞り込みます。",
+          "examples": {
+            "idExact": "<b><code>id=1234</code></b> は、数値IDが1234のレベルを絞り込みます。",
+            "idRange": "<b><code>id:>1000</code></b> は、IDが1000を超えるレベルを絞り込みます（範囲指定にも対応）。",
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> はダウンロードリンクの一部一致を検索します。<b><code>workshopLink:steamcommunity</code></b> も同様にSteam WorkshopのURLを検索します。"
+          }
+        },
+        "tips": {
+          "title": "ヒント",
+          "intro": "検索時に知っておくと便利なこと",
+          "bullets": {
+            "caseInsensitive": "検索では大文字と小文字を区別しません。「SONG」と「song」は同じように扱われます。",
+            "spacesAllowed": "値にはスペースを使用できます。例：song:Example Song",
+            "orderDoesNotMatter": "グループ内の条件の順序は問いません。artist:foo, song:bar と song:bar, artist:foo は同じ意味です。",
+            "aliasesMayMatch": "曲名やアーティスト名は、メインの表示名だけでなく、登録済みの別名にも一致する場合があります。",
+            "groupingMentalModel": "(A AND B) OR (C AND D) のように考えてください。カンマでグループ内ANDを作り、| でORグループを分けます。"
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": {
+          "title": "部分一致",
+          "desc": "「:」を使うとテキストの一部に一致します（例：song:go）。"
+        },
+        "operatorEquals": {
+          "title": "完全一致",
+          "desc": "「=」を使うと完全一致で検索します（例：song=goTe）。"
+        },
+        "operatorComma": {
+          "title": "グループ内AND",
+          "desc": "カンマで項目を区切ると、そのグループ内のすべての条件を満たす結果に絞り込めます。"
+        },
+        "operatorPipe": {
+          "title": "グループ間OR",
+          "desc": "| を使ってクエリをORグループに分割します。いずれかのグループに一致したレベルが表示されます。"
+        },
+        "operatorNot": {
+          "title": "NOT（除外）",
+          "desc": "語句の前に \\! を付けると、その語句を含む結果を除外できます。"
+        },
+        "song": {
+          "title": "曲名",
+          "desc": "曲名で絞り込みます（別名にも対応）。"
+        },
+        "artist": {
+          "title": "アーティスト名",
+          "desc": "アーティスト名で絞り込みます（別名とクレジットされたアーティストにも対応）。"
+        },
+        "creator": {
+          "title": "クリエイター（チャーターまたはVFXer）",
+          "desc": "チャーターとVFXerのクレジットを検索します。Special Thanksは検索対象外です。"
+        },
+        "charter": {
+          "title": "チャーター",
+          "desc": "チャーター名で絞り込みます（クリエイターの役割）。"
+        },
+        "vfxer": {
+          "title": "VFX担当者",
+          "desc": "VFXer名で絞り込みます（クリエイターの役割）。"
+        },
+        "team": {
+          "title": "チーム",
+          "desc": "チーム名で絞り込みます（別名にも対応）。"
+        },
+        "comment": {
+          "title": "公開コメント",
+          "desc": "公開コメントのテキストで絞り込みます（例：再レートやギミックに関するメモ）。"
+        },
+        "bpm": {
+          "title": "BPM",
+          "desc": "BPMで絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "tilecount": {
+          "title": "タイル数",
+          "desc": "合計タイル数で絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "time": {
+          "title": "チャートの長さ",
+          "desc": "チャートの長さで絞り込みます。h/m/s/msの単位、またはミリ秒の数値を使用します。"
+        },
+        "likes": {
+          "title": "いいね",
+          "desc": "いいね数で絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "clears": {
+          "title": "クリア数",
+          "desc": "クリア数で絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "id": {
+          "title": "レベルID",
+          "desc": "数値のレベルIDで絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "hashtag": {
+          "title": "レベルID（別形式）",
+          "desc": "<code>#123</code> は <code>id=123</code> と同じ意味です。"
+        },
+        "dlLink": {
+          "title": "ダウンロードリンク",
+          "desc": "ダウンロードリンクのテキストで絞り込みます。"
+        },
+        "workshopLink": {
+          "title": "Workshopリンク",
+          "desc": "Steam Workshop（またはその他のWorkshop）のURLテキストで絞り込みます。dlLinkと同じワイルドカードルールが適用されます。"
+        },
+        "legacyDllink": {
+          "title": "レガシーダウンロードリンク",
+          "desc": "レガシーダウンロードリンクのテキストで絞り込みます（古い登録データ向け）。"
+        },
+        "videolink": {
+          "title": "動画リンク",
+          "desc": "動画リンクのテキストで絞り込みます。"
+        }
+      }
+    },
+    "sections": {
+      "search": {
+        "title": "フィールド指定検索",
+        "description": "コロン（:）による部分一致と、イコール（=）による完全一致の2種類の演算子を使って、特定のフィールドを検索できます。",
+        "examples": {
+          "title": "利用可能なフィールド",
+          "songField": "曲名で検索（例：'song:go' または 'song=goTe'）",
+          "artistField": "アーティスト名で検索（例：'artist:cam' または 'artist=Camellia'）",
+          "charterField": "チャーター名で検索（例：'charter:zag' または 'charter=Zagon'）",
+          "vfxerField": "VFXer名で検索（例：'vfxer:Asa' または 'vfxer=Asansis'）",
+          "creatorField": "すべての役割を対象にクリエイター名で検索（例：'creator:Nep' または 'creator=Nephrolepis'）"
+        }
+      },
+      "numeric": {
+        "title": "BPM、タイル数、チャートの長さ",
+        "description": "BPM（bpm:）、タイル数（tilecount:）、またはミリ秒単位のチャートの長さ（time:）で絞り込みます。time: には h、m、s、ms の単位（例：10m15s、50s）、またはミリ秒を表す数値を使用します。範囲指定には >、<、>=、<= を先頭に付けます。同じ検索グループ内で複数の条件を指定する場合は、カンマ（AND）で区切ります。",
+        "examples": {
+          "title": "数値の検索例",
+          "bpmExact": "正確なBPM（bpm=180 でも検索できます）",
+          "tilesExact": "正確なタイル数",
+          "bpmRange": "BPMが100より大きく200より小さい範囲（境界値を含める場合は >= または <= を使用）",
+          "tilesMin": "タイル数が1000以上",
+          "timeComposite": "チャートの長さが10分15秒を超えるレベル",
+          "timeMin": "チャートの長さが50秒未満のレベル",
+          "timeMsPlain": "チャートの長さが130000ミリ秒を超えるレベル（単位のない数値はミリ秒）",
+          "combine": "曲名やアーティスト名の条件と組み合わせます（例：song:hello, bpm:>150）。"
+        }
+      },
+      "operators": {
+        "title": "検索演算子",
+        "description": "演算子を使うと、複数の検索条件を組み合わせられます。",
+        "examples": {
+          "title": "演算子の使用例",
+          "and": "両方の条件に一致するレベルを検索します（AND）。曲名が「hello」で、アーティスト名が「camellia」のチャートを検索します。",
+          "or": "いずれかの条件に一致するレベルを検索します（OR）。EXなしのgoTeチャート、またはすべてのXNORチャートを検索します。",
+          "complex": "ANDとORを組み合わせた複雑な検索です。「gazizi」による「onus」のチャート、または曲名に「ludicin」を含むすべてのチャートを検索します。",
+          "not": "「\\!」を使うと、その語句を含む結果を除外します。この例では「nerfed」を含む「onus」のチャートが除外されます。"
+        }
+      },
+      "tips": {
+        "title": "検索のヒント",
+        "points": {
+          "caseSensitive": "検索では大文字と小文字を区別しません。「SONG」と「song」は同じ結果になります。",
+          "partial": "コロン（:）は部分一致に使用します。「song:Ex」は「Example」に一致します。",
+          "exact": "イコール（=）は完全一致に使用します。「song=Example」は「Example」だけに一致します。",
+          "spaces": "検索語句にはスペースを使用できます。「song:Example Song」も検索できます。",
+          "order": "各グループ内では、条件の順序は問いません。",
+          "roles": "すべての役割を対象に検索するには「creator」を、特定の役割だけを検索するには「charter」または「vfxer」を使用します。"
+        }
+      }
+    }
+  },
+  "tufHelperLiteBanner": {
+    "title": "TUFのレベルをADOFAIで直接開く",
+    "description": "TUFHelperLite MODを使うと、ワンクリックでTUFのレベルをADOFAIで直接開けます。ブラウザーからローカルデバイスへのアクセスを求められる場合があります。",
+    "connect": "接続",
+    "connecting": "接続中...",
+    "openWith": "TUFHelperLiteで開く",
+    "learnMore": "MODをダウンロード",
+    "neverShow": "今後表示しない",
+    "dismiss": "このセッション中はTUFHelperLiteを閉じる",
+    "unavailableTitle": "TUFHelperLiteが見つかりません",
+    "unavailableDescription": "AdofaiIpcとTUFHelperLiteがインストールされ、ADOFAIが起動していることを確認してから、もう一度お試しください。",
+    "ipcUpdateTitle": "AdofaiIpcの更新が必要です",
+    "contractUpdateTitle": "TUFHelperLite APIの更新が必要です",
+    "contractUpdateDescription": "TUFHelperLiteを更新してからこのページを再読み込みし、両方で同じAPIバージョンを使用してください。",
+    "ipcUpdateDescription": "ゲームを終了し、最新のAdofaiIpcリリースを再インストールしてから、ADOFAIを再起動してください。",
+    "downloadIpc": "AdofaiIpcをダウンロード",
+    "clientUpdateTitle": "ウェブサイトの更新が必要です",
+    "clientUpdateDescription": "AdofaiIpcはキャッシュされたウェブサイトクライアントより新しいバージョンです。ページを再読み込みして最新版を読み込んでください。",
+    "refreshPage": "ページを再読み込み",
+    "initializingTitle": "TUFHelperLiteを起動中です",
+    "initializingDescription": "ゲーム内でMODの初期化が完了するまで待ってから、もう一度お試しください。",
+    "initializationFailedTitle": "TUFHelperLiteの起動に失敗しました",
+    "initializationFailedDescription": "ゲーム内のUnityModManagerログでTUFHelperLiteのエラーを確認してください。",
+    "outdatedToast": "TUFHelperLite {{version}} はサポート対象外です。ウェブサイト連携を使用するには、バージョン0.1.4以降に更新してください。",
+    "unknownVersion": "不明なバージョン",
+    "retry": "再試行"
+  },
+  "tufHelperLiteSettings": {
+    "title": "TUFHelperLiteの設定",
+    "close": "TUFHelperLiteの設定を閉じる",
+    "tempMode": "一時ダウンロードモード",
+    "tempDescription": "一時レベルを1つだけ保持します。新しくダウンロードすると、前の一時レベルが置き換えられます。保存済みライブラリには影響しません。",
+    "flush": "一時データを消去",
+    "flushing": "書き込み中...",
+    "flushInfo": "一時ダウンロードについて",
+    "flushTooltip": "ダウンロードは Mods/TUFHelperLite/Downloads/temp に直接保存されます。次回のダウンロードでこのフォルダーの内容が置き換えられます。「一時データを消去」を実行すると、このフォルダー内のすべてのファイルが削除されます。",
+    "flushWarning": "一時ダウンロードフォルダー内のファイルをすべて削除しますか？この操作は取り消せません。",
+    "flushed": "一時ダウンロードを削除しました。",
+    "busy": "一時ダウンロードモードの変更やファイルの削除を行う前に、実行中のダウンロード、更新、ストレージ操作が完了するまでお待ちください。",
+    "disconnected": "TUFHelperLiteの再接続を待っています。",
+    "updateRequired": "一時ダウンロードモードを使用するには、TUFHelperLiteを更新してください。",
+    "failed": "設定の操作に失敗しました。",
+    "errors": {
+      "download_jobs_active": "実行中のダウンロードが完了するまでお待ちください。",
+      "downloaded_level_batch_check_in_progress": "現在のライブラリの確認または更新が完了するまでお待ちください。",
+      "storage_migration_in_progress": "ストレージ操作が完了するまでお待ちください。",
+      "downloaded_level_in_use": "一時レベルを削除する前に、ADOFAIでそのレベルを閉じてください。"
+    }
+  },
+  "tufHelperLiteDownloadManager": {
+    "open": "ダウンロードを管理",
+    "close": "ダウンロードマネージャーを閉じる",
+    "title": "ダウンロードマネージャー",
+    "subtitle": "ダウンロードしたレベルを管理します。",
+    "delete": "削除",
+    "deleting": "削除中...",
+    "deleteLevel": "{{name}}を削除",
+    "deleteTitle": "ダウンロード済みレベルを削除",
+    "deleteWarning": "「{{name}}」のダウンロードファイルを削除しますか？この操作は取り消せません。レベルは後から再ダウンロードできます。",
+    "deleteFailed": "レベルを削除できませんでした。",
+    "deleteErrors": {
+      "downloaded_level_in_use": "削除する前に、ADOFAIでこのレベルを閉じてください。",
+      "download_jobs_active": "実行中のダウンロードが完了するまでお待ちください。",
+      "downloaded_level_batch_check_in_progress": "現在のライブラリの確認または更新が完了するまでお待ちください。",
+      "storage_migration_in_progress": "ストレージ操作が完了するまでお待ちください。",
+      "temp_download_mode_enabled": "保存済みレベルを管理するには、一時ダウンロードモードをオフにしてください。",
+      "download_path_invalid": "レベルのフォルダーを安全に削除できませんでした。"
+    },
+    "libraryTitle": "ダウンロード済みレベル",
+    "checkAll": "すべて確認",
+    "checkingAll": "確認中：{{processed}} / {{total}}",
+    "updatesFound_one": "更新が{{count}}件見つかりました",
+    "updatesFound_other": "更新が{{count}}件見つかりました",
+    "batchWarning": "以前のバージョンのTUFHelperLiteでダウンロードした一部のレベルは、比較のために最新ファイルを一度ダウンロードする場合があります。",
+    "batchConfirmationTitle": "一括操作を確認",
+    "startCheckAll": "すべてのレベルを確認",
+    "batchFailed": "ダウンロード済みレベルの確認を完了できませんでした。",
+    "updatingAll": "更新中：{{processed}} / {{total}}",
+    "updateAllWarning": "{{count}}件の更新を1件ずつインストールします。ADOFAIを起動したままにしてください。ゲーム内で現在開いているレベルは更新できませんが、残りのレベルの更新は続行されます。",
+    "startUpdateAll": "すべて更新",
+    "updateAllRequired": "ダウンロード済みレベルを一括更新するには、TUFHelperLiteを更新してください。",
+    "updateAllFailed": "ダウンロード済みレベルを更新できませんでした。",
+    "libraryCount_one": "{{count}}レベル",
+    "libraryCount_other": "{{count}}レベル",
+    "emptyTitle": "ダウンロード済みレベルはありません",
+    "emptyDescription": "TUFHelperLiteでダウンロードしたレベルがここに表示されます。",
+    "creator": "クリエイター",
+    "size": "サイズ",
+    "checkForUpdate": "更新を確認",
+    "checkingForUpdate": "更新を確認中...",
+    "downloadingToCompare": "比較用にダウンロード中...",
+    "upToDate": "最新の状態",
+    "updateAvailable": "更新があります",
+    "updatingLevel": "更新中...",
+    "updateRetry": "更新を再試行",
+    "updateErrors": {
+      "downloaded_level_in_use": "更新する前に、ゲーム内で現在開いているレベルを閉じてください。"
+    },
+    "updateRequiredShort": "TUFHelperLiteを更新",
+    "calculatingSummary": "ライブラリのサイズを計算中…",
+    "summaryFailed": "ライブラリのサイズを取得できません",
+    "loadingLevels": "ダウンロード済みレベルを読み込み中…",
+    "loadLevelsFailed": "ダウンロード済みレベルを読み込めませんでした。",
+    "loadMoreFailed": "追加のダウンロード済みレベルを読み込めませんでした。",
+    "libraryUpdateRequired": "ダウンロード済みレベルを閲覧するには、TUFHelperLiteを更新してください。",
+    "storageTitle": "ストレージの保存先",
+    "currentFolder": "現在のフォルダー",
+    "newFolder": "新しいフォルダー",
+    "chooseFolder": "フォルダーを選択",
+    "changeFolder": "変更…",
+    "choosing": "選択中...",
+    "startMigration": "ダウンロードを移動",
+    "cancel": "キャンセル",
+    "retry": "再試行",
+    "restoreDefault": "既定のフォルダーを使用",
+    "updateRequired": "ダウンロードの保存先を変更するには、TUFHelperLiteを更新してください。",
+    "warning": "ダウンロード済みのすべてのレベルを移動します。時間がかかる場合があります。ADOFAIを起動したままにし、完了するまでどちらのフォルダーも変更しないでください。移動中はダウンロードが一時停止されます。",
+    "reconnectWarning": "既存のTUFHelperLiteライブラリを現在のダウンロードと統合します。どちらのフォルダーも変更する前に、重複するレベルを最新の公式ファイルと照合します。",
+    "startReconnect": "統合して再接続",
+    "folderErrors": {
+      "selection_token_invalid": "フォルダーをもう一度選択してください。前回の選択は期限切れです。",
+      "folder_picker_busy": "別のフォルダー選択画面がすでに開いています。",
+      "folder_picker_not_found": "フォルダーの選択情報が見つかりません。もう一度フォルダーを選択してください。",
+      "folder_picker_failed": "フォルダー選択画面を開けませんでした。",
+      "storage_target_required": "空のダウンロードフォルダーを選択してください。",
+      "storage_target_invalid": "選択したフォルダーのパスが無効です。",
+      "storage_target_is_root": "ドライブのルートはダウンロードフォルダーとして使用できません。",
+      "storage_target_unchanged": "選択したフォルダーはすでに使用されています。",
+      "storage_target_overlaps_source": "新しいフォルダーを現在のフォルダーの中にしたり、現在のフォルダーを新しいフォルダーの中にしたりすることはできません。",
+      "storage_target_missing": "選択したフォルダーは存在しません。",
+      "storage_target_not_empty": "選択したフォルダーは空である必要があります。",
+      "storage_target_not_writable": "選択したフォルダーに書き込めません。",
+      "storage_target_unrecognized_content": "選択したフォルダーは有効なTUFHelperLiteのダウンロードライブラリではありません。"
+    },
+    "states": {
+      "idle": "準備完了",
+      "copying": "コピー中",
+      "verifying": "検証中",
+      "switching": "フォルダーを切り替え中",
+      "cleaning": "クリーンアップ中",
+      "cleanup_pending": "クリーンアップが必要です",
+      "completed": "完了",
+      "cancelled": "キャンセル済み",
+      "failed": "対応が必要です"
+    },
+    "errors": {
+      "unavailable": "ストレージ情報を利用できません。",
+      "pickFailed": "フォルダー選択に失敗しました。",
+      "startFailed": "移動を開始できませんでした。",
+      "retryFailed": "移動を再試行できませんでした。",
+      "cancelFailed": "ストレージの変更をキャンセルできませんでした。"
+    }
+  }
+}

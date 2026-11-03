@@ -1,4 +1,8 @@
 {
+  "levelMention": {
+    "searchPlaceholder": "Rechercher des niveaux",
+    "empty": "Aucun niveau correspondant"
+  },
   "youtubePicker": {
     "linkChannel": "Liez une chaîne YouTube pour choisir parmi vos vidéos",
     "yourVideos": "Vos vidéos",

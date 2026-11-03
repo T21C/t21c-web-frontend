@@ -17,8 +17,7 @@ const STORAGE_KEYS = {
   MY_RATED: 'rating_my_rated',
   LOW_DIFF_FILTER: 'rating_low_diff_filter',
   INCLUDE_BANDS: 'rating_include_bands',
-  FOUR_VOTE_FILTER: 'rating_four_vote_filter',
-  FOUR_VOTE_MIN: 'rating_four_vote_min',
+  RANK_STATE: 'rating_rank_state',
   SORT_TYPE: 'rating_sort_type',
   SEARCH_QUERY: 'rating_search_query',
   DETAILED_VIEW: 'rating_detailed_view',
@@ -54,12 +53,11 @@ function readIncludeBands() {
 
 const MY_RATED_STATES = ['show', 'hide', 'only'];
 
-function readFourVoteMin() {
-  const raw = localStorage.getItem(STORAGE_KEYS.FOUR_VOTE_MIN);
-  if (raw == null || raw === '') return 4;
-  const stored = Number(raw);
-  if (!Number.isFinite(stored)) return 4;
-  return Math.min(99, Math.max(1, Math.floor(stored)));
+const RANK_STATE_VALUES = ['all', 'rankable', 'ratingOff'];
+
+function readRankStateFilter() {
+  const stored = localStorage.getItem(STORAGE_KEYS.RANK_STATE);
+  return RANK_STATE_VALUES.includes(stored) ? stored : 'all';
 }
 
 function readMyRatedFilter() {
@@ -73,8 +71,7 @@ export const RatingFilterProvider = ({ children }) => {
   const [sortOrder, setSortOrder] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_ORDER) || 'ASC');
   const [myRatedFilter, setMyRatedFilter] = useState(readMyRatedFilter);
   const [includeBands, setIncludeBands] = useState(readIncludeBands);
-  const [fourVoteFilter, setFourVoteFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.FOUR_VOTE_FILTER) || 'show');
-  const [fourVoteMin, setFourVoteMin] = useState(readFourVoteMin);
+  const [rankStateFilter, setRankStateFilter] = useState(readRankStateFilter);
   const [sortType, setSortType] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_TYPE) || 'ratings');
   const [searchQuery, setSearchQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '');
   const [showDetailedView, setShowDetailedView] = useState(() => localStorage.getItem(STORAGE_KEYS.DETAILED_VIEW) === 'true');
@@ -99,12 +96,8 @@ export const RatingFilterProvider = ({ children }) => {
   }, [includeBands]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.FOUR_VOTE_FILTER, fourVoteFilter);
-  }, [fourVoteFilter]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.FOUR_VOTE_MIN, String(fourVoteMin));
-  }, [fourVoteMin]);
+    localStorage.setItem(STORAGE_KEYS.RANK_STATE, rankStateFilter);
+  }, [rankStateFilter]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SORT_TYPE, sortType);
@@ -140,8 +133,7 @@ export const RatingFilterProvider = ({ children }) => {
     includeP: includeBands.includeP,
     includeG: includeBands.includeG,
     includeU: includeBands.includeU,
-    fourVoteFilter,
-    fourVoteMin,
+    rankStateFilter,
     sortType,
     searchQuery,
     showDetailedView,
@@ -152,8 +144,7 @@ export const RatingFilterProvider = ({ children }) => {
     setSortOrder,
     setMyRatedFilter,
     setIncludeBands,
-    setFourVoteFilter,
-    setFourVoteMin,
+    setRankStateFilter,
     setSortType,
     setSearchQuery,
     setShowDetailedView,

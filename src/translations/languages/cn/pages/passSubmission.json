@@ -150,6 +150,18 @@
     "detailedJudgement": "此关卡需要详细判定结果。请确认判定显示与要求匹配。",
     "timingWindowScale": "此关卡使用了判定区间。请确认你使用了所需的判定区间。"
   },
+  "feelingExplanation": {
+    "title": "说明你的体感难度",
+    "body": "可以说明这次通关为何是你填写的体感难度。",
+    "placeholder": "说明该体感难度。可用 #123 提及关卡。",
+    "submitExplanation": "提交说明",
+    "skip": "跳过",
+    "skipConfirm": "不填写说明就提交？作为通关者提供的额外信息有助于更准确地评级。",
+    "suggestTitle": "添加参考谱面",
+    "suggestBody": "添加一张难度相近的谱面作为参考（例如 #123）有助于评级。你也可以不添加直接提交。",
+    "addReference": "添加参考",
+    "submitAnyway": "仍然提交"
+  },
   "calculator": {
 	"title": "分数计算器",
     "thumbnailInfo": "计算器模式——无需视频",

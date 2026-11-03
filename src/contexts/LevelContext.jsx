@@ -15,6 +15,7 @@ const BASE_STORAGE_KEYS = {
     SORT: 'level_sort',
     ORDER: 'level_order',
     DELETED_FILTER: 'level_deleted_filter',
+    TO_RATE_FILTER: 'level_to_rate_filter',
     CLEARED_FILTER: 'level_cleared_filter',
     AVAILABLE_DL_FILTER: 'level_available_dl_filter',
     SLIDER_RANGE: 'level_slider_range',
@@ -182,6 +183,7 @@ const LevelContextProvider = (props) => {
     const [totalLevels, setTotalLevels] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
     const [deletedFilter, setDeletedFilter] = useState(() => storage.getItem(STORAGE_KEYS.DELETED_FILTER) || "hide");
+    const [toRateFilter, setToRateFilter] = useState(() => storage.getItem(STORAGE_KEYS.TO_RATE_FILTER) || "show");
     const [availableDlFilter, setAvailableDlFilter] = useState(() => storage.getItem(STORAGE_KEYS.AVAILABLE_DL_FILTER) || "show");
     const [clearedFilter, setClearedFilter] = useState(() => storage.getItem(STORAGE_KEYS.CLEARED_FILTER) || "show");
     const [sliderRange, setSliderRange] = useState(() => {
@@ -326,6 +328,10 @@ const LevelContextProvider = (props) => {
     }, [deletedFilter]);
 
     useEffect(() => {
+        storage.setItem(STORAGE_KEYS.TO_RATE_FILTER, toRateFilter);
+    }, [toRateFilter]);
+
+    useEffect(() => {
         storage.setItem(STORAGE_KEYS.CLEARED_FILTER, clearedFilter);
     }, [clearedFilter]);
 
@@ -373,6 +379,7 @@ const LevelContextProvider = (props) => {
                 totalLevels, setTotalLevels,
                 pageNumber, setPageNumber,
                 deletedFilter, setDeletedFilter,
+                toRateFilter, setToRateFilter,
                 clearedFilter, setClearedFilter,
                 availableDlFilter, setAvailableDlFilter,
                 sliderRange, setSliderRange,

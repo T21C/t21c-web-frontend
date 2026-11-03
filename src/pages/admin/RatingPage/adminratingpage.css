@@ -815,40 +815,5 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.admin-rating-page .rating-count-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.admin-rating-page .rating-count-filter__field {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.admin-rating-page .rating-count-filter__input {
-  width: 2.75rem;
-  padding: 0.15rem 0.25rem;
-  text-align: center;
-  color: var(--color-white);
-  background: var(--color-white-t10);
-  border: 1px solid var(--color-white-t30);
-  border-radius: 4px;
-  font: inherit;
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-.admin-rating-page .rating-count-filter__input::-webkit-outer-spin-button,
-.admin-rating-page .rating-count-filter__input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.admin-rating-page .rating-count-filter__input:focus {
-  outline: none;
-  border-color: var(--color-white);
-}
 
 

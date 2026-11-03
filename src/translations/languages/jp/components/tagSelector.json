@@ -1,0 +1,14 @@
+{
+  "special": {
+    "title": "Special難易度",
+    "buttons": {
+      "selectAll": "すべて選択",
+      "deselectAll": "すべて選択解除"
+    },
+    "groups": {
+      "Quantum": "Quantum",
+      "Extra": "Extra",
+      "Hidden": "非表示"
+    }
+  }
+}

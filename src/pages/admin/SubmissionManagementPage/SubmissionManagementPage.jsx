@@ -17,6 +17,11 @@ import { RefreshIcon } from '@/components/common/icons';
 import { useNotification } from '@/contexts/NotificationContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useSubmissionEvents } from '@/hooks/useSubmissionEvents';
+import {
+  PASS_DIFFICULTY_SUBTYPES,
+  readHiddenPassDifficultySubtypes,
+  writeHiddenPassDifficultySubtypes,
+} from './components/passDifficultySubtype';
 
 function upsertRequestTree(list, request, fallbackItems) {
   if (!request?.requestId) return list;
@@ -75,6 +80,7 @@ const SubmissionManagementPage = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('levels');
   const [searchQuery, setSearchQuery] = useState('');
+  const [hiddenSubtypes, setHiddenSubtypes] = useState(readHiddenPassDifficultySubtypes);
   const [isAutoAllowing, setIsAutoAllowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [openJobs, setOpenJobs] = useState([]);
@@ -170,6 +176,10 @@ const SubmissionManagementPage = () => {
     };
   }, [fetchSnapshot]);
 
+  useEffect(() => {
+    writeHiddenPassDifficultySubtypes(hiddenSubtypes);
+  }, [hiddenSubtypes]);
+
   if (user.permissionFlags === undefined) {
     return (
       <>
@@ -258,12 +268,56 @@ const SubmissionManagementPage = () => {
               placeholder={t('submissionManagement.search.placeholder')}
               aria-label={t('submissionManagement.search.placeholder')}
             />
+            {activeTab === 'passes' && (
+              <div
+                className="pass-diff-hide"
+                role="group"
+                aria-label={t('submissionManagement.hideDifficulty.label')}
+                title={t('submissionManagement.hideDifficulty.hint')}
+              >
+                <button
+                  type="button"
+                  className="pass-diff-hide__label"
+                  onClick={() => {
+                    setHiddenSubtypes((prev) => (
+                      prev.length >= PASS_DIFFICULTY_SUBTYPES.length
+                        ? []
+                        : [...PASS_DIFFICULTY_SUBTYPES]
+                    ));
+                  }}
+                >
+                  {t('submissionManagement.hideDifficulty.label')}
+                </button>
+                <div className="pass-diff-hide__items">
+                  {PASS_DIFFICULTY_SUBTYPES.map((subtype) => (
+                    <label key={subtype} className="pass-diff-hide__item">
+                      <input
+                        type="checkbox"
+                        checked={hiddenSubtypes.includes(subtype)}
+                        onChange={() => {
+                          setHiddenSubtypes((prev) => (
+                            prev.includes(subtype)
+                              ? prev.filter((item) => item !== subtype)
+                              : [...prev, subtype]
+                          ));
+                        }}
+                      />
+                      <span>{subtype}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {activeTab === 'levels' ? (
             <LevelSubmissions searchQuery={searchQuery} />
           ) : (
-            <PassSubmissions setIsAutoAllowing={setIsAutoAllowing} searchQuery={searchQuery} />
+            <PassSubmissions
+              setIsAutoAllowing={setIsAutoAllowing}
+              searchQuery={searchQuery}
+              hiddenSubtypes={hiddenSubtypes}
+            />
           )}
         </div>
         <SubmissionJobsDrawer

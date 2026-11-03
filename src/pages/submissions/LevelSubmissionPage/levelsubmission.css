@@ -427,7 +427,8 @@
   caret-color: var(--color-white);
 }
 
-.level-submission-page form .info .notes-textarea::placeholder {
+.level-submission-page form .info .notes-textarea::placeholder,
+.level-submission-page form .info .notes-textarea.is-empty::before {
   color: var(--color-white);
   opacity: 0.5;
 }

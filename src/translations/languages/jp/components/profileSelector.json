@@ -1,0 +1,10 @@
+{
+  "placeholder": "検索...",
+  "loading": "検索中...",
+  "noResults": "該当するプロフィールが見つかりませんでした",
+  "noTeamsResults": "該当するチームが見つかりませんでした",
+  "requestNew": "新しいプロフィールの作成をリクエストする",
+  "requestNewTeam": "新しいチームを作成する",
+  "newRequest": "新しいプロフィール",
+  "newTeamRequest": "新しいチーム"
+}

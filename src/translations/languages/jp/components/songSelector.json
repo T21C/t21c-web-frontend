@@ -1,0 +1,57 @@
+{
+  "title": "曲を選択",
+  "loading": "読み込み中...",
+  "currentSong": {
+    "label": "現在再生中の曲",
+    "none": "選択された曲はありません"
+  },
+  "search": {
+    "placeholder": "曲を検索...",
+    "noResults": "該当する曲が見つかりませんでした"
+  },
+  "buttons": {
+    "createNew": "新しい曲のリクエスト",
+    "assign": "保存",
+    "create": "新規リクエスト",
+    "creating": "更新中..."
+  },
+  "createForm": {
+    "title": "新しい曲のリクエスト",
+    "name": "曲名",
+    "namePlaceholder": "曲名を入力してください",
+    "description": "これにより、アーティスト名がクレジットされた新しい楽曲が作成されます"
+  },
+  "stats": {
+    "title": "楽曲統計",
+    "levels": "レベル",
+    "artists": "アーティスト"
+  },
+  "status": {
+    "allowed": "許可済み",
+    "ysmodOnly": "YSMOD専用",
+    "conditional": "条件付き",
+    "pending": "保留中",
+    "declined": "却下"
+  },
+  "messages": {
+    "success": {
+      "songAssigned": "更新リクエストが正常に提出されました",
+      "songCreated": "更新リクエストが正常に提出されました"
+    },
+    "newArtistRestriction": "新しいアーティストのリクエストが設定されました。追加できるのは新しい曲のリクエストのみです。",
+    "onlyNewSongsAllowed": "新しいアーティストが設定されている場合、リクエストできるのは新しい曲のみです。",
+    "filteredByArtist": "{{artistName}}の曲を表示中",
+    "info": {
+      "requestNote": "曲を選択すると、提出リクエストが更新されます。提出が承認されると、その曲が割り当てられます。"
+    },
+    "error": {
+      "searchFailed": "曲の検索に失敗しました",
+      "loadDetailsFailed": "曲の詳細を読み込めませんでした",
+      "songNotFound": "曲が見つかりません",
+      "assignFailed": "リクエストの更新に失敗しました",
+      "createFailed": "リクエストの更新に失敗しました",
+      "cannotAssignExistingWithNewArtist": "新しいアーティストのリクエストが設定されている場合、既存の楽曲を割り当てることはできません",
+      "songNotByArtist": "この曲は、選択したアーティストの楽曲ではありません"
+    }
+  }
+}

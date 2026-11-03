@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "title": "ランキング",
+    "description": "トッププレイヤーとランキングを見る"
+  },
+  "input": {
+    "placeholder": "プレイヤー名で検索..."
+  },
+  "tooltips": {
+    "filter": "検索結果を絞り込む",
+    "sort": "結果を並べ替える",
+    "reset": "すべてのフィルターをリセットする",
+    "recentAsc": "昇順で並べ替える",
+    "recentDesc": "降順で並べ替える"
+  },
+  "settings": {
+    "filter": {
+      "header": "フィルター設定",
+      "following": "フォロー中",
+      "country": "国または地域",
+      "rankedScoreRank": "ランクスコア順位",
+      "addStatFilters": "統計フィルターを追加する",
+      "selectStatPlaceholder": "フィルタリングする統計情報を選択してください...",
+      "addFilterButton": "フィルターを追加",
+      "min": "最小",
+      "max": "最大"
+    },
+    "sort": {
+      "header": "並べ替え設定",
+      "sortOrder": "並べ替え順",
+      "sortBy": "並べ替え"
+    }
+  },
+  "playerFlagFilter": {
+    "fields": {
+      "isBanned": "利用停止処分を受けたプレイヤー",
+      "isSubmissionsPaused": "提出受付停止中",
+      "isRatingBanned": "レーティングBAN"
+    }
+  },
+  "sortOptions": {
+    "rankedScore": "ランクスコア",
+    "totalScoreV2": "トータルスコア",
+    "generalScore": "ジェネラルスコア",
+    "ppScore": "PPスコア",
+    "wfScore": "WFスコア",
+    "wfPPScore": "WF PPスコア",
+    "score12K": "12K スコア",
+    "averageXacc": "平均 X精度",
+    "totalPasses": "トータルクリア数",
+    "universalPassCount": "Universalクリア",
+    "worldsFirstCount": "WFクリア",
+    "worldsFirstPPCount": "WF PPクリア",
+    "topDiff": "最高難易度",
+    "top12kDiff": "上位12K難易度"
+  },
+  "infiniteScroll": {
+    "end": "これ以上はありません！"
+  },
+  "list": {
+    "emptyFollowing": "まだフォローしている人はいません。"
+  },
+  "past": {
+    "button": "過去を見る",
+    "backToPresent": "現在に戻る",
+    "title": "ランキング履歴",
+    "metricRanked": "ランクスコア順位",
+    "metricGeneral": "ジェネラルスコア順位",
+    "timelineLabel": "履歴タイムライン",
+    "noData": "この日付に関する過去のランキングデータはありません。",
+    "metaTitle": "ランキング — {{date}}",
+    "metaDescription": "{{date}}時点のリーダーボード順位",
+    "date": {
+      "year": "年",
+      "month": "月",
+      "day": "日"
+    },
+    "months": {
+      "1": "1月",
+      "2": "2月",
+      "3": "3月",
+      "4": "4月",
+      "5": "5月",
+      "6": "6月",
+      "7": "7月",
+      "8": "8月",
+      "9": "9月",
+      "10": "10月",
+      "11": "11月",
+      "12": "12月"
+    },
+    "monthsShort": {
+      "1": "1月",
+      "2": "2月",
+      "3": "3月",
+      "4": "4月",
+      "5": "5月",
+      "6": "6月",
+      "7": "7月",
+      "8": "8月",
+      "9": "9月",
+      "10": "10月",
+      "11": "11月",
+      "12": "12月"
+    }
+  },
+  "locate": {
+    "button": "現在地",
+    "signedOut": "ログインして、リーダーボードでの順位を確認しましょう。",
+    "unlinked": "プレイヤープロフィールをリンクして、リーダーボードでの順位を確認しましょう。",
+    "missing": "この検索結果には、あなたに関する情報は表示されていません。"
+  }
+}

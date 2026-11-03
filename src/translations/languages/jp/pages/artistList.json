@@ -1,0 +1,25 @@
+{
+  "title": "アーティスト",
+  "meta": {
+    "title": "アーティスト",
+    "description": "すべてのアーティストを見る"
+  },
+  "search": {
+    "placeholder": "アーティストを検索..."
+  },
+  "filter": {
+    "verificationState": "検証状態",
+    "tufVerified": "TUF認証済み"
+  },
+  "sort": {
+    "label": "並べ替え:",
+    "nameAsc": "名前 (A-Z)",
+    "nameDesc": "名前 (Z-A)",
+    "idAsc": "ID (低い順)",
+    "idDesc": "ID (高い順)"
+  },
+  "infScroll": {
+    "end": "これで最後まで読み終えました！"
+  },
+  "noArtists": "該当するアーティストが見つかりませんでした"
+}

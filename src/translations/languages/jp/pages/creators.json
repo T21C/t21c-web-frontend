@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "title": "クリエイター",
+    "description": "チャートクリエイター、チャーター、VFX担当者を閲覧する"
+  },
+  "input": {
+    "placeholder": "クリエイター名で検索..."
+  },
+  "buttons": {
+    "searchHelp": "検索のヘルプ"
+  },
+  "tooltips": {
+    "searchHelp": "クリエイターの検索方法や、キュレーションの種類で絞り込む方法について学びましょう",
+    "filter": "検索結果を絞り込む",
+    "sort": "結果を並べ替える",
+    "reset": "すべてのフィルターをリセットする",
+    "recentAsc": "昇順で並べ替える",
+    "recentDesc": "降順で並べ替える"
+  },
+  "settings": {
+    "filter": {
+      "header": "フィルター",
+      "following": "フォロー中"
+    },
+    "sort": {
+      "header": "並べ替え設定",
+      "sortOrder": "並べ替え順",
+      "sortBy": "並べ替え"
+    },
+    "verificationFilter": {
+      "label": "検証状況",
+      "all": "すべてのステータス"
+    },
+    "curationTypes": {
+      "label": "キュレーションタイプ"
+    }
+  },
+  "sortOptions": {
+    "name": "名前",
+    "chartsTotal": "レベル合計",
+    "chartsCharted": "レベル一覧",
+    "chartsVfxed": "VFXあり ",
+    "chartsTeamed": "チームメンバーとしてのレベル",
+    "totalChartClears": "レベルクリアの合計",
+    "totalChartLikes": "レベルのいいね数の合計"
+  },
+  "infiniteScroll": {
+    "end": "これで最後まで読み終えました！"
+  },
+  "list": {
+    "empty": "クリエイターが見つかりませんでした。",
+    "emptyFollowing": "まだ誰のフォローもしていません。"
+  },
+  "locate": {
+    "button": "現在地",
+    "signedOut": "ログインして、クリエイターランキングでの自分の順位を確認しましょう。",
+    "unlinked": "クリエイタープロフィールをリンクして、ランキングでの自分の順位を確認しましょう。",
+    "missing": "これらの検索結果には、あなたに関する情報は表示されていません。"
+  },
+  "card": {
+    "verified": "認証済み",
+    "chartsTotal": "{{count}}レベル",
+    "noUser": "リンク済みのアカウントはありません",
+    "curationBadgesAria": "キュレーションタイプの概要"
+  },
+  "verificationStatus": {
+    "help": {
+      "declined": "そのクリエイターは、自身のチャートをフォーラムで紹介することを辞退しました。",
+      "pending": "クリエイターからの確認待ちです。新しく追加されたクリエイターのデフォルトの状態です。",
+      "conditional": "クリエイターは特定の条件の下で承諾しました。提出を追加する前に、事前に調整を行ってください。",
+      "allowed": "そのクリエイターは、自身のチャートをフォーラムで紹介することに同意しました。"
+    }
+  },
+  "profile": {
+    "meta": {
+      "title": "{{name}} - クリエイタープロフィール",
+      "description": "The Universal Forumsにおける{{name}}のチャートと統計 — {{count}}レベル"
+    },
+    "notFound": "クリエイターが見つかりません",
+    "verified": "認証済み",
+    "manageButton": "クリエイターの管理",
+    "stats": {
+      "header": "クリエイター統計",
+      "chartsCharted": "チャート作成済み",
+      "chartsVfxed": "VFX作成済み",
+      "chartsTeamed": "チームメンバーとしてのレベル",
+      "curatedLevels": "厳選されたレベルの総数",
+      "chartsTotal": "レベル合計",
+      "totalChartClears": "レベルクリア数合計",
+      "totalChartLikes": "レベルいいね数合計"
+    },
+    "bio": {
+      "header": "自己紹介",
+      "placeholder": "このクリエイターはまだ自己紹介文を書いていません。"
+    },
+    "uploadConditions": {
+      "tooltipAria": "チャートのアップロード条件を確認する"
+    },
+    "curationPanel": {
+      "expandAria": "すべてのキュレーションの種類とレベル数を表示する",
+      "collapseAria": "キュレーションタイプの一覧を非表示にする",
+      "dialogLabel": "クレジット対象レベルのキュレーションタイプ"
+    },
+    "levels": {
+      "header": "レベル",
+      "empty": "このクリエイターに関するチャートはまだ見つかりませんでした。",
+      "searchPlaceholder": "このクリエイターのチャートを検索...",
+      "expand": "レベルを展開する",
+      "collapse": "レベルを折りたたむ",
+      "exportAs": "次としてエクスポート",
+      "exportDisabled": "現在のフィルタ条件に一致するチャートはありません。",
+      "export": {
+        "title": "{{contextName}} をエクスポート",
+        "defaultContextName": "チャート",
+        "description": "{{contextName}} の現在のフィルタ条件に一致するすべてのチャートをまとめたスプレッドシートをダウンロードしてください。",
+        "export": "エクスポート",
+        "exporting": "エクスポート中…",
+        "unavailable": "利用不可",
+        "progress": "{{total}}件のうち{{fetched}}件を取得しました…",
+        "errors": {
+          "exportFailed": "チャートのエクスポートに失敗しました。もう一度お試しください。"
+        }
+      }
+    },
+    "sections": {
+      "difficultyBreakdown": {
+        "title": "難易度別レベル",
+        "expand": "難易度の内訳を展開する",
+        "collapse": "難易度の内訳を折りたたむ"
+      }
+    },
+    "funFacts": {
+      "expandAria": "すべての統計情報を表示",
+      "collapseAria": "詳細な統計情報を非表示にする",
+      "groups": {
+        "identity": "アイデンティティ",
+        "credits": "クレジット",
+        "content": "チャートの内容",
+        "audience": "対象読者",
+        "curation": "キュレーションと再レート",
+        "timeline": "タイムライン",
+        "breakdownByType": "難易度別レベル"
+      },
+      "identity": {
+        "aliasCount": "別名",
+        "teamsJoined": "参加チーム"
+      },
+      "credits": {
+        "levelsAsCharter": "チャーターとしてのレベル",
+        "levelsAsVfxer": "VFXとしてのレベル"
+      },
+      "content": {
+        "totalTilesMade": "タイル配置済み",
+        "totalLevelDurationMs": "チャートの合計再生時間",
+        "averageTilecount": "平均タイル数",
+        "averageLevelLengthMs": "平均レベルの長さ",
+        "averageBpm": "平均BPM",
+        "totalClearsOnLevels": "チャート上のクリアの合計",
+        "totalLikesOnLevels": "チャート上の「いいね」の合計数",
+        "totalDownloadsOnLevels": "チャート上の総ダウンロード数"
+      },
+      "audience": {
+        "uniquePlayersCleared": "クリアしたユニークプレイヤー",
+        "worldsFirstsOnLevels": "譜面上の世界初クリア数",
+        "worldsFirstPPsOnLevels": "譜面上の世界初PPクリア数",
+        "totalTilesPlayedOnLevels": "ヒットしたタイルの合計数"
+      },
+      "timeline": {
+        "firstLevelAt": "最初のチャート",
+        "latestLevelAt": "最新のチャート"
+      },
+      "difficultyType": {
+        "PLANETARY": "Planetary",
+        "GALACTIC": "Galactic",
+        "UNIVERSAL": "Universal",
+        "SPECIAL": "Special",
+        "PGU": "PGU",
+        "LEGACY": "レガシー",
+        "UNKNOWN": "その他"
+      }
+    }
+  }
+}

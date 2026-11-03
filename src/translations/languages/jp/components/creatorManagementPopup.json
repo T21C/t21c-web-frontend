@@ -1,0 +1,260 @@
+{
+  "close": "閉じる",
+  "modes": {
+    "update": "更新",
+    "profile": "プロフィール",
+    "user": "ユーザー",
+    "merge": "統合",
+    "split": "分割",
+    "delete": "削除"
+  },
+  "update": {
+    "name": {
+      "label": "名前",
+      "placeholder": "クリエイターの名前を入力してください"
+    },
+    "verificationStatus": {
+      "label": "検証状況",
+      "placeholder": "ステータスを選択してください"
+    },
+    "uploadConditions": {
+      "label": "チャートのアップロード条件",
+      "placeholder": "チャーターに関する任意の備考（例：アップロードを受け付ける場合など）。最大2000文字。"
+    },
+    "aliases": {
+      "label": "別名",
+      "placeholder": "別名を追加",
+      "add": "追加"
+    },
+    "updateButton": "クリエイターの更新"
+  },
+  "profile": {
+    "intro": "このクリエイターが公開プロフィールのヘッダーにどのように表示されるかを管理します。",
+    "headerBadges": {
+      "title": "ヘッダーバッジ",
+      "hint": "プロフィールヘッダーに表示するキュレーションの種類を選択してください（最大5つまで）。変更は即座に反映されます。",
+      "selectorLabel": "表示されるバッジの種類",
+      "loading": "バッジデータの読み込み中…",
+      "noPermission": "このクリエイターのプロフィールヘッダーのバッジを編集する権限がありません。"
+    }
+  },
+  "user": {
+    "linked": {
+      "label": "現在リンクされているユーザー",
+      "idLabel": "ID:",
+      "unknownUser": "連携されたユーザーアカウント",
+      "unassignButton": "ユーザーの割り当てを解除する",
+      "unassignConfirm": "このユーザーとクリエイターの連携を解除しますか？",
+      "unassignYes": "はい、割り当てを解除します",
+      "unassignCancel": "キャンセル"
+    },
+    "search": {
+      "label": "プレイヤーを検索",
+      "placeholder": "プレイヤー名またはハンドル名を入力してください...",
+      "hint": "このクリエイターに割り当てるプレイヤーを検索するには、入力を開始してください。",
+      "noResults": "検索条件に一致するプレイヤーはいません。",
+      "alreadyLinked": "すでに別のクリエイターとリンクされています",
+      "assignButton": "割り当てる"
+    },
+    "discordFallback": {
+      "label": "または、Discord ID で割り当てる",
+      "placeholder": "DiscordのユーザーIDを入力してください",
+      "lookupButton": "検索"
+    }
+  },
+  "discord": {
+    "currentUser": {
+      "label": "現在のユーザー",
+      "avatarAlt": "ユーザーのアバター",
+      "idLabel": "ID:",
+      "unlinkButton": "ユーザーのリンクを解除する"
+    },
+    "discordId": {
+      "label": "Discord ID",
+      "placeholder": "Discord IDを入力してください",
+      "validateButton": "検証"
+    },
+    "confirm": {
+      "avatarAlt": "Discordのアバター",
+      "message": "これは正しいDiscordユーザーですか？",
+      "confirmButton": "確認",
+      "cancelButton": "キャンセル"
+    },
+    "unlinkConfirm": {
+      "message": "このユーザーのリンクを解除してもよろしいですか？",
+      "yesButton": "はい、リンクを解除",
+      "cancelButton": "キャンセル"
+    }
+  },
+  "merge": {
+    "warning": {
+      "title": "警告:",
+      "message": "これにより、{{creatorName}} が削除され、すべてのクレジットが選択したクリエイターに再割り当てされます。この操作は元に戻すことができません。"
+    },
+    "search": {
+      "label": "目的地クリエイター",
+      "placeholder": "名前で検索するか、クリエイターIDを貼り付けてください",
+      "hint": "検索結果からクリエイターを選択してください。数値のIDを貼り付けると、そのプロフィールが検索されるため、統合する前に確認することができます。",
+      "noResults": "検索条件に一致するクリエイターはいませんでした。",
+      "empty": "入力して、目的のクリエイターを検索してください。",
+      "selectButton": "選択"
+    },
+    "source": {
+      "label": "削除されます"
+    },
+    "destination": {
+      "label": "クレジットはすべてそのまま残します"
+    },
+    "idLabel": "ID {{id}}",
+    "chartsLabel": "{{count}} つのチャート",
+    "openProfile": "プロフィールを開く",
+    "changeDestination": "目的地を変更する",
+    "confirm": {
+      "message": "{{sourceName}} のクレジットはすべて {{destName}} に移動されます。{{sourceName}} は削除されます。この操作は元に戻せません。",
+      "confirmButton": "{{name}}に統合する"
+    },
+    "mergeButton": "クリエイターを統合する"
+  },
+  "split": {
+    "newNamesAndRoles": {
+      "label": "新たに追加されたクリエイターの氏名とロール",
+      "namePlaceholder": "クリエイター名を入力してください {{index}}",
+      "rolePlaceholder": "ロールを選択してください",
+      "addAnother": "+ 別の名前を追加する"
+    },
+    "splitButton": "クリエイターを分割"
+  },
+  "superAdminDanger": {
+    "title": "危険ゾーン（スーパー管理者）",
+    "hint": "これらの操作を行うには、スーパー管理者パスワードが必要です。",
+    "passwordPlaceholder": "スーパー管理者パスワード",
+    "passwordRequired": "スーパー管理者パスワードを入力してください。",
+    "purgeButton": "クリエイターのプロフィールを削除する",
+    "unlinkButton": "ユーザーのリンクを解除するのみ",
+    "confirmPurge": "このクリエイターを完全に削除しますか？ 単独クレジットのレベルは削除されます。このクリエイターの共同制作クレジットも削除されます。この操作は元に戻せません。",
+    "confirmUnlink": "このクリエイターとユーザーアカウントのリンクだけを解除しますか？クリエイターの行とチャートのクレジットは残ります。",
+    "successPurge": "クリエイターのプロフィールが削除されました。.",
+    "successUnlink": "クリエイターとユーザーの紐付けが解除されました。",
+    "purgeFailed": "クリエイターを削除できませんでした。",
+    "unlinkFailed": "クリエイターのリンクを解除できませんでした。"
+  },
+  "errors": {
+    "loadCreatorsFailed": "クリエイターの読み込みに失敗しました",
+    "updateFailed": "クリエイターの更新に失敗しました",
+    "assignFailed": "ユーザーの割り当てに失敗しました",
+    "unassignFailed": "ユーザーの割り当て解除に失敗しました",
+    "fetchDiscordFailed": "Discordユーザーの取得に失敗しました",
+    "updateDiscordFailed": "Discord情報の更新に失敗しました",
+    "unlinkFailed": "ユーザーのリンク解除に失敗しました",
+    "mergeFailed": "クリエイターの統合に失敗しました",
+    "mergeSelf": "同じクリエイターには統合できません",
+    "splitFailed": "クリエイターの分割に失敗しました"
+  },
+  "player": {
+    "titleFallback": "プレイヤー",
+    "idLabel": "ID {{id}}",
+    "modes": {
+      "update": "プロフィール",
+      "moderation": "モデレーション",
+      "link": "クリエイター",
+      "merge": "統合"
+    },
+    "update": {
+      "name": {
+        "label": "表示",
+        "placeholder": "プレイヤー名を入力してください"
+      },
+      "country": {
+        "label": "国または地域"
+      },
+      "saveButton": "変更を保存"
+    },
+    "moderation": {
+      "ban": "プレイヤーをBAN",
+      "pause": "提出の一時停止",
+      "ratingBan": "レーティングのBAN",
+      "tagVoteBan": "コミュニティタグの投票からのBAN",
+      "rerateRequestBan": "再レートリクエストを禁止",
+      "rerateRequestBanConfirm": "このプレイヤーからの再レートリクエストを制限しますか？",
+      "rerateRequestUnbanConfirm": "このプレイヤーが再び再レートリクエストを提出できるようにしますか？",
+      "rejectRecent": "さらに、直近の未処理の再レートリクエストも却下する",
+      "rejectRecentDurationAria": "未処理の再レートリクエストを却下する期間",
+      "rejectRecentUnitAria": "却下対象期間の単位",
+      "banConfirm": "このプレイヤーをBANしますか？",
+      "unbanConfirm": "このプレイヤーのBANを解除しますか？",
+      "banFor": "期間：",
+      "banDurationAria": "BAN期間",
+      "banUnitAria": "BAN期間の単位",
+      "bannedUntil": "{{date}}までBAN",
+      "bannedPermanently": "永久にBAN",
+      "units": {
+        "hours": "時間",
+        "days": "日",
+        "weeks": "週間",
+        "months": "ヵ月",
+        "forever": "無期限"
+      },
+      "pauseConfirm": "このプレイヤーの提出を一時停止しますか？",
+      "resumeConfirm": "このプレイヤーの提出受付を再開しますか？",
+      "ratingBanConfirm": "このプレイヤーのレーティングを禁止しますか？",
+      "ratingUnbanConfirm": "このユーザーに再度レーティングを許可しますか？",
+      "tagVoteBanConfirm": "このプレイヤーをコミュニティタグの投票からBANしますか？",
+      "tagVoteUnbanConfirm": "このユーザーに、コミュニティタグへの投票を再び許可しますか？"
+    },
+    "link": {
+      "hint": "このユーザーアカウントに紐付けられているクリエイタープロファイルを割り当てるか、解除します。"
+    },
+    "merge": {
+      "warning": {
+        "title": "警告:",
+        "message": "すべてのクリア記録は対象のプレイヤーに移動し、{{name}} は削除されます。この操作は元に戻せません。"
+      },
+      "search": {
+        "label": "ターゲットプレイヤー",
+        "placeholder": "名前、@ユーザー名、#discordId、または pid:123 で検索",
+        "hint": "検索結果からプレイヤーを選択してください。数値のIDを貼り付けると、そのプロフィールが検索されるため、統合する前に内容を確認することができます。",
+        "noResults": "検索条件に一致するプレイヤーはいませんでした。",
+        "empty": "目的のプロフィールを検索するには、入力を開始してください。",
+        "selectButton": "選択"
+      },
+      "source": {
+        "label": "削除されます"
+      },
+      "destination": {
+        "label": "すべてのクリアを保持します"
+      },
+      "idLabel": "ID {{id}}",
+      "openProfile": "プロフィールを開く",
+      "changeDestination": "目的地を変更する",
+      "confirm": {
+        "message": "{{sourceName}} のすべてのクリアは {{destName}} に移動されます。{{sourceName}} は削除されます。この操作は元に戻せません。",
+        "confirmButton": "{{name}} に統合する"
+      },
+      "mergeButton": "プレイヤーを統合する"
+    },
+    "errors": {
+      "updateFailed": "プレイヤーの更新に失敗しました",
+      "banUpdate": "BANステータスの更新に失敗しました",
+      "banDuration": "1 から 999 までの期間を入力してください",
+      "pauseUpdate": "提出の一時停止の更新に失敗しました",
+      "ratingBanUpdate": "レーティングのBANを更新できませんでした",
+      "tagVoteBanUpdate": "コミュニティタグの投票BANの更新に失敗しました",
+      "mergeFailed": "プレイヤーの統合に失敗しました",
+      "mergeSelf": "プレイヤーを自分自身に統合することはできません"
+    },
+    "success": {
+      "updated": "プレイヤーの更新に成功しました",
+      "moderation": "モデレーション設定が更新されました",
+      "merge": "プレイヤーの統合に成功しました"
+    }
+  },
+  "success": {
+    "updated": "クリエイターの更新に成功しました",
+    "userAssigned": "クリエイターに割り当てられたユーザー",
+    "userUnassigned": "クリエイターからユーザーが割り当て解除されました",
+    "discordUpdated": "Discordの情報が正常に更新されました",
+    "discordUnlinked": "Discordユーザーのリンク解除に成功しました",
+    "merged": "クリエイターの統合に成功しました",
+    "split": "クリエイターの分割が正常に完了しました"
+  }
+}

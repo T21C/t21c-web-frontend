@@ -256,6 +256,10 @@
   overflow-wrap: break-word;
 }
 
+.pass-detail .pass-detail-details__text .formatted-comment {
+  color: inherit;
+}
+
 .pass-detail .pass-detail-details.expandable:not(.expanded) .pass-detail-details__text {
   max-height: 7.5rem;
   overflow: hidden;

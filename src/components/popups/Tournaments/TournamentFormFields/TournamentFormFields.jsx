@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomSelect, PackRefSelect, ProfileSelector } from "@/components/common/selectors";
+import { LevelMentionField } from "@/components/misc";
 import "../TournamentFormPopup/tournamentFormPopup.css";
 import {
   buildStatusOptions,
@@ -202,7 +203,7 @@ const TournamentFormFields = ({
         <label className={`${classPrefix}__label`} htmlFor={`${idPrefix}-notes`}>
           {t("tournamentManagement.form.fields.notes")}
         </label>
-        <textarea
+        <LevelMentionField
           id={`${idPrefix}-notes`}
           className={`${classPrefix}__input ${classPrefix}__textarea`}
           rows={3}

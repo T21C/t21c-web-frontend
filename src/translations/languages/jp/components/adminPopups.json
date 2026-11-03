@@ -1,0 +1,86 @@
+{
+  "player": {
+    "title": "プレイヤーを編集",
+    "close": "×",
+    "form": {
+      "name": {
+        "label": "プレイヤー名",
+        "placeholder": "プレイヤー名を入力してください",
+        "button": "更新"
+      },
+      "country": {
+        "label": "国または地域",
+        "button": "更新"
+      },
+      "aliases": {
+        "label": "別名の検索",
+        "placeholder": "検索に以前の名称を追加する",
+        "add": "追加",
+        "save": "別名を保存する"
+      },
+      "ban": {
+        "label": "プレイヤーをBANする",
+        "confirm": {
+          "ban": "このプレイヤーをBANしてもよろしいですか？",
+          "unban": "このプレイヤーのBANを解除してもよろしいですか？"
+        }
+      },
+      "pause": {
+        "label": "提出の一時停止",
+        "confirm": {
+          "pause": "このプレイヤーの提出を一時停止してもよろしいですか？",
+          "resume": "このプレイヤーの提出を再開してもよろしいですか？"
+        }
+      },
+      "ratingBan": {
+        "label": "レーティングを禁止する",
+        "confirm": {
+          "ban": "このプレイヤーをレーティング対象から除外してもよろしいですか？",
+          "unban": "このプレイヤーに再びレーティングを許可してもよろしいですか？"
+        }
+      },
+      "merge": {
+        "label": "プレイヤーの統合",
+        "placeholder": "対象プレイヤーのIDを入力してください",
+        "button": "統合",
+        "confirm": {
+          "message": "このプレイヤーのクリアを統合してもよろしいですか？この操作は元に戻せません。",
+          "warning": "すべてのクリアは対象のプレイヤーに引き継がれ、このプレイヤーのエントリーは削除されます。",
+          "buttons": {
+            "understand": "わかりました",
+            "confirm": "統合を確認"
+          }
+        }
+      },
+      "discord": {
+        "label": "Discord ID",
+        "placeholder": "Discord IDを入力して確認してください",
+        "buttons": {
+          "validate": "検証"
+        },
+        "confirm": {
+          "message": "このプレイヤーのDiscord情報を更新してもよろしいですか？"
+        }
+      }
+    },
+    "errors": {
+      "nameUpdate": "プレイヤー名の更新に失敗しました",
+      "countryUpdate": "国の更新に失敗しました",
+      "banUpdate": "BANステータスの更新に失敗しました",
+      "pauseUpdate": "提出の一時停止ステータスの更新に失敗しました",
+      "ratingBanUpdate": "レーティングのBANステータスの更新に失敗しました",
+      "discordFetch": "Discord ID の取得に失敗しました",
+      "discordUpdate": "Discord情報の更新に失敗しました",
+      "discordRemove": "Discord の情報の削除に失敗しました",
+      "mergePlayer": "プレイヤーの統合に失敗しました",
+      "invalidTargetId": "ターゲットプレイヤーのIDが無効です",
+      "aliasesUpdate": "別名の更新に失敗しました"
+    },
+    "success": {
+      "discordUpdate": "Discordの情報が正常に更新されました",
+      "discordRemove": "Discordの情報が正常に削除されました",
+      "mergePlayer": "プレイヤーの統合に成功しました",
+      "aliasesUpdated": "別名の更新に成功しました"
+    }
+  }
+}

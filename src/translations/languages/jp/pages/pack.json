@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "パック",
+    "description": "コミュニティが作成したレベルパックを閲覧して、新しい発見をしましょう",
+    "myPacksTitle": "マイパック",
+    "myPacksDescription": "個人用レベルパックの管理と確認"
+  },
+  "title": {
+    "allPacks": "レベルパック",
+    "myPacks": "マイパック"
+  },
+  "subtitle": {
+    "allPacks": "コミュニティが作成したレベルパックを見つけて、探検しよう",
+    "myPacks": "レベルパックの個人コレクションを管理する"
+  },
+  "search": {
+    "placeholder": "パックを検索...",
+    "search": "検索"
+  },
+  "filters": {
+    "title": "フィルター",
+    "toggle": "フィルターを切り替える",
+    "owner": "オーナー",
+    "ownerPlaceholder": "ユーザー名を入力してください",
+    "viewMode": "表示モード",
+    "viewModePlaceholder": "表示モードを選択してください",
+    "pinnedOnly": "ピン留めされたもののみ表示"
+  },
+  "sort": {
+    "title": "並べ替え",
+    "toggle": "並べ替えオプションを切り替える",
+    "header": "並べ替え",
+    "by": "並べ替え",
+    "placeholder": "並べ替えオプションを選択してください",
+    "recent": "最近",
+    "name": "名前",
+    "levels": "レベル数",
+    "favorites": "お気に入り",
+    "ascending": "昇順",
+    "order": "順序",
+    "descending": "降順",
+    "myLikes": "いいね"
+  },
+  "viewMode": {
+    "all": "すべて",
+    "public": "公開",
+    "linkonly": "リンクのみ",
+    "private": "非公開",
+    "forcedPrivate": "強制非公開"
+  },
+  "actions": {
+    "createPack": "パックを作成",
+    "reset": "リセット",
+    "listView": "リスト表示",
+    "gridView": "グリッド表示",
+    "viewToggleGroup": "パックの表示方法を選択してください"
+  },
+  "buttons": {
+    "searchHelp": "検索のヘルプ"
+  },
+  "toolTip": {
+    "search": "検索のヘルプ",
+    "filter": "フィルターを切り替える",
+    "sort": "並べ替えオプションの切り替え",
+    "reset": "すべてのフィルターをリセット"
+  },
+  "create": {
+    "success": "パックの作成に成功しました！",
+    "error": "パックの作成に失敗しました"
+  },
+  "loading": {
+    "more": "パックをさらに読み込んでいます..."
+  },
+  "error": {
+    "loadFailed": "パックの読み込みに失敗しました",
+    "retry": "再試行"
+  },
+  "endMessage": "読み込むパックはもうありません"
+}

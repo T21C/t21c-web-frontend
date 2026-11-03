@@ -2,6 +2,7 @@
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 /** Server ES level-search hard cap (see levelSearch.ts). */
 export const LEVEL_EXPORT_PAGE_SIZE = 100;
@@ -15,6 +16,7 @@ export function buildCreatorLevelExportParams({
   sort = 'RECENT',
   order = 'DESC',
   deletedFilter = 'hide',
+  toRateFilter = 'show',
   clearedFilter = 'show',
   availableDlFilter = 'show',
   selectedLowFilterDiff = 'P1',
@@ -38,6 +40,9 @@ export function buildCreatorLevelExportParams({
     query: query || '',
     sort: `${sort}_${order}`,
     deletedFilter: deletedFilter || 'hide',
+    ...(hasFlag(user, permissionFlags.SUPER_ADMIN)
+      ? { toRateFilter: toRateFilter || 'show' }
+      : {}),
     clearedFilter: clearedFilter || 'show',
     pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
     specialDifficulties:

@@ -21,13 +21,18 @@
       "scoredAs": "Noté comme {{value}}"
     },
     "buttons": {
-      "saveChanges": "Enregistrer"
+      "saveChanges": "Enregistrer",
+      "copyNotes": "Copier les notes"
     },
     "errors": {
       "commentLength": "Le commentaire doit faire moins de 1000 caractères",
       "saveFailed": "Echec de l'enregistrement",
       "updateFailed": "Echec de la mise à jour de l'évaluation",
-      "unsavedChanges": "Vous avez des changements non enregistrés. Etes-vous sûr de vouloir fermer?"
+      "unsavedChanges": "Vous avez des changements non enregistrés. Etes-vous sûr de vouloir fermer?",
+      "notesCopyFailed": "Impossible de copier les notes"
+    },
+    "messages": {
+      "notesCopied": "Notes copiées"
     }
   },
   "ratingCard": {

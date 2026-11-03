@@ -1,0 +1,20 @@
+{
+  "title": "曲の詳細",
+  "meta": {
+    "title": "{{name}}",
+    "description": "The Universal Forumsで{{name}}の曲情報とレベルを確認できます"
+  },
+  "sections": {
+    "aliases": "別名",
+    "links": "リンク",
+    "artists": "アーティスト",
+    "extraInfo": "その他の情報",
+    "evidence": "証拠",
+    "levels": "レベル"
+  },
+  "backToList": "曲一覧に戻る",
+  "errors": {
+    "notFound": "曲が見つかりません",
+    "loadFailed": "曲の読み込みに失敗しました"
+  }
+}

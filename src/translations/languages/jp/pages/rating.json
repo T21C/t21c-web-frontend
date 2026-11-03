@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "title": "レーティング管理",
+    "description": "レベルのレーティングを管理します"
+  },
+  "buttons": {
+    "references": "参考レベル",
+    "manageRaters": "レーティング担当者を管理",
+    "help": "レーティングガイド",
+    "topRaters": "上位レーティング担当者",
+    "zenMode": "Zenモード",
+    "resumeZenMode": "Zenモードを再開"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "詳細表示"
+    },
+    "myRated": {
+      "label": "自分がレーティング済み"
+    },
+    "lowDiff": {
+      "label": "低難易度"
+    },
+    "requestBands": {
+      "label": "AutoRaterを非表示",
+      "hint": "チェックすると、一覧から該当するAutoRaterの帯を非表示にします"
+    },
+    "fourVote": {
+      "suffix": "+ レーティング済み",
+      "input": "レーティング数の最小値"
+    },
+    "rankReady": {
+      "label": "ランク確定可能"
+    }
+  },
+  "flows": {
+    "flow1": "フロー1",
+    "flow2": "フロー2",
+    "flow3": "フロー3"
+  },
+  "sort": {
+    "byId": "レベルID",
+    "byRatings": "レーティング数",
+    "byRatingsFull": "レーティング数順に並べ替え",
+    "byDate": "最終更新日時"
+  },
+  "search": {
+    "placeholder": "レベル名、クリエイター、難易度で検索"
+  },
+  "labels": {
+    "totalRatings": "{{count}}件のレーティング",
+    "connectedUsers": "{{count}}人がオンライン",
+    "connectedManagers": "（管理者{{count}}人）",
+    "disconnected": "切断済み"
+  },
+  "tooltips": {
+    "sortAsc": "昇順で並べ替え",
+    "sortDesc": "降順で並べ替え",
+    "lastUpdated": "最終更新日時",
+    "levelId": "レベルID"
+  },
+  "messages": {
+    "loading": "レーティングを読み込んでいます…",
+    "error": "レーティングの読み込み中にエラーが発生しました",
+    "noRatings": {
+      "title": "レーティングはありません",
+      "subtitle": "すべてレーティング済みです！"
+    }
+  },
+  "rankReady": {
+    "view": "表示",
+    "settledWhileEditing": "別の管理者がこのレベルを確定しました。編集を続けるか、安全に終了できます。",
+    "columns": {
+      "name": "名前",
+      "managerAvg": "管理者平均",
+      "communityAvg": "コミュニティ平均",
+      "mgrCom": "管理者／コミュニティ",
+      "autorater": "AutoRater"
+    },
+    "empty": {
+      "title": "ランク確定可能なレベルはありません",
+      "subtitle": "スーパー管理者が手動で確定する必要のある項目はありません。"
+    }
+  },
+  "infiniteScroll": {
+    "end": "最後まで到達しました！"
+  },
+  "zen": {
+    "meta": {
+      "title": "レーティング Zenモード",
+      "description": "集中してレベルを順番にレーティングするセッション"
+    },
+    "confirmPeek": "他のレーティング担当者のレーティングとコメントを表示しますか？のぞき見を1回消費します。",
+    "reportPrompt": "報告メモ（任意）— メディアの問題について説明してください：",
+    "report": "メディアの問題を報告",
+    "exit": "セッションを一時停止",
+    "noVideo": "動画がありません",
+    "noPeers": "まだレーティングはありません",
+    "peekSources": {
+      "hasManagers": "管理者：{{managers}}・コミュニティ：{{community}}",
+      "communityOnly": "コミュニティのみ（{{count}}）"
+    },
+    "setup": {
+      "title": "レーティング Zenモード",
+      "subtitle": "レベルを1つずつレーティングします。",
+      "resumeHint": "このアカウントには一時停止中のZenセッションがあります。",
+      "continue": "セッションを続ける",
+      "discard": "破棄して新規開始",
+      "deckSize": "デッキサイズ",
+      "deckSizeCustom": "カスタム",
+      "peekHint": "のぞき見{{peeks}}回（カード5枚につき1回）",
+      "requestBands": "AutoRaterを非表示",
+      "requestBandsHint": "チェックすると、そのAutoRaterの帯をデッキから除外します",
+      "sort": "優先順位",
+      "sortLeast": "レーティング数が少ない順",
+      "sortMost": "レーティング数が多い順",
+      "sortId": "レベルID順",
+      "sortRecent": "更新日時が新しい順",
+      "randomness": "ランダム度",
+      "randomnessValue": "{{n}}",
+      "randomnessHint": "低いほど優先順位順になり、高いほどランダムに選ばれます",
+      "dealing": "カードを準備中…",
+      "start": "セッションを開始",
+      "back": "キューに戻る"
+    },
+    "stats": {
+      "peeks": "のぞき見 {{n}}回",
+      "streak": "連続 {{n}}"
+    },
+    "progress": {
+      "aria": "セッションの進行状況：全{{total}}枚中{{done}}枚",
+      "goTo": "カード{{n}}へ移動",
+      "rated": "レーティング済み",
+      "peeked": "確認済み",
+      "skipped": "スキップ済み",
+      "current": "現在",
+      "pending": "保留中"
+    },
+    "actions": {
+      "skip": "スキップ",
+      "peek": "のぞき見（{{n}}）",
+      "peeked": "確認済み",
+      "peekEmpty": "確認できる他の担当者はいません",
+      "submit": "提出 →"
+    },
+    "done": {
+      "title": "セッション完了",
+      "submitted": "提出済み：{{n}}",
+      "skipped": "スキップ：{{n}}",
+      "peeks": "使用したのぞき見：{{n}} / {{max}}",
+      "again": "もう一度カードを配る",
+      "queue": "キューに戻る"
+    },
+    "messages": {
+      "emptyDeck": "Zenモードのフィルターに一致するカードはありません",
+      "shortDeck": "利用可能なカードは{{requested}}枚中{{n}}枚のみです",
+      "reportSent": "報告を送信しました"
+    },
+    "errors": {
+      "loginRequired": "Zenモードを開始するにはログインしてください",
+      "dealFailed": "デッキの準備に失敗しました",
+      "invalidDeckSize": "デッキサイズは1～200で入力してください",
+      "reportFailed": "報告の送信に失敗しました",
+      "ratingRequired": "レーティングを入力してください",
+      "commentRequired": "コメントは必須です",
+      "submitFailed": "提出に失敗しました",
+      "alreadyRated": "このレベルはZenモードですでにレーティング済みです",
+      "normalRatingLocked": "レーティングキューを使用する前に、Zenモードを完了するか破棄してください"
+    }
+  }
+}

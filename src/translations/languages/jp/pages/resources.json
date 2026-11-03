@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "title": "リソース",
+    "description": "TUFチームによる便利なガイド、ドキュメント、Notionページ",
+    "editTitle": "リソースを編集"
+  },
+  "title": "リソース",
+  "subtitle": "TUFチームによるガイド、ドキュメント、リンク。",
+  "editTitle": "リソースを編集",
+  "editSubtitle": "グループを作成し、リンクをグループ間でドラッグして移動したり、翻訳を編集したりできます。",
+  "empty": "リソースはまだありません。",
+  "emptySearch": "検索条件に一致するリンクはありません。",
+  "ungrouped": "グループ未設定",
+  "searchPlaceholder": "タイトル、説明、URLを検索",
+  "backToResources": "リソースに戻る",
+  "errors": {
+    "loadFailed": "リソースを読み込めませんでした。しばらくしてから再試行してください。"
+  },
+  "language": {
+    "label": "言語",
+    "emptySlice": "この言語で利用できるリンクはありません。"
+  },
+  "links": {
+    "createButton": "リンクを作成",
+    "noLinks": "リンクはまだありません。最初のリンクを作成してください。",
+    "linkCount": "{{count}}件のリンク",
+    "linkCount_plural": "{{count}}件のリンク",
+    "fields": {
+      "title": "タイトル",
+      "url": "URL",
+      "urlPlaceholder": "https://www.notion.so/…",
+      "shorthand": "略称",
+      "shorthandPlaceholder": "TUF Notion",
+      "description": "説明"
+    },
+    "create": {
+      "title": "リンクを作成",
+      "createButton": "作成"
+    },
+    "edit": {
+      "title": "リンクを編集",
+      "updateButton": "更新"
+    },
+    "delete": {
+      "title": "リンクを削除",
+      "message": "リンク「{{name}}」を削除してもよろしいですか？",
+      "description": "この操作は取り消せません。",
+      "deleteButton": "削除"
+    },
+    "notifications": {
+      "created": "リンクを作成しました",
+      "createFailed": "リンクを作成できませんでした",
+      "updated": "リンクを更新しました",
+      "updateFailed": "リンクを更新できませんでした",
+      "deleted": "リンクを削除しました",
+      "deleteFailed": "リンクを削除できませんでした",
+      "reordered": "リンクの順序を変更しました",
+      "reorderFailed": "リンクの順序を変更できませんでした",
+      "localeSaved": "言語を保存しました",
+      "localeSaveFailed": "言語を保存できませんでした",
+      "localeRemoved": "言語を削除しました",
+      "localeRemoveFailed": "言語を削除できませんでした"
+    }
+  },
+  "groups": {
+    "createButton": "グループを作成",
+    "noGroups": "グループはまだありません。リンクを整理するためにグループを作成してください。",
+    "create": {
+      "title": "グループを作成",
+      "name": "名前",
+      "createButton": "作成"
+    },
+    "edit": {
+      "title": "グループを編集",
+      "name": "名前",
+      "updateButton": "更新"
+    },
+    "delete": {
+      "title": "グループを削除",
+      "message": "グループ「{{name}}」を削除してもよろしいですか？",
+      "description": "このグループ内のリンクは、残っている最初のグループに移動します。ほかにグループがない場合は、グループ未設定になります。",
+      "deleteButton": "削除"
+    },
+    "notifications": {
+      "reordered": "グループの順序を変更しました",
+      "reorderFailed": "グループの順序を変更できませんでした",
+      "created": "グループを作成しました",
+      "createFailed": "グループを作成できませんでした",
+      "updated": "グループを更新しました",
+      "updateFailed": "グループを更新できませんでした",
+      "deleted": "グループを削除しました",
+      "deleteFailed": "グループを削除できませんでした"
+    },
+    "removeLocaleConfirm": "このグループから{{name}}の翻訳を削除しますか？"
+  },
+  "languages": {
+    "title": "言語を管理",
+    "add": "言語を追加",
+    "addPlaceholder": "言語を選択",
+    "remove": "言語を削除",
+    "enLocked": "英語は削除できません",
+    "emptyAdd": "利用可能なすべての言語がすでに追加されています",
+    "removeConfirm": "このリンクから{{name}}の翻訳を削除しますか？"
+  }
+}

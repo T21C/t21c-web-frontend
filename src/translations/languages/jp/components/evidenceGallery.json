@@ -1,0 +1,14 @@
+{
+  "title": "証拠ギャラリー",
+  "noEvidence": "証拠は見つかりませんでした",
+  "previous": "前の画像",
+  "next": "次の画像",
+  "delete": "証拠を削除する",
+  "confirmDelete": "この証拠を削除してもよろしいですか？",
+  "type": "タイプ",
+  "resetZoom": "ズームをリセット",
+  "reset": "リセット",
+  "externalLinkHint": "クリックして外部リンクを開く",
+  "openInNewTab": "新しいタブで開く",
+  "extraInfo": "補足情報"
+}

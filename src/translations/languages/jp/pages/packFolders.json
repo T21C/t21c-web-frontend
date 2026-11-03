@@ -1,0 +1,40 @@
+{
+  "createFolder": "フォルダを作成する",
+  "rename": "名前を変更する",
+  "confirmDelete": "フォルダー\"{{name}}\"を削除してもよろしいですか？この操作は元に戻せません。",
+  "moveToFolder": "フォルダに移動",
+  "moveToRoot": "ルートに移動",
+  "folderName": "フォルダ名",
+  "newFolder": "新しいフォルダ",
+  "emptyFolder": "このフォルダは空です",
+  "dragPacksHere": "パックをここにドラッグして整理してください",
+  "expandFolder": "フォルダを展開",
+  "collapseFolder": "フォルダを折りたたむ",
+  "folders": {
+    "title": "フォルダ",
+    "create": "フォルダを作成する",
+    "rename": "フォルダの名前を変更する",
+    "delete": "フォルダを削除",
+    "move": "フォルダを移動"
+  },
+  "packs": {
+    "title": "パック",
+    "create": "パックを作成",
+    "moveToFolder": "フォルダに移動",
+    "moveToRoot": "ルートに移動"
+  },
+  "errors": {
+    "createFolder": "フォルダの作成に失敗しました",
+    "renameFolder": "フォルダの名前の変更に失敗しました",
+    "deleteFolder": "フォルダの削除に失敗しました",
+    "movePack": "パックの移動に失敗しました",
+    "reorderItems": "項目の並べ替えに失敗しました"
+  },
+  "success": {
+    "createFolder": "フォルダが正常に作成されました",
+    "renameFolder": "フォルダの名前変更に成功しました",
+    "deleteFolder": "フォルダが正常に削除されました",
+    "movePack": "パックの移動は正常に完了しました",
+    "reorderItems": "アイテムの並び替えが完了しました"
+  }
+}

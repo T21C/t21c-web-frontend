@@ -1,0 +1,144 @@
+{
+  "validation": {
+    "required": "この項目は必須です",
+    "min_length": "{{length}}文字以上で入力してください",
+    "max_length": "{{length}}文字以内で入力してください",
+    "email": "有効なメールアドレスを入力してください",
+    "password": {
+      "match": "パスワードが一致しません",
+      "requirements": "パスワードは8文字以上で入力してください",
+      "missingLength": "8文字以上",
+      "missingLower": "小文字を1文字以上",
+      "missingUpper": "大文字を1文字以上",
+      "missingDigit": "数字を1文字以上",
+      "missingSymbol": "記号を1文字以上",
+      "common": "一般的に使われるパスワードは使用できません",
+      "commonIdle": "ほかの要件を満たすと確認されます",
+      "rating": {
+        "weak": "弱い",
+        "fair": "普通",
+        "strong": "強い",
+        "common": "一般的すぎます"
+      },
+      "error": {
+        "requirements": "パスワードに不足している要件：{{list}}",
+        "common": "このパスワードは一般的すぎます"
+      }
+    }
+  },
+  "errors": {
+    "generic": "エラーが発生しました。もう一度お試しください。",
+    "network": "ネットワークエラーです。接続を確認してください。",
+    "unauthorized": "この操作を行う権限がありません。",
+    "notFound": "指定されたリソースが見つかりません。",
+    "validation": "入力内容を確認して、もう一度お試しください。"
+  },
+  "loading": {
+    "generic": "読み込み中...",
+    "submitting": "提出中...",
+    "saving": "保存中...",
+    "deleting": "削除中...",
+    "restoring": "復元中...",
+    "creating": "作成中...",
+    "creatingWithName": "{{name}}を作成中...",
+    "updating": "更新中...",
+    "uploading": "アップロード中...",
+    "searching": "検索中..."
+  },
+  "buttons": {
+    "submit": "提出",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "saving": "保存中...",
+    "delete": "削除",
+    "deleting": "削除中...",
+    "restore": "復元",
+    "edit": "編集",
+    "done": "完了",
+    "close": "閉じる",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "confirm": "確認",
+    "add": "追加",
+    "remove": "削除",
+    "update": "更新",
+    "upload": "アップロード",
+    "return": "戻る",
+    "reset": "リセット",
+    "create": "作成",
+    "createNew": "新規作成",
+    "yes": "はい",
+    "no": "いいえ"
+  },
+  "like": {
+    "like": "いいね",
+    "unlike": "いいねを解除",
+    "liked": "いいね済み",
+    "unliked": "いいね解除済み",
+    "failed": "いいねの更新に失敗しました",
+    "loginRequired": "いいねするにはログインが必要です"
+  },
+  "confirmations": {
+    "unsavedChanges": "保存されていない変更があります。本当にページを離れますか？"
+  },
+  "adminReasonPrompt": {
+    "reason": "理由（任意）",
+    "placeholder": "この判断の理由を説明してください…"
+  },
+  "promote": "昇格",
+  "demote": "降格",
+  "promoteTo": "{{role}}に昇格",
+  "demoteTo": "{{role}}に降格",
+  "currentRole": "現在のロール",
+  "totalResults": "全{{count}}件",
+  "pagination": {
+    "previous": "前へ",
+    "next": "次へ",
+    "page": "{{total}}ページ中{{page}}ページ目",
+    "showing": "全{{total}}件中{{start}}～{{end}}件を表示"
+  },
+  "verification": {
+    "verificationState": "認証状態",
+    "all": "すべて",
+    "unverified": "未認証",
+    "pending": "保留中",
+    "declined": "却下",
+    "mostly_declined": "大部分が却下",
+    "mostly_allowed": "大部分が許可",
+    "conditional": "条件付き",
+    "ysmod_only": "YSMod限定",
+    "allowed": "許可",
+    "tuf_verified": "TUF認証済み"
+  },
+  "pass": {
+    "updated": "クリアを更新しました",
+    "deleted": "クリアを削除しました",
+    "restored": "クリアを復元しました",
+    "errors": {
+      "playerRequired": "有効なプレイヤーを選択してください",
+      "updateFailed": "クリアの更新に失敗しました",
+      "deleteFailed": "論理削除に失敗しました",
+      "restoreFailed": "復元に失敗しました"
+    }
+  },
+  "imageSelector": {
+    "rotationHintTooltip": "<p><strong>マウスホイール</strong><br />このダイアログ内のどこでも、<kbd>Shift</kbd>を押しながらスクロールすると回転します（切り抜き領域外でも操作できます）。<kbd>Shift</kbd> + <kbd>Ctrl</kbd>を押すと、より細かく回転できます。</p><p><strong>矢印キー</strong><br /><kbd>←</kbd> / <kbd>➔</kbd>：1回押すごとに1°。<kbd>Shift</kbd>併用で10°、<kbd>Shift</kbd> + <kbd>Ctrl</kbd>併用で1°。</p>"
+  },
+  "levelMention": {
+    "searchPlaceholder": "レベルを検索",
+    "empty": "一致するレベルがありません"
+  },
+  "youtubePicker": {
+    "linkChannel": "YouTubeチャンネルを連携して、動画から選択",
+    "yourVideos": "自分の動画",
+    "hideVideos": "動画を非表示",
+    "searchPlaceholder": "自分の動画を検索",
+    "empty": "一致する動画がありません",
+    "loadOlder": "古い動画を読み込む",
+    "unlisted": "限定公開",
+    "unlistedNote": "限定公開動画は表示されません。",
+    "allowAccess": "チャンネルへのアクセスを許可",
+    "loadFailed": "YouTube動画を読み込めませんでした"
+  }
+}

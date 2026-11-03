@@ -1,0 +1,224 @@
+{
+  "helpPopup": {
+    "title": "検索ヘルプ",
+    "closeButton": "閉じる",
+    "v2": {
+      "subtitle": "高度なクリア検索では、レベル検索と同じクエリ言語を使用します。フィールドトークン、演算子、範囲を使って結果をすばやく絞り込めます。",
+      "examplesTitle": "例",
+      "groups": {
+        "basics": {
+          "title": "基本（クエリの解析方法）",
+          "intro": "条件は field:value または field=value の形式で記述します。カンマはグループ内AND、| はORグループの区切りとして使用します。",
+          "examples": {
+            "and": "<b><code>player:Name, video:youtube</code></b><br/>両方の条件に一致する必要があります（AND）。",
+            "or": "<b><code>player=Exact | player:Partial</code></b><br/>どちらかのグループに一致すれば対象になります（OR）。",
+            "not": "<b><code>player:Name, \\!hidden</code></b><br/>指定した語句を含む結果を除外します（NOT）。"
+          }
+        },
+        "playerAndMedia": {
+          "title": "プレイヤー・動画フィールド",
+          "intro": "これらのフィールドはクリアしたプレイヤー名と動画のメタデータに一致します。「:」は部分一致、「=」は完全一致に使用します。",
+          "examples": {
+            "partialVsExact": "<b><code>player:yo</code></b> は部分一致し、<b><code>player=yoon</code></b> は完全一致します。",
+            "videoAndTitle": "<b><code>video:youtube.com</code></b> は動画リンクに一致し、<b><code>vidtitle:clear</code></b> は動画タイトルに一致します。",
+            "mixFields": "<b><code>player:Name, vidtitle:run</code></b><br/>1つのグループ内でプレイヤーと動画のフィールドを組み合わせられます。"
+          }
+        },
+        "levelContext": {
+          "title": "レベルのフィールド（クリア対象のレベル）",
+          "intro": "リンク先のレベルのプロパティでクリア記録を絞り込みます。フィールド名にはドット記法を使用します。",
+          "examples": {
+            "songArtist": "<b><code>level.song:hello, level.artist:cam</code></b> は、レベルの曲名とアーティスト名で絞り込みます。",
+            "dlLink": "<b><code>level.dlLink:drive.google</code></b> は、レベルのダウンロードリンクのテキストに一致します。"
+          }
+        },
+        "numeric": {
+          "title": "クリアの統計（範囲指定）",
+          "intro": "キー数、スコア、X精度（パーセント表記）、または速度を、完全一致や比較演算子で絞り込みます。範囲指定には >、<、>=、<= を使用します。複数の条件はカンマ（AND）でつなげます。",
+          "examples": {
+            "exact": "<b><code>keycount:12</code></b> または <b><code>score=2500</code></b> で完全一致検索できます。",
+            "range": "<b><code>keycount:>8, keycount:<12</code></b> は、キー数が8より大きく12より小さいクリアを絞り込みます。",
+            "xaccNearPerfect": "<b><code>xacc:>99.9, xacc:<100</code></b> は、100%にわずかに届かないクリアを検索します（X精度はパーセントで入力します）。",
+            "combine": "<b><code>player:Name, score:>=2000, speed:>1</code></b><br/>クリアの統計とプレイヤー・レベルのフィルターを組み合わせられます。"
+          }
+        },
+        "judgements": {
+          "title": "判定数",
+          "intro": "クリア記録ごとの判定数で絞り込みます。各トークンは、その判定タイプに保存されている数に一致します。",
+          "examples": {
+            "exactCount": "<b><code>perfect:500</code></b> または <b><code>toolate=0</code></b> で判定数を完全一致検索できます。",
+            "nearPerfect": "<b><code>xacc:>99.9, toolate:0</code></b> は、Too Lateのダブル判定がない高精度クリアを検索します。",
+            "combine": "<b><code>level.song:hello, eperfect:>100, late:0</code></b><br/>判定数のフィルターをレベルやX精度のフィルターと組み合わせられます。"
+          }
+        },
+        "idsAndShortcuts": {
+          "title": "IDとショートカット",
+          "intro": "特定のクリアを直接開くか、数値のプレイヤーIDで絞り込みます。",
+          "examples": {
+            "hashtag": "<b><code>#123</code></b> はクリアID 123を直接開きます（検索バーのショートカット）。",
+            "idRange": "<b><code>id:>1000</code></b> は、IDが1000を超えるクリアを絞り込みます（完全一致と範囲指定にも対応）。",
+            "playerId": "<b><code>player.id=456</code></b> は、プレイヤーIDが456のクリアを絞り込みます。"
+          }
+        },
+        "tips": {
+          "title": "ヒント",
+          "intro": "検索時に知っておくと便利なこと",
+          "bullets": {
+            "caseInsensitive": "検索では大文字と小文字を区別しません。「PLAYER」と「player」は同じように扱われます。",
+            "spacesAllowed": "値にはスペースを使用できます。例：player:Epic player",
+            "orderDoesNotMatter": "グループ内の条件の順序は問いません。player:foo, video:bar と video:bar, player:foo は同じ意味です。",
+            "groupingMentalModel": "(A AND B) OR (C AND D) のように考えてください。カンマでグループ内ANDを作り、| でORグループを分けます。",
+            "plainSearch": "フィールド指定なしの通常検索では、プレイヤー名、レベルの曲名・アーティスト名、動画リンクなどが検索対象になります。"
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": {
+          "title": "部分一致",
+          "desc": "「:」を使うとテキストの一部に一致します（例：player:yo）。"
+        },
+        "operatorEquals": {
+          "title": "完全一致",
+          "desc": "「=」を使うと完全一致で検索します（例：player=yoon）。"
+        },
+        "operatorComma": {
+          "title": "グループ内AND",
+          "desc": "カンマで項目を区切ると、そのグループ内のすべての条件を満たす結果に絞り込めます。"
+        },
+        "operatorPipe": {
+          "title": "グループ間OR",
+          "desc": "| を使ってクエリをORグループに分割します。いずれかのグループに一致したクリアが表示されます。"
+        },
+        "operatorNot": {
+          "title": "NOT（除外）",
+          "desc": "語句の前に \\! を付けると、その語句を含む結果を除外できます。"
+        },
+        "player": {
+          "title": "プレイヤー名",
+          "desc": "プレイヤーの表示名またはユーザー名で絞り込みます。"
+        },
+        "id": {
+          "title": "クリアID",
+          "desc": "数値のクリアIDで絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "playerId": {
+          "title": "プレイヤーID",
+          "desc": "数値のプレイヤーIDで絞り込みます（完全一致）。"
+        },
+        "video": {
+          "title": "動画リンク",
+          "desc": "動画URLのテキストで絞り込みます。"
+        },
+        "vidtitle": {
+          "title": "動画タイトル",
+          "desc": "クリア記録の動画タイトルで絞り込みます。"
+        },
+        "levelSong": {
+          "title": "レベルの曲名",
+          "desc": "リンク先のレベルの曲名で絞り込みます。"
+        },
+        "levelArtist": {
+          "title": "レベルのアーティスト名",
+          "desc": "リンク先のレベルのアーティスト名で絞り込みます。"
+        },
+        "levelDlLink": {
+          "title": "レベルのダウンロードリンク",
+          "desc": "リンク先のレベルのダウンロードリンクのテキストで絞り込みます。"
+        },
+        "keycount": {
+          "title": "キー数",
+          "desc": "キー数で絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "score": {
+          "title": "スコア",
+          "desc": "クリアスコア（scoreV2）で絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "xacc": {
+          "title": "X精度（%）",
+          "desc": "拡張精度をパーセントで絞り込みます（例：0.9995ではなく99.95）。完全一致と範囲指定に対応しています。"
+        },
+        "speed": {
+          "title": "速度",
+          "desc": "プレイ速度倍率で絞り込みます。完全一致と範囲指定に対応しています。"
+        },
+        "eperfect": {
+          "title": "EPerfect数",
+          "desc": "Early Perfect判定の数で絞り込みます。"
+        },
+        "perfect": {
+          "title": "Perfect数",
+          "desc": "Perfect判定の数で絞り込みます。"
+        },
+        "lperfect": {
+          "title": "LPerfect数",
+          "desc": "Late Perfect判定の数で絞り込みます。"
+        },
+        "early": {
+          "title": "Early数",
+          "desc": "Early Single判定の数で絞り込みます。"
+        },
+        "miss": {
+          "title": "Miss数",
+          "desc": "Miss（Too Early）判定の数で絞り込みます。"
+        },
+        "late": {
+          "title": "Late数",
+          "desc": "Late判定の数で絞り込みます。"
+        },
+        "toolate": {
+          "title": "Too Late数",
+          "desc": "Too Late判定の数で絞り込みます。"
+        },
+        "hashtag": {
+          "title": "クリアID（ショートカット）",
+          "desc": "検索バーに <code>#123</code> と入力すると、クリアID 123を直接読み込みます。"
+        }
+      }
+    },
+    "sections": {
+      "search": {
+        "title": "フィールド指定検索",
+        "description": "コロン（:）による部分一致と、イコール（=）による完全一致の2種類の演算子を使って、特定のフィールドを検索できます。",
+        "examples": {
+          "title": "フィールドの例",
+          "playerField": "部分一致には「player:Name」、完全一致には「player=Name」を使用します。",
+          "videoField": "部分一致には「video:Link」、完全一致には「video=Link」を使用します。"
+        }
+      },
+      "operators": {
+        "title": "検索演算子",
+        "description": "演算子を使うと、複数の検索条件を組み合わせられます。",
+        "examples": {
+          "title": "演算子の使用例",
+          "and": "両方の条件に一致するクリアを検索します（AND）。",
+          "or": "いずれかの条件に一致するクリアを検索します（OR）。",
+          "complex": "ANDとORを組み合わせた複雑な検索です。"
+        }
+      },
+      "numeric": {
+        "title": "キー数による絞り込み",
+        "description": "keycount: を使ってキー数でクリアを絞り込みます。範囲指定には >、<、>=、<= を先頭に付けます。同じ検索グループ内で複数の条件を指定する場合は、カンマ（AND）で区切ります。",
+        "examples": {
+          "title": "キー数の検索例",
+          "exact": "正確なキー数（keycount=12 でも検索できます）",
+          "range": "キー数が8より大きく12より小さい範囲（境界値を含める場合は >= または <= を使用）",
+          "min": "キー数が13以上",
+          "combine": "プレイヤー名や曲名の条件と組み合わせます（例：player:Name, keycount:>=13）。"
+        },
+        "fields": {
+          "keycount": "クリア記録で使用されたキーの数"
+        }
+      },
+      "tips": {
+        "title": "検索のヒント",
+        "points": {
+          "caseSensitive": "検索では大文字と小文字を区別しません。「PLAYER」と「player」は同じ結果になります。",
+          "partial": "コロン（:）は部分一致に使用します。「player:yo」は「yoonsu」や「yoon」に一致します。",
+          "exact": "イコール（=）は完全一致に使用します。「player=yoon」は「yoon」だけに一致します。",
+          "spaces": "検索語句にはスペースを使用できます。「player:Epic player」も検索できます。",
+          "order": "各グループ内では、条件の順序は問いません。"
+        }
+      }
+    }
+  }
+}

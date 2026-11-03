@@ -31,6 +31,7 @@
 /* Ensure disabled inputs are visually distinct and non-selectable */
 .edit-level-popup .form-group:not(.field-enabled) input:disabled,
 .edit-level-popup .form-group:not(.field-enabled) textarea:disabled,
+.edit-level-popup .form-group:not(.field-enabled) .level-mention-field[contenteditable="false"],
 .edit-level-popup .form-group:not(.field-enabled) button:disabled {
   cursor: not-allowed;
   -webkit-user-select: none;
@@ -77,7 +78,8 @@
 }
 
 .edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-num input:disabled,
-.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason input:disabled {
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason input:disabled,
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason .level-mention-field[contenteditable="false"] {
   cursor: not-allowed;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -116,7 +118,8 @@
 }
 
 .edit-level-popup-overlay .form-group input,
-.edit-level-popup-overlay .form-group textarea {
+.edit-level-popup-overlay .form-group textarea,
+.edit-level-popup-overlay .form-group .level-mention-field {
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
@@ -124,7 +127,8 @@
   color: #fff;
 }
 
-.edit-level-popup-overlay .form-group textarea {
+.edit-level-popup-overlay .form-group textarea,
+.edit-level-popup-overlay .form-group .level-mention-field {
   resize: vertical;
 }
 
@@ -364,11 +368,12 @@
 }
 
 .edit-level-popup-overlay .rerate-reason.show {
-  max-height: 40px;
+  max-height: 3.25rem;
   opacity: 1;
 }
 
-.edit-level-popup-overlay .rerate-reason input {
+.edit-level-popup-overlay .rerate-reason input,
+.edit-level-popup-overlay .rerate-reason .level-mention-field {
   width: 100%;
   padding: 8px 12px;
   border-radius: 4px;
@@ -636,6 +641,7 @@
 
   .edit-level-popup-overlay .form-group input,
   .edit-level-popup-overlay .form-group textarea,
+  .edit-level-popup-overlay .form-group .level-mention-field,
   .edit-level-popup-overlay .form-group .rating-input {
     padding: 10px;
     font-size: 16px; /* Prevents iOS zoom on focus */
@@ -689,6 +695,7 @@
 
   .edit-level-popup-overlay .form-group input,
   .edit-level-popup-overlay .form-group textarea,
+  .edit-level-popup-overlay .form-group .level-mention-field,
   .edit-level-popup-overlay .form-group .rating-input {
     padding: 8px;
     font-size: 14px;

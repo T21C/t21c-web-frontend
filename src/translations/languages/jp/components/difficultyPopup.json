@@ -1,0 +1,255 @@
+{
+  "tabs": {
+    "details": "詳細",
+    "announcement": "アナウンス",
+    "discordRoles": "Discordロール"
+  },
+  "discordRoles": {
+    "title": "Discordロール同期"
+  },
+  "modal": {
+    "create": {
+      "title": "難易度を新規作成"
+    },
+    "edit": {
+      "title": "難易度を編集"
+    },
+    "close": "閉じる",
+    "password": {
+      "title": "スーパー管理者パスワードが必要です",
+      "placeholder": "スーパー管理者のパスワードを入力",
+      "confirm": "変更を確定"
+    },
+    "channel": {
+      "editTitle": "チャンネルを編集",
+      "addTitle": "チャンネルを新規追加",
+      "label": "チャンネルのラベル",
+      "labelPlaceholder": "チャンネルのラベルを入力",
+      "webhookUrl": "Webhook URL",
+      "webhookUrlPlaceholder": "Webhook URLを入力"
+    },
+    "role": {
+      "editTitle": "ロールを編集",
+      "addTitle": "ロールを新規追加",
+      "roleId": "ロールID",
+      "roleIdPlaceholder": "ロールIDを入力",
+      "label": "ロールのラベル",
+      "labelPlaceholder": "ロールのラベルを入力",
+      "messageFormat": "メッセージ形式",
+      "messageFormatPlaceholder": "例：{count}件の{difficultyName}クリア！{ping}",
+      "messageFormatHint": "グループ化されたメッセージのテンプレートです。変数 {count}、{difficultyName}、{ping} を使用できます。難易度名が含まれる場合、メッセージはロールIDと難易度名の組み合わせでグループ化されます。"
+    }
+  },
+  "form": {
+    "labels": {
+      "id": "ID",
+      "name": "名前",
+      "type": "タイプ",
+      "icon": "アイコンURL",
+      "legacyIcon": "レガシーアイコンURL",
+      "emoji": "絵文字",
+      "legacyEmoji": "レガシー絵文字",
+      "color": "色",
+      "baseScore": "基準スコア",
+      "previousBaseScore": "以前の基準スコア",
+      "sortOrder": "並び順",
+      "legacy": "レガシー名"
+    },
+    "optional": "任意",
+    "placeholders": {
+      "color": "#RRGGBB",
+      "id": "空欄の場合は自動割り当て"
+    },
+    "helpText": {
+      "id": "空欄にすると、使用可能な最小のIDが自動的に割り当てられます"
+    },
+    "icon": {
+      "change": "アイコンを変更",
+      "select": "アイコンを選択",
+      "help": "アイコンファイルをアップロード（JPEG、PNG、WebP、SVG、最大5MB）"
+    },
+    "legacyIcon": {
+      "change": "レガシーアイコンを変更",
+      "select": "レガシーアイコンを選択",
+      "help": "レガシーアイコンファイルをアップロード（JPEG、PNG、WebP、SVG、最大5MB）。任意"
+    }
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "スペシャル",
+    "LEGACY": "レガシー"
+  },
+  "announcements": {
+    "title": "{{diffName}}の通知ルール",
+    "firstOfKind": "初出",
+    "mode": {
+      "label": "通知ルールのモード",
+      "static": "固定",
+      "conditional": "条件付き"
+    },
+    "directive": {
+      "name": "名前",
+      "description": "説明",
+      "add": "通知ルールを追加",
+      "remove": "通知ルールを削除",
+      "isActive": "有効",
+      "triggerType": "トリガータイプ",
+      "copy": "通知ルールの設定をコピー",
+      "paste": "通知ルールの設定を貼り付け",
+      "copySuccess": "通知ルールの設定をクリップボードにコピーしました",
+      "copyError": "通知ルールの設定をコピーできませんでした",
+      "pasteSuccess": "通知ルールの設定をクリップボードから貼り付けました",
+      "pasteError": "通知ルールの形式が無効です。有効な通知ルールのJSONを貼り付けてください。",
+      "addSuccess": "新しい通知ルールを追加しました",
+      "removeSuccess": "通知ルールを削除しました",
+      "saveSuccess": "通知ルールを保存しました",
+      "saveError": "通知ルールを保存できませんでした",
+      "channelAddSuccess": "チャンネルを追加しました",
+      "channelUpdateSuccess": "チャンネルを更新しました",
+      "channelDeleteSuccess": "チャンネルを削除しました",
+      "roleAddSuccess": "ロールを追加しました",
+      "roleUpdateSuccess": "ロールを更新しました",
+      "roleDeleteSuccess": "ロールを削除しました",
+      "messageGroupKey": "メッセージグループキー",
+      "messageGroupKey.placeholder": "例：universal-clears、galactic-clears",
+      "messageGroupKey.hint": "同じグループキーを持つ通知ルールは、1つのメッセージにまとめられます",
+      "messageFormat": "メッセージ形式のテンプレート",
+      "messageFormat.placeholder": "例：{count}件の{difficultyName}クリア！{ping}",
+      "messageFormat.hint": "グループ化されたメッセージの内容を定義するテンプレートです。使用できる変数：",
+      "messageFormat.variables": "使用可能な変数：",
+      "messageFormat.variablesList": "{count}：クリア数、{difficultyName}：難易度名、{ping}：ロールメンション",
+      "optional": "任意"
+    },
+    "notifications": {
+      "saved": "通知ルールを保存しました"
+    },
+    "errors": {
+      "saveFailed": "通知ルールを保存できませんでした",
+      "groupKeyFormatRequired": "メッセージグループキーを指定する場合は、メッセージ形式も指定してください",
+      "formatGroupKeyRequired": "メッセージ形式を指定する場合は、メッセージグループキーも指定してください",
+      "invalidFormatVariables": "メッセージ形式に無効な変数が含まれています。有効な変数：{count}、{difficultyName}、{ping}"
+    },
+    "channel": {
+      "notifications": {
+        "updated": "チャンネルを更新しました",
+        "created": "チャンネルを作成しました",
+        "deleted": "チャンネルを削除しました"
+      },
+      "errors": {
+        "saveFailed": "チャンネルを保存できませんでした",
+        "deleteFailed": "チャンネルを削除できませんでした"
+      }
+    },
+    "role": {
+      "notifications": {
+        "updated": "ロールを更新しました",
+        "created": "ロールを作成しました",
+        "deleted": "ロールを削除しました"
+      },
+      "errors": {
+        "saveFailed": "ロールを保存できませんでした",
+        "deleteFailed": "ロールを削除できませんでした"
+      }
+    },
+    "triggerType": {
+      "PASS": "クリア通知",
+      "LEVEL": "レベル通知"
+    },
+    "condition": {
+      "type": {
+        "label": "条件タイプ",
+        "options": {
+          "ACCURACY": "精度",
+          "WORLDS_FIRST": "世界初",
+          "WORLDS_FIRST_PP": "世界初PP",
+          "BASE_SCORE": "基準スコア",
+          "CUSTOM": "カスタム"
+        }
+      },
+      "operator": {
+        "label": "演算子",
+        "options": {
+          "EQUAL": "等しい",
+          "GREATER_THAN": "より大きい",
+          "LESS_THAN": "より小さい",
+          "GREATER_THAN_EQUAL": "以上",
+          "LESS_THAN_EQUAL": "以下"
+        }
+      },
+      "value": "値",
+      "customFunction": "カスタム関数"
+    },
+    "actions": {
+      "title": "アクション",
+      "add": "アクションを追加",
+      "remove": "アクションを削除",
+      "channel": {
+        "create": "チャンネルを作成",
+        "label": "チャンネル",
+        "add": "チャンネルを追加",
+        "edit": "チャンネルを編集",
+        "delete": "チャンネルを削除"
+      },
+      "pingType": {
+        "label": "メンションタイプ",
+        "options": {
+          "NONE": "メンションなし",
+          "ROLE": "ロールメンション",
+          "EVERYONE": "@everyone"
+        }
+      },
+      "role": {
+        "create": "ロールを作成",
+        "label": "ロール",
+        "add": "ロールを追加",
+        "edit": "ロールを編集",
+        "delete": "ロールを削除"
+      }
+    }
+  },
+  "channels": {
+    "form": {
+      "id": "チャンネルID",
+      "idPlaceholder": "DiscordチャンネルIDを入力",
+      "label": "表示ラベル",
+      "labelPlaceholder": "チャンネルの表示名を入力",
+      "webhookUrl": "Discord Webhook URL",
+      "webhookUrlPlaceholder": "Discord Webhook URLを入力"
+    }
+  },
+  "roles": {
+    "form": {
+      "id": "ロールID",
+      "idPlaceholder": "DiscordロールIDを入力",
+      "name": "ロール名",
+      "namePlaceholder": "ロール名を入力",
+      "label": "表示ラベル",
+      "labelPlaceholder": "ロールの表示名を入力"
+    }
+  },
+  "buttons": {
+    "create": "作成"
+  },
+  "errors": {
+    "passwordRequired": "スーパー管理者のパスワードが必要です",
+    "invalidPassword": "スーパー管理者のパスワードが正しくありません",
+    "loadDirectives": "通知ルールを読み込めませんでした",
+    "saveDirectives": "通知ルールを保存できませんでした",
+    "channelSaveFailed": "チャンネルを保存できませんでした",
+    "channelDeleteFailed": "チャンネルを削除できませんでした",
+    "channelEditFailed": "チャンネルを編集できませんでした",
+    "roleSaveFailed": "ロールを保存できませんでした",
+    "roleDeleteFailed": "ロールを削除できませんでした",
+    "roleEditFailed": "ロールを編集できませんでした",
+    "createFailed": "難易度を作成できませんでした",
+    "updateFailed": "難易度を更新できませんでした"
+  },
+  "loading": {
+    "directives": "通知ルールを読み込み中..."
+  },
+  "notifications": {
+    "saved": "通知ルールを保存しました",
+    "updated": "難易度を更新しました",
+    "created": "難易度を作成しました"
+  }
+}

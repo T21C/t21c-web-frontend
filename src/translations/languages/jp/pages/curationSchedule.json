@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "title": "キュレーションスケジュールの管理",
+    "description": "毎週のキュレーションスケジュールと殿堂入りリストの管理"
+  },
+  "title": "週間殿堂入りのスケジュール",
+  "description": "一次および二次キュレーションリストを用いて、週間の殿堂入りリストを編成する",
+  "previousWeek": "先週",
+  "nextWeek": "来週",
+  "loading": "スケジュールを読み込み中...",
+  "empty": "今週のスケジュールは見つかりませんでした",
+  "primaryHall": {
+    "title": "一次殿堂入り",
+    "description": "今週のおすすめ特集"
+  },
+  "secondaryHall": {
+    "title": "二次殿堂入り",
+    "description": "追加分の今週の限定コンテンツ"
+  },
+  "actions": {
+    "backToCuration": "キュレーションに戻る",
+    "addCuration": "キュレーションを追加",
+    "remove": "削除",
+    "edit": "位置を編集"
+  },
+  "fill": {
+    "title": "今週の自動入力",
+    "description": "スケジュールに、最近取り上げられていない、ランダムで特定のティアに偏った選択を補充します。空いている枠にのみ追加されます。",
+    "legendary": "legendaryを埋める",
+    "loved": "Lovedを埋める",
+    "both": "両方を埋める",
+    "notifications": {
+      "filled": "スケジュールに{{added}}件のキュレーションを追加しました",
+      "none": "新しいキュレーションは追加されていません（ホールがすでにいっぱいか、候補リストが尽きたため）",
+      "failed": "スケジュールの自動入力に失敗しました"
+    }
+  },
+  "notifications": {
+    "added": "スケジュールへのキュレーションの追加に成功しました",
+    "removed": "スケジュールからキュレーションが正常に削除されました",
+    "updated": "スケジュールが正常に更新されました"
+  },
+  "unavailable": {
+    "deleted": "削除済み",
+    "hidden": "非表示"
+  }
+}

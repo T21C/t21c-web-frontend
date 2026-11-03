@@ -25,6 +25,7 @@ import { ChartIcon, GraphIcon } from '@/components/common/icons';
 import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
 import { AdminLevelXaccCurvePopup } from './AdminLevelXaccCurvePopup';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
+import { LevelMentionField } from '@/components/misc';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false, isRemotelySettled = false }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -878,8 +879,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     </div>
                   </div>
                   <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
-                    <input
-                      type="text"
+                    <LevelMentionField
+                      as="input"
                       autoComplete='off'
                       name="rerateReason"
                       value={formData.rerateReason}
@@ -1127,7 +1128,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
             <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
               <label htmlFor="notes">{t('levelPopups.edit.form.labels.notes')}</label>
-              <textarea
+              <LevelMentionField
                 autoComplete='off'
                 id="notes"
                 name="notes"

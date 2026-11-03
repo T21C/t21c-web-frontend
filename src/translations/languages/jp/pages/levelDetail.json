@@ -1,0 +1,227 @@
+{
+  "meta": {
+    "title": "{{song}} - {{artist}}",
+    "description": "{{artist}}の{{song}} — {{creator}}がThe Universal Forumsに譜面を提出",
+    "fallbackName": "レベル"
+  },
+  "banners": {
+    "deleted": "このレベルは削除されました",
+    "hidden": "このレベルは現在非表示になっています",
+    "notFound": "レベルが見つかりません"
+  },
+  "song": {
+    "clickToViewDetails": "詳細を見るにはここをクリックしてください"
+  },
+  "buttons": {
+    "edit": "レベルを編集",
+    "close": "閉じる",
+    "viewRating": "過去のレーティングを見る",
+    "like": "いいね",
+    "unlike": "いいね解除",
+    "update": "レベルを更新",
+    "saveRating": "レーティングを保存",
+    "addToPack": "パックに追加"
+  },
+  "tooltips": {
+    "loginRequired": "このレベルに「いいね」するにはログインしてください",
+    "editDisabled": "このレベルには2人を超えるチャーターが設定されています. 自分が所有者であるべきだと思われる場合は、管理者に連絡してください。",
+    "muteChartClears": "この譜面のクリア通知をミュート",
+    "unmuteChartClears": "この譜面のクリア通知のミュートを解除",
+    "purePerfectScore": "ピュアパーフェクト：{{score}}",
+    "referenceLevel": "このレベルは{{diffName}}の参照レベルです"
+  },
+  "links": {
+    "download": "レベルをダウンロード",
+    "workshop": "Steamワークショップ",
+    "thumbnailNotFound": {
+      "text": "動画のサムネイルが見つかりません",
+      "goToVideo": "動画を見る"
+    }
+  },
+  "aliases": {
+    "header": "別名"
+  },
+  "artists": {
+    "more": "さらに{{count}}人"
+  },
+  "stats": {
+    "firstClear": {
+      "label": "初クリア",
+      "value": "{{player}} | {{date}}"
+    },
+    "highestScore": {
+      "label": "最高スコア",
+      "value": "{{player}} | {{score}}"
+    },
+    "highestSpeed": {
+      "label": "最高速度",
+      "value": "{{player}} | {{speed}}x"
+    },
+    "highestAccuracy": {
+      "label": "最高精度",
+      "value": "{{player}} | {{accuracy}}%"
+    },
+    "totalClears": {
+      "label": "トータルクリア",
+      "value": "{{count}}",
+      "tooltip": "合計{{total}}回のクリア、ユニークプレイヤー{{unique}}人"
+    },
+    "waiting": "読み込み中..."
+  },
+  "info": {
+    "title": "レベル情報",
+    "team": "チーム",
+    "creator": "クリエイター",
+    "roles": {
+      "charter": "チャーター",
+      "vfxer": "VFX担当",
+      "specialThanks": "スペシャルサンクス"
+    },
+    "difficulty": "難易度",
+    "baseScore": "ベーススコア",
+    "ppBaseScore": "PPベーススコア",
+    "aliases": "別名",
+    "comments": "コメント",
+    "description": "説明",
+    "createdAt": "作成日："
+  },
+  "descriptionMode": {
+    "curation": "キュレーションの説明",
+    "creator": "クリエイターによる説明",
+    "fromCreator": "クリエイターより",
+    "hide": "説明を非表示にする",
+    "show": "説明を表示"
+  },
+  "leaderboard": {
+    "header": "ランキング",
+    "refresh": "ランキングを更新",
+    "refreshed": "ランキングが更新されました！",
+    "notBeaten": "このレベルはまだ誰もクリアしていません！",
+    "noClearsYet": "まだクリアした人はいません！",
+    "challenge": "もしかすると、この挑戦に立ち向かうのはあなたかもしれませんね？",
+    "tooltips": {
+      "time": "クリア日時順",
+      "accuracy": "精度順",
+      "score": "スコア順",
+      "speed": "速度順"
+    },
+    "dedupe": {
+      "label": "再クリアを非表示"
+    },
+    "search": {
+      "placeholder": "プレイヤー名を検索",
+      "noMatches": "該当するプレイヤーがいません"
+    },
+    "showHidden": {
+      "label": "非表示を表示"
+    }
+  },
+  "dialog": {
+    "fullInfo": "詳細情報"
+  },
+  "components": {
+    "clearCard": {
+      "feeling": "体感:"
+    }
+  },
+  "errors": {
+    "loginRequired": "このレベルにいいねするにはログインが必要です",
+    "likeFailed": "いいねの状態の更新に失敗しました"
+  },
+  "messages": {
+    "liked": "いいねしました！",
+    "unliked": "いいねを取り消しました"
+  },
+  "curationHistory": {
+    "header": "キュレーション履歴",
+    "open": "キュレーション履歴を表示",
+    "close": "キュレーション履歴を閉じる",
+    "empty": "なし"
+  },
+  "rerateHistory": {
+    "header": "再レート履歴",
+    "open": "再レート履歴を表示",
+    "close": "再レート履歴を閉じる",
+    "noHistory": "再レート履歴はありません",
+    "previous": "前へ",
+    "current": "現在",
+    "baseScore": "ベーススコア",
+    "date": "日時",
+    "user": "ユーザー"
+  },
+  "scoreGraph": {
+    "header": "スコアvs精度",
+    "open": "スコアを表示vs精度チャート",
+    "close": "スコアチャートを閉じる",
+    "missesLabel": "ミス",
+    "missesAria": "ミス数",
+    "noTilecount": "このチャートをプロットするためにはタイル数が必要です",
+    "emptyCurve": "このレベルにはスコアカーブデータがありません。",
+    "tooltipScore": "スコア",
+    "tooltipMisses": "ミス",
+    "tooltipEPerfect": "E/L Perfect",
+    "tooltipEarly": "Early／Late",
+    "disablePP": "PPを無効にする",
+    "judgementsAria": "判定の内訳",
+    "judgementMiss": "ミス",
+    "judgementEarly": "Early",
+    "judgementEPerfect": "EP",
+    "judgementPerfect": "P",
+    "judgementLPerfect": "LP",
+    "judgementLate": "Late"
+  },
+  "toRatePending": {
+    "header": "レーティング中...",
+    "rerateNumber": "再レート番号",
+    "requesterFR": "希望のレーティング",
+    "rerateMessage": "再レートメッセージ",
+    "noDetails": "レーティングの詳細は提供されていませんでした。",
+    "openRating": "レーティングを見る"
+  },
+  "tags": {
+    "header": "レベルタグ",
+    "vote": {
+      "header": "コミュニティタグ",
+      "open": "投票",
+      "vote": "このタグに投票する",
+      "upvote": "このタグに高評価をつける",
+      "downvote": "このタグに低評価をつける",
+      "unvote": "投票を取り消す",
+      "voted": "{{tag}}に投票しました",
+      "upvoted": "{{tag}}に高評価済み",
+      "downvoted": "{{tag}}に低評価済み",
+      "unvoted": "{{tag}} からの投票を削除しました",
+      "failed": "投票の更新に失敗しました",
+      "loginRequired": "コミュニティタグへの投票を行うには、ログインしてください",
+      "banned": "コミュニティタグへの投票はできません",
+      "topPlay": "あなたのトッププレイは、このチャートに投票するには十分な高さではありません。",
+      "mustClear": "このタグに投票するには、このチャートをクリアする必要があります",
+      "uncleared": "このチャートに明確な傾向が見られるようになると、コミュニティタグが利用可能になります",
+      "inert": "この投票は保存され、投票資格が得られた時点で集計されます",
+      "inertUncleared": "投票は現在保存されており、このチャートに明確な結果が出次第、集計が開始されます。",
+      "inertMustClear": "保存されました。このチャートをクリアすると、全重量としてカウントされます。",
+      "inertTopPlay": "保存されました。トッププレイのスコアが一定以上になるとカウントされます。",
+      "band": "この難易度では、このタグは利用できません",
+      "deleted": "削除されたレベルには投票できません"
+    }
+  },
+  "weeklyAppearance": {
+    "header": "週刊掲載",
+    "primary": "第一",
+    "secondary": "第二",
+    "position": "位置：{{position}}"
+  },
+  "packAppearance": {
+    "header": "パック掲載",
+    "by": "{{owner}}による",
+    "levels": "レベル",
+    "loading": "パックを読み込み中…",
+    "unknownOwner": "不明"
+  },
+  "tournamentAppearance": {
+    "header": "トーナメント掲載"
+  },
+  "linkedLevels": {
+    "header": "リンクされたレベル"
+  }
+}

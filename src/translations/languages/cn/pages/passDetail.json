@@ -170,6 +170,9 @@
       }
     }
   },
+  "feelingExplanation": {
+    "label": "体感说明"
+  },
   "details": {
     "label": "详细说明",
     "showMore": "阅读更多",

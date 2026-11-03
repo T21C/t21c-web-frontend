@@ -1,0 +1,253 @@
+{
+  "edit": {
+    "title": "レベル詳細の編集",
+    "close": "×",
+    "manageAliases": "別名の管理",
+    "form": {
+      "labels": {
+        "song": "曲",
+        "suffix": "接尾辞",
+        "creator": "クリエイター",
+        "charter": "チャーター",
+        "vfxer": "VFXアーティスト",
+        "team": "チーム",
+        "baseScore": "ベーススコア",
+        "ppBaseScore": "PPベーススコア",
+        "previousBaseScore": "前回のベーススコア",
+        "tags": "タグ",
+        "videoLink": "動画リンク",
+        "dlLink": "ダウンロードリンク",
+        "workshopLink": "ワークショップのリンク",
+        "publicComments": "パブリックコメント",
+        "description": "注記",
+        "notes": "メモ",
+        "isExternallyAvailable": "外部から利用可能か",
+        "previousDifficulty": "前の難易度"
+      },
+      "placeholders": {
+        "baseScore": "ベーススコア",
+        "ppBaseScore": "PPベーススコア",
+        "previousBaseScore": "前回のベーススコア",
+        "rerateNumber": "再レート番号",
+        "rerateReason": "再レートの理由",
+        "selectSong": "クリックして曲を選択してください",
+        "suffix": "オプションの接尾辞（例：「Nerfed」）"
+      },
+      "badges": {
+        "selected": "選択済み"
+      },
+      "checkboxes": {
+        "toRate": "レート対象"
+      },
+      "buttons": {
+        "save": {
+          "default": "変更を保存"
+        },
+        "delete": {
+          "default": "削除",
+          "deleting": "削除中...",
+          "hide": "非表示",
+          "unhide": "表示",
+          "processing": "処理中..."
+        },
+        "restore": {
+          "default": "レベルを復元",
+          "restoring": "復元中..."
+        },
+        "permanentDelete": {
+          "default": "完全に削除する",
+          "deleting": "削除中..."
+        },
+        "manageTags": "タグの管理"
+      }
+    },
+    "confirmations": {
+      "unsavedChanges": "保存されていない変更があります。本当に閉じてよろしいですか？",
+      "delete": "このレベルを削除してもよろしいですか？後で元に戻すことができます。",
+      "hide": "このレベルを非表示にしますか？",
+      "unhide": "このレベルを非表示解除しますか？",
+      "restore": "このレベルを復元しますか？",
+      "permanentDelete": "このレベルを完全に削除しますか？この操作は元に戻せません。すべてのクリア記録、レーティング、保存されたファイル（ダウンロードした画像やキュレーション画像）が削除されます。"
+    },
+    "reasonPrompt": {
+      "deleteTitle": "このレベルを削除しますか？",
+      "hideTitle": "このレベルを非表示にしますか？"
+    },
+    "errors": {
+      "update": "レベルの更新に失敗しました",
+      "delete": "ソフト削除に失敗しました",
+      "toggleHidden": "非表示状態の切り替えに失敗しました",
+      "restore": "レベルの復元に失敗しました",
+      "permanentDelete": "レベルの完全削除に失敗しました",
+      "cannotCreateSong": "レベル編集から新しい曲を作成することはできません。既存の曲を選択してください。"
+    },
+    "xaccCurve": {
+      "title": "X精度スコア曲線",
+      "sandboxTitle": "得点分布曲線（計算ツール）",
+      "openButtonTitle": "レベルごとのX精度カーブを編集（クリア記録を再計算）",
+      "hint": "2つの内部スコアピンを設定します（95%はベーススコアで固定されています）。3点すべてを通る双曲線がフィットされ、そこから導出されたEとGを以下に示します。",
+      "sandboxHint": "ピンの精度とスコアを調整すると、グラフがリアルタイムで更新されます。「適用」を選択すると、この曲線は計算機内でのみ使用され、レベルは保存されません。",
+      "constraintHint": "ピンを正確に合わせることができない場合、最後のE/G曲線が保持され、ピンがプロットされた線からずれて見えることがあります。",
+      "fitWarning": "マーカーは1つの双曲線上にありません（最後のE/Gとの差：{{error}}）。マーカーには現在の値が表示されています。ピンまたはスコアを調整して曲線に合わせてください。",
+      "baseScoreFallback": "レベル基本スコアが欠落しています。ピンスコアはスケーリングに{{base}}を使用しています。",
+      "tilecountFallback": "タイル数が指定されていません。プレビューでは100個のタイルが使用されます。",
+      "resetDefaults": "サイトのデフォルト設定にリセットする",
+      "apply": "適用",
+      "toastSaved": "X精度曲線が保存されました",
+      "toastSavedWithPasses": "X精度カーブが保存されました。{{count}}件のクリアスコアが再計算されました。",
+      "sliderDisplay": "スライダー {{value}}",
+      "inputMode": {
+        "accuracy": "精度とスコア",
+        "judgements": "判定とスコア",
+        "heading": "ピン入力モード",
+        "computedAccuracy": "精度（判定に基づく）",
+        "passEmpty": "このレベルではクリアは認められません",
+        "passLoading": "クリアの読み込み中…",
+        "loadFromPassPin1": "ピン1にクリア記録を読み込む",
+        "loadFromPassPin2": "ピン2にクリア記録を読み込む"
+      },
+      "labels": {
+        "pin1": "ピン1",
+        "pin2": "ピン2",
+        "pinAccuracy": "精度",
+        "pinScore": "スコア",
+        "pole": "ポールオフセット (E)",
+        "top": "最高乗数 (G)"
+      },
+      "errors": {
+        "save": "X精度曲線の保存に失敗しました",
+        "fit": "これらのピンには有効な双曲線を当てはめることができませんでした"
+      }
+    },
+    "chartStats": {
+      "title": "チャートのメタデータ",
+      "openButtonTitle": "BPM、タイル数、長さの編集（CDN非対応のみ）",
+      "clearHint": "その欄を空のままにして保存すると、その値が消去されます。",
+      "preview": "プレビュー",
+      "toastSaved": "チャートのメタデータが保存されました",
+      "labels": {
+        "bpm": "BPM",
+        "tilecount": "タイル数",
+        "midspinCount": "ミッドスピン数",
+        "lengthSeconds": "長さ（秒）"
+      },
+      "errors": {
+        "save": "チャートのメタデータの保存に失敗しました",
+        "bpm": "BPMは0より大きい数値でなければなりません",
+        "tilecount": "タイル数は非負の整数でなければなりません",
+        "midspinCount": "ミッドスピンの値は非負の整数でなければなりません",
+        "length": "長さは非負の数でなければなりません（秒単位、小数可）。"
+      },
+      "perfectsDifference": {
+        "title": "クリアのPerfectを更新しますか？",
+        "message": "ミッドスピン数が{{from}}から{{to}}に変わります。ヒット数がプレイ可能なタイル数（{{tilecount}}）と完全に一致するレガシークリアでは、Perfect数が{{delta}}変化します。",
+        "unset": "解除",
+        "question": "この差分を、このレベルのすべてのクリアに適用しますか？",
+        "toastSavedWithPasses": "チャートのメタデータが保存されました。{{count}}回のクリアでパーフェクトが更新されました。",
+        "toastSavedWithPassesSkipped": "チャートのメタデータが保存されました。{{updated}}回のクリアでPerfectが更新されました。{{skipped}}は、Perfectが0を下回ってしまうためスキップされました。",
+        "toastSavedNoneUpdated": "譜面のメタデータを保存しました。完全一致するクリア記録は更新されませんでした（{{skipped}}件は変更せずに残しました）。"
+      }
+    },
+    "tags": {
+      "title": "レベルタグの管理",
+      "currentTags": "現在のタグ",
+      "noTags": "タグは割り当てられていません",
+      "removeTag": "タグを削除",
+      "addTags": "タグを追加",
+      "searchPlaceholder": "タグを検索...",
+      "loading": "タグを読み込み中...",
+      "noResults": "検索条件に一致するタグは見つかりませんでした",
+      "noAvailableTags": "追加できるタグはありません",
+      "addTag": "タグを追加",
+      "communityTags": "コミュニティタグ",
+      "communityTagsHint": "これらのタグはコミュニティの投票によって追加されました。上記に追加しない限り、保存してもピン留めされません。",
+      "automaticTagsHint": "レベルファイルから読み取られる長さ、VFX、DLCなどのタグはパーサーによって設定されるため、リクエストできません。",
+      "errors": {
+        "fetchTags": "タグの取得に失敗しました",
+        "saveTags": "タグの保存に失敗しました"
+      }
+    }
+  },
+  "payloadSwap": {
+    "openButton": "スワップ",
+    "openButtonTitle": "別のレベルとチャートの詳細を交換する",
+    "title": "スワップレベルの詳細",
+    "close": "閉じる",
+    "explanation": "このチャートは、2つのレベルID間の詳細情報を表示します。",
+    "note": "クリア、レーティング、クリエイター、パック、その他のリンクされたデータは、チャートとともに移動します。いいねは各レベルの数字に残ります。",
+    "thisLevel": "このレベル",
+    "otherLevel": "その他のレベル",
+    "noTarget": "レベルが選択されていません",
+    "chooseTarget": "他のレベルを選択してください",
+    "changeTarget": "レベルを変更する",
+    "confirm": "スワップの詳細",
+    "swapping": "スワップ中…",
+    "toastSuccess": "レベルの詳細が入れ替わりました",
+    "errors": {
+      "sameLevel": "別のレベルを選んでください",
+      "swap": "レベルの詳細の入れ替えに失敗しました"
+    }
+  },
+  "linkedLevels": {
+    "title": "リンクされたレベル",
+    "empty": "まだリンクされたレベルはありません。",
+    "youAreHere": "現在ここです",
+    "unknownSong": "不明な曲",
+    "toastAdded": "{{name}}へのリンク",
+    "toastRemoved": "レベルがリンク解除されました",
+    "shareChart": "チャート",
+    "shareVfx": "VFX",
+    "errors": {
+      "sameLevel": "レベルをそれ自体にリンクすることはできません",
+      "alreadyLinked": "のレベルはすでにこのグループに含まれています",
+      "add": "レベルのリンクに失敗しました",
+      "remove": "レベルのリンク解除に失敗しました",
+      "saveShare": "共有の更新に失敗しました"
+    }
+  },
+  "download": {
+    "title": "ダウンロードオプション",
+    "close": "閉じる",
+    "closePopup": "ポップアップを閉じる",
+    "oversizedNotice": "このレベルファイルはサイズが大きすぎるため、変換に対応できません。ダウンロードできるのは元のzipファイルのみです。",
+    "step1": {
+      "prompt": "ダウンロード形式を選択してください：",
+      "downloadOriginal": "オリジナルをダウンロード",
+      "convertDownload": "変換してダウンロード"
+    },
+    "step2": {
+      "dropEvents": "ドロップイベント",
+      "keepEvents": "キープイベント",
+      "tooltips": {
+        "dropEvents": "レベルから選択したイベントとフィルターを削除する",
+        "keepEvents": "選択したイベントのみを残し、フィルターを解除する"
+      },
+      "selectEventsPlaceholder": {
+        "drop": "削除するイベントを選択してください",
+        "keep": "保存するイベントを選択してください"
+      },
+      "cameraZoom": "カメラのズーム：",
+      "customBackground": "カスタム背景色を使用する",
+      "color": "色：",
+      "opacity": "不透明度：",
+      "removeForegroundFlash": "前景のフラッシュを除去する",
+      "dropFilters": "ドロップフィルター：",
+      "dropFiltersPlaceholder": "削除するフィルターを選択してください",
+      "back": "戻る",
+      "downloadConverted": "変換済みファイルをダウンロード",
+      "downloadV2": "v2をダウンロード"
+    },
+    "errors": {
+      "corrupted": "破損したファイルをダウンロード",
+      "fileMissing": "このレベルのファイルがサーバー上で見つからないか、破損しています。",
+      "reupload": "編集ウィンドウでそのレベルを再アップロードしてください。",
+      "noBackup": "バックアップは利用できません。管理者にお問い合わせください。",
+      "downloadLegacy": "レガシーバックアップをダウンロード"
+    }
+  },
+  "creditsEdit": {
+    "searchPlaceholder": "クリエイターを検索…",
+    "noResults": "該当するクリエイターはいません",
+    "keepSelfOwner": "所有者としての自分を削除することはできません"
+  }
+}

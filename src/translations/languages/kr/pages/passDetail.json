@@ -170,6 +170,9 @@
       }
     }
   },
+  "feelingExplanation": {
+    "label": "체감 설명"
+  },
   "details": {
     "label": "상세 내용",
     "showMore": "더 보기",

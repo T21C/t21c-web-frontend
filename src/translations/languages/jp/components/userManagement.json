@@ -1,0 +1,64 @@
+{
+  "title": "ユーザーの管理",
+  "modeToggle": {
+    "rater": "レーター",
+    "curator": "キュレーター"
+  },
+  "loading": "ユーザーを読み込んでいます...",
+  "search": {
+    "placeholder": "ユーザー名またはIDで検索..."
+  },
+  "superAdmin": {
+    "password": {
+      "placeholder": "スーパー管理者パスワードを入力してください"
+    }
+  },
+  "addUser": {
+    "placeholder": "ユーザー名を入力してください",
+    "button": "ユーザーの追加"
+  },
+  "userEntry": {
+    "unknown": "不明",
+    "buttons": {
+      "remove": "削除"
+    }
+  },
+  "roles": {
+    "rater": "レーター",
+    "superadmin": "スーパー管理者",
+    "curator": "キュレーター",
+    "headCurator": "主任キュレーター"
+  },
+  "buttons": {
+    "promote": "昇格",
+    "demote": "降格",
+    "promoteTo": "{{role}} に昇格する",
+    "demoteTo": "{{role}} に降格する"
+  },
+  "errors": {
+    "passwordRequired": "パスワードが必要です",
+    "invalidPassword": "スーパー管理者のパスワードが無効です",
+    "deleteConfirm": "このユーザーを削除してもよろしいですか？",
+    "updateRoleFailed": "ロールの更新に失敗しました",
+    "deleteFailed": "ユーザーの削除に失敗しました",
+    "loadFailed": "ユーザーの読み込みに失敗しました",
+    "addFailed": "ユーザーの追加に失敗しました",
+    "userNotFound": "ユーザーが見つかりません",
+    "alreadyHighestRole": "そのユーザーはすでに最上位のロールを持っています",
+    "alreadyLowestRole": "そのユーザーはすでに最も低いロールを持っています",
+    "noRoleToRemove": "ユーザーには削除権限がありません",
+    "cannotRemoveBottomRole": "基本ロールからユーザーを削除することはできません。降格のみ可能です。",
+    "scheduleAccountConfirm": "このユーザーのアカウント削除をスケジュールしますか？ 3日間、ランキングから非表示になった後、完全に削除されます。",
+    "scheduleWithCreatorConfirm": "アカウントの削除をスケジュールし、実行時にリンクされているクリエイタープロフィールを削除しますか？単独クレジットのレベルは完全に削除され、共同クレジットは取り消されます。",
+    "scheduleOwnConfirm": "ご自身の管理者アカウントの削除をスケジュールしようとしています。続行しますか？",
+    "scheduleDeletionFailed": "アカウントの削除をスケジュールできませんでした。"
+  },
+  "adminDeletion": {
+    "regionLabel": "アカウントの削除（スーパー管理者）",
+    "pendingTitle": "アカウントの削除はすでに予定されています",
+    "executesAt": "完全削除：{{date}}",
+    "includesCreator": "実行時にクリエイタープロファイルの削除が含まれます。",
+    "includeCreator": "また、実行時にリンクされたクリエイタープロフィールも削除する（ソロレベルはソフト削除、クレジットは削除される）",
+    "scheduleButton": "アカウントの削除を予約する"
+  }
+}

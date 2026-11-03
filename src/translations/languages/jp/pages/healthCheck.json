@@ -1,0 +1,53 @@
+{
+  "title": "システム稼働状況",
+  "metaDescription": "TUFサービスが応答しているかどうかを大まかに把握する。",
+  "lastUpdated": "最終更新日時：{{time}}",
+  "loadError": "ステータスを読み込めませんでした。後ほどもう一度お試しください。",
+  "overall": {
+    "online": "オンライン",
+    "degraded": "劣化",
+    "offline": "サービスをご利用いただけません"
+  },
+  "serviceState": {
+    "ok": "正常",
+    "down": "利用不可"
+  },
+  "serviceChecks": {
+    "database": "データベース",
+    "mainServer": "メインサーバー",
+    "cdnService": "CDN",
+    "nginxService": "Nginx",
+    "skipped": "監視対象外"
+  },
+  "responseTime": {
+    "ms": "{{ms}} ms",
+    "skipped": "—",
+    "unavailable": "—",
+    "ariaLabel": "最新のチェック応答時間"
+  },
+  "refresh": {
+    "ariaLabel": "ステータスを更新する"
+  },
+  "latency": {
+    "title": "応答時間",
+    "yAxisLabel": "ミリ秒",
+    "loadError": "応答時間のデータを読み込めませんでした。",
+    "empty": "この範囲のサンプルはまだありません。",
+    "windowLabel": "期間",
+    "series": {
+      "database": "データベース",
+      "mainServer": "メインサーバー",
+      "cdn": "CDN"
+    },
+    "windows": {
+      "1h": "過去1時間",
+      "3h": "過去3時間",
+      "6h": "過去6時間",
+      "12h": "過去12時間",
+      "24h": "過去24時間",
+      "3d": "過去3日間",
+      "7d": "過去7日間",
+      "14d": "過去14日間"
+    }
+  }
+}

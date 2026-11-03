@@ -1,0 +1,109 @@
+{
+  "edit": {
+    "title": "クリアを編集",
+    "close": "×",
+    "thumbnailInfo": "ここに動画情報が表示されます",
+    "form": {
+      "submInfo": {
+        "levelId": "レベルID",
+        "videoLink": "動画リンク",
+        "speed": "速度",
+        "keyCount": "キー数（任意）",
+        "feelDiff": "体感レーティング",
+        "details": "詳細（任意）",
+        "detailsPlaceholder": "このクリアに関する追加情報",
+        "expectedDiff": "予想レーティング（任意）",
+        "nohold": "ホールドなし",
+        "isAdofaiV2": "ADOFAI v2",
+        "adofaiVersion": "ADOFAIのバージョン",
+        "isXPerfectMode": "X-Perfect"
+      },
+      "levelInfo": {
+        "song": "曲名",
+        "artist": "アーティスト",
+        "charter": "チャーター"
+      },
+      "levelFetching": {
+        "input": "レベルIDを入力してください",
+        "fetching": "読み込み中...",
+        "goto": "レベルへ移動",
+        "notfound": "見つかりません"
+      },
+      "videoInfo": {
+        "videoLink": "動画リンク",
+        "title": "タイトル",
+        "channel": "チャンネル",
+        "timestamp": "アップロード日",
+        "nolink": "動画のリンクは提供されていません",
+        "resolving": "動画リンクの読み込み中…",
+        "linkResolved": "短縮URLがBilibiliのURLにソルブされました"
+      },
+      "judgements": {
+        "ePerfect": "EPerfect",
+        "perfectMinus": "Perfect−",
+        "perfect": "Perfect",
+        "perfectPlus": "Perfect+",
+        "lPerfect": "LPerfect",
+        "short": {
+          "ePerfect": "EP",
+          "perfectMinus": "P−",
+          "perfect": "P",
+          "perfectPlus": "P+",
+          "lPerfect": "LP"
+        },
+        "tooearly": "Too Early",
+        "early": "Early",
+        "late": "Late"
+      },
+      "adofaiVersion": {
+        "latest": "3.4.0",
+        "pre340": "<3.4.0",
+        "v2": "v2"
+      }
+    },
+    "acc": "精度：",
+    "scoreCalc": "スコア: ",
+    "holdTooltip": "タイルの保持動作が通常とは異なる場合（No Holdなど）は、ここにチェックを入れてください。",
+    "keyCountTooltip": "このクリアで使用されたキーの数。",
+    "feelingTooltip": "あなた個人にとって、どれくらい難しかったか。具体的な例：G1～G5、17～18+、U1など。",
+    "expectedTooltip": "そのレベルがどの難易度に相当するべきか（任意）。体感レーティングと同じ形式です。",
+    "adofaiV2Tooltip": "クリアがADOFAI v2で録画されている場合は、ここをチェックしてください",
+    "adofaiVersionTooltip": "このクリアに使用したゲームのバージョンは、Alpha 3.4.0以上です。",
+    "xPerfectTooltip": "X-PerfectモードでのPerfect-およびPerfect+の回数を記録します（バージョン3.4.0以降のみ）。",
+    "duplicateGuessHint": "同じチャートでより高得点を記録したクリア結果から推測しました。このチェックボックスの設定を変更しても、補正は維持されます。",
+    "midspinWarning": {
+      "willApply": "このチャートには{{count}}個のミッドスピンタイルがあります。セーブすると、これらは「パーフェクト」のスコアから差し引かれます。",
+      "alreadyApplied": "このクリアからは、すでにミッドスピン・パーフェクトが除外されています。",
+      "missing": "このレベルにはまだミッドスピンのカウントがないため、Perfectのレーティングは調整されません。",
+      "perfectLt": "Perfectはミッドスピンカウントを下回っているため、Perfectの値は調整されません。"
+    },
+    "keyboard": {
+      "label": "キーボードレイアウト",
+      "auto": "自動",
+      "autoValue": "自動 · {{layout}}",
+      "autoUses": "アップロード日時点で、このクリアは{{layout}}を使用しています。",
+      "autoNone": "アップロード日時点で、このキー数に一致する保存済みレイアウトはありません。",
+      "autoMany": "このクリアに一致するレイアウトが複数あります。1つ選択してください。",
+      "autoNoKeyCount": "アップロード日からのレイアウトに一致するキー数を指定してください。",
+      "autoNoDate": "このクリアにはアップロード日がないため、レイアウトを選択してください。",
+      "noLayouts": "このプレイヤーには保存されたレイアウトがありません。",
+      "since": "{{date}}以来",
+      "range": "{{from}} – {{to}}",
+      "matches": "このクリアに一致する",
+      "mismatch": "このレイアウトは {{layoutCount}}K です。このクリアは {{passCount}}K です。"
+    },
+    "alert": {
+      "success": "クリアの更新に成功しました！",
+      "error": "エラー: ",
+      "login": "クリアを提出するには、ログインしてください",
+      "form": "必須項目はすべて正しくご記入ください"
+    },
+    "confirmations": {
+      "delete": "このクリアを削除してもよろしいですか？後で元に戻すことができます。",
+      "restore": "このクリアを復元しますか？"
+    },
+    "reasonPrompt": {
+      "deleteTitle": "このクリアを削除しますか？"
+    }
+  }
+}

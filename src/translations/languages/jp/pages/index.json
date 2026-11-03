@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "The Universal Forums",
+    "description": "The Universal Forums（TUF）は、リズムゲームのプレイヤーがカスタム譜面を共有し、競い合うためのコミュニティ主導のプラットフォームです。"
+  },
+  "header": {
+    "title": "The Universal Forums",
+    "subtitle": "リズムゲームプレイヤー向けのコミュニティ主導型プラットフォーム"
+  },
+  "sections": {
+    "featured": {
+      "title": "注目のチャート",
+      "empty": "注目のチャートはありません"
+    },
+    "recent": {
+      "title": "最近のチャート",
+      "empty": "最近のチャートはありません"
+    }
+  },
+  "card": {
+    "by": "{{creator}}による"
+  },
+  "loading": {
+    "featured": "注目のチャートを読み込み中...",
+    "recent": "最近のチャートを読み込んでいます..."
+  }
+}

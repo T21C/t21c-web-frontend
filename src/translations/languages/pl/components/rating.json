@@ -13,7 +13,8 @@
     },
     "zenModeChip": "Zen Mode",
     "buttons": {
-      "saveChanges": "Zapisz zmiany"
+      "saveChanges": "Zapisz zmiany",
+      "copyNotes": "Kopiuj notatki"
     },
     "errors": {
       "commentLength": "Komentarz musi być krótszy niż 1000 znaków",
@@ -22,7 +23,8 @@
       "updateFailed": "Nie udało się zaaktualizować oceny",
       "unsavedChanges": "Masz niezapisane zmiany. Czy na pewno chcesz zamknąć?",
       "deleteFailed": "Nie udało się usunąć oceny",
-      "autorateFailed": "Nie udało się zautomatyzować oceny"
+      "autorateFailed": "Nie udało się zautomatyzować oceny",
+      "notesCopyFailed": "Nie udało się skopiować notatek"
     },
     "tooltips": {
       "lastUpdated": "Ostatnio zaktualizowane",
@@ -37,6 +39,7 @@
     },
     "messages": {
       "autorateSuccess": "Ocena zautomatyzowana pomyślnie",
+      "notesCopied": "Skopiowano notatki",
       "voteSettled": "Ocena ustalona w dyskusji głosowania.",
       "voteThread": "Otwórz wątek Discord"
     },

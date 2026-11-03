@@ -15,6 +15,7 @@ import api from "@/utils/api";
 import { EditPassPopup, OwnPassEditPopup } from "@/components/popups/Passes";
 import { PopupShell } from "@/components/common/PopupShell";
 import { MetaTags } from "@/components/common/display";
+import { CommentFormatter } from "@/components/misc";
 import { buildPassMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -53,6 +54,7 @@ const PassDetailPage = () => {
   const [showHideConfirm, setShowHideConfirm] = useState(false);
   const [isTogglingHidden, setIsTogglingHidden] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [explanationExpanded, setExplanationExpanded] = useState(false);
 
   // Function to generate random particle properties
   const generateParticle = (index) => ({
@@ -183,6 +185,8 @@ const PassDetailPage = () => {
   const { pass } = res;
   const passDetails = (pass.details || '').trim();
   const isLongDetails = passDetails.length > 250;
+  const feelingExplanation = (pass.feelingExplanation || '').trim();
+  const isLongExplanation = feelingExplanation.length > 250;
   const accuracy = pass.accuracy;
   const xPerfectShine = isPureXPerfect(pass.judgements, pass.isXPerfectMode);
   const ppShine = accuracy === 1 && !xPerfectShine;
@@ -325,6 +329,25 @@ const PassDetailPage = () => {
           </div>
 
           <div className="pass-detail-body">
+            {feelingExplanation.length > 0 && (
+              <div className={`pass-detail-details${isLongExplanation ? ' expandable' : ''}${explanationExpanded ? ' expanded' : ''}`}>
+                <span className="pass-detail-details__label">{t('passDetail.feelingExplanation.label')}</span>
+                <div className="pass-detail-details__text">
+                  <CommentFormatter>{feelingExplanation}</CommentFormatter>
+                </div>
+                {isLongExplanation && (
+                  <button
+                    type="button"
+                    className="pass-detail-details__toggle"
+                    onClick={() => setExplanationExpanded((open) => !open)}
+                  >
+                    {explanationExpanded
+                      ? t('passDetail.details.showLess')
+                      : t('passDetail.details.showMore')}
+                  </button>
+                )}
+              </div>
+            )}
             {passDetails.length > 0 && (
               <div className={`pass-detail-details${isLongDetails ? ' expandable' : ''}${detailsExpanded ? ' expanded' : ''}`}>
                 <span className="pass-detail-details__label">{t('passDetail.details.label')}</span>

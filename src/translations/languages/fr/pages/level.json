@@ -42,7 +42,8 @@
     "sortRecent": "Récent",
     "filterDiffs": "Difficulté",
     "sortRandom": "Aléatoire",
-    "availableDl": "CDN disponible"
+    "availableDl": "CDN disponible",
+    "inRating": "En évaluation"
   },
   "infScroll": {
     "end": "Vous avez atteint la fin!"

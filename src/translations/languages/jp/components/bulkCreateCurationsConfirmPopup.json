@@ -1,0 +1,13 @@
+{
+  "title": "一部のレベルはキュレーションできません",
+  "titleAllInvalid": "レベルをキュレーションすることはできません",
+  "message": "{{validCount}} レベルは先に進むことができます。以下のレベルは先に進むことができません：",
+  "messageAllInvalid": "指定されたレベルはいずれもキュレーションできません：",
+  "invalidHeading": "処理を続行できません ({{count}})",
+  "proceed": "{{count}} レベルを続行する",
+  "submitting": "作成中…",
+  "reasons": {
+    "notFound": "レベルが見つかりません",
+    "cannotManage": "このレベルのキュレーションは管理できません"
+  }
+}

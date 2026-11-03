@@ -1,0 +1,113 @@
+{
+  "title": "アーティスト {{name}} を管理する",
+  "tabs": {
+    "update": "更新",
+    "merge": "統合",
+    "split": "分割",
+    "aliases": "別名",
+    "links": "リンク",
+    "evidence": "証拠",
+    "relations": "関係"
+  },
+  "form": {
+    "name": "名前",
+    "avatarUrl": "アバター",
+    "avatarUrlPlaceholder": "アバターのURLを入力してください",
+    "avatarCdnInfo": "CDNでホストされているアバターは、アップロードまたは削除によってのみ変更できます。",
+    "verificationState": "検証状態",
+    "tufVerified": "TUF認証済み"
+  },
+  "merge": {
+    "info": "このアーティストを別のアーティストに統合します。すべてのデータが引き継がれます。",
+    "search": "対象アーティストを検索",
+    "placeholder": "名前で検索..."
+  },
+  "split": {
+    "info": "このアーティストを、既存の2人のアーティストに分割します。すべてのデータ（別名、リンク、証拠、アバター）および楽曲のクレジットは、対象となる2人のアーティストの両方に複製されます。",
+    "entity1": "最初のターゲットアーティスト",
+    "entity2": "2人目のターゲットアーティスト",
+    "entity1Placeholder": "最初のターゲットアーティストを検索して選択してください...",
+    "entity2Placeholder": "2人目のアーティストを検索して選択してください...",
+    "deleteOriginal": "分割後に元のアーティストを削除する"
+  },
+  "aliases": {
+    "add": "別名を追加",
+    "placeholder": "別名を入力してください"
+  },
+  "links": {
+    "add": "リンクを追加",
+    "placeholder": "URLを入力してください"
+  },
+  "entityExtraInfo": {
+    "label": "追加情報",
+    "placeholder": "この{{type}}に関する追加の注記や情報",
+    "empty": "追加情報は記載されていません"
+  },
+  "evidence": {
+    "add": "証拠画像をアップロードする",
+    "addLink": "外部資料へのリンクを追加する",
+    "linkPlaceholder": "外部URLを入力してください",
+    "extraInfo": "追加情報",
+    "extraInfoPlaceholder": "この証拠に関する追加の注記や情報",
+    "pendingUpload": "アップロード待ち",
+    "uploaded": "アップロードされた証拠",
+    "dropZoneText": "画像をここにドラッグ＆ドロップするか、クリックして選択してください",
+    "dropZoneHint": "複数の画像ファイルを選択してください",
+    "existing": "既存の証拠",
+    "deleteConfirm": "この証拠を削除してもよろしいですか？"
+  },
+  "relations": {
+    "search": "アーティストを検索",
+    "placeholder": "名前で検索...",
+    "existing": "既存の関係",
+    "none": "該当する関係は見つかりませんでした",
+    "treeView": "ツリービュー",
+    "addRelation": "関係を追加",
+    "typeToSearch": "アーティスト名を検索するには、ここに入力してください...",
+    "noResults": "該当するアーティストが見つかりませんでした"
+  },
+  "buttons": {
+    "merge": "統合",
+    "merging": "統合中...",
+    "split": "分割",
+    "splitting": "分割中...",
+    "checking": "確認中...",
+    "proceed": "続行",
+    "deleteAvatar": "アバターを削除",
+    "selectAvatar": "アバターファイルを選択してください",
+    "addRelation": "関係を追加",
+    "removeRelation": "関連を削除"
+  },
+  "messages": {
+    "updated": "アーティストの更新に成功しました",
+    "merged": "アーティストの統合に成功しました",
+    "split": "アーティストが '{{name1}}' と '{{name2}}' に分割されました'",
+    "splitSuccess": "アーティストの分割が正常に完了しました",
+    "avatarUploaded": "アバターのアップロードに成功しました",
+    "avatarDeleted": "アバターが正常に削除されました",
+    "evidenceAdded": "証拠が正常に追加されました",
+    "evidenceUpdated": "証拠の更新に成功しました",
+    "evidenceDeleted": "証拠の削除に成功しました",
+    "entityExtraInfoUpdated": "追加情報が正常に更新されました",
+    "relationAdded": "関係が正常に追加されました",
+    "relationRemoved": "関係が正常に削除されました"
+  },
+  "errors": {
+    "updateFailed": "アーティストの更新に失敗しました",
+    "mergeFailed": "アーティストの統合に失敗しました",
+    "splitFailed": "アーティストの分割に失敗しました",
+    "selectTarget": "対象のアーティストを選択してください",
+    "bothNamesRequired": "両方のアーティスト名を入力する必要があります",
+    "namesMustBeDifferent": "アーティスト名はそれぞれ異なるものでなければなりません",
+    "bothEntitiesRequired": "対象となるアーティストを両方とも選択してください",
+    "entitiesMustBeDifferent": "対象となるアーティストはそれぞれ異なるものでなければならない",
+    "checkFailed": "既存のアーティストの確認に失敗しました",
+    "loadArtistsFailed": "アーティストの読み込みに失敗しました",
+    "noFile": "ファイルを選択してください",
+    "uploadFailed": "アバターのアップロードに失敗しました",
+    "deleteFailed": "削除に失敗しました",
+    "evidenceFailed": "証拠の追加に失敗しました",
+    "invalidFileType": "画像ファイルのみを選択してください",
+    "invalidLink": "有効なリンクを入力してください"
+  }
+}

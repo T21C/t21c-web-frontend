@@ -1,0 +1,120 @@
+{
+  "title": "レベルを提出する",
+  "thumbnailInfo": "ここに動画情報が表示されます",
+  "submInfo": {
+    "song": "曲名",
+    "suffix": "接尾辞（任意）",
+    "artist": "アーティスト",
+    "videoLink": "動画リンク",
+    "charter": "チャーター",
+    "diff": "難易度",
+    "vfxer": "VFX担当者（任意）",
+    "team": "チーム名（任意）",
+    "dlLink": "ダウンロードリンク",
+    "workshop": "ワークショップのリンク",
+    "dlLinksOr": "または",
+    "charters": "チャーター",
+    "vfxers": "VFXクリエイター",
+    "specialThanks": "Special Thanks (任意)",
+    "artists": "アーティスト",
+    "levelZip": "レベルZip",
+    "evidence": "証拠",
+    "evidenceForSong": "その曲の根拠資料",
+    "evidenceForArtist": "そのアーティストの根拠資料",
+    "notes": "注記"
+  },
+  "videoInfo": {
+    "title": "動画のタイトル",
+    "channel": "チャンネル名",
+    "timestamp": "アップロード時間",
+    "nolink": "リンクが記載されていません",
+    "resolving": "動画リンクの読み込み中…",
+    "linkResolved": "短縮リンクが Bilibili の URL に展開されました"
+  },
+  "tooltip": "難易度は不明ですが、提出します。ただし、マネージャーが読み取れるようにしてください。正しいdiffの例：G13; P7～P13; 21.1+; 19～20.0+",
+  "suffixTooltip": "これは曲名の後ろに追加されます。例えばここで、\"<bold>Nerfed</bold>\"と入力すると\"Song Name <bold>Nerfed</bold>\"という表示になります。",
+  "buttons": {
+    "addCharter": "チャーターを追加",
+    "addVfxer": "VFX担当者を追加",
+    "addSpecialThanks": "Special Thanksを追加する",
+    "addArtist": "アーティストを追加",
+    "removeCreator": "削除",
+    "uploadZip": "ZIPファイルをアップロード",
+    "orDragDrop": "または、ここにドラッグ＆ドロップしてください",
+    "dropHere": "ファイルをここにドロップしてください！",
+    "uploadEvidence": "証拠画像をアップロードする",
+    "requestTags": "タグをリクエスト",
+    "submit": "提出",
+    "submitWait": "..."
+  },
+  "alert": {
+    "success": "レベルの提出に成功しました！",
+    "error": "Error: ",
+    "loading": "提出中...",
+    "login": "レベルを提出するには、ログインしてください",
+    "form": "必須項目はすべて正しくご記入ください",
+    "more": "+ {{count}} 以上",
+    "invalidZip": "有効なzipファイルをアップロードしてください",
+    "invalidZipSize": "Zipファイルのサイズが大きすぎます（最大 {{maxSize}} MB）",
+    "maxEvidenceFiles": "証拠画像は最大10枚までです",
+    "evidenceRequired": "新曲や新アーティストのリクエストには、根拠が必要です",
+    "evidenceFileTooLarge": "各証拠画像のサイズは{{maxMb}} MB以下でなければなりません。"
+  },
+  "fieldShort": {
+    "song": "曲",
+    "artist": "アーティスト",
+    "diff": "難易度",
+    "videoLink": "動画のリンク",
+    "charter": "チャーター",
+    "directLink": "ダウンロード／ワークショップ／Zip",
+    "evidence": "証拠"
+  },
+  "warnings": {
+    "pendingProfiles": "以下のプロファイルが作成されます："
+  },
+  "roles": {
+    "charters": "チャーター",
+    "vfxers": "VFXクリエイター",
+    "specialThanks": "スペシャルサンクス：",
+    "teams": "チーム"
+  },
+  "badges": {
+    "newProfile": "新しいプロフィール"
+  },
+  "validation": {
+    "required": "必須",
+    "invalidDifficulty": "難易度の形式が無効です",
+    "needDownloadLink": "ダウンロードリンク、またはワークショップのリンクのいずれかをご提供ください",
+    "needCharter": "チャーターは少なくとも一人必要です"
+  },
+  "placeholders": {
+    "searchCreator": "クリエイターを検索...",
+    "searchTeam": "チームを検索...",
+    "newCreator": "新しいクリエイター名を入力してください",
+    "newTeam": "新しいチーム名を入力してください",
+    "tags": "提出されたタグはありません",
+    "notes": "管理者向けの任意の注記（図表の詳細、クレジットなど）"
+  },
+  "cdnTos": {
+    "title": "CDNアップロードの確認",
+    "content": "CDN にレベルをアップロードする前に、zip ファイルが私たちで指定しているすべての要件を満たしていることを確認してください",
+    "tosLink": "CDN利用規約",
+    "confirmation": "私のレベル用ZIPファイルについては、以下の通りであることを確認します：",
+    "terms": {
+      "1": "オリジナルコンテンツ、または私が使用および配布の許可を得ているコンテンツのみを含んでいます",
+      "2": "悪意のある、または有害なコンテンツは一切含まれていません"
+    },
+    "dontShowAgain": "今後このメッセージを表示しない",
+    "agree": "確認しました",
+    "decline": "キャンセル"
+  },
+  "levelSelection": {
+    "leaveDefault": "デフォルトの選択のままにしますか？ファイルサイズが最大の譜面が使用されますが、正しい譜面とは限りません。"
+  },
+  "chartClearNotify": {
+    "title": "チャートのクリアを通知する",
+    "body": "誰かがあなたのチャートをクリアした際に通知を受け取りたいですか？",
+    "enable": "有効にする",
+    "dismiss": "今はいい"
+  }
+}

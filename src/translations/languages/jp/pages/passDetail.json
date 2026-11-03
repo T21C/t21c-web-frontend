@@ -1,0 +1,230 @@
+{
+  "replay": {
+    "visualSettings": {
+      "title": "リプレイの表示設定",
+      "description": "このクリアで最初に使用するキービュアーとオーバーレイを選択します。視聴者は、これらの既定値を変更せずに、ライブラリ内のほかの表示可能なプリセットを選択できます。",
+      "close": "閉じる",
+      "working": "設定を保存または読み込み中…",
+      "retry": "再試行",
+      "loadFailed": "表示設定を読み込めませんでした。接続を確認して、もう一度お試しください。",
+      "saveFailed": "既定値を保存できませんでした。選択したプリセットが非表示または削除された可能性があります。設定を再読み込みして、もう一度お試しください。",
+      "visibilityFailed": "このプリセットの表示状態を変更できませんでした。接続を確認して、もう一度お試しください。",
+      "keyviewer": "キービュアー",
+      "overlay": "オーバーレイ",
+      "none": "なし",
+      "save": "クリアの既定値を保存",
+      "saved": "既定値を保存しました。",
+      "library": "プリセットライブラリ",
+      "hideHint": "非表示にすると、ライブラリ全体に適用されます。非表示のプリセットは、新しい提出や視聴者の選択肢に表示されません。それらを使用している既存クリアの既定値は「なし」になります。再表示しても既定値は復元されません。",
+      "empty": "保存済みのプリセットはまだありません。",
+      "hidden": "非表示",
+      "showNamed": "{{name}}を表示",
+      "hideNamed": "{{name}}を非表示",
+      "show": "表示",
+      "hide": "非表示"
+    },
+    "title": "リプレイ",
+    "expand": "没入表示に切り替え",
+    "collapse": "没入表示を終了",
+    "load": "リプレイを読み込む",
+    "unload": "リプレイを閉じる",
+    "timeline": "タイムライン",
+    "play": "再生",
+    "pause": "一時停止",
+    "restart": "最初に戻る",
+    "on": "オン",
+    "off": "オフ",
+    "settings": "設定",
+    "closeSettings": "設定を閉じる",
+    "audio": "音声",
+    "visuals": "映像",
+    "songVolume": "音楽",
+    "hitSoundVolume": "ヒットサウンド",
+    "vfxEnabled": "視覚効果",
+    "effectRemovalEnabled": "エフェクトを削除",
+    "forceDefaultTrackAppearance": "シンプルな軌道表示",
+    "showAllIcons": "すべてのタイルアイコンを表示",
+    "resetSettings": "設定をリセット",
+    "loading": "リプレイを読み込み中…",
+    "playback": "再生",
+    "songVolumePercent": "音楽の音量",
+    "hitSoundVolumePercent": "ヒットサウンドの音量",
+    "hitErrorMeterVisible": "ヒットエラーメーター",
+    "hitErrorMeterSize": "メーターのサイズ",
+    "hitErrorMeterShape": "メーターの形状",
+    "small": "小",
+    "normal": "標準",
+    "large": "大",
+    "extra_large": "特大",
+    "straight": "直線",
+    "curved": "曲線",
+    "errors": {
+      "generic": "このリプレイを読み込めません。",
+      "level_revision_unavailable": "このクリアで使用されたチャートのバージョンは、現在利用できません。",
+      "level_gameplay_modified": "クリアの検証後に、このチャートのゲームプレイ内容が変更されました。",
+      "replay_parse_failed": "記録されたリプレイデータを読み取れませんでした。",
+      "audio_decode_failed": "チャートの音声を読み込めませんでした。",
+      "renderer_failed": "リプレイの描画処理を開始できませんでした。",
+      "replay_not_configured": "リプレイ再生が設定されていません。",
+      "replay_load_timeout": "リプレイの読み込みがタイムアウトしました。もう一度お試しください。"
+    }
+  },
+  "meta": {
+    "title": "{{playerName}}による{{song}} - {{artist}}のクリア",
+    "description": "{{playerName}}が{{artist}}の{{song}}をクリア — {{difficulty}} · スコア{{score}}"
+  },
+  "banners": {
+    "deleted": "このクリアは削除されました",
+    "hidden": "このクリアはリーダーボードで非表示になっています",
+    "missingCdn": "チャートファイルがCDNでホストされていないため、このクリアはレーティング対象スコアに加算されません。"
+  },
+  "level": {
+    "baseScore": "{{score}}PP",
+    "credits": {
+      "team": "{{team}}",
+      "charter": "譜面制作：{{charter}}",
+      "vfxer": "VFX：{{vfxer}}"
+    }
+  },
+  "player": {
+    "rank": "#{{rank}}",
+    "score": {
+      "current": "{{score}}",
+      "difference": {
+        "positive": "+{{score}}",
+        "potential": "+{{score}}"
+      },
+      "previous": "{{score}}",
+      "tooltips": {
+        "potentialScore": "レベルファイルが見つからないため、レーティング対象スコアには含まれない潜在的なスコアです。"
+      }
+    },
+    "clearDate": "{{date}}にクリア"
+  },
+  "stats": {
+    "score": {
+      "label": "スコア",
+      "value": "{{score}}"
+    },
+    "accuracy": {
+      "label": "精度",
+      "value": "{{accuracy}}%"
+    },
+    "speed": {
+      "label": "速度",
+      "value": "{{speed}}x"
+    },
+    "feelingRating": {
+      "label": "体感レーティング",
+      "value": "{{rating}}",
+      "none": "なし"
+    },
+    "expectedRating": {
+      "label": "予想レーティング",
+      "value": "{{rating}}",
+      "none": "なし"
+    }
+  },
+  "flags": {
+    "worldsFirst": "WF",
+    "worldsFirstPP": "WF PP",
+    "keyCount": "{{count}}K",
+    "12k": "12K",
+    "16k": "16K",
+    "noHoldTap": "代替ホールド設定",
+    "adofaiV2": "<adofaiicon></adofaiicon> v2",
+    "adofaiV2Note": "エンジン変更前のバージョン（<b>v2.9.8まで</b>）。これらのバージョンはタイミングエンジンの問題により、安定性と精度が低くなっています。",
+    "adofaiPre340": "<3.4.0",
+    "adofaiPre340Note": "XPerfect導入前のバージョン（<b>v3.3.1まで</b>）。",
+    "xPerfect": "X-Perfect",
+    "wrongJudgement": "判定ミス"
+  },
+  "judgements": {
+    "title": "判定",
+    "types": {
+      "earlyPerfect": {
+        "label": "EPerfect",
+        "value": "{{count}}"
+      },
+      "perfect": {
+        "label": "Perfect",
+        "value": "{{count}}"
+      },
+      "perfectMinus": {
+        "label": "Perfect−",
+        "value": "{{count}}"
+      },
+      "perfectPlus": {
+        "label": "Perfect+",
+        "value": "{{count}}"
+      },
+      "latePerfect": {
+        "label": "LPerfect",
+        "value": "{{count}}"
+      },
+      "tooEarly": {
+        "label": "Too Early",
+        "value": "{{count}}"
+      },
+      "early": {
+        "label": "Early",
+        "value": "{{count}}"
+      },
+      "late": {
+        "label": "Late",
+        "value": "{{count}}"
+      },
+      "tooLate": {
+        "label": "Too Late",
+        "value": "{{count}}"
+      }
+    }
+  },
+  "feelingExplanation": {
+    "label": "体感の説明"
+  },
+  "details": {
+    "label": "詳細",
+    "showMore": "続きを読む",
+    "showLess": "閉じる"
+  },
+  "video": {
+    "notAvailable": {
+      "text": "動画を利用できません",
+      "watchOnYoutube": "YouTube、Bilibili、またはDouyinで視聴"
+    }
+  },
+  "buttons": {
+    "edit": "クリアの詳細を編集"
+  },
+  "actions": {
+    "hide": "リーダーボードで非表示",
+    "unhide": "リーダーボードに表示"
+  },
+  "confirm": {
+    "hide": {
+      "title": "クリアを非表示",
+      "message": "このクリアをリーダーボードで非表示にしますか？あなたにのみ表示されるようになります。",
+      "confirm": "クリアを非表示",
+      "processing": "非表示にしています…"
+    },
+    "unhide": {
+      "title": "クリアを表示",
+      "message": "このクリアをリーダーボードに表示しますか？すべてのユーザーに表示されるようになります。",
+      "confirm": "クリアを表示",
+      "processing": "表示しています…"
+    }
+  },
+  "ownEdit": {
+    "title": "自分のクリアを編集"
+  },
+  "feelingRating": {
+    "title": "体感レーティングを編集",
+    "placeholder": "例：U15、G18～G20"
+  },
+  "errors": {
+    "toggleHidden": "クリアの表示設定を切り替えられませんでした",
+    "updateFeelingRating": "体感レーティングを更新できませんでした",
+    "feelingRatingRequired": "体感レーティングを入力してください"
+  }
+}

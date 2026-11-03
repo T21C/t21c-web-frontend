@@ -1,0 +1,190 @@
+/* tuf-search: #LevelMentionField #levelMention */
+.level-mention-field {
+  display: block;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 2.5em;
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+  caret-color: inherit;
+  resize: vertical;
+}
+
+.level-mention-field.is-single-line {
+  min-height: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  resize: none;
+}
+
+.level-mention-field:focus {
+  outline: none;
+}
+
+.level-mention-field.is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-white-t50);
+  pointer-events: none;
+}
+
+.level-mention-field[contenteditable="false"] {
+  cursor: not-allowed;
+}
+
+.level-mention-field .level-link.level-ref {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-width: 100%;
+  margin: 0 0.05em;
+  vertical-align: middle;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  background: var(--color-white-t10);
+  user-select: all;
+  cursor: default;
+}
+
+.level-mention-field.is-single-line .level-link.level-ref {
+  flex-wrap: nowrap;
+}
+
+.level-mention-field .level-link.level-ref:hover {
+  background: var(--color-white-t20);
+}
+
+.level-mention-field .level-ref-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.level-mention-field .level-ref-id,
+.level-mention-field .level-ref-title {
+  line-height: 1.2;
+}
+
+.level-mention-popup {
+  position: fixed;
+  z-index: 1;
+  width: 18rem;
+  max-width: calc(100vw - 1rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--color-black);
+  border: 1px solid var(--color-white-t15);
+  border-radius: 0.4rem;
+  box-shadow: 0 8px 24px var(--color-black-t80);
+  color: var(--color-white);
+}
+
+.level-mention-popup .level-mention-popup__search {
+  display: flex;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--color-white-t15);
+}
+
+.level-mention-popup .level-mention-popup__search-input {
+  width: 100%;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.3rem;
+  background: var(--color-black-t40);
+  color: var(--color-white);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.level-mention-popup .level-mention-popup__search-input:focus {
+  outline: none;
+  border-color: var(--color-white-t40);
+}
+
+.level-mention-popup .level-mention-popup__search-input::placeholder {
+  color: var(--color-white-t50);
+}
+
+.level-mention-popup .level-mention-popup__list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 16rem;
+}
+
+.level-mention-popup .level-mention-popup__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.level-mention-popup .level-mention-popup__item.is-active {
+  background: var(--color-white-t15);
+}
+
+.level-mention-popup .level-mention-popup__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.level-mention-popup .level-mention-popup__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.level-mention-popup .level-mention-popup__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+
+.level-mention-popup .level-mention-popup__meta {
+  display: flex;
+  gap: 0.35rem;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-gray-3);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.level-mention-popup .level-mention-popup__meta-id,
+.level-mention-popup .level-mention-popup__meta-artist {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.level-mention-popup .level-mention-popup__status {
+  padding: 0.55rem 0.7rem;
+  color: var(--color-gray-2);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}

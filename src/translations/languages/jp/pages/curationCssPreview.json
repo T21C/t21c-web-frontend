@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "CSSプレビュー",
+    "description": "厳選されたレベルのカスタムCSSをプレビューおよび編集する"
+  },
+  "loading": "プレビューを読み込み中...",
+  "editor": {
+    "title": "CSSエディタ",
+    "subtitle": "この厳選レベルのカスタムCSSを編集する",
+    "cssLabel": "カスタムCSS",
+    "placeholder": "ここにカスタムCSSを入力してください...",
+    "help": "この厳選されたレベルの見た目をカスタマイズするためのCSSルールを記述してください。",
+    "expand": "エディタを展開",
+    "collapse": "エディタを折りたたむ"
+  },
+  "confirmations": {
+    "reset": "すべての変更を破棄して、保存済みのCSSにリセットしますか？"
+  },
+  "notifications": {
+    "saved": "CSSの変更が正常に保存されました",
+    "reset": "変更内容が保存済みのバージョンにリセットされました"
+  },
+  "errors": {
+    "saveFailed": "CSSの変更を保存できませんでした"
+  }
+}

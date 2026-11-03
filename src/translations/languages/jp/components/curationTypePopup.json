@@ -1,0 +1,42 @@
+{
+  "title": {
+    "create": "キュレーションタイプを作成する",
+    "edit": "キュレーションタイプを編集する"
+  },
+  "description": {
+    "create": "レベルを分類するための新しいキュレーションタイプを作成する",
+    "edit": "キュレーションタイプの設定を変更する"
+  },
+  "form": {
+    "name": "名前",
+    "namePlaceholder": "キュレーションタイプの名前を入力してください",
+    "icon": "アイコン",
+    "iconPlaceholder": "アイコン名または絵文字を入力してください",
+    "iconHelp": "キュレーションタイプのアイコンとして、画像ファイル（JPEG、PNG、WebP、SVG）をアップロードしてください。フォームを保存すると、アイコンがアップロードされます。",
+    "color": "色",
+    "abilitiesTitle": "カスタマイズ",
+    "abilities": {
+      "Custom CSS": "カスタムCSS",
+      "Curator Assignable": "キュレーターが割り当て可能",
+      "Show Assigner": "割り当て者を表示",
+      "Force Description": "フォースの説明",
+      "Front Page Eligible": "トップページ掲載対象",
+      "Custom Color Theme": "カスタムカラーテーマ",
+      "Level List Basic Glow": "レベル一覧 Basic Glow",
+      "Level List Legendary Glow": "レベル一覧 Legendary Glow"
+    }
+  },
+  "actions": {
+    "create": "作成",
+    "update": "更新",
+    "submitting": "提出中..."
+  },
+  "errors": {
+    "nameRequired": "名前の入力は必須です",
+    "submitFailed": "提出に失敗しました。もう一度お試しください。"
+  },
+  "notifications": {
+    "created": "キュレーションタイプが正常に作成されました",
+    "updated": "キュレーションタイプが正常に更新されました"
+  }
+}

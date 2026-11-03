@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "title": "別名"
+  },
+  "links": {
+    "title": "リンク"
+  },
+  "viewDetails": "詳細をすべて表示",
+  "relations": {
+    "title": "関係"
+  }
+}

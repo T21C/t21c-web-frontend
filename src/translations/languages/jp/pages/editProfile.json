@@ -1,0 +1,148 @@
+{
+  "title": "プロフィールを編集",
+  "error": {
+    "newPasswordsDoNotMatch": "新しいパスワードが一致しません",
+    "failedToChangePassword": "パスワードの変更に失敗しました",
+    "failedToLinkAccount": "{provider}アカウントの連携に失敗しました",
+    "failedToUnlinkAccount": "{provider}アカウントの連携解除に失敗しました",
+    "failedToUpdateProfile": "プロフィールの更新に失敗しました",
+    "invalidFileType": "無効なファイル形式です。JPEG、PNG、WebP、GIF、SVG形式の画像をアップロードしてください。",
+    "failedToUploadAvatar": "アバターのアップロードに失敗しました",
+    "failedToRemoveAvatar": "アバターの削除に失敗しました",
+    "usernameAlphanumeric": "ユーザー名には英字、数字、アンダースコア（_）、ピリオド（.）のみ使用できます",
+    "usernameLength": "ユーザー名は2～32文字で入力してください",
+    "usernameConsecutivePeriods": "ピリオド（.）を2つ連続して使用することはできません（..）",
+    "usernameChangeRateLimited": "ユーザー名を変更できるのは1日1回までです。時間をおいてからもう一度お試しください。"
+  },
+  "success": {
+    "passwordChanged": "パスワードを変更しました！",
+    "accountLinked": "{provider}アカウントを連携しました！",
+    "accountUnlinked": "{provider}アカウントの連携を解除しました！",
+    "profileUpdated": "プロフィールを更新しました",
+    "avatarUploaded": "アバターをアップロードしました",
+    "avatarRemoved": "アバターを削除しました"
+  },
+  "avatar": {
+    "dragDropOrClick": "ドラッグ＆ドロップするか、クリックしてアップロード",
+    "removeAvatar": "アバターを削除",
+    "removing": "削除中…",
+    "confirmRemove": "アバターを削除しますか？この操作は取り消せません。"
+  },
+  "nicknameMoved": {
+    "hint": "ニックネームは「設定 ➔ プレイヤープロフィール」から編集できます。"
+  },
+  "form": {
+    "labels": {
+      "username": "ユーザー名",
+      "nickname": "ニックネーム",
+      "email": "メールアドレス",
+      "country": "国または地域"
+    },
+    "emailVerification": {
+      "message": "メールアドレスを確認してください",
+      "arrow": "➔"
+    },
+    "emailMissing": {
+      "message": "アカウントを確認するには、メールアドレスを追加してください"
+    },
+    "buttons": {
+      "saveChanges": "変更を保存",
+      "saving": "保存中..."
+    }
+  },
+  "emailChange": {
+    "title": "メールアドレスを変更",
+    "setTitle": "メールアドレスを設定",
+    "editTitle": "メールアドレスを変更",
+    "setEditTitle": "メールアドレスを設定・変更",
+    "current": "現在のメールアドレス",
+    "noEmailOnFile": "メールアドレスが登録されていません",
+    "new": "新しいメールアドレス",
+    "confirm": "新しいメールアドレスを確認",
+    "submit": "メールアドレスを更新",
+    "setSubmit": "メールアドレスを追加",
+    "updating": "更新中...",
+    "success": "メールアドレスを更新しました。新しいメールアドレスを確認するため、受信トレイを確認してください。",
+    "setSuccess": "メールアドレスを追加しました。メールアドレスを確認するため、受信トレイを確認してください。",
+    "empty": "新しいメールアドレスを入力してください。",
+    "invalidFormat": "有効なメールアドレスを入力してください。",
+    "mismatch": "新しいメールアドレスが一致しません。",
+    "unchanged": "現在とは異なるメールアドレスを入力してください。",
+    "rateLimited": "メールアドレスの変更を試行しすぎています。時間をおいてからもう一度お試しください。",
+    "failed": "メールアドレスを更新できませんでした。もう一度お試しください。"
+  },
+  "password": {
+    "title": "パスワード",
+    "addPassword": "パスワードを追加",
+    "newPassword": "新しいパスワード",
+    "confirmPassword": "パスワードを確認",
+    "currentPassword": "現在のパスワード",
+    "confirmNewPassword": "新しいパスワードを確認",
+    "createPassword": "パスワードを作成",
+    "changePassword": "パスワードを変更",
+    "updatePassword": "パスワードを更新"
+  },
+  "passkeys": {
+    "title": "パスキー",
+    "subtitle": "パスワードレス認証のために、デバイスの指紋認証、顔認証、またはセキュリティキーを使用してサインインできます。",
+    "add": "パスキーを追加",
+    "empty": "パスキーはまだありません。",
+    "added": "追加済み",
+    "lastUsed": "最終使用",
+    "never": "未使用",
+    "synced": "同期済み",
+    "rename": "名前を変更",
+    "renamePrompt": "パスキー名",
+    "delete": "削除",
+    "deleteConfirm": "パスキー「{{name}}」を削除しますか？",
+    "addSuccess": "パスキーを追加しました",
+    "addError": "パスキーを追加できませんでした",
+    "deleteSuccess": "パスキーを削除しました",
+    "deleteError": "パスキーを削除できませんでした",
+    "unsupported": "このブラウザーはパスキーに対応していません。"
+  },
+  "linkedAccounts": {
+    "title": "連携済みアカウント",
+    "discord": "Discord",
+    "providerId": "DiscordユーザーID：{{id}}",
+    "providerIdHint": "これはDiscordのシステム上で使用される、あなたのDiscordアカウントの数値IDです",
+    "linkDiscord": "Discordアカウントを連携",
+    "google": "Google",
+    "linkGoogle": "Googleアカウントを連携",
+    "unlink": "連携を解除",
+    "cannotUnlinkLastProvider": "パスワードを設定していない場合、最後の連携先は解除できません",
+    "youtube": "YouTube",
+    "youtubeSubtitle": "プロフィールに表示される確認済みチャンネルです。メインチャンネルはヘッダーのボタンに表示されます。",
+    "linkYoutube": "YouTubeチャンネルを連携",
+    "linkAnotherYoutube": "別のYouTubeチャンネルを連携",
+    "youtubePrimary": "メインチャンネル",
+    "youtubeUnlink": "チャンネルの連携を解除",
+    "youtubeLinked": "YouTubeチャンネルを連携しました",
+    "youtubeUnlinked": "YouTubeチャンネルの連携を解除しました",
+    "youtubePrimarySet": "メインのYouTubeチャンネルを更新しました",
+    "youtubeLinkFailed": "YouTubeチャンネルを連携できませんでした",
+    "youtubeUnlinkFailed": "YouTubeチャンネルの連携を解除できませんでした",
+    "youtubePrimaryFailed": "メインのYouTubeチャンネルを更新できませんでした",
+    "youtubeHandle": "@{{handle}}",
+    "youtubeChannelId": "チャンネルID：{{id}}"
+  },
+  "dangerZone": {
+    "title": "アカウントを削除",
+    "description": "アカウントとユーザーに紐づくデータを完全に削除します。取り消し可能な期間は3日間です。この期間中、プロフィールはリーダーボードに表示されません。",
+    "deleteButton": "アカウントを削除",
+    "scheduling": "削除を予約中…",
+    "confirmDelete": "アカウントの削除を予約しますか？プロフィールは3日間リーダーボードに表示されず、その後アカウントが完全に削除されます。期間内であればいつでも取り消せます。",
+    "pendingTitle": "削除予約済み",
+    "scheduledAt": "提出日時：{{date}}",
+    "executesAt": "完全削除日時：{{date}}",
+    "cancelButton": "削除を取り消す",
+    "canceling": "取り消し中…",
+    "confirmCancel": "予約されたアカウント削除を取り消し、アカウントを復元しますか？",
+    "successScheduled": "アカウントの削除を予約しました。",
+    "successCanceled": "アカウントの削除を取り消しました。",
+    "errorSchedule": "アカウント削除を予約できませんでした。",
+    "errorCancel": "アカウント削除を取り消せませんでした。",
+    "includeCreatorCheckbox": "クリエイタープロフィールと譜面のクレジットも削除します。単独制作のレベルは非表示（論理削除）となり、クレジット上のクリエイターは表示されなくなります。共同制作の場合は、あなたのクレジットのみ削除されます。",
+    "pendingIncludesCreator": "削除が実行されると、クリエイタープロフィールが削除され、クレジットは「不明なクリエイター」に置き換わります。譜面ファイルを維持するため、単独制作のレベルは論理削除されます。"
+  }
+}

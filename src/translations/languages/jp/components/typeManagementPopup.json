@@ -1,0 +1,70 @@
+{
+  "title": "キュレーションタイプの管理",
+  "description": "すべてのキュレーションタイプを表示・管理する",
+  "create": {
+    "title": "新しいキュレーションタイプを作成する",
+    "description": "システムに新しいキュレーションタイプを追加する"
+  },
+  "edit": {
+    "title": "キュレーションタイプを編集する",
+    "description": "キュレーションタイプの設定を変更する"
+  },
+  "loading": "タイプを読み込み中...",
+  "empty": "該当するキュレーションタイプが見つかりませんでした",
+  "hasAbilities": "該当するキュレーションタイプが見つかりませんでした",
+  "noAbilities": "カスタマイズ機能なし",
+  "actions": {
+    "create": "新しいタイプを作成する",
+    "edit": "タイプを編集",
+    "delete": "タイプを削除"
+  },
+  "confirmations": {
+    "deleteType": "キュレーションタイプ「{{name}}」を削除してもよろしいですか？この操作は元に戻せません。"
+  },
+  "notifications": {
+    "created": "キュレーションタイプが正常に作成されました",
+    "updated": "キュレーションタイプが正常に更新されました",
+    "deleted": "キュレーションタイプが正常に削除されました",
+    "reordered": "キュレーションタイプが正常に並べ替えられました",
+    "reorderFailed": "キュレーションタイプの並べ替えに失敗しました",
+    "groupsReordered": "キュレーションタイプのグループの並べ替えが正常に完了しました",
+    "groupReorderFailed": "キュレーションタイプのグループの並べ替えに失敗しました"
+  },
+  "tabs": {
+    "types": "タイプ",
+    "groups": "グループ"
+  },
+  "groups": {
+    "ungrouped": "グループ化されていない",
+    "empty": "まだグループはありません",
+    "typeCount": "{{count}} タイプ"
+  },
+  "form": {
+    "name": "タイプ名",
+    "namePlaceholder": "キュレーションタイプの名前を入力してください",
+    "group": "グループ",
+    "groupPlaceholder": "オプション — 同じラベルで同種のものをグループ化します",
+    "color": "色",
+    "icon": "アイコン",
+    "iconHelp": "このキュレーションタイプ用のアイコンをアップロードしてください（JPEG、PNG、WebP、SVG、最大1MB）",
+    "selectIcon": "アイコンを選択",
+    "changeIcon": "アイコンを変更する",
+    "abilities": "カスタマイズ機能"
+  },
+  "abilities": {
+    "customCSS": "カスタムCSS",
+    "curatorAssignable": "キュレーターが割り当て可能",
+    "raterAssignable": "レーターによる割り当て可能",
+    "showAssigner": "割り当て者を表示",
+    "forceDescription": "フォースの説明",
+    "frontPageEligible": "トップページ掲載対象",
+    "customColorTheme": "カスタムカラーテーマ",
+    "levelListBasicGlow": "レベル一覧 ベーシック・グロー",
+    "levelListLegendaryGlow": "レベル一覧 レジェンダリー・グロー"
+  },
+  "buttons": {
+    "create": "タイプを作成",
+    "update": "タイプを更新",
+    "submitting": "提出中..."
+  }
+}

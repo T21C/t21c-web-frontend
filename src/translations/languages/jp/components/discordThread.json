@@ -1,0 +1,12 @@
+{
+  "titleCreate": "Discordスレッドを作成",
+  "titleClose": "Discordスレッドを閉じる",
+  "titleReopen": "Discordスレッドを再開",
+  "pingLabel": "レーティングチームにメンションする",
+  "continue": "続行",
+  "willPing": "メンションします",
+  "willNotPing": "メンションしません",
+  "confirmCreate": "スレッドを作成し、メッセージ内でレーティングチームに{{ping}}します。",
+  "confirmReopen": "スレッドを再開し、メッセージ内でレーティングチームに{{ping}}します。",
+  "confirmClose": "スレッドを閉じ、このチャートをウェブサイトでのレーティングに戻し、メッセージ内でレーティングチームに{{ping}}します。"
+}

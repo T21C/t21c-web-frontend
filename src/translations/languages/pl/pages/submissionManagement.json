@@ -16,6 +16,10 @@
     "placeholder": "Szukaj po utworze, artyście, twórcy, graczu lub zgłaszającym",
     "noMatches": "Brak pasujących zgłoszeń"
   },
+  "hideDifficulty": {
+    "label": "Ukryj trudność",
+    "hint": "Zaznacz podtyp, aby ukryć te przejścia. Kliknij etykietę, aby zaznaczyć lub wyczyścić wszystkie."
+  },
   "jobs": {
     "title": "Przetwarzanie",
     "hide": "Ukryj kolejkę",

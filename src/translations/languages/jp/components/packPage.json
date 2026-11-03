@@ -1,0 +1,54 @@
+{
+  "title": "レベルパック",
+  "search": {
+    "placeholder": "パックを検索...",
+    "noResults": "検索条件に一致するパックは見つかりませんでした"
+  },
+  "filters": {
+    "title": "フィルター",
+    "owner": {
+      "label": "オーナー",
+      "placeholder": "所有者で絞り込む...",
+      "myPacks": "マイパック"
+    },
+    "viewMode": {
+      "label": "可視性",
+      "all": "すべて",
+      "public": "公開",
+      "linkonly": "リンクのみ",
+      "private": "非公開",
+      "forcedPrivate": "強制非公開"
+    },
+    "pinned": {
+      "label": "ピン留め済みのみ"
+    }
+  },
+  "sort": {
+    "title": "並べ替え",
+    "options": {
+      "recent": "最新",
+      "name": "名前 (A-Z)",
+      "oldest": "古い順"
+    },
+    "order": {
+      "asc": "昇順",
+      "desc": "降順"
+    }
+  },
+  "empty": {
+    "title": "パックが見つかりませんでした",
+    "message": "現在のフィルタ条件に一致するレベルパックはありません。",
+    "suggestions": {
+      "clearFilters": "フィルターをクリアしてみてください",
+      "createPack": "初めてのパックを作成する"
+    }
+  },
+  "loading": {
+    "message": "パックを読み込み中...",
+    "loadMore": "さらにパックを読み込む"
+  },
+  "errors": {
+    "loadFailed": "パックの読み込みに失敗しました",
+    "retry": "再試行"
+  }
+}

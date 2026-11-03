@@ -59,12 +59,10 @@ const RatingPage = () => {
     includeP,
     includeG,
     includeU,
-    fourVoteFilter,
-    fourVoteMin,
+    rankStateFilter,
     setMyRatedFilter, 
     setIncludeBands,
-    setFourVoteFilter,
-    setFourVoteMin,
+    setRankStateFilter,
     sortType,
     setSortType,
     setSortOrder,
@@ -98,7 +96,6 @@ const RatingPage = () => {
   const [showTopRaters, setShowTopRaters] = useState(false);
   const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
   const [ratingAccuracyStats, setRatingAccuracyStats] = useState([]);
-  const [ratingCountDraft, setRatingCountDraft] = useState(() => String(fourVoteMin));
   const fetchGenRef = useRef(0);
   const deepLinkHandledRef = useRef(false);
   const selectedRatingIdRef = useRef(null);
@@ -137,8 +134,7 @@ const RatingPage = () => {
       includeP: includeP ? 'true' : 'false',
       includeG: includeG ? 'true' : 'false',
       includeU: includeU ? 'true' : 'false',
-      fourVote: fourVoteFilter,
-      fourVoteMin: String(fourVoteMin),
+      rankState: rankStateFilter,
       myRated: myRatedFilter,
       flow: String(ratingFlow),
     };
@@ -146,7 +142,7 @@ const RatingPage = () => {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, includeP, includeG, includeU, fourVoteFilter, fourVoteMin, myRatedFilter, debouncedQuery, ratingFlow]);
+  }, [sortType, sortOrder, includeP, includeG, includeU, rankStateFilter, myRatedFilter, debouncedQuery, ratingFlow]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -252,16 +248,15 @@ const RatingPage = () => {
     if (band === 'U' && !includeU) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
     if (listRow.flow != null && listRow.flow !== ratingFlow) return false;
-    const detailCount = details.filter((detail) => !detail.isCommunityRating).length;
-    if (fourVoteFilter === 'only' && detailCount < fourVoteMin) return false;
-    if (fourVoteFilter === 'hide' && detailCount >= fourVoteMin) return false;
+    if (rankStateFilter === 'rankable' && listRow.rankState !== 'rankable') return false;
+    if (rankStateFilter === 'ratingOff' && listRow.rankState !== 'ratingOff') return false;
     if (user?.id && myRatedFilter !== 'show') {
       const hasMyRating = details.some((d) => d.userId === user.id);
       if (myRatedFilter === 'hide' && hasMyRating) return false;
       if (myRatedFilter === 'only' && !hasMyRating) return false;
     }
     return true;
-  }, [debouncedQuery, includeP, includeG, includeU, fourVoteFilter, fourVoteMin, myRatedFilter, user?.id, ratingFlow]);
+  }, [debouncedQuery, includeP, includeG, includeU, rankStateFilter, myRatedFilter, user?.id, ratingFlow]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -715,38 +710,13 @@ const RatingPage = () => {
                 })}
               </div>
             </div>
-            <div className="rating-count-filter">
-              <label className="rating-count-filter__field">
-                <input
-                  className="rating-count-filter__input"
-                  type="text"
-                  inputMode="numeric"
-                  aria-label={t('rating.toggles.fourVote.input')}
-                  value={ratingCountDraft}
-                  onChange={(e) => setRatingCountDraft(e.target.value)}
-                  onBlur={(e) => {
-                    const trimmed = e.currentTarget.value.trim();
-                    const parsed = Number(trimmed);
-                    const normalized = trimmed !== '' && Number.isFinite(parsed)
-                      ? Math.min(99, Math.max(1, Math.floor(parsed)))
-                      : fourVoteMin;
-                    setFourVoteMin(normalized);
-                    setRatingCountDraft(String(normalized));
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur();
-                  }}
-                />
-                <span className="toggle-label">{t('rating.toggles.fourVote.suffix')}</span>
-              </label>
-              <StateDisplay
-                currentState={fourVoteFilter}
-                states={['hide', 'show', 'only']}
-                onChange={setFourVoteFilter}
-                showLabel={false}
-                width={60}
-              />
-            </div>
+            <StateDisplay
+              currentState={rankStateFilter}
+              states={['all', 'rankable', 'ratingOff']}
+              onChange={setRankStateFilter}
+              label={t('rating.toggles.rankState.label')}
+              width={60}
+            />
         </div>
 
 

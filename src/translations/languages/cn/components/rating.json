@@ -28,7 +28,8 @@
       "saveChanges": "保存更改",
       "removeRating": "删除评级",
       "viewAdminRatings": "查看评级员评级",
-      "viewCommunityRatings": "查看其他玩家评级"
+      "viewCommunityRatings": "查看其他玩家评级",
+      "copyNotes": "复制备注"
     },
     "errors": {
       "commentLength": "理由必须少于1000个字符",
@@ -37,7 +38,8 @@
       "updateFailed": "评级更新失败",
       "unsavedChanges": "你有未保存的更改，确定要退出吗？",
       "deleteFailed": "评级删除失败",
-      "autorateFailed": "自动评级失败"
+      "autorateFailed": "自动评级失败",
+      "notesCopyFailed": "复制备注失败"
     },
     "tooltips": {
       "lastUpdated": "上次更新时间",
@@ -70,7 +72,8 @@
       "ratingBanned": "你没有评级权限",
       "voteSettled": "评级已在投票讨论中确定。",
       "voteThread": "打开 Discord 子区",
-      "autorateSuccess": "自动评级成功"
+      "autorateSuccess": "自动评级成功",
+      "notesCopied": "已复制备注"
     }
   },
   "ratingCard": {

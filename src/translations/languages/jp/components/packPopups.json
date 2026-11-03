@@ -1,0 +1,282 @@
+{
+  "addToPack": {
+    "title": "パックに追加",
+    "close": "×",
+    "levelInfo": {
+      "adding": "パックに追加中："
+    },
+    "by": "作成者：",
+    "searchPlaceholder": "パックを検索...",
+    "selectPack": "パックを選択",
+    "createNew": "新規作成",
+    "noPacks": "まだパックがありません。",
+    "noPacksFound": "検索条件に一致するパックはありません。",
+    "createFirst": "最初のパックを作成",
+    "loginRequired": "パックを管理するにはログインしてください",
+    "levels": "レベル",
+    "alreadyInPack": "パックに追加済み",
+    "packFull": "パックが満杯です",
+    "loading": "パックを読み込み中...",
+    "addToPack": "パックに追加",
+    "lookupInPacks": "パック内を検索",
+    "adding": "追加中...",
+    "pagination": {
+      "previous": "前へ",
+      "next": "次へ",
+      "pageInfo": "{{current}} / {{total}}ページ"
+    },
+    "success": {
+      "added": "レベルをパックに追加しました！",
+      "packCreated": "パックを作成しました！"
+    },
+    "errors": {
+      "addFailed": "レベルをパックに追加できませんでした",
+      "fetchPacksFailed": "パックを取得できませんでした",
+      "noPackSelected": "パックを選択してください",
+      "alreadyInPack": "このレベルは選択したパックにすでに含まれています",
+      "packFull": "このパックはレベル数の上限に達しています",
+      "createFailed": "パックを作成できませんでした",
+      "generic": "パックへのレベル追加中にエラーが発生しました"
+    }
+  },
+  "createPack": {
+    "title": "新しいパックを作成",
+    "close": "×",
+    "name": {
+      "label": "パック名",
+      "placeholder": "パック名を入力...",
+      "help": "パックの内容が分かる名前を付けてください"
+    },
+    "description": {
+      "label": "説明",
+      "placeholder": "パックの簡単な説明（任意）...",
+      "help": "任意：このパックの概要を入力してください（最大2000文字）"
+    },
+    "icon": {
+      "label": "パックアイコン",
+      "placeholder": "https://example.com/icon.png",
+      "help": "任意：パックのアイコン画像をアップロードできます",
+      "upload": "アイコンをアップロード",
+      "remove": "削除",
+      "removing": "削除中..."
+    },
+    "theme": {
+      "label": "テーマ",
+      "help": "パックの表示テーマを選択してください",
+      "default": "デフォルト",
+      "dark": "ダーク",
+      "neon": "ネオン",
+      "pastel": "パステル"
+    },
+    "viewMode": {
+      "label": "公開範囲",
+      "help": "パックを閲覧できるユーザーを設定します",
+      "public": "公開 — 誰でも閲覧可能",
+      "linkonly": "リンク限定 — 直接リンクからのみ閲覧可能",
+      "private": "非公開 — 自分のみ閲覧可能"
+    },
+    "pinned": {
+      "label": "上部に固定",
+      "help": "このパックをパック一覧の上部に固定します"
+    },
+    "create": "パックを作成",
+    "success": {
+      "created": "パックを作成しました！",
+      "iconSelected": "アイコンを選択しました！",
+      "iconUploaded": "アイコンをアップロードしました！"
+    },
+    "errors": {
+      "nameRequired": "パック名を入力してください",
+      "createFailed": "パックを作成できませんでした",
+      "iconProcessFailed": "アイコンを処理できませんでした",
+      "iconUploadFailed": "アイコンをアップロードできませんでした"
+    }
+  },
+  "editPack": {
+    "title": "パックを編集",
+    "close": "×",
+    "name": {
+      "label": "パック名",
+      "placeholder": "パック名を入力...",
+      "help": "パックの内容が分かる名前を付けてください"
+    },
+    "description": {
+      "label": "説明",
+      "placeholder": "パックの簡単な説明（任意）...",
+      "help": "任意：このパックの概要を入力してください（最大2000文字）"
+    },
+    "icon": {
+      "label": "パックアイコン",
+      "placeholder": "https://example.com/icon.png",
+      "help": "任意：パックのアイコン画像をアップロードできます",
+      "upload": "アイコンをアップロード",
+      "remove": "削除",
+      "removing": "削除中..."
+    },
+    "theme": {
+      "label": "テーマ",
+      "help": "パックの表示テーマを選択してください",
+      "default": "デフォルト",
+      "dark": "ダーク",
+      "neon": "ネオン",
+      "pastel": "パステル"
+    },
+    "viewMode": {
+      "label": "公開範囲",
+      "help": "パックを閲覧できるユーザーを設定します",
+      "forcedPrivateHelp": "このパックは管理者によって非公開に固定されています",
+      "public": "公開 — 誰でも閲覧可能",
+      "linkonly": "リンク限定 — 直接リンクからのみ閲覧可能",
+      "private": "非公開 — 自分のみ閲覧可能",
+      "forcedPrivate": "強制的に非公開 — オーナーは変更できません"
+    },
+    "pinned": {
+      "label": "上部に固定",
+      "help": "このパックをパック一覧の上部に固定します"
+    },
+    "save": "変更を保存",
+    "delete": "パックを削除",
+    "noPermission": "このパックを編集する権限がありません",
+    "deleteConfirm": {
+      "title": "パックを削除",
+      "message": "このパックを削除してもよろしいですか？この操作は取り消せません。"
+    },
+    "transferOwnership": {
+      "label": "所有権を譲渡",
+      "currentOwner": "現在のオーナー",
+      "placeholder": "ユーザー名またはニックネームで検索...",
+      "noResults": "ユーザーが見つかりません",
+      "selected": "選択済み",
+      "transfer": "所有権を譲渡",
+      "transferring": "譲渡中...",
+      "help": "パックの所有権を別のユーザーに譲渡します。"
+    },
+    "success": {
+      "updated": "パックを更新しました！",
+      "deleted": "パックを削除しました！",
+      "iconUploaded": "アイコンをアップロードしました！",
+      "iconRemoved": "アイコンを削除しました！",
+      "ownershipTransferred": "パックの所有権を譲渡しました！"
+    },
+    "errors": {
+      "nameRequired": "パック名を入力してください",
+      "updateFailed": "パックを更新できませんでした",
+      "deleteFailed": "パックを削除できませんでした",
+      "iconUploadFailed": "アイコンをアップロードできませんでした",
+      "iconRemoveFailed": "アイコンを削除できませんでした",
+      "selectNewOwner": "新しいオーナーを選択してください",
+      "transferFailed": "パックの所有権を譲渡できませんでした"
+    }
+  },
+  "editFolder": {
+    "title": "フォルダーを編集",
+    "name": {
+      "label": "フォルダー名",
+      "placeholder": "フォルダー名を入力",
+      "help": "この名前はダウンロード時のフォルダーパスとして使用されます"
+    },
+    "description": {
+      "label": "説明",
+      "placeholder": "このフォルダーの詳細（任意）..."
+    }
+  },
+  "editNote": {
+    "title": "メモを編集",
+    "name": {
+      "label": "タイトル",
+      "placeholder": "タイトルを入力"
+    },
+    "description": {
+      "label": "メモ",
+      "placeholder": "他のユーザーに伝えたいことを自由に入力してください…",
+      "help": "Markdown（太字、リスト、リンク）に対応しています。"
+    }
+  },
+  "downloadPack": {
+    "title": "{{contextName}}をダウンロード",
+    "defaultContextName": "パック",
+    "description": "<strong>{{contextName}}</strong>のダウンロード用アーカイブを生成します。",
+    "descriptionFallback": "選択した項目のダウンロード用アーカイブを生成します。",
+    "estimatedSize": "推定サイズ：",
+    "estimatedSuffix": "（推定：メタデータがない項目 {{count}} 件）",
+    "estimatedMayBeLarger": "一部のレベルにはサイズ情報がありません。実際のダウンロードサイズは推定より大きくなる場合があります。",
+    "processing": "処理中です...ダウンロードの準備が完了するまでお待ちください。",
+    "processingSubtext": "パック全体のサイズによっては、しばらく時間がかかる場合があります。",
+    "ready": "ダウンロードの準備ができました！下のボタンをクリックしてダウンロードを開始してください。",
+    "readySubtext": "リンクの有効期限：{{expiresAt}}",
+    "readySubtextFallback": "リンクの有効期限は不明です。",
+    "sizeExceeded": "一度にダウンロードできるパックの上限は15GBです。より小さなパックを選択するか、複数回に分けてダウンロードしてください。",
+    "generateDownload": "ダウンロードを生成",
+    "close": "閉じる",
+    "download": "ダウンロード",
+    "trimFolderNames": "パスの互換性を保つためにフォルダー名を短縮",
+    "errors": {
+      "noUrl": "サーバーからダウンロードリンクが返されませんでした。",
+      "generateFailed": "ダウンロードリンクを生成できませんでした。",
+      "diskFull": "サーバーの一時ディスク容量が不足しているため、このパックをダウンロードできません。時間をおいて再試行するか、選択範囲を小さくしてください。",
+      "queueBusy": "サーバーは他のパックのダウンロードを準備中です。数分待ってから再試行してください。"
+    }
+  },
+  "exportPack": {
+    "title": "{{contextName}}をエクスポート",
+    "defaultContextName": "パック",
+    "description": "{{contextName}}内のレベルをスプレッドシートとしてダウンロードします。",
+    "formatLabel": "形式",
+    "format": {
+      "xlsx": "Excel（.xlsx）",
+      "csv": "CSV（.csv）"
+    },
+    "structureLabel": "レイアウト",
+    "structure": {
+      "includeFolders": "パックのフォルダーを含める（セクション行）",
+      "flatten": "リストをフラット化（レベルのみ、順序を維持）"
+    },
+    "export": "エクスポート",
+    "exporting": "エクスポート中…",
+    "unavailable": "利用できません",
+    "errors": {
+      "exportFailed": "パックをエクスポートできませんでした。もう一度お試しください。"
+    }
+  },
+  "placement": {
+    "titleAddFolder": "フォルダーを追加",
+    "titleAddLevel": "レベルを追加",
+    "titleAddNote": "メモを追加",
+    "titleMove": "項目を移動",
+    "folderName": "フォルダー名",
+    "folderNamePlaceholder": "フォルダー名を入力",
+    "folderDescription": "説明",
+    "folderDescriptionPlaceholder": "このフォルダーの詳細（任意・ウェブサイト上のみ）",
+    "noteTitle": "タイトル",
+    "noteTitlePlaceholder": "タイトルを入力",
+    "noteBody": "メモ",
+    "noteBodyPlaceholder": "他のユーザーに伝えたいことを自由に入力してください…",
+    "noteBodyHelp": "Markdown（太字、リスト、リンク）に対応しています。ウェブサイト上のみで表示され、ダウンロードには含まれません。",
+    "levelIds": "レベルID",
+    "levelIdsPlaceholder": "例：1234, 5678（1行に1つずつ入力することもできます）",
+    "positionLabel": "パック内の位置",
+    "root": "パックのルート",
+    "insertHere": "{{path}}の{{index}}番目に挿入",
+    "insertShort": "#{{index}}",
+    "dividerHint": "行にカーソルを合わせて挿入位置を選択",
+    "addFolder": "フォルダーを追加",
+    "addLevels": "レベルを追加",
+    "addNote": "メモを追加",
+    "move": "ここに移動",
+    "submitting": "保存中…"
+  },
+  "addLevelsConfirm": {
+    "title": "追加できないレベルがあります",
+    "titleAllInvalid": "追加できるレベルがありません",
+    "message": "{{validCount}}件のレベルを追加できます。以下は追加できません：",
+    "messageAllInvalid": "指定されたレベルは1件も追加できません：",
+    "invalidHeading": "追加できません（{{count}}件）",
+    "proceed": "レベルを{{count}}件追加",
+    "submitting": "追加中…",
+    "reasons": {
+      "notFound": "レベルが見つかりません",
+      "alreadyInPack": "この場所にすでに存在します",
+      "quotaExceeded": "パック内の項目数が上限に達しています"
+    }
+  }
+}

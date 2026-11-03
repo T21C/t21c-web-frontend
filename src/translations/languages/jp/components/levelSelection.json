@@ -1,0 +1,12 @@
+{
+  "title": "レベルファイルを選択",
+  "description": "zipファイル内に複数のレベルファイルが見つかりました。メインのレベルファイルを選択してください：",
+  "buttons": {
+    "submit": "提出"
+  },
+  "fileInfo": {
+    "song": "曲: {{song}}",
+    "size": "サイズ: {{size}}",
+    "youtube": "YouTube Streamあり"
+  }
+}

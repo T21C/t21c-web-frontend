@@ -1,0 +1,66 @@
+{
+  "title": "アカウント作成",
+  "form": {
+    "email": {
+      "label": "メールアドレス",
+      "error": "メールアドレスの形式が正しくありません"
+    },
+    "username": {
+      "label": "ユーザー名",
+      "error": {
+        "length": "ユーザー名は2～32文字で入力してください",
+        "characters": "ユーザー名には英字、数字、アンダースコア（_）、ピリオド（.）のみ使用できます",
+        "consecutivePeriods": "ユーザー名に連続する2つのピリオド（..）は使用できません"
+      },
+      "tooltip": {
+        "default": "Discordと同様に、英字、数字、_、. を使用できます（2～32文字）。他のプレイヤーのユーザー名と重複する場合、末尾に識別用の文字列が追加されることがあります。",
+        "length": "ユーザー名は2～32文字で入力してください。現在のユーザー名は{{length}}文字です。",
+        "characters": "{{position}}文字目に無効な文字「{{char}}」があります。英字、数字、アンダースコア（_）、ピリオド（.）のみ使用できます。",
+        "consecutivePeriods": "ピリオド（..）を連続して使用することはできません。"
+      }
+    },
+    "password": {
+      "label": "パスワード",
+      "confirmLabel": "パスワード（確認）",
+      "error": {
+        "length": "パスワードは8文字以上で入力してください",
+        "mismatch": "パスワードが一致しません"
+      }
+    },
+    "terms": {
+      "label": "以下の内容を読み、同意します：",
+      "privacyPolicy": "プライバシーポリシー",
+      "and": "および",
+      "termsOfService": "利用規約"
+    },
+    "captcha": {
+      "error": "Captcha認証が必要です"
+    },
+    "submit": {
+      "default": "アカウントを作成"
+    }
+  },
+  "success": {
+    "title": "登録完了！",
+    "message": "メールを確認してアカウントを認証してください。プロフィールページには今すぐ移動できます。",
+    "usernameModified": "元のユーザー名は既に使用されていたため、{{username}} に変更されました。",
+    "goToProfile": "プロフィールへ"
+  },
+  "errors": {
+    "rateLimit": "新規アカウントの作成数が上限に達しました。IPアドレスが一時的にブロックされています。",
+    "timeRemaining": "残り時間：{{time}}",
+    "generic": "登録に失敗しました。もう一度お試しください。",
+    "discordFailed": "Discordとの連携に失敗しました",
+    "googleFailed": "Googleとの連携に失敗しました"
+  },
+  "divider": "または",
+  "discord": {
+    "register": "Discordで登録"
+  },
+  "google": {
+    "register": "Googleで登録"
+  },
+  "login": {
+    "link": "すでにアカウントをお持ちですか？ログイン"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "ログイン",
+    "description": "The Universal Forums（TUF）にログイン"
+  },
+  "header": {
+    "title": "ログイン"
+  },
+  "form": {
+    "labels": {
+      "emailOrUsername": "メールアドレスまたはユーザー名",
+      "password": "パスワード"
+    },
+    "buttons": {
+      "login": "ログイン",
+      "loggingIn": "ログイン中...",
+      "discordLogin": "Discordでログイン",
+      "googleLogin": "Googleでログイン"
+    },
+    "divider": "または",
+    "links": {
+      "register": "アカウントをお持ちでない場合はこちら：登録"
+    }
+  },
+  "mfa": {
+    "title": "メールを確認",
+    "codePrompt": "ログインを完了するには、{{email}} に送信したコードを入力してください。",
+    "yourEmail": "メールアドレス",
+    "codeLabel": "ログインコード",
+    "codeRequired": "メールに届いた8文字のコードを入力してください",
+    "invalidCode": "無効または有効期限切れのコードです",
+    "confirm": "続行",
+    "verifying": "検証中...",
+    "resend": "コードを再送信",
+    "resendIn": "{{seconds}}秒後に再送信",
+    "resendCooldown": "別のコードをリクエストする前にお待ちください",
+    "sendFailed": "ログインコードの送信に失敗しました",
+    "expired": "ログイン認証の有効期限が切れました。もう一度ログインしてください。",
+    "rememberDevice": "このデバイスを120日間記憶する",
+    "back": "ログイン画面に戻る",
+    "usePasskey": "パスキーを使用する",
+    "passkeyFailed": "パスキーの検証に失敗しました。もう一度お試しください。"
+  },
+  "passkey": {
+    "button": "パスキーでログイン",
+    "failed": "パスキーでのログインに失敗しました。もう一度お試しください。"
+  },
+  "errors": {
+    "generic": "不明なエラーです。後でもう一度お試しください。",
+    "network": "ネットワーク接続エラーです。後でもう一度お試しください。",
+    "discordFailed": "Discordログインの開始に失敗しました。もう一度お試しください。問題が解決しない場合は開発者にお問い合わせください。",
+    "googleFailed": "Googleログインの開始に失敗しました。もう一度お試しください。問題が解決しない場合は開発者にお問い合わせください。",
+    "invalidCredentials": "メールアドレスまたはユーザー名、パスワードが正しくありません。",
+    "emailNotVerified": "ログインする前にメールアドレスを確認してください。",
+    "rateLimit": "試行回数が多すぎます。しばらく待ってからもう一度お試しください。",
+    "captcha": {
+      "notLoaded": "reCAPTCHAが読み込まれていません",
+      "incomplete": "reCAPTCHAの認証を完了してください",
+      "failed": "reCAPTCHAの認証に失敗しました。もう一度お試しください。"
+    }
+  }
+}

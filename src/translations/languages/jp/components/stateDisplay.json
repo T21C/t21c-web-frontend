@@ -1,0 +1,33 @@
+{
+  "states": {
+    "hide": "非表示",
+    "show": "表示",
+    "only": "のみ",
+    "all": "すべて",
+    "none": "なし",
+    "wf": "WF",
+    "wfpp": "WF PP",
+    "either": "どちらか",
+    "both": "両方とも",
+    "12k": "12K",
+    "16k": "16K",
+    "latest": "3.4.0",
+    "pre340": "<3.4.0",
+    "v2": "v2",
+    "PASS": "クリア",
+    "LEVEL": "新たなレベル",
+    "percent": "%",
+    "pixel": "px",
+    "keyword": "側面",
+    "on": "オン",
+    "off": "オフ",
+    "single": "単一地点",
+    "split": "分割",
+    "requestExportDefault": "デフォルト",
+    "requestExportFilters": "フィルターを使用"
+  },
+  "accessDenied": {
+    "title": "アクセス拒否",
+    "message": "このページにアクセスするには、適切な権限が必要です。"
+  }
+}

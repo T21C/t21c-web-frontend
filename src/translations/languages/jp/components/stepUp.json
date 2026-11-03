@@ -1,0 +1,29 @@
+{
+  "title": "ご本人であることを確認してください",
+  "actions": {
+    "emailChange": "メールアドレスの変更",
+    "security": "このセキュリティ措置を続行する"
+  },
+  "codePrompt": "{{email}} 宛に提出したコードを {{action}} に入力してください。",
+  "yourEmail": "メールアドレス",
+  "codeLabel": "確認コード",
+  "codeRequired": "メールに記載されている8文字のコードを入力してください",
+  "invalidCode": "コードが無効または有効期限が切れています",
+  "confirm": "確認",
+  "confirmed": "本人確認済み",
+  "resend": "コードを再提出",
+  "resendIn": "{{seconds}}秒後に再提出",
+  "resendCooldown": "別のコードをリクエストする前に、しばらくお待ちください",
+  "sendFailed": "確認コードの提出に失敗しました",
+  "emailRequired": "メールアドレスの認証が必要です",
+  "emailRequiredBody": "この操作を実行するには、事前にメールアドレスを追加し、確認を行う必要があります。",
+  "addEmail": "メールアドレスを追加",
+  "firstEmailPrompt": "{{action}} に対して本人確認を行ってください。",
+  "currentPassword": "現在のパスワード",
+  "passwordRequired": "パスワードが必要です",
+  "passwordFailed": "パスワードが間違っています",
+  "discordPrompt": "このアカウントはDiscordを利用しています。続行するには、Discordで再度認証を行ってください。",
+  "oauthFailed": "Discordの再認証の開始に失敗しました",
+  "continue": "続きを読む",
+  "continueDiscord": "Discordで続ける"
+}

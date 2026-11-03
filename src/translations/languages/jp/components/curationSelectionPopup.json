@@ -1,0 +1,41 @@
+{
+  "title": "キュレーションを選択",
+  "description": "週次スケジュールに追加するキュレーションを選択してください",
+  "descriptionMulti": "キュレーションの種類で絞り込み、1つ以上のキュレーションを選択してください",
+  "filters": {
+    "facetBuilderTitle": "キュレーションタイプで絞り込む",
+    "search": "検索",
+    "searchPlaceholder": "曲名、アーティスト名、またはクリエイター名で検索…",
+    "type": "キュレーションタイプ",
+    "allTypes": "すべてのタイプ",
+    "mustInclude": "レベルには（以下のすべてを）含める必要があります",
+    "mustIncludeHint": "O選択されたすべてのタイプ（キュレーションとして）を含むレベルのみが表示されます。",
+    "excludeTypes": "（以下のいずれかを含む）レベルを除外する",
+    "excludeTypesHint": "これらのタイプのキュレーションが1つ以上あるレベルをすべて非表示にする。",
+    "searchTypes": "タイプを検索…",
+    "noneSelected": "タイプ指定は不要 — すべてのレベルが一致します",
+    "noneExcluded": "一切除外なし",
+    "remove": "削除"
+  },
+  "multiSelectHint": "行をクリックして選択状態を切り替えてください。適用するには、下のボタンをクリックしてください。",
+  "loading": "キュレーションを読み込み中...",
+  "empty": "該当するキュレーションが見つかりませんでした",
+  "creator": "クリエイター",
+  "appearances": {
+    "featured": "週刊掲載で{{times}}回特集されました",
+    "never": "まだ掲載されていません"
+  },
+  "actions": {
+    "select": "選択",
+    "applySelected": "{{count}}件の選択項目を適用する"
+  },
+  "pagination": {
+    "previous": "前へ",
+    "next": "次へ",
+    "pageInfo": "{{total}}ページ中の{{current}}ページ"
+  },
+  "errors": {
+    "fetchFailed": "キュレーションの取得に失敗しました",
+    "noneSelected": "少なくとも1つのキュレーションを選択してください"
+  }
+}

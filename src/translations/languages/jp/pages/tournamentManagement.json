@@ -1,0 +1,371 @@
+{
+  "meta": {
+    "title": "大会の管理",
+    "description": "大会の順位、レベルクレジット、アバターフレームのコスメティックを管理します"
+  },
+  "title": "大会管理",
+  "subtitle": "イベントを作成し、順位を入力して、レベルクレジットを同期し、アバターフレームのコスメティックを紐づけます。",
+  "tabs": {
+    "events": "イベント",
+    "unresolved": "未解決の名前",
+    "import": "インポート",
+    "series": "シリーズ"
+  },
+  "subTabs": {
+    "details": "詳細",
+    "tiers": "ティア",
+    "placements": "順位",
+    "cosmetics": "コスメティック"
+  },
+  "searchPlaceholder": "大会を検索…",
+  "refresh": "更新",
+  "newTournament": "大会を新規作成",
+  "editTournament": "大会を編集",
+  "emptyList": "大会はまだありません。作成するか、CSVをインポートしてください。",
+  "delete": "削除",
+  "selectTournamentFirst": "先に「イベント」タブから大会を選択してください。",
+  "addRow": "行を追加",
+  "savePlacements": "順位を保存",
+  "syncCredits": "クレジットを同期",
+  "withdrew": "辞退",
+  "disqualified": "失格",
+  "autoLinkExact": "完全一致を自動リンク",
+  "noUnresolved": "すべての順位名がリンク済みです。",
+  "addReward": "コスメティックを追加",
+  "syncEntitlements": "利用権を同期",
+  "createSeries": "シリーズを作成",
+  "hiddenBadge": "非表示",
+  "reorder": {
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "dragHandle": "ドラッグして並べ替え"
+  },
+  "import": {
+    "dryRun": "CSVを事前確認",
+    "importCsv": "CSVをインポート",
+    "messages": {
+      "dryRunComplete": "事前確認が完了しました",
+      "importComplete": "インポートが完了しました"
+    },
+    "errors": {
+      "failed": "インポートに失敗しました"
+    }
+  },
+  "packImport": {
+    "open": "パックをインポート",
+    "title": "パックからインポート",
+    "subtitle": "パック参照からノミネート対象の順位をインポートし、適用前に差分を確認します。",
+    "packRef": "パック参照",
+    "packRefPlaceholder": "例：my-pack-slug",
+    "previewDiff": "差分をプレビュー",
+    "apply": "インポートを適用",
+    "adds": "追加予定",
+    "removes": "削除予定",
+    "diverged": "差異あり（手動確認）",
+    "noAdds": "追加候補はありません。",
+    "noRemoves": "削除候補はありません。",
+    "noDiverged": "差異のある行はありません。",
+    "messages": {
+      "imported": "パックのインポートを適用しました"
+    },
+    "errors": {
+      "packRefRequired": "パック参照を入力してください。",
+      "diffFailed": "差分のプレビューに失敗しました",
+      "importFailed": "パックのインポートに失敗しました"
+    }
+  },
+  "packCreate": {
+    "open": "パックからインポート",
+    "title": "パックから大会を作成",
+    "subtitle": "パックからレベルモードの大会を作成し、編集画面を開きます。",
+    "packRef": "パック参照",
+    "create": "大会を作成",
+    "messages": {
+      "created": "パックから大会を作成しました"
+    },
+    "errors": {
+      "packRefRequired": "パック参照を入力してください。",
+      "createFailed": "パックから大会を作成できませんでした"
+    }
+  },
+  "nominees": {
+    "title": "ノミネート対象を選択",
+    "allSelected": "条件を満たすクリエイターがすべて選択されています（フィルターが空の場合、同期時に全員が対象）",
+    "noneSelected": "ノミネート対象が選択されていません",
+    "selectedCount": "{{count}}件を選択中",
+    "empty": "このレベルに対象となるクリエイターはいません。",
+    "guestBadge": "ゲスト",
+    "selectAll": "すべて選択",
+    "clearAll": "すべて解除",
+    "save": "フィルターを保存",
+    "errors": {
+      "loadFailed": "ノミネート候補を読み込めませんでした"
+    }
+  },
+  "help": {
+    "open": "ヘルプ",
+    "title": "大会の順位設定ヘルプ",
+    "subtitle": "モード、展開、クレジット、重み、パックのインポートについて",
+    "close": "ヘルプを閉じる",
+    "sections": {
+      "modes": {
+        "title": "順位モード",
+        "intro": "各行では大会のデフォルトを引き継ぐか、個別に上書きできます。",
+        "bullets": {
+          "profile": "<b>プロフィール</b> — プレイヤーまたはクリエイターにリンクします。レベルは任意の根拠情報としてのみ使用されます。",
+          "level": "<b>レベル</b> — 同期後、そのレベルのクリエイターに展開されます。",
+          "inherit": "<b>継承</b> — 「詳細」で設定した大会の順位モードを使用します。"
+        }
+      },
+      "evidence": {
+        "title": "根拠情報と展開の違い",
+        "intro": "プロフィール行にレベルを添付しても、追加のクレジットは作成されません。",
+        "bullets": {
+          "profileLevel": "Profile + levelIdは、カードにコンテキストとしてレベルを表示します。",
+          "noExpand": "複数のプロフィールクレジットに展開されるのは、レベルモードの行のみです。"
+        }
+      },
+      "nominees": {
+        "title": "ノミネート対象フィルター",
+        "intro": "レベル行には、同期前に任意の受取対象フィルターを保存できます。",
+        "bullets": {
+          "prefill": "ノミネート対象の選択欄には、レベルクレジットの内容が初期設定として入力されます（デフォルトはcharter/vfxer）。",
+          "emptyFilter": "同期時にフィルターが空の場合、そのレベルの対象資格を持つ全員が対象になります。",
+          "guests": "ゲストも含められます。選択画面では警告バッジが表示されます。"
+        }
+      },
+      "sync": {
+        "title": "クレジットを同期",
+        "intro": "順位を保存しても、レベルクレジットは生成されません。",
+        "bullets": {
+          "dryRun": "同期では、確定前に追加・削除内容の事前確認が行われます。",
+          "saveVsSync": "保存では行のメタデータが保存され、同期ではtournament_placement_creditsが書き込まれます。"
+        }
+      },
+      "weights": {
+        "title": "並べ替えの重み",
+        "intro": "シリーズと大会の一覧では、1..nの連番の重みを使用します。",
+        "bullets": {
+          "series": "シリーズタブの上下ボタンでシリーズの順序を変更します。",
+          "tier": "編集画面では、ティアのランク重みに基づいて順位が並び替えられます。"
+        }
+      },
+      "pack": {
+        "title": "パックのインポート",
+        "intro": "パックツールからノミネート対象の順位をインポートし、差分を同期します。",
+        "bullets": {
+          "import": "新しいパック項目はNOM（ノミネート）順位としてインポートされます。",
+          "diff": "差分同期では追加・削除が提案され、差異のある行は手動確認が必要です。"
+        }
+      },
+      "cosmetics": {
+        "title": "コスメティック／アバターフレーム",
+        "intro": "報酬では、一致するクレジットごとに利用権が1つ付与されます。",
+        "bullets": {
+          "perCredit": "利用権は順位IDではなくクレジットIDに紐づきます。",
+          "entitlements": "報酬ルールまたはクレジットを変更した後は「利用権を同期」を使用してください。"
+        }
+      }
+    }
+  },
+  "series": {
+    "slug": "スラッグ",
+    "name": "名前",
+    "empty": "シリーズはまだありません。上のフォームから追加してください。",
+    "deleteConfirm": "「{{name}}」を削除しますか？紐づくイベントのリンクが解除され、シリーズ限定の報酬も削除されます。",
+    "messages": {
+      "created": "シリーズを作成しました",
+      "updated": "シリーズを更新しました",
+      "deleted": "シリーズを削除しました"
+    },
+    "errors": {
+      "required": "スラッグと名前は必須です。",
+      "createFailed": "シリーズを作成できませんでした",
+      "updateFailed": "シリーズを更新できませんでした",
+      "deleteFailed": "シリーズを削除できませんでした"
+    }
+  },
+  "messages": {
+    "tournamentCreated": "大会を作成しました",
+    "namesLinked": "{{count}}件の名前をリンクしました",
+    "placementLinked": "リンクしました",
+    "reordered": "順序を更新しました",
+    "deleted": "大会を削除しました"
+  },
+  "deleteConfirm": "「{{name}}」とその順位、クレジット、報酬をすべて削除しますか？",
+  "errors": {
+    "loadTournamentsFailed": "大会を読み込めませんでした",
+    "loadUnresolvedFailed": "未解決の名前を読み込めませんでした",
+    "resolveFailed": "解決に失敗しました",
+    "linkFailed": "リンクに失敗しました",
+    "reorderFailed": "並べ替えに失敗しました",
+    "deleteFailed": "大会を削除できませんでした"
+  },
+  "popup": {
+    "title": "大会を管理",
+    "deleteConfirm": "「{{name}}」とその順位、クレジット、報酬をすべて削除しますか？",
+    "unsavedConfirm": "保存していない変更があります。破棄して移動しますか？",
+    "placements": {
+      "tier": "ティア",
+      "rowMode": "モード",
+      "nameLevel": "名前／レベル",
+      "linkedUsers": "リンク済みユーザー",
+      "linkTypes": {
+        "player": "プレイヤー",
+        "creator": "クリエイター"
+      },
+      "name": "名前",
+      "level": "レベル",
+      "link": "リンク",
+      "nominees": "ノミネート対象",
+      "team": "チーム",
+      "noLevel": "レベルなし",
+      "pickLevel": "レベルを選択",
+      "changeLevel": "変更",
+      "pickNominees": "ノミネート対象を選択",
+      "editNominees": "ノミネート対象を編集",
+      "nomineeCount": "{{count}}件のノミネート対象",
+      "nomineeOverflow": "ほか{{count}}件",
+      "empty": "順位はまだありません",
+      "resizeColumn": "列幅を変更",
+      "rowModes": {
+        "inherit": "継承",
+        "profile": "プロフィール",
+        "level": "レベル"
+      }
+    },
+    "credits": {
+      "syncConfirm": "クレジットを同期しますか？ +{{add}} / -{{remove}}"
+    },
+    "rewards": {
+      "label": "ラベル",
+      "tier": "ティア",
+      "tierAny": "すべて（最大の重みを使用）",
+      "maxRankWeight": "最大ランク重み",
+      "maxRankWeightPlaceholder": "例：上位の順位なら3",
+      "priority": "優先度",
+      "tierRef": "ティア #{{id}}"
+    },
+    "messages": {
+      "saved": "大会を保存しました",
+      "deleted": "大会を削除しました",
+      "placementsSaved": "順位を保存しました",
+      "rewardCreated": "コスメティックを作成しました",
+      "rewardDeleted": "コスメティックを削除しました",
+      "syncSuccess": "同期しました（+{{granted}} / -{{revoked}}）",
+      "creditsSynced": "クレジットを同期しました（+{{add}} / -{{remove}}）"
+    },
+    "errors": {
+      "loadFailed": "大会を読み込めませんでした",
+      "deleteFailed": "削除に失敗しました",
+      "placementsFailed": "順位を保存できませんでした",
+      "rewardFailed": "コスメティックを作成できませんでした",
+      "rewardDeleteFailed": "コスメティックを削除できませんでした",
+      "syncFailed": "同期に失敗しました",
+      "creditsSyncFailed": "クレジットの同期に失敗しました"
+    }
+  },
+  "visuals": {
+    "tournamentTitle": "イベントのビジュアル",
+    "eventIcon": "イベントアイコン",
+    "defaultCardBg": "デフォルトのカード背景",
+    "tierIcon": "ティアアイコン",
+    "tierCardBg": "ティアカードの背景",
+    "noImage": "画像なし",
+    "messages": {
+      "uploadSuccess": "画像をアップロードしました",
+      "removed": "画像を削除しました"
+    },
+    "errors": {
+      "uploadFailed": "アップロードに失敗しました",
+      "removeFailed": "画像を削除できませんでした"
+    }
+  },
+  "tiers": {
+    "code": "コード",
+    "label": "ラベル",
+    "kind": "種類",
+    "rankWeight": "ランク重み",
+    "color": "色",
+    "addTier": "ティアを追加",
+    "save": "ティアを保存",
+    "saveFirst": "ティア画像をアップロードする前に、ティアを保存してください",
+    "empty": "ティアはまだありません",
+    "preset": {
+      "label": "プリセットから追加",
+      "show": "プリセットから追加",
+      "hide": "プリセットを非表示",
+      "hint": "プリセットからティアを追加します。既存のコードはスキップされます。完了したらティアを保存してください。",
+      "placeholder": "プリセットを選択…",
+      "apply": "ティアを追加",
+      "applied": "プリセットから{{count}}件のティアを追加しました",
+      "allExist": "このプリセットのティアはすべて登録済みです"
+    },
+    "kindOptions": {
+      "ordinal": "序数",
+      "bracket": "トーナメント表形式",
+      "round": "ラウンド",
+      "stage": "ステージ",
+      "qualifier": "予選",
+      "custom": "カスタム"
+    },
+    "messages": {
+      "saved": "ティアを保存しました"
+    },
+    "errors": {
+      "saveFailed": "ティアを保存できませんでした"
+    }
+  },
+  "form": {
+    "fields": {
+      "shortName": "略称",
+      "fullName": "正式名称",
+      "aka": "別名",
+      "youtubeUrl": "YouTube",
+      "packRef": "パック参照",
+      "externalUrl": "外部URL",
+      "sortYear": "並べ替え用の年",
+      "organizers": "主催者（カンマ区切り）",
+      "owners": "ビジュアル編集者（オーナー）",
+      "ownersHint": "大会とティアのビジュアルをアップロードできるユーザーです。上に表示される主催者は、自由入力のクレジットとして保持されます。",
+      "ownersPlaceholder": "オーナーとして追加するユーザーを検索…",
+      "ownersRemove": "削除",
+      "status": "ステータス",
+      "track": "大会カテゴリ",
+      "placementMode": "順位モード",
+      "showBestTiersOnly": "プロフィールには最高ティアのみを表示",
+      "series": "シリーズ",
+      "tierTemplate": "ティアテンプレート",
+      "hidden": "非表示",
+      "resultsFinal": "結果確定",
+      "notes": "メモ"
+    },
+    "packRefSearchPlaceholder": "パックを検索",
+    "packRefNoResults": "パックが見つかりません。",
+    "packRefTypeToSearch": "パックを検索するには入力してください…",
+    "packRefLoading": "パックを検索中…",
+    "packRefSearchFailed": "パックの検索に失敗しました",
+    "packRefNotFound": "見つかりません",
+    "placementModes": {
+      "profile": "プロフィール（プレイヤー／クリエイターをリンク）",
+      "level": "レベル（クリエイターに展開）"
+    },
+    "tracks": {
+      "player": "プレイヤー大会",
+      "creator": "クリエイター大会"
+    },
+    "statuses": {
+      "draft": "下書き",
+      "ongoing": "開催中",
+      "completed": "完了",
+      "cancelled": "キャンセル"
+    },
+    "seriesNone": "なし",
+    "tierTemplateNone": "—",
+    "errors": {
+      "shortNameRequired": "略称は必須です。",
+      "shortNameExists": "この略称の大会はすでに存在します。",
+      "saveFailed": "保存に失敗しました"
+    }
+  }
+}
