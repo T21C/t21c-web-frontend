@@ -1,5 +1,6 @@
 // tuf-search: #ratingRequestBand #pgu #rating
-import { isAutoraterDetail } from '@/utils/autorater';
+// eslint-disable-next-line import/extensions
+import { isAutoraterDetail } from './autorater.js';
 
 /** Same buckets as server requestPguBand: Q labels, PGU tokens, legacy feeling numbers, highest range endpoint. */
 
@@ -78,8 +79,9 @@ export function isVoteRatingCard(rating, linkedRequest) {
 export function pguBandFromAutoraterRating(rating) {
   const text = String(rating || '').trim();
   if (!text) return null;
-  const display = text.match(/^(Impossible|Censored|[PGU](?:[1-9]|1[0-9]|20))(?: (?:low|mid|high))? \(/i);
+  const display = text.match(/^(P0|Impossible|Censored|[PGU](?:[1-9]|1[0-9]|20))(?: (?:low|mid|high))? \(/i);
   const token = (display?.[1] || text.replace(/ (low|mid|high)$/i, '')).trim();
+  if (/^P0$/i.test(token)) return 'P';
   if (/^(impossible|censored)$/i.test(token)) return null;
   const letter = token.match(/^([PGU])(?:[1-9]|1[0-9]|20)$/i);
   if (letter) return letter[1].toUpperCase();
