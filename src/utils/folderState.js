@@ -93,3 +93,79 @@ export const clearPackExpandedFolders = (packId) => {
     console.warn('Failed to clear pack folder states:', error);
   }
 };
+
+const PLACEMENT_COLLAPSED_KEY = 'pack_placement_collapsed_folders';
+const PLACEMENT_COLLAPSED_TTL_MS = 60 * 60 * 1000;
+
+function readPlacementCollapsedStore() {
+  try {
+    const raw = localStorage.getItem(PLACEMENT_COLLAPSED_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    return parsed;
+  } catch (error) {
+    console.warn('Failed to parse placement folder states from storage:', error);
+    return {};
+  }
+}
+
+function writePlacementCollapsedStore(store) {
+  try {
+    localStorage.setItem(PLACEMENT_COLLAPSED_KEY, JSON.stringify(store));
+  } catch (error) {
+    console.warn('Failed to save placement folder states:', error);
+  }
+}
+
+function normalizeCollapsedIds(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((id) => id != null);
+}
+
+function pruneExpiredPlacementCollapsed(store, now = Date.now()) {
+  for (const packId of Object.keys(store)) {
+    const entry = store[packId];
+    const expiresAt = Number(entry?.expiresAt);
+    if (
+      !entry ||
+      typeof entry !== 'object' ||
+      Array.isArray(entry) ||
+      !Number.isFinite(expiresAt) ||
+      expiresAt <= now ||
+      !Array.isArray(entry.collapsedIds)
+    ) {
+      delete store[packId];
+    }
+  }
+  return store;
+}
+
+/**
+ * Collapsed folder ids for the pack placement tree. Expired entries are dropped.
+ * @param {string|number} packId
+ * @returns {Set}
+ */
+export const getPlacementCollapsedFolders = (packId) => {
+  if (packId == null || packId === '') return new Set();
+  const store = pruneExpiredPlacementCollapsed(readPlacementCollapsedStore());
+  writePlacementCollapsedStore(store);
+  const entry = store[String(packId)];
+  if (!entry) return new Set();
+  return new Set(normalizeCollapsedIds(entry.collapsedIds));
+};
+
+/**
+ * Save collapsed folder ids for the pack placement tree and start a 1-hour TTL.
+ * @param {string|number} packId
+ * @param {Set} collapsedFolderIds
+ */
+export const setPlacementCollapsedFolders = (packId, collapsedFolderIds) => {
+  if (packId == null || packId === '') return;
+  const store = pruneExpiredPlacementCollapsed(readPlacementCollapsedStore());
+  store[String(packId)] = {
+    collapsedIds: normalizeCollapsedIds(Array.from(collapsedFolderIds || [])),
+    expiresAt: Date.now() + PLACEMENT_COLLAPSED_TTL_MS,
+  };
+  writePlacementCollapsedStore(store);
+};

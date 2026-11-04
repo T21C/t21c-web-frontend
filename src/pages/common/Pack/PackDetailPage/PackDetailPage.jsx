@@ -1717,6 +1717,7 @@ const PackDetailPage = () => {
         isOpen={placement.open}
         onClose={closePlacement}
         mode={placement.mode}
+        packId={id}
         packItems={packItems}
         movingItem={placement.item}
         onSubmit={handlePlacementSubmit}
