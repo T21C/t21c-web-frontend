@@ -1,5 +1,5 @@
 // tuf-search: #PackItemPlacementPopup #packItemPlacementPopup #popups #packs #placement
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
@@ -12,6 +12,10 @@ import {
   parseLevelIdsInput,
   isPlacementRowVisible,
 } from '@/utils/packTreePlacement';
+import {
+  getPlacementCollapsedFolders,
+  setPlacementCollapsedFolders,
+} from '@/utils/folderState';
 import './PackItemPlacementPopup.css';
 
 const NOTE_BODY_MAX_LENGTH = 2000;
@@ -20,6 +24,7 @@ const PackItemPlacementPopup = ({
   isOpen,
   onClose,
   mode = 'add-folder',
+  packId = null,
   packItems = [],
   movingItem = null,
   onSubmit,
@@ -61,8 +66,18 @@ const PackItemPlacementPopup = ({
       movingItem: mode === 'move' ? movingItem : null,
     });
     setSelectedSlotKey(defaultSlot.slotKey);
-    setCollapsedFolderIds(new Set());
   }, [isOpen, packItems, excludeId, movingItem, mode, resetState]);
+
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const saved = packId != null
+      ? getPlacementCollapsedFolders(packId)
+      : new Set();
+    setCollapsedFolderIds(saved);
+    if (packId != null) {
+      setPlacementCollapsedFolders(packId, saved);
+    }
+  }, [isOpen, packId]);
 
   const toggleFolderCollapsed = (folderId) => {
     setCollapsedFolderIds((prev) => {
@@ -71,6 +86,9 @@ const PackItemPlacementPopup = ({
         next.delete(folderId);
       } else {
         next.add(folderId);
+      }
+      if (packId != null) {
+        setPlacementCollapsedFolders(packId, next);
       }
       return next;
     });
