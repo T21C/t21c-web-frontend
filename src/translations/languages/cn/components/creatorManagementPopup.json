@@ -157,7 +157,8 @@
       "update": "资料",
       "moderation": "管理",
       "link": "创作者",
-      "merge": "合并"
+      "merge": "合并",
+      "notice": "通知"
     },
     "update": {
       "name": {
@@ -232,6 +233,14 @@
       },
       "mergeButton": "合并玩家"
     },
+    "notice": {
+      "notes": {
+        "label": "备注",
+        "placeholder": "你想告诉这名用户的内容"
+      },
+      "noAccount": "该玩家没有可接收通知的账号。",
+      "sendButton": "发送通知"
+    },
     "errors": {
       "updateFailed": "玩家更新失败",
       "banUpdate": "封禁状态更新失败",
@@ -240,12 +249,15 @@
       "ratingBanUpdate": "禁止评级状态更新失败",
       "tagVoteBanUpdate": "禁止社区标签投票状态更新失败",
       "mergeFailed": "玩家失合并败",
-      "mergeSelf": "不能将玩家与自己合并"
+      "mergeSelf": "不能将玩家与自己合并",
+      "noticeFailed": "通知发送失败",
+      "noticeLength": "备注不超过 4000 个字符"
     },
     "success": {
       "updated": "玩家更新成功",
       "moderation": "管理设置更新成功",
-      "merge": "玩家合并成功"
+      "merge": "玩家合并成功",
+      "notice": "通知已发送"
     }
   },
   "success": {

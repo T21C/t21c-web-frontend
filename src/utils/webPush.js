@@ -43,17 +43,59 @@ export async function registerPushServiceWorker() {
   return navigator.serviceWorker.register('/sw.js', {scope: '/'});
 }
 
+const DEVICE_KEY_STORAGE = 'tuf.push.deviceKey';
+
+export function getPushDeviceKey() {
+  if (typeof localStorage === 'undefined') return null;
+  try {
+    const existing = localStorage.getItem(DEVICE_KEY_STORAGE);
+    if (existing) return existing;
+    if (typeof crypto === 'undefined' || typeof crypto.randomUUID !== 'function') return null;
+    const created = crypto.randomUUID();
+    localStorage.setItem(DEVICE_KEY_STORAGE, created);
+    return created;
+  } catch {
+    return null;
+  }
+}
+
+async function readLocalSubscription() {
+  if (!isPushSupported()) return null;
+  const registration = await navigator.serviceWorker.getRegistration('/');
+  return (await registration?.pushManager.getSubscription()) ?? null;
+}
+
+async function postSubscription(subscription, locale, intent) {
+  const {data} = await api.post(routes.notifications.pushSubscribe(), {
+    ...subscription.toJSON(),
+    locale,
+    deviceKey: getPushDeviceKey(),
+    intent,
+  });
+  return data ?? {};
+}
+
+export async function clearLocalPushSubscription() {
+  const subscription = await readLocalSubscription();
+  if (!subscription) return;
+  try {
+    await subscription.unsubscribe();
+  } catch {
+    /* ignore */
+  }
+}
+
 export async function subscribeCurrentBrowser(locale) {
   if (!isPushSupported()) {
-    return {permission: 'denied', unsupported: true};
+    return {permission: 'denied', unsupported: true, attached: false};
   }
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') {
-    return {permission, unsupported: false};
+    return {permission, unsupported: false, attached: false};
   }
   const {available, publicKey} = await fetchPushAvailability();
   if (!available || !publicKey) {
-    return {permission, unsupported: true};
+    return {permission, unsupported: true, attached: false};
   }
   await registerPushServiceWorker();
   const registration = await navigator.serviceWorker.ready;
@@ -64,39 +106,39 @@ export async function subscribeCurrentBrowser(locale) {
       applicationServerKey: urlBase64ToUint8Array(publicKey),
     });
   }
-  await api.post(routes.notifications.pushSubscribe(), {
-    ...subscription.toJSON(),
-    locale,
-  });
-  return {permission, unsupported: false};
+  const data = await postSubscription(subscription, locale, 'attach');
+  return {permission, unsupported: false, attached: Boolean(data.attached)};
+}
+
+export async function refreshCurrentBrowser(locale) {
+  if (!isPushSupported() || Notification.permission !== 'granted') {
+    return {attached: false, revoked: false};
+  }
+  const subscription = await readLocalSubscription();
+  if (!subscription) return {attached: false, revoked: false};
+  const data = await postSubscription(subscription, locale, 'refresh');
+  if (data.revoked) {
+    await clearLocalPushSubscription();
+    return {attached: false, revoked: true};
+  }
+  return {attached: Boolean(data.attached), revoked: false};
 }
 
 export async function unsubscribeCurrentBrowser() {
   if (!isPushSupported()) return;
-  const registration = await navigator.serviceWorker.getRegistration('/');
-  const subscription = await registration?.pushManager.getSubscription();
-  if (!subscription) return;
-  try {
-    await api.delete(routes.notifications.pushSubscribe(), {
-      data: {endpoint: subscription.endpoint},
-    });
-  } catch {
-    /* still drop the local subscription */
+  const subscription = await readLocalSubscription();
+  if (subscription) {
+    try {
+      await api.delete(routes.notifications.pushSubscribe(), {
+        data: {endpoint: subscription.endpoint},
+      });
+    } catch {
+      /* still drop the local subscription */
+    }
   }
-  try {
-    await subscription.unsubscribe();
-  } catch {
-    /* ignore */
-  }
+  await clearLocalPushSubscription();
 }
 
 export async function syncPushLocale(locale) {
-  if (!isPushSupported() || Notification.permission !== 'granted') return;
-  const registration = await navigator.serviceWorker.getRegistration('/');
-  const subscription = await registration?.pushManager.getSubscription();
-  if (!subscription) return;
-  await api.post(routes.notifications.pushSubscribe(), {
-    ...subscription.toJSON(),
-    locale,
-  });
+  await refreshCurrentBrowser(locale);
 }

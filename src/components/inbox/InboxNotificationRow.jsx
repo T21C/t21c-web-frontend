@@ -30,7 +30,7 @@ const InboxNotificationRow = ({ notification, onRead, onHide, compact = false })
     defaultValue: t('notifications.unknown.title'),
   });
 
-  const { panelStyle } = usePortaledPanelAnchor({
+  const { panelStyle, portalRoot } = usePortaledPanelAnchor({
     open: menuOpen,
     anchorRef: kebabRef,
     panelRef: menuRef,
@@ -117,7 +117,7 @@ const InboxNotificationRow = ({ notification, onRead, onHide, compact = false })
           <MoreVerticalIcon size={16} color="currentColor" />
         </button>
       </div>
-      <Portal when={menuOpen} mount="documentBody">
+      <Portal when={menuOpen && Boolean(portalRoot)} root={portalRoot}>
         <div
           ref={menuRef}
           className={`inbox-notification-row-menu ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}

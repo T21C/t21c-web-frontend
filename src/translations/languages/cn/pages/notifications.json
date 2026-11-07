@@ -180,6 +180,14 @@
         }
       }
     },
+    "admin": {
+      "notice": {
+        "title": "管理员通知",
+        "inboxTitle": "来自{{actorName}}的通知",
+        "fallbackActor": "管理员",
+        "body": "{{message}}"
+      }
+    },
     "following": {
       "player": {
         "pass": {

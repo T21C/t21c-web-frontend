@@ -157,7 +157,8 @@
       "update": "プロフィール",
       "moderation": "モデレーション",
       "link": "クリエイター",
-      "merge": "統合"
+      "merge": "統合",
+      "notice": "通知"
     },
     "update": {
       "name": {
@@ -232,6 +233,14 @@
       },
       "mergeButton": "プレイヤーを統合する"
     },
+    "notice": {
+      "notes": {
+        "label": "メモ",
+        "placeholder": "このユーザーに伝えたい内容"
+      },
+      "noAccount": "このプレイヤーには通知できるアカウントがありません。",
+      "sendButton": "通知を送る"
+    },
     "errors": {
       "updateFailed": "プレイヤーの更新に失敗しました",
       "banUpdate": "BANステータスの更新に失敗しました",
@@ -240,12 +249,15 @@
       "ratingBanUpdate": "レーティングのBANを更新できませんでした",
       "tagVoteBanUpdate": "コミュニティタグの投票BANの更新に失敗しました",
       "mergeFailed": "プレイヤーの統合に失敗しました",
-      "mergeSelf": "プレイヤーを自分自身に統合することはできません"
+      "mergeSelf": "プレイヤーを自分自身に統合することはできません",
+      "noticeFailed": "通知の送信に失敗しました",
+      "noticeLength": "メモは4000文字以内にしてください"
     },
     "success": {
       "updated": "プレイヤーの更新に成功しました",
       "moderation": "モデレーション設定が更新されました",
-      "merge": "プレイヤーの統合に成功しました"
+      "merge": "プレイヤーの統合に成功しました",
+      "notice": "通知を送信しました"
     }
   },
   "success": {

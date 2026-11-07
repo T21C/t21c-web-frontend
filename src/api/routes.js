@@ -204,6 +204,7 @@ export const routes = {
       tagVoteBan: (userId) => `/v2/admin/users/${enc(userId)}/tag-vote-ban`,
       scheduleAccountDeletion: (userId) =>
         `/v2/admin/users/${enc(userId)}/schedule-account-deletion`,
+      notice: (userId) => `/v2/admin/users/${enc(userId)}/notice`,
     },
     submissions: {
       root: () => '/v2/admin/submissions',
@@ -678,6 +679,13 @@ export const routes = {
     preferences: () => '/v2/notifications/preferences',
     pushVapidKey: () => '/v2/notifications/push/vapid-key',
     pushSubscribe: () => '/v2/notifications/push/subscribe',
+    pushDevices: (deviceKey) => {
+      const search = new URLSearchParams();
+      if (deviceKey) search.set('deviceKey', deviceKey);
+      const qs = search.toString();
+      return qs ? `/v2/notifications/push/devices?${qs}` : '/v2/notifications/push/devices';
+    },
+    pushDevice: (id) => `/v2/notifications/push/devices/${enc(id)}`,
     chartClears: (levelId) => `/v2/notifications/chart-clears/${enc(levelId)}`,
   },
   events: () => '/v2/events',

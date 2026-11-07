@@ -123,3 +123,75 @@
   font-weight: 600;
   color: var(--color-white);
 }
+
+.settings-notifications-page .settings-notifications-page__devices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-notifications-page .settings-notifications-page__devices-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.settings-notifications-page .settings-notifications-page__devices-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.settings-notifications-page .settings-notifications-page__device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-notifications-page .settings-notifications-page__device {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: var(--color-white-t10);
+}
+
+.settings-notifications-page .settings-notifications-page__device-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.settings-notifications-page .settings-notifications-page__device-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.settings-notifications-page .settings-notifications-page__device-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background: var(--btn-primary-tint);
+  border: 1px solid color-mix(in srgb, var(--btn-primary) 45%, transparent);
+}

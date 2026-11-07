@@ -42,16 +42,25 @@
     "inApp": "受信トレイに表示",
     "muteCategory": "このカテゴリーをミュート",
     "pushTitle": "ブラウザー通知",
-    "pushHint": "受信トレイと同じ種類・カテゴリーごとの設定が適用されます。",
     "pushDenied": "このサイトの通知はブロックされています。通知を受け取るには、ブラウザーの設定で許可してください。",
     "pushUnsupported": "このブラウザーは通知に対応していません。",
+    "pushDevicesTitle": "接続したデバイス",
+    "pushAttach": "このデバイスを接続",
+    "pushDevicesEmpty": "接続したブラウザーはありません。",
+    "pushDeviceUnknown": "不明なデバイス",
+    "pushDeviceOn": "{{os}} の {{browser}}",
+    "pushDeviceBrowserOnly": "{{browser}}",
+    "pushDeviceOsOnly": "{{os}}",
+    "pushDeviceThis": "このデバイス",
+    "pushDeviceLastSeen": "最終確認 {{date}}",
     "hideOwnActivityTitle": "自分のアクティビティを非表示",
     "hideOwnActivityHint": "有効にすると、自分の操作は受信トレイに表示されなくなります。提出や編集が正常に完了したことを確認したい場合は、無効のままにしてください。",
     "categories": {
       "submissions": "提出",
       "chart": "チャート",
       "clears": "クリア",
-      "following": "フォロー"
+      "following": "フォロー",
+      "notices": "お知らせ"
     }
   },
   "preferences": {

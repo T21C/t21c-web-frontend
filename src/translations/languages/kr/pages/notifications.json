@@ -122,6 +122,14 @@
         "body": "{{playerName}}님이 {{song}} — {{artist}} 를 클리어했습니다."
       }
     },
+    "admin": {
+      "notice": {
+        "title": "운영자 알림",
+        "inboxTitle": "{{actorName}}님의 알림",
+        "fallbackActor": "관리자",
+        "body": "{{message}}"
+      }
+    },
     "following": {
       "player": {
         "pass": {

@@ -156,7 +156,8 @@
       "update": "프로필",
       "moderation": "제재",
       "link": "크리에이터",
-      "merge": "병합"
+      "merge": "병합",
+      "notice": "알림"
     },
     "update": {
       "name": { "label": "표시 이름", "placeholder": "플레이어 이름" },
@@ -218,6 +219,14 @@
       },
       "mergeButton": "플레이어 병합"
     },
+    "notice": {
+      "notes": {
+        "label": "메모",
+        "placeholder": "이 사용자에게 전할 내용"
+      },
+      "noAccount": "이 플레이어에게는 알림을 받을 계정이 없습니다.",
+      "sendButton": "알림 보내기"
+    },
     "errors": {
       "updateFailed": "플레이어 업데이트 실패",
       "banUpdate": "차단 상태 업데이트 실패",
@@ -226,12 +235,15 @@
       "ratingBanUpdate": "평가 차단 업데이트 실패",
       "tagVoteBanUpdate": "커뮤니티 태그 투표 차단 업데이트 실패",
       "mergeFailed": "플레이어 병합 실패",
-      "mergeSelf": "플레이어를 자기 자신에게 병합할 수 없습니다"
+      "mergeSelf": "플레이어를 자기 자신에게 병합할 수 없습니다",
+      "noticeFailed": "알림을 보내지 못했습니다",
+      "noticeLength": "메모는 4000자 이하여야 합니다"
     },
     "success": {
       "updated": "플레이어가 업데이트되었습니다",
       "moderation": "제재 설정이 업데이트되었습니다",
-      "merge": "플레이어가 병합되었습니다"
+      "merge": "플레이어가 병합되었습니다",
+      "notice": "알림을 보냈습니다"
     }
   },
   "success": {

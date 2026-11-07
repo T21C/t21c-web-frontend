@@ -188,7 +188,7 @@
 /* Fills whatever line it lands on. The text itself is absolutely positioned,
    so the line height still comes from the title, icons, or this floor. */
 .level-detail .header .header-body > .curation-description-container:not(.description-collapsed) {
-  flex: 1 1 12rem;
+  flex: 1 1 1rem;
   align-self: stretch;
   width: auto;
   min-width: min(12rem, 100%);

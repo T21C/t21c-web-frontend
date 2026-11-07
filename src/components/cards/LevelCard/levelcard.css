@@ -471,73 +471,45 @@
   height: 1.2rem;
 }
 
+/* Interior wash only, no frame. z-index stays below the legendary rim (-3) and the
+   card itself stays z-index: auto, so this layer does not trap or cover legendary
+   rims. Those rims keep sharing one stacking level and join into a single frame. */
 .level-card.basic-glow::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(45deg,
-    rgba(0, 200, 255, 1),
-    rgba(150, 0, 255, 1),
-    rgba(0, 200, 255, 1)
+  z-index: -4;
+  pointer-events: none;
+  background: linear-gradient(to right,
+    hsl(272, 66%, 18%),
+    hsl(232, 66%, 18%),
+    hsl(192, 66%, 18%)
   );
-  background-size: 300% 1%;
   border-radius: inherit;
-  z-index: 1;
-  animation: basicGlow 8s ease-in-out infinite;
-  opacity: 0.4;
+  animation: basicHue 10s linear infinite;
+  will-change: filter;
 }
 
 .level-card.basic-glow::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, 
-    rgba(0, 150, 255, 0.05), 
-    rgba(100, 200, 255, 0.05), 
-    rgba(150, 100, 255, 0.05), 
-    rgba(0, 150, 255, 0.05)
-  );
-  background-size: 300% 1%;
-  border-radius: inherit;
-  z-index: 1;
-  animation: basicGlow 8s ease-in-out infinite reverse;
-  opacity: 0.2;
+  content: none;
 }
 
-.level-card.basic-glow:hover::before {
-  opacity: 0.5;
-  animation-duration: 6s;
-}
-
-.level-card.basic-glow:hover::after {
-  opacity: 0.5;
-}
-
+/* Transparent so a neighboring legendary rim (z-index -3) paints over this wash
+   instead of being greyed out by a veil. Text stays in the wrapper, above the rim. */
 .level-card.basic-glow .level-card-wrapper {
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 2;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
   position: relative;
 }
 
 .level-card.basic-glow:hover .level-card-wrapper {
-  background: rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 16px rgba(0, 150, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 
-/* Basic glow animation */
-@keyframes basicGlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Full turn, same as the legendary rim. Stops descend in hue from left to right. */
+@keyframes basicHue {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
 }
 
 /* Legendary card styling */
@@ -546,84 +518,74 @@
   overflow: visible;
 }
 
-.level-card.basic-glow {
-  z-index: 2;
-}
-
+/* Full-spectrum rim, left to right. hue-rotate slides the bands along the card.
+   Both layers are rasterized once; only the filter is animated. */
 .level-card.legendary::before {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: -3.75px;
+  padding: 4px;
   background: linear-gradient(90deg,
-    #FF00FF,
-    #4200FF,
-    #A200FF,
-    #4200FF,
-    #FF00FF
+    #ff2a2a,
+    #ff8c00,
+    #ffe600,
+    #3dff3d,
+    #00e5c3,
+    #3d7bff,
+    #b43dff,
+    #ff2a8a,
+    #ff2a2a
   );
-  background-size: 400% 1%;
   border-radius: inherit;
-  z-index: 3;
-  animation: legendaryGlow 10s ease-in-out infinite;
-  opacity: 1;
-  filter: brightness(1.5);
+  z-index: -3;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: legendaryHue 10s linear infinite;
+  will-change: filter;
 }
 
+/* One hue and its complement, darkened. The filter turns that pair opposite the rim,
+   so the fill stays two hues instead of touring the whole spectrum. */
 .level-card.legendary::after {
   content: '';
   position: absolute;
-  inset: 0;
-  z-index: 4;
-  background: linear-gradient(90deg, 
-    rgba(0, 255, 255, 1), 
-    rgba(139, 0, 255, 1), 
-    rgba(255, 0, 255, 1), 
-    rgba(0, 255, 255, 1),
-    rgba(139, 0, 255, 1), 
-    rgba(255, 0, 255, 1), 
-    rgba(0, 255, 255, 1)
+  inset: -1.5px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(270deg,
+    hsl(275, 62%, 30%),
+    hsl(250, 62%, 30%),
+    hsl(225, 62%, 30%)
   );
-  background-size: 400% 400%;
   border-radius: inherit;
-  z-index: 3;
-  animation: legendaryGlow 10s cubic-bezier(0.37, 0, 0.63, 1) infinite reverse;
-  opacity: 0.1;
-  transition: opacity 0.3s ease, filter 0.3s ease;
-}
-
-.level-card.legendary:hover::before {
-  opacity: 1;
-  animation-duration: 7s;
-}
-
-.level-card.legendary:hover::after {
-  opacity: 1;
-  filter: brightness(1.2);
+  animation: legendaryHue 10s linear infinite reverse;
+  will-change: filter;
 }
 
 .level-card.legendary .level-card-wrapper {
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.12);
   position: relative;
   z-index: 5;
   transition: all 0s ease;
 }
 
 .level-card.legendary:hover .level-card-wrapper {
-  background: rgba(5, 5, 5, 0.5);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.08);
   box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
 }
 
 
-/* Legendary glow animation */
-@keyframes legendaryGlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 133.33% 50%;
-  }
+/* Compositor-only. Do not animate background-position or a gradient angle. */
+@keyframes legendaryHue {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
 }
 
 
@@ -823,16 +785,6 @@
   }
 }
 
-/* Performance optimizations for glow cards */
-.level-card.basic-glow,
-.level-card.basic-glow::before,
-.level-card.basic-glow::after,
-.level-card.legendary,
-.level-card.legendary::before,
-.level-card.legendary::after {
-  backface-visibility: hidden;
-}
-
 /* Preferences → Performance, also applied when the browser requests reduced motion.
    Class is toggled on <html>. Stops every infinite animation declared in this file.
    Static rarity color stays; hover opacity still changes. */
@@ -850,36 +802,22 @@ html.tuf-reduce-optional-animations .level-card:hover .marquee-text--overflows .
 }
 
 html.tuf-reduce-optional-animations .level-card.basic-glow::before {
-  background: linear-gradient(45deg, rgba(0, 150, 255, 0.4), rgba(100, 200, 255, 0.4));
+  filter: none;
+  will-change: auto;
 }
 
-html.tuf-reduce-optional-animations .level-card.basic-glow::after {
-  background: rgba(0, 150, 255, 0.1);
-}
-
-html.tuf-reduce-optional-animations .level-card.legendary::before {
-  background: linear-gradient(45deg, #00ffff, #8b00ff);
-}
-
+html.tuf-reduce-optional-animations .level-card.legendary::before,
 html.tuf-reduce-optional-animations .level-card.legendary::after {
-  background: rgba(0, 255, 255, 0.1);
+  filter: none;
+  will-change: auto;
 }
 
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
-  .level-card.basic-glow::before,
-  .level-card.basic-glow::after {
-    animation: none;
-  }
-  
   .level-card.basic-glow::before {
-    background: linear-gradient(45deg, rgba(0, 150, 255, 0.4), rgba(100, 200, 255, 0.4));
-    opacity: 0.5;
-  }
-  
-  .level-card.basic-glow::after {
-    background: rgba(0, 150, 255, 0.1);
-    opacity: 0.2;
+    animation: none;
+    filter: none;
+    will-change: auto;
   }
 
   .level-card.legendary::before,
@@ -888,14 +826,10 @@ html.tuf-reduce-optional-animations .level-card.legendary::after {
     animation: none;
   }
   
-  .level-card.legendary::before {
-    background: linear-gradient(45deg, #00ffff, #8b00ff);
-    opacity: 0.6;
-  }
-  
+  .level-card.legendary::before,
   .level-card.legendary::after {
-    background: rgba(0, 255, 255, 0.1);
-    opacity: 0.3;
+    filter: none;
+    will-change: auto;
   }
 }
 

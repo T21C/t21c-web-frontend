@@ -2301,6 +2301,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
         if (cancelled) return;
         const rows = Array.isArray(response.data) ? response.data : [];
         const names = rows
+          .filter((row) => row?.difficultyReference?.type === 'PGU')
           .map((row) => ({
             name: typeof row?.difficultyReference?.name === 'string'
               ? row.difficultyReference.name.trim()
