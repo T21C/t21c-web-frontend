@@ -33,6 +33,16 @@ export function inboxNotificationCopy(t, notification) {
       href: notification?.href || null,
     };
   }
+  if (type === 'admin.notice') {
+    const named = typeof payload.actorName === 'string' ? payload.actorName.trim() : '';
+    const actorName = named || t('notifications.types.admin.notice.fallbackActor');
+    const message = typeof payload.message === 'string' ? payload.message.trim() : '';
+    return {
+      title: t('notifications.types.admin.notice.inboxTitle', { actorName }),
+      body: message,
+      href: notification?.href || null,
+    };
+  }
   const reasonText = typeof payload.reason === 'string' ? payload.reason.trim() : '';
   const body = t(`notifications.types.${type}.body`, {
     ...vars,

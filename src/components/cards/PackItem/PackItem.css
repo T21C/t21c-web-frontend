@@ -583,8 +583,10 @@
   min-height: 80px;
 }
 
+/* Keep the rim inside the card. Above the wrapper so the masked ring is not covered. */
 .pack-item__level-wrapper .level-card.legendary:not(.grid)::before {
   inset: 0;
+  z-index: 6;
 }
 
 .pack-item__level-wrapper {

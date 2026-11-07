@@ -122,6 +122,14 @@
         "body": "{{playerName}} a passé {{song}} par {{artist}}."
       }
     },
+    "admin": {
+      "notice": {
+        "title": "Message de l'équipe",
+        "inboxTitle": "Avis de {{actorName}}",
+        "fallbackActor": "Admin",
+        "body": "{{message}}"
+      }
+    },
     "following": {
       "player": {
         "pass": {

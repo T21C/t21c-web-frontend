@@ -248,7 +248,7 @@ const LevelCard = ({
     <div className="img-wrapper">
       <img src={selectIconSize(difficultyDict[difficultyInfo?.id]?.icon, ICON_SIZE.MEDIUM)} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
       
-      {showRating && level.rating?.averageDifficultyId && 
+      {showRating && level.rating?.averageDifficultyId && 1 === 0 && //disabled
        difficultyDict[level.rating.averageDifficultyId]?.icon &&
        difficultyDict[level.rating.averageDifficultyId]?.type === "PGU" &&
        difficultyDict[level.diffId]?.name.includes("Q") && (

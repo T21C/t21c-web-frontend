@@ -180,6 +180,14 @@
         }
       }
     },
+    "admin": {
+      "notice": {
+        "title": "スタッフからのお知らせ",
+        "inboxTitle": "{{actorName}}からのお知らせ",
+        "fallbackActor": "管理者",
+        "body": "{{message}}"
+      }
+    },
     "following": {
       "player": {
         "pass": {

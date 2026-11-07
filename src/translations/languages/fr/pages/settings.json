@@ -52,16 +52,25 @@
     "inApp": "Afficher dans la boîte de réception",
     "muteCategory": "Désactiver cette catégorie",
     "pushTitle": "Notifications du navigateur",
-    "pushHint": "Utilise les mêmes types et catégories que la boîte de réception.",
     "pushDenied": "Les notifications sont bloquées pour ce site. Autorisez-les dans les paramètres du navigateur.",
     "pushUnsupported": "Ce navigateur ne prend pas en charge les notifications.",
+    "pushDevicesTitle": "Appareils attachés",
+    "pushAttach": "Attacher cet appareil",
+    "pushDevicesEmpty": "Aucun navigateur attaché.",
+    "pushDeviceUnknown": "Appareil inconnu",
+    "pushDeviceOn": "{{browser}} sur {{os}}",
+    "pushDeviceBrowserOnly": "{{browser}}",
+    "pushDeviceOsOnly": "{{os}}",
+    "pushDeviceThis": "Cet appareil",
+    "pushDeviceLastSeen": "Vu le {{date}}",
     "hideOwnActivityTitle": "Masquer mes propres actions",
     "hideOwnActivityHint": "Si cette option est activée, vos actions n’apparaissent pas dans la boîte de réception. Laissez-la désactivée pour confirmer qu’une soumission ou une modification a bien été prise en compte.",
     "categories": {
       "submissions": "Soumissions",
       "chart": "Charts",
       "clears": "Clears",
-      "following": "Abonnements"
+      "following": "Abonnements",
+      "notices": "Avis"
     }
   },
   "security": {

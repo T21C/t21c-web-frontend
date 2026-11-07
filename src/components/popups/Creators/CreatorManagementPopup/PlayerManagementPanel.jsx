@@ -15,11 +15,14 @@ import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import AliasListEditor from './AliasListEditor';
 import '@/components/popups/Creators/CreatorAssignmentPopup/creatorAssignmentPopup.css';
 
+const NOTICE_MESSAGE_MAX = 4000;
+
 const PLAYER_TABS = [
   { id: 'update', i18nKey: 'player.modes.update' },
   { id: 'moderation', i18nKey: 'player.modes.moderation' },
   { id: 'link', i18nKey: 'player.modes.link' },
   { id: 'merge', i18nKey: 'player.modes.merge' },
+  { id: 'notice', i18nKey: 'player.modes.notice' },
 ];
 
 const REJECT_RECENT_UNITS = ['hours', 'days'];
@@ -124,6 +127,7 @@ const PlayerManagementPanel = ({
   const [mergeTarget, setMergeTarget] = useState(null);
   const [showMergeConfirm, setShowMergeConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [noticeMessage, setNoticeMessage] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -517,6 +521,32 @@ const PlayerManagementPanel = ({
       setError(msg);
       toast.error(msg);
       setShowMergeConfirm(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendNotice = async () => {
+    const userId = player?.user?.id;
+    const message = noticeMessage.trim();
+    if (!userId || !message) return;
+    if (message.length > NOTICE_MESSAGE_MAX) {
+      const msg = tt('player.errors.noticeLength');
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
+    setIsLoading(true);
+    clearMessages();
+    try {
+      await api.post(routes.admin.users.notice(userId), { message });
+      setNoticeMessage('');
+      setSuccess(tt('player.success.notice'));
+      toast.success(tt('player.success.notice'));
+    } catch (err) {
+      const msg = err.response?.data?.error || tt('player.errors.noticeFailed');
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
@@ -1026,6 +1056,44 @@ const PlayerManagementPanel = ({
                     </div>
                   </div>
                 ) : null}
+              </div>
+            )}
+
+            {mode === 'notice' && (
+              <div className="player-notice-form">
+                {!player?.user?.id && (
+                  <p className="player-notice-form__hint">{tt('player.notice.noAccount')}</p>
+                )}
+                <div className="form-group">
+                  <label htmlFor="player-notice-message">{tt('player.notice.notes.label')}</label>
+                  <textarea
+                    id="player-notice-message"
+                    value={noticeMessage}
+                    onChange={(e) => setNoticeMessage(e.target.value)}
+                    placeholder={tt('player.notice.notes.placeholder')}
+                    maxLength={NOTICE_MESSAGE_MAX}
+                    rows={6}
+                    disabled={isLoading || !player?.user?.id}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className={`action-button ${isLoading ? 'loading' : ''}`}
+                  onClick={handleSendNotice}
+                  disabled={
+                    isLoading
+                    || !player?.user?.id
+                    || !noticeMessage.trim()
+                  }
+                >
+                  {isLoading ? (
+                    <svg className="spinner spinner-svg spinner-medium" viewBox="0 0 50 50">
+                      <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" />
+                    </svg>
+                  ) : (
+                    tt('player.notice.sendButton')
+                  )}
+                </button>
               </div>
             )}
           </div>

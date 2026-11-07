@@ -143,6 +143,35 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
 }
 
+.creator-management-popup-container .player-notice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.creator-management-popup-container .player-notice-form .form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background-color: var(--btn-neutral-dark);
+  color: var(--color-white);
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 96px;
+  font: inherit;
+}
+
+.creator-management-popup-container .player-notice-form .form-group textarea:focus {
+  outline: none;
+  border-color: var(--btn-primary);
+}
+
+.creator-management-popup-container .player-notice-form__hint {
+  margin: 0;
+  color: var(--color-white-t70);
+}
+
 .creator-management-popup-container .creator-profile-tab {
   display: flex;
   flex-direction: column;

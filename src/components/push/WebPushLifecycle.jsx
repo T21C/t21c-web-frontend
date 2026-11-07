@@ -4,8 +4,8 @@ import {useAuth} from '@/contexts/AuthContext';
 import {
   fetchPushAvailability,
   isPushSupported,
+  refreshCurrentBrowser,
   registerPushServiceWorker,
-  subscribeCurrentBrowser,
   syncPushLocale,
 } from '@/utils/webPush';
 
@@ -22,7 +22,7 @@ const WebPushLifecycle = () => {
         if (cancelled || !available || !isPushSupported()) return;
         await registerPushServiceWorker();
         if (Notification.permission === 'granted') {
-          await subscribeCurrentBrowser(i18n.language);
+          await refreshCurrentBrowser(i18n.language);
         }
       } catch {
         /* push is optional */

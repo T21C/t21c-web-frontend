@@ -42,16 +42,25 @@
     "inApp": "显示在收件箱",
     "muteCategory": "静音此分类",
     "pushTitle": "浏览器通知",
-    "pushHint": "使用与收件箱相同的类型和分类开关。",
     "pushDenied": "此网站的通知已被阻止。请在浏览器设置中允许通知。",
     "pushUnsupported": "此浏览器不支持通知。",
+    "pushDevicesTitle": "已连接的设备",
+    "pushAttach": "连接此设备",
+    "pushDevicesEmpty": "还没有连接浏览器。",
+    "pushDeviceUnknown": "未知设备",
+    "pushDeviceOn": "{{os}} 上的 {{browser}}",
+    "pushDeviceBrowserOnly": "{{browser}}",
+    "pushDeviceOsOnly": "{{os}}",
+    "pushDeviceThis": "本设备",
+    "pushDeviceLastSeen": "最近出现 {{date}}",
     "hideOwnActivityTitle": "隐藏我的动态",
     "hideOwnActivityHint": "开启时你进行的操作将不会显示在通知中。如果你希望看到你的提交记录或编辑记录的确认信息，请保持关闭。",
     "categories": {
       "submissions": "提交",
       "chart": "谱面",
       "clears": "通关",
-      "following": "关注"
+      "following": "关注",
+      "notices": "通知"
     }
   },
   "preferences": {
