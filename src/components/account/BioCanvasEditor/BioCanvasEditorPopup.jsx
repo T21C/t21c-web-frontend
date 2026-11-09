@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { PopupShell } from "@/components/common/PopupShell";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CloseButton } from "@/components/common/buttons";
+import { UndoIcon, RedoIcon } from "@/components/common/icons";
 import { useMementoShortcuts } from "@/hooks/useMementoHistory";
 import BioCanvasEditor from "./BioCanvasEditor";
 import { useBioCanvasEditor } from "./useBioCanvasEditor";
@@ -117,20 +118,22 @@ export default function BioCanvasEditorPopup({
           <div className="bio-canvas-editor-popup__actions-center">
             <button
               type="button"
-              className="btn-fill-neutral"
+              className={editor.canUndo && !editor.saveBusy ? "btn-fill-primary" : "btn-fill-neutral"}
               onClick={editor.undo}
               disabled={editor.saveBusy || !editor.canUndo}
               data-tooltip-id="bio-canvas-undo"
             >
+              <UndoIcon />
               {t("buttons.undo", { ns: "common" })}
             </button>
             <button
               type="button"
-              className="btn-fill-neutral"
+              className={editor.canRedo && !editor.saveBusy ? "btn-fill-primary" : "btn-fill-neutral"}
               onClick={editor.redo}
               disabled={editor.saveBusy || !editor.canRedo}
               data-tooltip-id="bio-canvas-redo"
             >
+              <RedoIcon />
               {t("buttons.redo", { ns: "common" })}
             </button>
             <Tooltip id="bio-canvas-undo" place="top" noArrow>

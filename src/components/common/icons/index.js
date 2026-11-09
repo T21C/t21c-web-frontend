@@ -4,6 +4,8 @@ import { DiscordIcon } from './DiscordIcon';
 import { GoogleIcon } from './GoogleIcon';
 import DownloadIcon from './DownloadIcon';
 import { EditIcon } from './EditIcon';
+import { UndoIcon } from './UndoIcon';
+import { RedoIcon } from './RedoIcon';
 import { ExternalLinkIcon } from './ExternalLinkIcon';
 import { FetchIcon } from './FetchIcon';
 import { FilterIcon } from './FilterIcon';
@@ -89,6 +91,8 @@ export {
     GoogleIcon,
     DownloadIcon,
     EditIcon,
+    UndoIcon,
+    RedoIcon,
     ExternalLinkIcon,
     FetchIcon,
     FilterIcon,

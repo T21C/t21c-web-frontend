@@ -9,7 +9,7 @@ import PackDescription from "@/components/cards/PackCard/PackDescription";
 import { MetaTags, CurationTypeCountView } from "@/components/common/display";
 import { buildPackMeta } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
+import { EditIcon, UndoIcon, RedoIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
 import { EditPackPopup, EditFolderPopup, EditNotePopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup, PackAddLevelsConfirmPopup } from "@/components/popups/Packs";
 import {
   moveItemToPosition,
@@ -1541,6 +1541,7 @@ const PackDetailPage = () => {
                   className="btn-fill-neutral"
                   onClick={enterEditItems}
                 >
+                  <EditIcon size="18px" />
                   {t('packDetail.actions.editItems')}
                 </button>
               )}
@@ -1549,20 +1550,22 @@ const PackDetailPage = () => {
                   <div className="items-edit-toolbar__history">
                     <button
                       type="button"
-                      className="btn-fill-neutral"
+                      className={canUndo && !itemsSaveBusy ? "btn-fill-primary" : "btn-fill-neutral"}
                       onClick={undoItems}
                       disabled={itemsSaveBusy || !canUndo}
                       data-tooltip-id="pack-items-undo"
                     >
+                      <UndoIcon />
                       {t('buttons.undo', { ns: 'common' })}
                     </button>
                     <button
                       type="button"
-                      className="btn-fill-neutral"
+                      className={canRedo && !itemsSaveBusy ? "btn-fill-primary" : "btn-fill-neutral"}
                       onClick={redoItems}
                       disabled={itemsSaveBusy || !canRedo}
                       data-tooltip-id="pack-items-redo"
                     >
+                      <RedoIcon />
                       {t('buttons.redo', { ns: 'common' })}
                     </button>
                     <Tooltip id="pack-items-undo" place="top" noArrow>
@@ -1713,6 +1716,7 @@ const PackDetailPage = () => {
                     className="btn-fill-neutral"
                     onClick={enterEditItems}
                   >
+                    <EditIcon size="18px" />
                     {t('packDetail.actions.editItems')}
                   </button>
                 </div>
