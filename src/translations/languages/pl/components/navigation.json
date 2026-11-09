@@ -36,7 +36,8 @@
         "listing": "Lista twórców"
       },
       "tools": {
-        "scoreCalculator": "Kalkulator wyniku"
+        "scoreCalculator": "Kalkulator wyniku",
+        "adofaiModManager": "ADOFAI Mod Manager"
       },
       "more": {
         "tufHelperLite": "TUFHelperLite",

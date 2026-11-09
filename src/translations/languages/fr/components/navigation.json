@@ -35,7 +35,8 @@
         "listing": "Liste des créateurs"
       },
       "tools": {
-        "scoreCalculator": "Calculateur de score"
+        "scoreCalculator": "Calculateur de score",
+        "adofaiModManager": "ADOFAI Mod Manager"
       },
       "more": {
         "tufHelperLite": "TUFHelperLite",

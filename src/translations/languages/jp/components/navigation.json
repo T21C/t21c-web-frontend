@@ -48,7 +48,8 @@
         "allPacks": "すべてのパック"
       },
       "tools": {
-        "scoreCalculator": "スコア計算機"
+        "scoreCalculator": "スコア計算機",
+        "adofaiModManager": "ADOFAI Mod Manager"
       },
       "more": {
         "passes": "クリア",

@@ -263,6 +263,11 @@ export const createNavigationConfig = (context = {}) => {
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
           },
           {
+            to: "https://github.com/KGH1113/ADOFAIModManager/releases",
+            translationKey: "navigation.main.dropdowns.tools.adofaiModManager",
+            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
+          },
+          {
             to: "/levels",
             translationKey: "navigation.main.dropdowns.more.tufHelperLite",
             onClick: showTufHelperLiteIntegrationBanner,
