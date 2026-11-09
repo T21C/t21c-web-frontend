@@ -223,7 +223,7 @@
       "earlyVsLateBias": "Early・Lateの偏り"
     },
     "levelsCleared": {
-      "totalTilecountCleared": "クリアしたタイル数の合計",
+      "totalTilecountCleared": "クリアしたレベルの総タイル数",
       "totalPlaytimeMs": "推定プレイ時間",
       "averageBpm": "平均BPM（クリアしたレベル）",
       "totalRawScoreV2": "全クリアスコアの単純合計"

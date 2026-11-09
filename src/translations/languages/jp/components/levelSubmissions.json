@@ -27,9 +27,9 @@
     },
     "team": "チーム：",
     "vfxer": "VFXアーティスト：",
-    "specialThanks": "スペシャルサンクス：",
+    "specialThanks": "Special Thanks：",
     "submitter": "提出者：",
-    "submitterRecordTooltip": "{{accepted}} 承認済み / {{declined}} 却下済み",
+    "submitterRecordTooltip": "{{accepted}} 承認済み / {{declined}} 拒否済み",
     "evidence": "証拠：",
     "notes": "注記",
     "notesPlaceholder": "管理者のための任意の注意事項",
@@ -74,7 +74,7 @@
   "messages": {
     "success": {
       "approved": "提出が正常に承認されました",
-      "rejected": "提出の却下が正常に完了しました",
+      "rejected": "提出の拒否が正常に完了しました",
       "suffixUpdated": "接尾辞の更新に成功しました",
       "videoLinkUpdated": "動画のリンクが正常に更新されました",
       "notesUpdated": "メモの更新に成功しました",
@@ -83,7 +83,7 @@
     "error": {
       "generic": "エラーが発生しました",
       "approve": "提出の承認に失敗しました",
-      "reject": "提出の却下に失敗しました"
+      "reject": "提出の拒否に失敗しました"
     },
     "artistLockedToSong": "アーティストは選択した曲に固定されており、変更することはできません",
     "songUpdated": "曲が正常に更新されました",

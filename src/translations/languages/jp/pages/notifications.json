@@ -43,8 +43,8 @@
           "body": "{{artist}} — {{song}} が承認されました。"
         },
         "declined": {
-          "title": "クリアが却下されました",
-          "body": "{{artist}} — {{song}} は却下されました。"
+          "title": "クリアが拒否されました",
+          "body": "{{artist}} — {{song}} は拒否されました。"
         }
       },
       "modified": {
@@ -71,8 +71,8 @@
           "body": "{{artist}} ー {{song}} が承認されました。"
         },
         "declined": {
-          "title": "チャートが却下されました",
-          "body": "{{artist}} ー {{song}} は却下されました。"
+          "title": "チャートが拒否されました",
+          "body": "{{artist}} ー {{song}} は拒否されました。"
         }
       },
       "deleted": {
@@ -131,20 +131,20 @@
           "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが承認されました。"
         },
         "rejected": {
-          "title": "リクエストが却下されました",
-          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました。"
+          "title": "リクエストが拒否されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが拒否されました。"
         },
         "rejectedWithNote": {
-          "title": "リクエストが却下されました",
-          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました：「{{publicNote}}」"
+          "title": "リクエストが拒否されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが拒否されました：「{{publicNote}}」"
         },
         "rejectedWithActor": {
-          "title": "リクエストが却下されました",
-          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました — {{actorName}}"
+          "title": "リクエストが拒否されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが拒否されました — {{actorName}}"
         },
         "rejectedWithNoteAndActor": {
-          "title": "リクエストが却下されました",
-          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました：「{{publicNote}}」 — {{actorName}}"
+          "title": "リクエストが拒否されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが拒否されました：「{{publicNote}}」 — {{actorName}}"
         },
         "completed": {
           "title": "リクエストが完了しました",
@@ -183,7 +183,7 @@
     "admin": {
       "notice": {
         "title": "スタッフからのお知らせ",
-        "inboxTitle": "{{actorName}}からのお知らせ",
+        "inboxTitle": "{{actorName}} からのお知らせ",
         "fallbackActor": "管理者",
         "body": "{{message}}"
       }

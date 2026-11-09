@@ -1273,7 +1273,8 @@
 
 .level-detail .level-detail-body .info .info-item .info-desc-value {
   flex: 0 0 auto;
-  white-space: nowrap;
+  /* Flex items drop a leading space, which ate the gap before "|". */
+  white-space: pre;
 }
 
 .level-detail .level-detail-body .info .info-item .info-desc-link {

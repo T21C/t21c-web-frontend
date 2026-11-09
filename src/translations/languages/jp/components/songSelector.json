@@ -31,7 +31,7 @@
     "ysmodOnly": "YSMOD専用",
     "conditional": "条件付き",
     "pending": "保留中",
-    "declined": "却下"
+    "declined": "拒否"
   },
   "messages": {
     "success": {

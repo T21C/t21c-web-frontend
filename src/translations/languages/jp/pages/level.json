@@ -15,7 +15,7 @@
     "sort": "レベルを並べ替える",
     "reset": "すべてのフィルターをリセット",
     "normalView": "通常表示",
-    "compactView": "「コンパクト表示」",
+    "compactView": "コンパクト表示",
     "toggleQSlider": "Q難易度スライダーの切り替え",
     "orderAsc": "昇順",
     "orderDesc": "降順",
@@ -33,7 +33,7 @@
       "baseScore": "ベーススコア",
       "bpm": "BPM",
       "tiles": "タイル",
-      "time": "時間",
+      "time": "長さ",
       "random": "ランダム"
     }
   },
@@ -45,12 +45,13 @@
     "viewMode": "表示モード",
     "clearedLevels": "クリア済みレベル",
     "deletedLevels": "削除済みレベル",
+    "inRating": "レーティング中",
     "myHiddenLevels": "自分が非表示にしたレベル",
     "availableDl": "ダウンロード可能",
-    "specialDifficulties": "スペシャル難易度",
+    "specialDifficulties": "Special難易度",
     "curationTypes": "キュレーションタイプ",
     "tags": "タグ",
-    "myLikes": "自分のいいね"
+    "myLikes": "いいねしたレベル"
   },
   "totalResults": "全{{count}}件",
   "infScroll": {

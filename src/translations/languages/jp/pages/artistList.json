@@ -15,8 +15,8 @@
     "label": "並べ替え:",
     "nameAsc": "名前 (A-Z)",
     "nameDesc": "名前 (Z-A)",
-    "idAsc": "ID (低い順)",
-    "idDesc": "ID (高い順)"
+    "idAsc": "ID (小さい順)",
+    "idDesc": "ID (大きい順)"
   },
   "infScroll": {
     "end": "これで最後まで読み終えました！"

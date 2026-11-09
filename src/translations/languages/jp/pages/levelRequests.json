@@ -17,7 +17,7 @@
     "accepted": "承認済み",
     "added_to_rating_page": "レーティングページに追加済み",
     "discord_vote": "Discord投票",
-    "rejected": "却下",
+    "rejected": "拒否",
     "withdrawn": "取り下げ済み",
     "completed": "完了",
     "completed_changed": "完了（難易度変更あり）",
@@ -222,13 +222,13 @@
     "acceptDone": "リクエストを承認しました",
     "acceptDownload": "承認してダウンロードを置き換える",
     "acceptDownloadDone": "ダウンロードを置き換えました",
-    "reject": "却下",
-    "rejectConfirm": "リクエストを却下",
-    "rejectDownload": "却下してファイルを削除",
-    "rejectDownloadConfirm": "却下してファイルを削除",
-    "rejectDownloadDone": "リクエストを却下し、ファイルを削除しました",
+    "reject": "拒否",
+    "rejectConfirm": "リクエストを拒否",
+    "rejectDownload": "拒否してファイルを削除",
+    "rejectDownloadConfirm": "拒否してファイルを削除",
+    "rejectDownloadDone": "リクエストを拒否し、ファイルを削除しました",
     "rejectNote": "公開メモ（任意）",
-    "rejectDone": "リクエストを却下しました",
+    "rejectDone": "リクエストを拒否しました",
     "complete": "完了にする",
     "completeDone": "リクエストを完了しました",
     "add_to_rating": "レーティングページに追加",
@@ -273,14 +273,14 @@
           "examples": {
             "level": "<b><code>#123</code></b> または <b><code>level=123</code></b> で、そのレベルのリクエストを検索します。<b><code>id=45</code></b> では特定のリクエストを検索します。",
             "requesterStatus": "<b><code>requester:v0w4n, status:pending</code></b><br/>ユーザー名またはニックネームとステータスで絞り込みます。",
-            "typeReason": "<b><code>type:info, reason:offset</code></b><br/>すべてのタイプがまとめて表示される「自分のリクエスト」で、タイプ指定が特に便利です。"
+            "typeReason": "<b><code>type:info, reason:offset</code></b><br/>すべてのタイプがまとめて表示される「リクエスト履歴」で、タイプ指定が特に便利です。"
           }
         },
         "tips": {
           "title": "ヒント",
           "intro": "検索時に意外な結果にならないよう、いくつか補足します。",
           "bullets": {
-            "plainText": "フィールドを指定しない語句でも、曲、アーティスト、レベルID、リクエストID、リクエスト者、ステータス、理由を検索します。「自分のリクエスト」ではタイプも検索対象です。",
+            "plainText": "フィールドを指定しない語句でも、曲、アーティスト、レベルID、リクエストID、リクエスト者、ステータス、理由を検索します。「リクエスト履歴」ではタイプも検索対象です。",
             "statusToggle": "フィルターでステータスを選択するか、クエリで status: を使用すると、「完了」の切り替え設定は無視されます。",
             "caseInsensitive": "検索では大文字と小文字は区別されません。「SONG」と「song」は同じように扱われます。",
             "spacesAllowed": "値にはスペースを使用できます。例：song:Example Song",
@@ -339,7 +339,7 @@
         },
         "type": {
           "title": "タイプのリクエスト",
-          "desc": "rerate、info_change（別名：info）、tag、curation、curation_rerate。「自分のリクエスト」で使うと特に便利です。"
+          "desc": "rerate、info_change（別名：info）、tag、curation、curation_rerate。「リクエスト履歴」で使うと特に便利です。"
         },
         "reason": {
           "title": "理由",
@@ -421,6 +421,6 @@
     "denied": "これらのリクエストを確認する権限がありません"
   },
   "mine": {
-    "title": "自分のリクエスト"
+    "title": "リクエスト履歴"
   }
 }

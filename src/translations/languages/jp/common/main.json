@@ -101,10 +101,10 @@
   "verification": {
     "verificationState": "認証状態",
     "all": "すべて",
-    "unverified": "未認証",
+    "unverified": "未確認",
     "pending": "保留中",
-    "declined": "却下",
-    "mostly_declined": "大部分が却下",
+    "declined": "拒否",
+    "mostly_declined": "大部分が拒否",
     "mostly_allowed": "大部分が許可",
     "conditional": "条件付き",
     "ysmod_only": "YSMod限定",

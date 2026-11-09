@@ -40,8 +40,8 @@
   },
   "sortOptions": {
     "rankedScore": "ランクスコア",
-    "totalScoreV2": "トータルスコア",
-    "generalScore": "ジェネラルスコア",
+    "totalScoreV2": "合計スコア",
+    "generalScore": "総合スコア",
     "ppScore": "PPスコア",
     "wfScore": "WFスコア",
     "wfPPScore": "WF PPスコア",
@@ -65,7 +65,7 @@
     "backToPresent": "現在に戻る",
     "title": "ランキング履歴",
     "metricRanked": "ランクスコア順位",
-    "metricGeneral": "ジェネラルスコア順位",
+    "metricGeneral": "総合スコア順位",
     "timelineLabel": "履歴タイムライン",
     "noData": "この日付に関する過去のランキングデータはありません。",
     "metaTitle": "ランキング — {{date}}",
@@ -105,7 +105,7 @@
     }
   },
   "locate": {
-    "button": "現在地",
+    "button": "自分の現在順位",
     "signedOut": "ログインして、リーダーボードでの順位を確認しましょう。",
     "unlinked": "プレイヤープロフィールをリンクして、リーダーボードでの順位を確認しましょう。",
     "missing": "この検索結果には、あなたに関する情報は表示されていません。"

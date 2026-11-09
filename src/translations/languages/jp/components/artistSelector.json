@@ -28,8 +28,8 @@
   "status": {
     "unverified": "未確認",
     "pending": "保留中",
-    "declined": "却下",
-    "mostlyDeclined": "ほとんど却下",
+    "declined": "拒否",
+    "mostlyDeclined": "ほとんど拒否",
     "mostlyAllowed": "ほとんど許可",
     "allowed": "許可済み",
     "ysmodOnly": "YSModのみ"

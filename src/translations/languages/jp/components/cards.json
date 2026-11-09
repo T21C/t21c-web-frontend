@@ -5,8 +5,8 @@
   },
   "level": {
     "creator": "クリエイター",
-    "clears": "クリア",
-    "totalClears": "合計クリア数",
+    "clears": "クリア人数",
+    "totalClears": "合計クリア人数",
     "clearStatus": {
       "cleared": "クリア済み",
       "purePerfect": "Pure Perfect",
@@ -68,8 +68,8 @@
     "listPosition": "リストの順位 {{position}}",
     "stats": {
       "rankedScore": "ランクスコア",
-      "totalScoreV2": "トータルスコア",
-      "generalScore": "ジェネラルスコア",
+      "totalScoreV2": "合計スコア",
+      "generalScore": "総合スコア",
       "ppScore": "PPスコア",
       "wfScore": "WFスコア",
       "wfPPScore": "WF PPスコア",
@@ -86,7 +86,7 @@
   "clear": {
     "score": {
       "ranked": "ランクスコア",
-      "general": "ジェネラルスコア",
+      "general": "総合スコア",
       "pp": "PPスコア",
       "wf": "WFスコア",
       "12k": "12kスコア"

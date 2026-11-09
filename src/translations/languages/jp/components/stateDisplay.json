@@ -4,6 +4,8 @@
     "show": "表示",
     "only": "のみ",
     "all": "すべて",
+    "rankable": "レーティング可能",
+    "ratingOff": "レーティング対象外",
     "none": "なし",
     "wf": "WF",
     "wfpp": "WF PP",
