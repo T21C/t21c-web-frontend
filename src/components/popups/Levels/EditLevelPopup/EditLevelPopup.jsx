@@ -915,6 +915,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
+              <label htmlFor="ppDiffId">{t('levelPopups.edit.form.placeholders.ppDiffId')}</label>
                 <RatingInput
                   value={getDifficultyName(formData.ppDiffId)}
                   diffId={parseInt(formData.ppDiffId)}

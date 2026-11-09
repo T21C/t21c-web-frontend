@@ -25,6 +25,7 @@
         "previousDifficulty": "先前评级"
       },
       "placeholders": {
+        "ppDiffId": "PP 难度",
         "baseScore": "基础分",
         "ppBaseScore": "无瑕基础分",
         "previousBaseScore": "先前基础分",

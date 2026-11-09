@@ -22,6 +22,7 @@
         "previousDifficulty": "Wcześniejszy poziom trudności"
       },
       "placeholders": {
+        "ppDiffId": "Poziom trudności PP",
         "baseScore": "Wynik podstawowy",
         "ppBaseScore": "Bazowy wynik PP",
         "rerateNumber": "Numer rerate'u",
