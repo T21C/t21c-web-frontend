@@ -46,7 +46,7 @@
       }
     },
     "submitter": "提出者:",
-    "submitterRecordTooltip": "{{accepted}} 承認済み / {{declined}} 却下済み",
+    "submitterRecordTooltip": "{{accepted}} 承認済み / {{declined}} 拒否済み",
     "uploadTime": "アップロード時間",
     "videoLink": "動画のリンク:",
     "videoLinkPlaceholder": "YouTubeまたはBilibiliのURL",

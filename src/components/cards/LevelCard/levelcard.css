@@ -482,11 +482,11 @@
   pointer-events: none;
   background: linear-gradient(to right,
     hsl(272, 66%, 18%),
-    hsl(232, 66%, 18%),
-    hsl(192, 66%, 18%)
+    hsl(262, 66%, 18%),
+    hsl(252, 66%, 18%)
   );
   border-radius: inherit;
-  animation: basicHue 10s linear infinite;
+  animation: basicHue 8s ease-in-out infinite alternate;
   will-change: filter;
 }
 
@@ -506,10 +506,11 @@
 }
 
 
-/* Full turn, same as the legendary rim. Stops descend in hue from left to right. */
+/* 60° swing from purple (272) toward cyan (192). Negative rotation moves hue
+   toward cyan; alternate brings it back. The rightward descent stays inside that range. */
 @keyframes basicHue {
   from { filter: hue-rotate(0deg); }
-  to { filter: hue-rotate(360deg); }
+  to { filter: hue-rotate(-70deg); }
 }
 
 /* Legendary card styling */

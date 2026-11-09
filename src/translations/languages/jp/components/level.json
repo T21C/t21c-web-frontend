@@ -33,7 +33,7 @@
             "timeUnits": "<b><code>time:>10m15s</code></b> または <b><code>time:<50s</code></b><br/>チャートの長さには h/m/s/ms の単位を使用します。",
             "timeMsPlain": "<b><code>time:>130000</code></b><br/>単位のない数値はミリ秒として扱われます。",
             "likesRange": "<b><code>likes:>10</code></b> は、いいね数が10を超えるレベルを絞り込みます（完全一致と範囲指定にも対応）。",
-            "clearsRange": "<b><code>clears:>=100</code></b> は、クリア数が100以上のレベルを絞り込みます（完全一致と範囲指定にも対応）。"
+            "clearsRange": "<b><code>clears:>=100</code></b> は、クリア人数が100人以上のレベルを絞り込みます（完全一致と範囲指定にも対応）。"
           }
         },
         "idsAndLinks": {

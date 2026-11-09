@@ -499,6 +499,26 @@
   gap: 0.5rem;
 }
 
+.pack-detail-page .items-edit-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.pack-detail-page .items-edit-toolbar__history,
+.pack-detail-page .items-edit-toolbar__persist {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pack-detail-page .add-buttons.is-disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 .pack-detail-page .drag-hint {
   font-size: 0.8rem;
   color: var(--color-white-t60);

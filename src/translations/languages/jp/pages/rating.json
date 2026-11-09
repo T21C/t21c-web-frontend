@@ -25,9 +25,8 @@
       "label": "AutoRaterを非表示",
       "hint": "チェックすると、一覧から該当するAutoRaterの帯を非表示にします"
     },
-    "fourVote": {
-      "suffix": "+ レーティング済み",
-      "input": "レーティング数の最小値"
+    "rankState": {
+      "label": "状態"
     },
     "rankReady": {
       "label": "ランク確定可能"

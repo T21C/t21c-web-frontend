@@ -1,9 +1,9 @@
 {
   "meta": {
-    "title": "私の提出",
+    "title": "提出履歴",
     "description": "クリアおよびチャートの提出内容を確認してください"
   },
-  "title": "私の提出",
+  "title": "提出履歴",
   "search": {
     "placeholder": "曲名、アーティスト名、チャーター、パッサー、または動画リンクで検索"
   },
@@ -21,7 +21,7 @@
     "all": "すべてのステータス",
     "pending": "保留中",
     "approved": "承認済み",
-    "declined": "却下"
+    "declined": "拒否"
   },
   "sort": {
     "dateDesc": "新しい順",

@@ -2,10 +2,10 @@
   "title": "クリアを提出",
   "thumbnailInfo": "動画情報がここに表示されます",
   "submInfo": {
-    "levelId": "レベルを検索するか、IDを入力",
+    "levelId": "レベルを検索、またはIDを入力",
     "altname": "ランキング上の名前",
     "nohold": "代替ホールド設定",
-    "speed": "速度（任意、1.0以上）",
+    "speed": "速度倍率（1.0以上）",
     "keyCount": "キー数（任意）",
     "feelDiff": "体感レーティング",
     "details": "詳細（任意）",
@@ -41,13 +41,6 @@
     "perfect": "Perfect",
     "perfectPlus": "Perfect+",
     "lPerfect": "LPerfect",
-    "short": {
-      "ePerfect": "EP",
-      "perfectMinus": "P−",
-      "perfect": "P",
-      "perfectPlus": "P+",
-      "lPerfect": "LP"
-    },
     "tooearly": "Too Early",
     "early": "Early",
     "late": "Late"
@@ -111,16 +104,16 @@
     "rulesLink": "ルールとガイドライン"
   },
   "tilecountMismatch": {
-    "title": "判定数の合計が実際のタイル数と一致しません",
-    "body": "このレベルの譜面には、判定可能なタイルが<b>{{tilecount}}</b>個あります。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
-    "bodyWithAuto": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（うち<b>{{autoTileCount}}</b>個はオート）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
-    "bodyWithMidspin": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（うち<b>{{midspinCount}}</b>個はミッドスピン）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
-    "bodyWithAutoAndMidspin": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（オート<b>{{autoTileCount}}</b>個、ミッドスピン<b>{{midspinCount}}</b>個）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "title": "総判定数が実際のタイル数と一致しません",
+    "body": "このレベルの譜面には、判定可能なタイルが<b>{{tilecount}}</b>個あります。入力された総判定数は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "bodyWithAuto": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（うち<b>{{autoTileCount}}</b>個はオート）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された総判定数は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "bodyWithMidspin": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（うち<b>{{midspinCount}}</b>個はミッドスピン）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された総判定数は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "bodyWithAutoAndMidspin": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（オート<b>{{autoTileCount}}</b>個、ミッドスピン<b>{{midspinCount}}</b>個）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された総判定数は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
     "reviewInputs": "キャンセル",
     "submitAnyway": "このまま提出",
     "wrongVersion": {
       "title": "ゲームのバージョンが違います",
-      "body": "入力された判定数の合計にはミッドスピンも含まれているようです（<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>）。バージョン<b>3.4.0</b>以降ではミッドスピンはカウントされないため、差し引く必要があります。",
+      "body": "入力された総判定数にはミッドスピンも含まれているようです（<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>）。バージョン<b>3.4.0</b>以降ではミッドスピンはカウントされないため、差し引く必要があります。",
       "changeVersion": "3.4.0未満に変更"
     }
   },

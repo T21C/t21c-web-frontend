@@ -25,6 +25,7 @@
         "previousDifficulty": "前の難易度"
       },
       "placeholders": {
+        "ppDiffId": "PP難易度",
         "baseScore": "ベーススコア",
         "ppBaseScore": "PPベーススコア",
         "previousBaseScore": "前回のベーススコア",

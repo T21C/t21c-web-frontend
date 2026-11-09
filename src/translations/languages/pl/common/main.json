@@ -14,5 +14,9 @@
     "unlistedNote": "Filmy niepubliczne pozostają ukryte.",
     "allowAccess": "Zezwól na dostęp do kanału",
     "loadFailed": "Nie udało się wczytać filmów z YouTube"
+  },
+  "buttons": {
+    "undo": "Cofnij",
+    "redo": "Ponów"
   }
 }

@@ -45,7 +45,16 @@
     "moveItem": "Click to move, or drag",
     "editFolder": "폴더 편집",
     "editNote": "메모 편집",
-    "deleteNote": "메모 삭제"
+    "deleteNote": "메모 삭제",
+    "editItems": "항목 편집"
+  },
+  "editItems": {
+    "saveSuccess": "팩 항목이 저장되었습니다",
+    "saveError": "팩 항목을 저장하지 못했습니다",
+    "undoHint": "실행 취소 (Ctrl+Z)",
+    "redoHint": "다시 실행 (Ctrl+Y)",
+    "nameConflict": "이 위치에 \"{{name}}\" 이름의 항목이 이미 있습니다",
+    "quotaExceeded": "이 팩의 항목 수 한도에 도달했습니다"
   },
   "download": {
     "estimatedLong": "(estimated: {{count}} missing metadata)",

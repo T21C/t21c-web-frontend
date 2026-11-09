@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
+import { useMementoHistory } from "@/hooks/useMementoHistory";
 import api from "@/utils/api";
 import { ensureAuthSession, isNoTokenAuthError } from "@/utils/ensureAuthSession";
 import { getBioCanvasApiRoutes } from "@/utils/bioCanvasApi";
@@ -103,93 +104,39 @@ export function useBioCanvasEditor({
     [imageAssets, pendingImages],
   );
 
-  const historyRef = useRef([]);
-  const redoRef = useRef([]);
   const workingCanvasRef = useRef(workingCanvas);
   workingCanvasRef.current = workingCanvas;
-  const suspendHistoryRef = useRef(false);
-  const [historyDepth, setHistoryDepth] = useState(0);
-  const [redoDepth, setRedoDepth] = useState(0);
-
-  useEffect(() => {
-    if (isOpen) {
-      historyRef.current = [];
-      redoRef.current = [];
-      suspendHistoryRef.current = false;
-      setHistoryDepth(0);
-      setRedoDepth(0);
-    }
-  }, [isOpen]);
-
-  const pushHistorySnapshot = useCallback(() => {
-    const prev = workingCanvasRef.current;
-    if (!prev) return;
-    historyRef.current.push(JSON.stringify(prev));
-    if (historyRef.current.length > 100) historyRef.current.shift();
-    setHistoryDepth(historyRef.current.length);
-  }, []);
+  const {
+    record: recordHistory,
+    beginStep,
+    endStep: endHistoryStep,
+    undo: undoHistory,
+    redo: redoHistory,
+    canUndo,
+    canRedo,
+  } = useMementoHistory({ resetKey: isOpen });
 
   const patchWorking = useCallback(
     (nextCanvas) => {
-      if (!suspendHistoryRef.current) {
-        pushHistorySnapshot();
-        if (redoRef.current.length) {
-          redoRef.current = [];
-          setRedoDepth(0);
-        }
-      }
+      recordHistory(workingCanvasRef.current);
       onCanvasDraftChange?.(nextCanvas);
     },
-    [onCanvasDraftChange, pushHistorySnapshot],
+    [recordHistory, onCanvasDraftChange],
   );
 
-  // Coalesce a continuous interaction (e.g. dragging) into one history entry:
-  // record the pre-interaction state once, then suspend per-change snapshots.
   const beginHistoryStep = useCallback(() => {
-    if (suspendHistoryRef.current) return;
-    pushHistorySnapshot();
-    if (redoRef.current.length) {
-      redoRef.current = [];
-      setRedoDepth(0);
-    }
-    suspendHistoryRef.current = true;
-  }, [pushHistorySnapshot]);
-
-  const endHistoryStep = useCallback(() => {
-    suspendHistoryRef.current = false;
-  }, []);
+    beginStep(workingCanvasRef.current);
+  }, [beginStep]);
 
   const undo = useCallback(() => {
-    if (!historyRef.current.length) return;
-    const prevJson = historyRef.current.pop();
-    setHistoryDepth(historyRef.current.length);
-    const current = workingCanvasRef.current;
-    if (current) {
-      redoRef.current.push(JSON.stringify(current));
-      setRedoDepth(redoRef.current.length);
-    }
-    try {
-      onCanvasDraftChange?.(JSON.parse(prevJson));
-    } catch {
-      // ignore malformed history snapshot
-    }
-  }, [onCanvasDraftChange]);
+    const prev = undoHistory(workingCanvasRef.current);
+    if (prev) onCanvasDraftChange?.(prev);
+  }, [undoHistory, onCanvasDraftChange]);
 
   const redo = useCallback(() => {
-    if (!redoRef.current.length) return;
-    const nextJson = redoRef.current.pop();
-    setRedoDepth(redoRef.current.length);
-    const current = workingCanvasRef.current;
-    if (current) {
-      historyRef.current.push(JSON.stringify(current));
-      setHistoryDepth(historyRef.current.length);
-    }
-    try {
-      onCanvasDraftChange?.(JSON.parse(nextJson));
-    } catch {
-      // ignore malformed redo snapshot
-    }
-  }, [onCanvasDraftChange]);
+    const next = redoHistory(workingCanvasRef.current);
+    if (next) onCanvasDraftChange?.(next);
+  }, [redoHistory, onCanvasDraftChange]);
 
   const patchBlock = useCallback(
     (blockId, patch) => {
@@ -446,8 +393,8 @@ export function useBioCanvasEditor({
     handleClear,
     undo,
     redo,
-    canUndo: historyDepth > 0,
-    canRedo: redoDepth > 0,
+    canUndo,
+    canRedo,
     beginHistoryStep,
     endHistoryStep,
     isDirtySinceOpen,

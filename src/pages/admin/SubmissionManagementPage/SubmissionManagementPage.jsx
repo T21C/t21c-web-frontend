@@ -120,6 +120,7 @@ const SubmissionManagementPage = () => {
   const handleSseEvent = useCallback((event) => {
     const { type, data } = event || {};
     if (!type || !type.startsWith('submission.')) return;
+    window.dispatchEvent(new CustomEvent('submissionQueueEvent', { detail: event }));
 
     const request = data?.request;
     const item = data?.item;

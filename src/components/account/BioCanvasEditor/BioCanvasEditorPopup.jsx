@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { PopupShell } from "@/components/common/PopupShell";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CloseButton } from "@/components/common/buttons";
+import { UndoIcon, RedoIcon } from "@/components/common/icons";
+import { useMementoShortcuts } from "@/hooks/useMementoHistory";
 import BioCanvasEditor from "./BioCanvasEditor";
 import { useBioCanvasEditor } from "./useBioCanvasEditor";
 import { createDefaultBioCanvas, parseBioCanvas } from "@/utils/bioCanvas";
@@ -47,29 +49,11 @@ export default function BioCanvasEditorPopup({
     setSelectedBlockId(blocks[0]?.id ?? null);
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const handleKeyDown = (event) => {
-      if (!(event.ctrlKey || event.metaKey)) return;
-      const key = event.key.toLowerCase();
-      const isUndo = key === "z" && !event.shiftKey;
-      const isRedo = key === "y" || (key === "z" && event.shiftKey);
-      if (!isUndo && !isRedo) return;
-
-      const target = event.target;
-      const isTextEntry =
-        target instanceof HTMLElement &&
-        (target.tagName === "INPUT" ||
-          target.tagName === "TEXTAREA" ||
-          target.isContentEditable);
-      if (isTextEntry) return;
-      event.preventDefault();
-      if (isRedo) editor.redo();
-      else editor.undo();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, editor.undo, editor.redo]);
+  useMementoShortcuts({
+    enabled: isOpen,
+    undo: editor.undo,
+    redo: editor.redo,
+  });
 
   const handleClose = useCallback(() => {
     if (editor.isDirtySinceOpen) {
@@ -134,21 +118,23 @@ export default function BioCanvasEditorPopup({
           <div className="bio-canvas-editor-popup__actions-center">
             <button
               type="button"
-              className="btn-fill-neutral"
+              className={editor.canUndo && !editor.saveBusy ? "btn-fill-primary" : "btn-fill-neutral"}
               onClick={editor.undo}
               disabled={editor.saveBusy || !editor.canUndo}
               data-tooltip-id="bio-canvas-undo"
             >
-              {t("settings.bioCanvas.undo", { defaultValue: "Undo" })}
+              <UndoIcon />
+              {t("buttons.undo", { ns: "common" })}
             </button>
             <button
               type="button"
-              className="btn-fill-neutral"
+              className={editor.canRedo && !editor.saveBusy ? "btn-fill-primary" : "btn-fill-neutral"}
               onClick={editor.redo}
               disabled={editor.saveBusy || !editor.canRedo}
               data-tooltip-id="bio-canvas-redo"
             >
-              {t("settings.bioCanvas.redo", { defaultValue: "Redo" })}
+              <RedoIcon />
+              {t("buttons.redo", { ns: "common" })}
             </button>
             <Tooltip id="bio-canvas-undo" place="top" noArrow>
               {t("settings.bioCanvas.undoHint", { defaultValue: "Undo (Ctrl+Z)" })}

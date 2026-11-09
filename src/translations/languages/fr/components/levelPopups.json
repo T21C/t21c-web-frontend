@@ -21,6 +21,7 @@
         "previousDifficulty": "Difficulté précédente"
       },
       "placeholders": {
+        "ppDiffId": "Difficulté PP",
         "baseScore": "Score de base",
         "ppBaseScore": "Score de base PP",
         "rerateNumber": "Numéro de reclassement",

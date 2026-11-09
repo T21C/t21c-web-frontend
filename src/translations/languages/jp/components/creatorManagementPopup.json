@@ -158,7 +158,7 @@
       "moderation": "モデレーション",
       "link": "クリエイター",
       "merge": "統合",
-      "notice": "通知"
+      "notice": "お知らせ"
     },
     "update": {
       "name": {
@@ -178,9 +178,9 @@
       "rerateRequestBan": "再レートリクエストを禁止",
       "rerateRequestBanConfirm": "このプレイヤーからの再レートリクエストを制限しますか？",
       "rerateRequestUnbanConfirm": "このプレイヤーが再び再レートリクエストを提出できるようにしますか？",
-      "rejectRecent": "さらに、直近の未処理の再レートリクエストも却下する",
-      "rejectRecentDurationAria": "未処理の再レートリクエストを却下する期間",
-      "rejectRecentUnitAria": "却下対象期間の単位",
+      "rejectRecent": "さらに、直近の未処理の再レートリクエストも拒否する",
+      "rejectRecentDurationAria": "未処理の再レートリクエストを拒否する期間",
+      "rejectRecentUnitAria": "拒否対象期間の単位",
       "banConfirm": "このプレイヤーをBANしますか？",
       "unbanConfirm": "このプレイヤーのBANを解除しますか？",
       "banFor": "期間：",
@@ -238,8 +238,8 @@
         "label": "メモ",
         "placeholder": "このユーザーに伝えたい内容"
       },
-      "noAccount": "このプレイヤーには通知できるアカウントがありません。",
-      "sendButton": "通知を送る"
+      "noAccount": "このプレイヤーには通知を送信できるアカウントがありません。",
+      "sendButton": "通知を送信"
     },
     "errors": {
       "updateFailed": "プレイヤーの更新に失敗しました",
@@ -251,7 +251,7 @@
       "mergeFailed": "プレイヤーの統合に失敗しました",
       "mergeSelf": "プレイヤーを自分自身に統合することはできません",
       "noticeFailed": "通知の送信に失敗しました",
-      "noticeLength": "メモは4000文字以内にしてください"
+      "noticeLength": "メモは4000文字以内で入力してください"
     },
     "success": {
       "updated": "プレイヤーの更新に成功しました",

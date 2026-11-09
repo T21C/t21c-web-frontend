@@ -39,7 +39,7 @@
         "listing": "レベル一覧"
       },
       "creators": {
-        "listing": "エイター一覧",
+        "listing": "クリエイター一覧",
         "creators": "アーティスト",
         "artists": "アーティスト",
         "songs": "曲"
@@ -48,7 +48,8 @@
         "allPacks": "すべてのパック"
       },
       "tools": {
-        "scoreCalculator": "スコア計算機"
+        "scoreCalculator": "スコア計算機",
+        "adofaiModManager": "ADOFAI Mod Manager"
       },
       "more": {
         "passes": "クリア",
@@ -66,9 +67,9 @@
         "developers": "開発者ポータル"
       },
       "user": {
-        "myProfile": "私のプロフィール",
+        "myProfile": "プロフィール",
         "tufStellar": "TUFStellar",
-        "mySubmissions": "私の提出",
+        "mySubmissions": "提出履歴",
         "notifications": "通知",
         "settings": "設定",
         "admin": "管理者",

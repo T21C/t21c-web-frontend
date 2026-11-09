@@ -27,10 +27,13 @@ const TOP_FIELDS = [
 ];
 
 const XPERFECT_TOP_FIELDS = [
-  { name: 'ePerfect', color: 'var(--color-marv, #FCFF4D)' },
   { name: 'perfectMinus', color: 'var(--color-perf, #5FFF4E)' },
   { name: 'perfect', color: 'var(--color-xperfect, #ffffff)' },
   { name: 'perfectPlus', color: 'var(--color-perf, #5FFF4E)' },
+];
+
+const XPERFECT_MID_FIELDS = [
+  { name: 'ePerfect', color: 'var(--color-marv, #FCFF4D)' },
   { name: 'lPerfect', color: 'var(--color-great, #FCFF4D)' },
 ];
 
@@ -39,20 +42,6 @@ const BOTTOM_FIELDS = [
   { name: 'early', color: 'var(--color-early-1, #FF6F4D)' },
   { name: 'late', color: 'var(--color-late-1, #FF6F4D)' },
 ];
-
-const XPERFECT_COMPACT_FIELDS = new Set([
-  'ePerfect',
-  'perfectMinus',
-  'perfect',
-  'perfectPlus',
-  'lPerfect',
-]);
-
-function compactLabelKey(fullKey) {
-  const dot = fullKey.lastIndexOf('.');
-  if (dot < 0) return null;
-  return `${fullKey.slice(0, dot)}.short.${fullKey.slice(dot + 1)}`;
-}
 
 function isIntegerInputValue(value) {
   return value === '' || /^\d+$/.test(value);
@@ -72,7 +61,7 @@ export function JudgementInputs({
   showXPerfectFields = false,
 }) {
   const copy = copyProp || DEFAULT_COPY;
-  const { t, i18n } = useTranslation([copy.ns, 'common']);
+  const { t } = useTranslation([copy.ns, 'common']);
   const shouldShowScore = showScore ?? score != null;
   const topFields = showXPerfectFields ? XPERFECT_TOP_FIELDS : TOP_FIELDS;
 
@@ -86,15 +75,10 @@ export function JudgementInputs({
   const renderField = ({ name, color }) => {
     const valid = !isValidDisplay || isValidDisplay[name];
     const fullKey = copy[name];
-    const fullLabel = fullKey ? t(fullKey, { ns: copy.ns, defaultValue: name }) : name;
-    const shortKey = showXPerfectFields && XPERFECT_COMPACT_FIELDS.has(name) && fullKey
-      ? compactLabelKey(fullKey)
-      : null;
-    const useShort = !!(shortKey && i18n.exists(shortKey, { ns: copy.ns }));
-    const label = useShort ? t(shortKey, { ns: copy.ns }) : fullLabel;
+    const label = fullKey ? t(fullKey, { ns: copy.ns, defaultValue: name }) : name;
     return (
       <div className={`judgement-inputs__field judgement-inputs__field--${name}`} key={name}>
-        <p title={useShort ? fullLabel : undefined}>{label}</p>
+        <p>{label}</p>
         <input
           type="text"
           inputMode={integerOnly ? 'numeric' : undefined}
@@ -118,6 +102,11 @@ export function JudgementInputs({
       <div className="judgement-inputs__row judgement-inputs__row--top">
         {topFields.map(renderField)}
       </div>
+      {showXPerfectFields && (
+        <div className="judgement-inputs__row judgement-inputs__row--mid">
+          {XPERFECT_MID_FIELDS.map(renderField)}
+        </div>
+      )}
       <div className="judgement-inputs__row judgement-inputs__row--bottom">
         {BOTTOM_FIELDS.map(renderField)}
       </div>

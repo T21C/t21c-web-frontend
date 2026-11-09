@@ -5,7 +5,7 @@ import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferre
 import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
 import { getDouyinCoverUrl } from "@/utils/douyinCover";
 import "../adminsubmissionpage.css";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { VirtualList } from '@/components/common/VirtualList';
 import { useTranslation } from "react-i18next";
@@ -35,15 +35,15 @@ import {
 } from './submissionDismiss';
 import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
 import SubmissionLockButton from './SubmissionLockButton';
-import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissionLock';
+import { togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
 import SubmissionTagRequest from '@/components/submissions/SubmissionTagRequest/SubmissionTagRequest';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
-import { filterSubmissionsByMatchedIds } from './submissionSearch';
 import { getSongDisplayName } from '@/utils/levelHelpers';
-import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
+import { usePendingSubmissionPages } from './usePendingSubmissionPages';
+import SubmissionQueueBar from './SubmissionQueueBar';
 
 const NESTED_SUBMISSION_KEYS = [
   'songObject',
@@ -83,12 +83,30 @@ function isUploadManageDisabled(phase) {
 const LevelSubmissions = ({ searchQuery = '' }) => {
   const { t } = useTranslation(['components', 'common', 'pages']);
   
-  const [submissions, setSubmissions] = useState([]);
+  const {
+    submissions,
+    setSubmissions,
+    isLoading,
+    isPaging,
+    total,
+    hasNext,
+    queueDrift,
+    loadEpoch,
+    loadMore,
+    reload,
+    reloadByIds,
+    noteLocalLock,
+    releaseSeenId,
+    markQueueDrift,
+  } = usePendingSubmissionPages({
+    url: routes.admin.submissions.levelsPending(),
+    kind: 'level',
+    searchQuery,
+  });
   const [managingUploadId, setManagingUploadId] = useState(null);
   const [videoEmbeds, setVideoEmbeds] = useState({});
   const [cardPhases, setCardPhases] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
   const [profileCreation, setProfileCreation] = useState({
     show: false,
     submission: null,
@@ -113,27 +131,11 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
   const [suffixValues, setSuffixValues] = useState({});
   const [showCreatorAssignmentModal, setShowCreatorAssignmentModal] = useState({});
   const [declinePromptId, setDeclinePromptId] = useState(null);
-  const [searchEpoch, setSearchEpoch] = useState(0);
-  const matchedIds = usePendingSubmissionSearch(
-    searchQuery,
-    routes.admin.submissions.levelsPendingSearch(),
-    searchEpoch,
-  );
 
   useEffect(() => {
-    fetchPendingSubmissions();
-  }, []);
-
-  useEffect(() => {
-    const handleRefresh = () => {
-      fetchPendingSubmissions();
-    };
-    window.addEventListener('refreshSubmissions', handleRefresh);
-    
-    return () => {
-      window.removeEventListener('refreshSubmissions', handleRefresh);
-    };
-  }, []);
+    setCardPhases({});
+    setDisabledButtons({});
+  }, [loadEpoch]);
 
   useEffect(() => {
     const handleJobItem = (event) => {
@@ -194,26 +196,6 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
     
     return !hasUnassignedCreators;
   }
-
-  const fetchPendingSubmissions = async () => {
-    try {
-      setIsLoading(true);
-      // Reset animation and disabled states when fetching new data
-      setCardPhases({});
-      setDisabledButtons({});
-      
-      const response = await api.get(`${routes.admin.submissions.root()}/levels/pending`);
-      const data = await response.data;
-      
-      setSubmissions(sortPendingSubmissions(data));
-      setSearchEpoch((n) => n + 1);
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-    } finally {
-      setIsLoading(false);
-      window.dispatchEvent(new Event('submissionsLoadingComplete'));
-    }
-  };
 
   const handleSubmission = async (submissionId, action, reason = '') => {
     try {
@@ -504,7 +486,7 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
       // If a song was assigned (songId exists), refresh to get full songObject with credits
       // Otherwise, just merge the response
       if (songData.songId) {
-        await fetchPendingSubmissions();
+        await reloadByIds([selectedSongSubmission.id]);
       } else {
         setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
           if (submission.id === selectedSongSubmission.id) {
@@ -744,13 +726,13 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
 
   const handleSongManagementUpdate = async () => {
     if (!selectedSongForManagement) return;
-    await fetchPendingSubmissions();
+    await reloadByIds([selectedSongForManagement.id]);
     handleSongManagementClose();
   };
 
   const handleArtistManagementUpdate = async () => {
     if (!selectedArtistForManagement) return;
-    await fetchPendingSubmissions();
+    await reloadByIds([selectedArtistForManagement.id]);
     handleArtistManagementClose();
   };
 
@@ -817,14 +799,10 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
     }
   };
 
-  const filteredSubmissions = useMemo(
-    () => filterSubmissionsByMatchedIds(submissions, matchedIds),
-    [submissions, matchedIds],
-  );
-
-  if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
-    return <p className="no-submissions">{t('levelSubmissions.noSubmissions')}</p>;
-  }
+  const listIsEmpty = !hasVisibleSubmissions(submissions, cardPhases);
+  const emptyLabel = String(searchQuery || '').trim()
+    ? t('submissionManagement.search.noMatches', { ns: 'pages' })
+    : t('levelSubmissions.noSubmissions');
 
   const managingSubmission =
     managingUploadId != null
@@ -833,16 +811,27 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
 
   return (
     <>
+      <SubmissionQueueBar
+        total={total}
+        isPaging={isPaging}
+        queueDrift={queueDrift}
+        onResync={reload}
+      />
       <div className="submissions-list">  
-        {isLoading ? (  
+        {isLoading && submissions.length === 0 ? (  
           <div className="loader-shell loader-shell--submission">
             <div className="loader loader-relative" />
           </div>
-        ) : !hasVisibleSubmissions(filteredSubmissions, cardPhases) ? (
-          <p className="no-submissions">{t('submissionManagement.search.noMatches', { ns: 'pages' })}</p>
+        ) : listIsEmpty ? (
+          <p className="no-submissions">{emptyLabel}</p>
         ) : (
           <VirtualList
-            items={filteredSubmissions}
+            items={submissions}
+            hasMore={hasNext}
+            loadMore={loadMore}
+            loadingMore={isPaging}
+            overscan={800}
+            loader={<div className="loader loader-relative" />}
             renderItem={(submission) => {
               const phase = cardPhases[submission.id];
               if (phase === 'placeholder') {
@@ -1428,6 +1417,7 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
                       <iframe
                         src={videoEmbeds[submission.id].embed}
                         title="Video player"
+                        loading="lazy"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         referrerPolicy={getVideoIframeReferrerPolicy(submission.videoLink)}
@@ -1517,6 +1507,14 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
                     lockUrl: routes.admin.submissions.levelLock(submission.id),
                     submission,
                     setSubmissions,
+                    parkOffPage: hasNext,
+                  }).then((nextLocked) => {
+                    noteLocalLock(submission.id);
+                    if (!nextLocked) {
+                      markQueueDrift();
+                      return;
+                    }
+                    if (hasNext) releaseSeenId(submission.id);
                   }).catch((error) => {
                     console.error('Error updating submission lock:', error);
                     toast.error(

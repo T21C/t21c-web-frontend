@@ -23,6 +23,7 @@
         "previousDifficulty": "이전 난이도"
       },
       "placeholders": {
+        "ppDiffId": "PP 난이도",
         "baseScore": "기본 점수",
         "previousBaseScore": "이전 기본 점수",
         "ppBaseScore": "PP 기본 점수",

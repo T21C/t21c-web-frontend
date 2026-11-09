@@ -57,11 +57,11 @@
     },
     "accuracy": {
       "provisional": "暫定",
-      "specialCareer": "スペシャル {{score}} · {{n}}",
+      "specialCareer": "special {{score}} · {{n}}",
       "thisChart": "この譜面{{score}}",
       "modeQ": "{{settled}}",
-      "modeSpecial": "{{settled}}スペシャル",
-      "modeRank": "{{center}}スペシャル",
+      "modeSpecial": "{{settled}}special",
+      "modeRank": "{{center}}special",
       "scoredAs": "スコア：{{value}}"
     },
     "confirmations": {
@@ -169,7 +169,7 @@
         "title": "レーティングの平均化",
         "description": "このシステムでは、いくつかの要素を考慮に入れた加重平均の計算を採用しています:",
         "points": {
-          "special": "スペシャルレーティング（検閲済み、不可能など）は、4票以上集まった場合、平均レーティングよりも優先されます。",
+          "special": "specialレーティング（検閲済み、不可能など）は、4票以上集まった場合、平均レーティングよりも優先されます。",
           "ranges": "範囲（U12～U14など）は、最終レーティングに反映される前に平均化されます。",
           "order": "PGUのレーティングは、数値そのものではなく、難易度の順序に基づいて平均化されています。"
         }
@@ -191,15 +191,15 @@
         "myRatedDesc": "レート済みのレベルのみを表示、非表示、または表示する",
         "requestBands": "PGUのリクエスト",
         "requestBandsDesc": "Planetary (P), Galactic (G), or Universal (U) のリクエストされたレーティングを非表示にする",
-        "fourVote": "レート4以上",
-        "fourVoteDesc": "レーティングが4つ以上あるレベルをフィルタリングする"
+        "rankState": "状態",
+        "rankStateDesc": "すべてのカード、レーティング可能なカードのみ、またはレーティング対象外のカードのみを表示します"
       },
       "requirements": {
         "title": "要件",
         "points": {
           "comment": "レベルを-2とレーティングする際は、コメントの入力が必要です。",
-          "format": "レーティングは、PGU形式（P1～P20、G1～G20、U1～U20）に従うか、有効なスペシャルレーティングでなければなりません。",
-          "special": "スペシャルレーティング項目はあらかじめ定義されており、カスタマイズすることはできません"
+          "format": "レーティングは、PGU形式（P1～P20、G1～G20、U1～U20）に従うか、有効なspecialレーティングでなければなりません。",
+          "special": "specialレーティング項目はあらかじめ定義されており、カスタマイズすることはできません"
         }
       },
       "shortcuts": {

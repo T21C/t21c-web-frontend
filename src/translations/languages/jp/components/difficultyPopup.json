@@ -76,8 +76,8 @@
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "スペシャル",
-    "LEGACY": "レガシー"
+    "SPECIAL": "SPECIAL",
+    "LEGACY": "LEGACY"
   },
   "announcements": {
     "title": "{{diffName}}の通知ルール",

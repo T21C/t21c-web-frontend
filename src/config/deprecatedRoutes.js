@@ -7,6 +7,18 @@
  */
 export const DEPRECATED_ROUTES = [
   {
+    path: "level/:id",
+    redirect: (location) => {
+      const id = location.pathname.split("/").filter(Boolean)[1];
+      const suffix = `${location.search || ""}${location.hash || ""}`;
+      return id ? `/levels/${encodeURIComponent(id)}${suffix}` : `/levels${suffix}`;
+    },
+  },
+  {
+    path: "level",
+    redirect: (location) => `/levels${location.search || ""}${location.hash || ""}`,
+  },
+  {
     path: "leveldetail",
     redirect: (location) => {
       const params = new URLSearchParams(location.search || "");

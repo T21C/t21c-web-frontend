@@ -27,14 +27,14 @@
     "unknown": "不明なユーザー",
     "stats": {
       "accuracy": "精度",
-      "special": "スペシャル {{score}}",
+      "special": "special {{score}}",
       "totalRatings": "合計",
       "averagePerDay": "1日あたりの平均"
     },
     "tooltip": {
       "raw": "生データ {{score}} · {{n}}",
       "weighted": "加重平均 {{score}}（順位）",
-      "special": "スペシャル {{score}} · {{n}}",
+      "special": "special {{score}} · {{n}}",
       "provisional": "暫定 — {{min}}スコア未満のチャート",
       "empty": "スコアが記入されていないPGUチャート"
     }

@@ -42,7 +42,7 @@
     "chartsVfxed": "VFXあり ",
     "chartsTeamed": "チームメンバーとしてのレベル",
     "totalChartClears": "レベルクリアの合計",
-    "totalChartLikes": "レベルのいいね数の合計"
+    "totalChartLikes": "レベルの総いいね数"
   },
   "infiniteScroll": {
     "end": "これで最後まで読み終えました！"
@@ -52,7 +52,7 @@
     "emptyFollowing": "まだ誰のフォローもしていません。"
   },
   "locate": {
-    "button": "現在地",
+    "button": "自分の現在順位",
     "signedOut": "ログインして、クリエイターランキングでの自分の順位を確認しましょう。",
     "unlinked": "クリエイタープロフィールをリンクして、ランキングでの自分の順位を確認しましょう。",
     "missing": "これらの検索結果には、あなたに関する情報は表示されていません。"
