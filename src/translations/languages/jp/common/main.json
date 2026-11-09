@@ -66,6 +66,8 @@
     "upload": "アップロード",
     "return": "戻る",
     "reset": "リセット",
+    "undo": "元に戻す",
+    "redo": "やり直す",
     "create": "作成",
     "createNew": "新規作成",
     "yes": "はい",

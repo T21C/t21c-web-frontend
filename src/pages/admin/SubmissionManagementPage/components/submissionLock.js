@@ -15,12 +15,18 @@ export async function togglePendingSubmissionLock({
   lockUrl,
   submission,
   setSubmissions,
+  parkOffPage = false,
 }) {
   const nextLocked = !submission.isLocked;
   await api.put(lockUrl, { isLocked: nextLocked });
-  setSubmissions((prev) =>
-    sortPendingSubmissions(
-      prev.map((row) => (row.id === submission.id ? { ...row, isLocked: nextLocked } : row)),
-    ),
-  );
+  setSubmissions((prev) => {
+    const updated = prev.map((row) => (
+      row.id === submission.id ? { ...row, isLocked: nextLocked } : row
+    ));
+    if (nextLocked && parkOffPage) {
+      return updated.filter((row) => row.id !== submission.id);
+    }
+    return sortPendingSubmissions(updated);
+  });
+  return nextLocked;
 }

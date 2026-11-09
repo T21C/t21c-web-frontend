@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissions #passSubmissions #admin #submissionManagement — Submission Management
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
@@ -30,21 +30,50 @@ import {
 } from './submissionDismiss';
 import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
 import SubmissionLockButton from './SubmissionLockButton';
-import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissionLock';
+import { togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
-import { filterSubmissionsByMatchedIds } from './submissionSearch';
-import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
 import { passDifficultySubtype } from './passDifficultySubtype';
+import { usePendingSubmissionPages } from './usePendingSubmissionPages';
+import SubmissionQueueBar from './SubmissionQueueBar';
 import { CommentFormatter } from '@/components/misc';
 
 
 const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [] }) => {
   const { t } = useTranslation(['components', 'pages']);
+  const { difficultyDict } = useDifficultyContext();
 
-  const [submissions, setSubmissions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const hiddenKey = hiddenSubtypes.join('|');
+  const acceptPass = useCallback((submission) => {
+    if (!hiddenSubtypes.length) return true;
+    const hidden = new Set(hiddenSubtypes);
+    const diffId = submission.level?.diffId;
+    const name = difficultyDict?.[diffId]?.name ?? submission.level?.difficulty?.name;
+    return !hidden.has(passDifficultySubtype(name));
+  }, [hiddenSubtypes, difficultyDict]);
+
+  const {
+    submissions,
+    setSubmissions,
+    isLoading,
+    isPaging,
+    total,
+    hasNext,
+    queueDrift,
+    loadEpoch,
+    loadMore,
+    reload,
+    noteLocalLock,
+    releaseSeenId,
+    markQueueDrift,
+  } = usePendingSubmissionPages({
+    url: routes.admin.submissions.passesPending(),
+    kind: 'pass',
+    searchQuery,
+    filterKey: hiddenKey,
+    acceptItem: acceptPass,
+  });
   const [videoEmbeds, setVideoEmbeds] = useState({});
   const [cardPhases, setCardPhases] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
@@ -59,19 +88,21 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
   const [showPlayerPopup, setShowPlayerPopup] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [declinePromptId, setDeclinePromptId] = useState(null);
-  const [searchEpoch, setSearchEpoch] = useState(0);
-  const matchedIds = usePendingSubmissionSearch(
-    searchQuery,
-    routes.admin.submissions.passesPendingSearch(),
-    searchEpoch,
-  );
-
-  const { difficultyDict } = useDifficultyContext();
 
   useEffect(() => {
-    fetchPendingSubmissions();
-  }, []);
+    setCardPhases({});
+    setDisabledButtons({});
+  }, [loadEpoch]);
 
+  useEffect(() => {
+    setPlayerSearchValues((prev) => {
+      const next = { ...prev };
+      submissions.forEach((submission) => {
+        if (next[submission.id] == null) next[submission.id] = submission.passer;
+      });
+      return next;
+    });
+  }, [submissions]);
 
   const getPlayerData = async (playerId) => {
     const response = await api.get(`${routes.playersV3.root()}/${playerId}`);
@@ -80,17 +111,6 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
 
 
 
-
-  useEffect(() => {
-    const handleRefresh = () => {;
-      fetchPendingSubmissions();
-    };
-    window.addEventListener('refreshSubmissions', handleRefresh);
-    
-    return () => {
-      window.removeEventListener('refreshSubmissions', handleRefresh);
-    };
-  }, []);
 
   useEffect(() => {
     const handleJobItem = (event) => {
@@ -123,34 +143,6 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
     }
     setVideoEmbeds(next);
   }, [submissions]);
-
-  const fetchPendingSubmissions = async () => {
-    try {
-      setIsLoading(true);
-      // Reset animation and disabled states when fetching new data
-      setCardPhases({});
-      setDisabledButtons({});
-      
-      const response = await api.get(`${routes.admin.submissions.root()}/passes/pending`);
-      const data = await response.data;
-      
-      // Initialize player search values with passer names
-      const initialSearchValues = {};
-      data.forEach(submission => {
-        initialSearchValues[submission.id] = submission.passer;
-      });
-      setPlayerSearchValues(initialSearchValues);
-      
-      setSubmissions(sortPendingSubmissions(data));
-      setSearchEpoch((n) => n + 1);
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-    } finally {
-      setIsLoading(false);
-      // Dispatch event to notify parent that loading is complete
-      window.dispatchEvent(new Event('submissionsLoadingComplete'));
-    }
-  };
 
   const handlePlayerSelect = async (submissionId, player) => {
     try {
@@ -345,33 +337,35 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
     };
   }, []);
 
-  const filteredSubmissions = useMemo(() => {
-    const matched = filterSubmissionsByMatchedIds(submissions, matchedIds);
-    if (!hiddenSubtypes.length) return matched;
-    const hidden = new Set(hiddenSubtypes);
-    return matched.filter((submission) => {
-      const diffId = submission.level?.diffId;
-      const name = difficultyDict?.[diffId]?.name ?? submission.level?.difficulty?.name;
-      return !hidden.has(passDifficultySubtype(name));
-    });
-  }, [submissions, matchedIds, hiddenSubtypes, difficultyDict]);
-
-  if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
-    return <p className="no-submissions">{t('passSubmissions.noSubmissions')}</p>;
-  }
+  const listIsEmpty = !hasVisibleSubmissions(submissions, cardPhases);
+  const queueFiltered = Boolean(String(searchQuery || '').trim() || hiddenSubtypes.length);
+  const emptyLabel = queueFiltered
+    ? t('submissionManagement.search.noMatches', { ns: 'pages' })
+    : t('passSubmissions.noSubmissions');
 
   return (
     <>
+      <SubmissionQueueBar
+        total={total}
+        isPaging={isPaging}
+        queueDrift={queueDrift}
+        onResync={reload}
+      />
       <div className="submissions-list">
-        {isLoading ? (
+        {isLoading && submissions.length === 0 ? (
           <div className="loader-shell loader-shell--submission">
             <div className="loader loader-relative" />
           </div>
-        ) : !hasVisibleSubmissions(filteredSubmissions, cardPhases) ? (
-          <p className="no-submissions">{t('submissionManagement.search.noMatches', { ns: 'pages' })}</p>
+        ) : listIsEmpty ? (
+          <p className="no-submissions">{emptyLabel}</p>
         ) : (
           <VirtualList
-            items={filteredSubmissions}
+            items={submissions}
+            hasMore={hasNext}
+            loadMore={loadMore}
+            loadingMore={isPaging}
+            overscan={800}
+            loader={<div className="loader loader-relative" />}
             renderItem={(submission) => {
               const phase = cardPhases[submission.id];
               if (phase === 'placeholder') {
@@ -552,6 +546,7 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
                       <iframe
                         src={videoEmbeds[submission.id].embed}
                         title="Video player"
+                        loading="lazy"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         referrerPolicy={getVideoIframeReferrerPolicy(submission.videoLink)}
@@ -619,6 +614,14 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
                     lockUrl: routes.admin.submissions.passLock(submission.id),
                     submission,
                     setSubmissions,
+                    parkOffPage: hasNext,
+                  }).then((nextLocked) => {
+                    noteLocalLock(submission.id);
+                    if (!nextLocked) {
+                      markQueueDrift();
+                      return;
+                    }
+                    if (hasNext) releaseSeenId(submission.id);
                   }).catch((error) => {
                     console.error('Error updating submission lock:', error);
                     toast.error(

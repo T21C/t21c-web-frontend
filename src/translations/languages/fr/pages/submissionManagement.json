@@ -16,6 +16,11 @@
     "placeholder": "Rechercher par chanson, artiste, créateur, joueur ou soumetteur",
     "noMatches": "Aucune soumission correspondante"
   },
+  "queue": {
+    "pending": "{{count}} en attente",
+    "drift": "La file a changé pendant que cette liste était ouverte. Continuer à faire défiler suit la liste sans sauter d’entrées. La resynchronisation recharge depuis le haut dans l’ordre actuel, et recharge les vidéos à l’écran.",
+    "resync": "Resynchroniser"
+  },
   "hideDifficulty": {
     "label": "Masquer la difficulté",
     "hint": "Cochez un sous-type pour masquer ces complétions. Cliquez sur le libellé pour tout sélectionner ou tout effacer."

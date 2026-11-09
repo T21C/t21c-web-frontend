@@ -14,5 +14,9 @@
     "unlistedNote": "Les vidéos non répertoriées restent masquées.",
     "allowAccess": "Autoriser l'accès à la chaîne",
     "loadFailed": "Impossible de charger vos vidéos YouTube"
+  },
+  "buttons": {
+    "undo": "Annuler",
+    "redo": "Rétablir"
   }
 }

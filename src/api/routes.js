@@ -386,6 +386,8 @@ export const routes = {
         cdnData: (packId) => `/v2/database/levels/packs/${enc(packId)}/cdnData`,
         tree: (packId) => `/v2/database/levels/packs/${enc(packId)}/tree`,
         items: (packId) => `/v2/database/levels/packs/${enc(packId)}/items`,
+        itemsCommit: (packId) =>
+          `/v2/database/levels/packs/${enc(packId)}/items/commit`,
         validateItems: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/items/validate-levels`,
         item: (packId, itemId) =>

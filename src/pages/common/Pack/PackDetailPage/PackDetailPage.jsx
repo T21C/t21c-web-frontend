@@ -3,6 +3,7 @@ import "./packdetailpage.css";
 import React, { useEffect, useLayoutEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Link, useParams, useNavigate, useLocation, useNavigationType } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useMementoHistory, useMementoShortcuts } from "@/hooks/useMementoHistory";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import PackDescription from "@/components/cards/PackCard/PackDescription";
 import { MetaTags, CurationTypeCountView } from "@/components/common/display";
@@ -14,7 +15,25 @@ import {
   moveItemToPosition,
   insertNodesAtPosition,
   isFolderMoveIntoDescendant,
+  cloneTree,
+  findParentId as findTreeParentId,
+  parseLevelIdsInput,
 } from '@/utils/packTreePlacement';
+import {
+  rewriteSortOrders,
+  removeItemFromTree,
+  patchItemInTree,
+  countPackItemNodes,
+  collectSiblingItems,
+  hasSiblingNameConflict,
+  siblingHasLevelId,
+  toCommitTree,
+  createLocalFolderNode,
+  createLocalNoteNode,
+  createLocalLevelNode,
+  DEFAULT_MAX_PACK_ITEMS,
+  TUF_STELLAR_MAX_PACK_ITEMS,
+} from '@/utils/packItemDraft';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { usePackContext } from "@/contexts/PackContext";
@@ -31,7 +50,8 @@ import { curationTypeCountsFromPackItems } from '@/utils/packCurationTypeCounts'
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import i18next from 'i18next';
 import { formatDate, ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { validatePackLevelInsert, executePackLevelInsert } from '@/utils/packLevelInsert';
+import { validatePackLevelInsert } from '@/utils/packLevelInsert';
+import { isTufStellarAccessActive } from '@/utils/profileBanners';
 
 const ROOT_DROPPABLE_ID = 'folder-root';
 
@@ -129,12 +149,7 @@ const parseDroppableId = (droppableId) => {
 
 const sortItemsByOrder = (items = []) => [...items].sort((a, b) => a.sortOrder - b.sortOrder);
 
-const countPackItems = (items = []) => {
-  return items.reduce((total, current) => {
-    const childCount = current.children ? countPackItems(current.children) : 0;
-    return total + 1 + childCount;
-  }, 0);
-};
+const countPackItems = countPackItemNodes;
 
 /** Merge GET /packs/:id/cdnData into tree items for size estimates (download UI). */
 const enrichPackItemTree = (items, cdnMap) => {
@@ -167,7 +182,7 @@ const enrichPackItemTree = (items, cdnMap) => {
 };
 
 const PackDetailPage = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -199,11 +214,26 @@ const PackDetailPage = () => {
     fromPlacement: false,
   });
   const [levelInsertSubmitting, setLevelInsertSubmitting] = useState(false);
+  const [isEditingItems, setIsEditingItems] = useState(false);
+  const [itemsSaveBusy, setItemsSaveBusy] = useState(false);
   const [cdnMetadataByLevelId, setCdnMetadataByLevelId] = useState(() => new Map());
   const scrollRef = useRef(null);
+  const itemsBaselineRef = useRef(null);
+  const nextLocalIdRef = useRef(-1);
+  const quotaMaxRef = useRef(null);
+  const isEditingItemsRef = useRef(false);
+  const packItemsSourceRef = useRef([]);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
   const hasRestoredScrollRef = useRef(false);
   const lastScrollYRef = useRef(0);
+  const {
+    record: recordHistory,
+    undo: undoHistory,
+    redo: redoHistory,
+    canUndo,
+    canRedo,
+  } = useMementoHistory({ resetKey: isEditingItems ? `edit:${id}` : 'view' });
+  isEditingItemsRef.current = isEditingItems;
 
   const fetchPackCdnData = useCallback(async () => {
     if (!id) return;
@@ -224,6 +254,7 @@ const PackDetailPage = () => {
     () => enrichPackItemTree(pack?.items || [], cdnMetadataByLevelId),
     [pack?.items, cdnMetadataByLevelId]
   );
+  packItemsSourceRef.current = pack?.items || [];
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
   const totalLevels = packSizeSummary.levelCount;
   const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
@@ -254,7 +285,12 @@ const PackDetailPage = () => {
       }
       
       const response = await api.get(`${routes.database.levels.packs.byId(id)}?tree=true`);
-      setPack(response.data);
+      setPack((prev) => {
+        if (isEditingItemsRef.current && prev) {
+          return { ...response.data, items: prev.items };
+        }
+        return response.data;
+      });
       fetchPackCdnData();
     } catch (error) {
       console.error('Error fetching pack:', error);
@@ -280,6 +316,12 @@ const PackDetailPage = () => {
       hasRestoredScrollRef.current = false;
       lastScrollYRef.current = 0;
       setCdnMetadataByLevelId(new Map());
+      isEditingItemsRef.current = false;
+      itemsBaselineRef.current = null;
+      nextLocalIdRef.current = -1;
+      quotaMaxRef.current = null;
+      setIsEditingItems(false);
+      setItemsSaveBusy(false);
       // Load expanded folders from cookies for this pack
       const savedExpandedFolders = getPackExpandedFolders(id);
       setExpandedFolders(savedExpandedFolders);
@@ -325,6 +367,7 @@ const PackDetailPage = () => {
   useEffect(() => {
     const handlePackUpdate = (event) => {
       if (event.detail?.packId === id || event.detail?.packId === pack?.id) {
+        if (isEditingItemsRef.current) return;
         fetchPack(true); // Silent refetch
       }
     };
@@ -420,29 +463,134 @@ const PackDetailPage = () => {
     return allFolderIds.length > 0 && allFolderIds.every(folderId => expandedFolders.has(folderId));
   };
 
-  // Handle adding new folder
-  const handleAddFolder = async () => {
-    const folderName = prompt(t('packDetail.createFolder.prompt'));
-    if (!folderName?.trim()) return;
+  const allocLocalId = useCallback(() => {
+    const nextId = nextLocalIdRef.current;
+    nextLocalIdRef.current -= 1;
+    return nextId;
+  }, []);
 
-    try {
-      await api.post(routes.database.levels.packs.items(pack.id), {
-        type: 'folder',
-        name: folderName.trim(),
-        parentId: 0
+  const getDraftMaxItems = useCallback(() => {
+    if (quotaMaxRef.current != null) return quotaMaxRef.current;
+    if (user && hasFlag(user, permissionFlags.SUPER_ADMIN)) return Number.MAX_SAFE_INTEGER;
+    if (isTufStellarAccessActive(user)) return TUF_STELLAR_MAX_PACK_ITEMS;
+    return DEFAULT_MAX_PACK_ITEMS;
+  }, [user]);
+
+  const applyItemsDraft = useCallback((nextTree, destParentId) => {
+    recordHistory(packItemsSourceRef.current);
+    const ordered = rewriteSortOrders(nextTree);
+    setPack((prev) => ({ ...prev, items: ordered }));
+    if (destParentId && destParentId !== 0) {
+      setExpandedFolders((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(destParentId);
+        if (id) {
+          setPackExpandedFolders(id, newSet);
+        }
+        return newSet;
       });
-      
-      toast.success(t('packDetail.createFolder.success'));
-      await fetchPack(true); // Silent refetch
-      
-      // Notify any other listeners that the pack was updated
+    }
+  }, [recordHistory, id]);
+
+  const undoItems = useCallback(() => {
+    if (itemsSaveBusy) return;
+    const prev = undoHistory(packItemsSourceRef.current);
+    if (prev) setPack((current) => ({ ...current, items: prev }));
+  }, [undoHistory, itemsSaveBusy]);
+
+  const redoItems = useCallback(() => {
+    if (itemsSaveBusy) return;
+    const next = redoHistory(packItemsSourceRef.current);
+    if (next) setPack((current) => ({ ...current, items: next }));
+  }, [redoHistory, itemsSaveBusy]);
+
+  useMementoShortcuts({
+    enabled: isEditingItems && !itemsSaveBusy,
+    undo: undoItems,
+    redo: redoItems,
+  });
+
+  const isItemsDirty = useMemo(() => {
+    if (!isEditingItems) return false;
+    return JSON.stringify(pack?.items || []) !== JSON.stringify(itemsBaselineRef.current || []);
+  }, [isEditingItems, pack?.items]);
+
+  useEffect(() => {
+    if (!isItemsDirty) return undefined;
+    const onBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [isItemsDirty]);
+
+  const enterEditItems = useCallback(() => {
+    const snapshot = rewriteSortOrders(cloneTree(pack?.items || []));
+    itemsBaselineRef.current = cloneTree(snapshot);
+    nextLocalIdRef.current = -1;
+    quotaMaxRef.current = null;
+    setPack((prev) => ({ ...prev, items: snapshot }));
+    setIsEditingItems(true);
+  }, [pack?.items]);
+
+  const requestExitEditItems = useCallback(() => {
+    if (itemsSaveBusy) return;
+    if (isItemsDirty && !window.confirm(t('confirmations.unsavedChanges', { ns: 'common' }))) {
+      return;
+    }
+    setPack((prev) => ({ ...prev, items: itemsBaselineRef.current || prev.items }));
+    setIsEditingItems(false);
+    itemsBaselineRef.current = null;
+  }, [isItemsDirty, itemsSaveBusy, t]);
+
+  const handleSaveItems = useCallback(async () => {
+    if (!pack?.id || itemsSaveBusy || !isItemsDirty) return;
+    setItemsSaveBusy(true);
+    const toastId = toast.loading(t('loading.saving', { ns: 'common' }));
+    try {
+      const response = await api.put(routes.database.levels.packs.itemsCommit(pack.id), {
+        items: toCommitTree(pack.items || []),
+      });
+      setPack((prev) => ({ ...prev, items: response.data.items }));
+      setIsEditingItems(false);
+      itemsBaselineRef.current = null;
+      fetchPackCdnData();
+      toast.success(t('packDetail.editItems.saveSuccess'), { id: toastId });
       window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id }
+        detail: { packId: pack.id },
       }));
     } catch (error) {
-      console.error('Error creating folder:', error);
-      toast.error(t('packDetail.createFolder.error'));
+      console.error('Error saving pack items:', error);
+      toast.error(error.response?.data?.error || t('packDetail.editItems.saveError'), { id: toastId });
+    } finally {
+      setItemsSaveBusy(false);
     }
+  }, [pack?.id, pack?.items, itemsSaveBusy, isItemsDirty, fetchPackCdnData, t]);
+
+  const assertCanAddItems = useCallback((count = 1) => {
+    if (countPackItemNodes(packItemsSourceRef.current) + count > getDraftMaxItems()) {
+      toast.error(t('packDetail.editItems.quotaExceeded'));
+      return false;
+    }
+    return true;
+  }, [getDraftMaxItems, t]);
+
+  // Handle adding new folder
+  const handleAddFolder = () => {
+    if (itemsSaveBusy) return;
+    const folderName = prompt(t('packDetail.createFolder.prompt'));
+    if (!folderName?.trim()) return;
+    if (hasSiblingNameConflict(packItemsSourceRef.current, 0, folderName)) {
+      toast.error(t('packDetail.editItems.nameConflict', { name: folderName.trim() }));
+      return;
+    }
+    if (!assertCanAddItems()) return;
+    const node = createLocalFolderNode(allocLocalId(), folderName);
+    const current = packItemsSourceRef.current;
+    const newTree = insertNodesAtPosition(current, [node], 0, current.length);
+    if (!newTree) return;
+    applyItemsDraft(newTree);
   };
 
   const closePlacement = useCallback(() => {
@@ -466,32 +614,6 @@ const PackDetailPage = () => {
     setPlacement({ open: true, mode: 'move', item });
   }, []);
 
-  const persistPackTree = useCallback(async (newTree, destParentId, packId) => {
-    setPack((prev) => ({ ...prev, items: newTree }));
-
-    if (destParentId && destParentId !== 0) {
-      setExpandedFolders((prev) => {
-        const newSet = new Set(prev);
-        newSet.add(destParentId);
-        if (id) {
-          setPackExpandedFolders(id, newSet);
-        }
-        return newSet;
-      });
-    }
-
-    const minimalTree = createMinimalTreeStructure(newTree);
-    const response = await api.put(routes.database.levels.packs.tree(packId), {
-      items: minimalTree,
-    });
-
-    setPack((prevPack) => ({
-      ...prevPack,
-      items: mergePackStructureWithReferencedLevels(prevPack.items, response.data.items),
-    }));
-    fetchPackCdnData();
-  }, [id, fetchPackCdnData]);
-
   const closeLevelInsertConfirm = useCallback(() => {
     setLevelInsertConfirm({
       open: false,
@@ -504,67 +626,112 @@ const PackDetailPage = () => {
     });
   }, []);
 
-  const showAddLevelSuccessToast = useCallback((addedCount, skippedCount) => {
-    if (skippedCount > 0) {
-      toast.success(t('packDetail.addLevel.partialSuccess', { added: addedCount, skipped: skippedCount }));
-      return;
+  const classifyDraftLevelInsert = useCallback(async (levelIds, parentId) => {
+    const parsed = parseLevelIdsInput(levelIds);
+    const destParentId = parentId ?? 0;
+    const notFound = new Set();
+
+    if (pack?.id && parsed.length > 0) {
+      try {
+        const result = await validatePackLevelInsert(pack.id, parsed, 0);
+        if (result.quota?.maxAllowed != null) {
+          quotaMaxRef.current = result.quota.maxAllowed;
+        }
+        for (const entry of result.invalid || []) {
+          if (entry.reason === 'not_found') notFound.add(entry.levelId);
+        }
+      } catch (error) {
+        if (error.response?.status === 400 && Array.isArray(error.response?.data?.details?.invalid)) {
+          for (const entry of error.response.data.details.invalid) {
+            if (entry.reason === 'not_found') notFound.add(entry.levelId);
+          }
+        } else {
+          throw error;
+        }
+      }
     }
-    toast.success(t('packDetail.addLevel.success'));
-  }, [t]);
+
+    const remainingSlots = Math.max(
+      0,
+      getDraftMaxItems() - countPackItemNodes(packItemsSourceRef.current),
+    );
+    const pendingLevelIds = new Set();
+    const validLevelIds = [];
+    const invalid = [];
+    let slotsUsed = 0;
+
+    for (const levelId of parsed) {
+      if (notFound.has(levelId)) {
+        invalid.push({ levelId, reason: 'not_found' });
+        continue;
+      }
+      if (
+        siblingHasLevelId(packItemsSourceRef.current, destParentId, levelId) ||
+        pendingLevelIds.has(levelId)
+      ) {
+        invalid.push({ levelId, reason: 'already_in_pack' });
+        continue;
+      }
+      if (slotsUsed >= remainingSlots) {
+        invalid.push({ levelId, reason: 'quota_exceeded' });
+        continue;
+      }
+      pendingLevelIds.add(levelId);
+      validLevelIds.push(levelId);
+      slotsUsed += 1;
+    }
+
+    return { validLevelIds, invalid };
+  }, [pack?.id, getDraftMaxItems]);
 
   const submitValidatedLevelInsert = useCallback(async ({
     validLevelIds,
     parentId,
     index,
-    skippedCount = 0,
     fromPlacement = false,
   }) => {
-    if (!pack?.id || validLevelIds.length === 0) return;
+    if (validLevelIds.length === 0) return;
 
-    const raw = await executePackLevelInsert(pack.id, validLevelIds, parentId);
-    const createdList = Array.isArray(raw) ? raw : raw?.items ?? [];
     const destParentId = parentId ?? 0;
-
-    if (fromPlacement && index != null) {
-      if (createdList.length === 0) {
-        showAddLevelSuccessToast(0, skippedCount);
-        closePlacement();
-        await fetchPack(true);
-      } else {
-        const nodes = createdList.map((row) => ({
-          ...row,
-          type: 'level',
-          referencedLevel: row.referencedLevel ?? null,
-        }));
-
-        const newTree = insertNodesAtPosition(packItems, nodes, destParentId, index);
-        if (!newTree) {
-          await fetchPack(true);
-          closePlacement();
-        } else {
-          await persistPackTree(newTree, destParentId, pack.id);
-          showAddLevelSuccessToast(createdList.length, skippedCount);
-          closePlacement();
+    const referencedById = new Map();
+    await Promise.all(validLevelIds.map(async (levelId) => {
+      try {
+        const { data } = await api.get(routes.database.levels.byIdQuery(levelId));
+        referencedById.set(levelId, data);
+      } catch (error) {
+        if (error.response?.status !== 404) {
+          throw error;
         }
       }
-    } else {
-      showAddLevelSuccessToast(createdList.length || validLevelIds.length, skippedCount);
-      await fetchPack(true);
+    }));
+
+    const missing = validLevelIds.filter((levelId) => !referencedById.has(levelId));
+    const insertIds = validLevelIds.filter((levelId) => referencedById.has(levelId));
+    if (insertIds.length === 0) {
+      toast.error(t('packDetail.addLevel.error'));
+      closeLevelInsertConfirm();
+      if (fromPlacement) closePlacement();
+      return;
     }
 
-    window.dispatchEvent(new CustomEvent('packUpdated', {
-      detail: { packId: pack.id },
-    }));
+    const nodes = insertIds.map((levelId) =>
+      createLocalLevelNode(allocLocalId(), levelId, referencedById.get(levelId)),
+    );
+    const destIndex = fromPlacement && index != null
+      ? index
+      : collectSiblingItems(packItemsSourceRef.current, destParentId).length;
+    const newTree = insertNodesAtPosition(packItemsSourceRef.current, nodes, destParentId, destIndex);
+    if (!newTree) {
+      toast.error(t('packDetail.addLevel.error'));
+      return;
+    }
+    applyItemsDraft(newTree, destParentId);
+    closePlacement();
     closeLevelInsertConfirm();
-  }, [
-    pack?.id,
-    packItems,
-    persistPackTree,
-    closePlacement,
-    fetchPack,
-    showAddLevelSuccessToast,
-    closeLevelInsertConfirm,
-  ]);
+    if (missing.length > 0) {
+      toast.error(t('packDetail.addLevel.error'));
+    }
+  }, [allocLocalId, applyItemsDraft, closePlacement, closeLevelInsertConfirm, t]);
 
   const requestLevelInsert = useCallback(async ({
     levelIds,
@@ -572,8 +739,6 @@ const PackDetailPage = () => {
     index = null,
     fromPlacement = false,
   }) => {
-    if (!pack?.id) return;
-
     if (fromPlacement) {
       setPlacementSubmitting(true);
     } else {
@@ -581,8 +746,7 @@ const PackDetailPage = () => {
     }
 
     try {
-      const { validLevelIds, invalid } = await validatePackLevelInsert(
-        pack.id,
+      const { validLevelIds, invalid } = await classifyDraftLevelInsert(
         levelIds,
         parentId ?? 0,
       );
@@ -592,7 +756,6 @@ const PackDetailPage = () => {
           validLevelIds,
           parentId: parentId ?? 0,
           index,
-          skippedCount: 0,
           fromPlacement,
         });
         return;
@@ -610,7 +773,6 @@ const PackDetailPage = () => {
     } catch (error) {
       console.error('Level insert validation failed:', error);
       toast.error(error.response?.data?.error || t('packDetail.addLevel.error'));
-      await fetchPack(true);
     } finally {
       if (fromPlacement) {
         setPlacementSubmitting(false);
@@ -618,10 +780,10 @@ const PackDetailPage = () => {
         setLevelInsertSubmitting(false);
       }
     }
-  }, [pack?.id, submitValidatedLevelInsert, fetchPack, t]);
+  }, [classifyDraftLevelInsert, submitValidatedLevelInsert, t]);
 
   const handleLevelInsertConfirm = useCallback(async () => {
-    const { validLevelIds, parentId, index, skippedCount, fromPlacement } = levelInsertConfirm;
+    const { validLevelIds, parentId, index, fromPlacement } = levelInsertConfirm;
     if (validLevelIds.length === 0) return;
 
     setLevelInsertSubmitting(true);
@@ -630,24 +792,22 @@ const PackDetailPage = () => {
         validLevelIds,
         parentId,
         index,
-        skippedCount,
         fromPlacement,
       });
     } catch (error) {
       console.error('Error adding levels:', error);
       toast.error(error.response?.data?.error || t('packDetail.addLevel.error'));
-      await fetchPack(true);
     } finally {
       setLevelInsertSubmitting(false);
     }
-  }, [levelInsertConfirm, submitValidatedLevelInsert, fetchPack, t]);
+  }, [levelInsertConfirm, submitValidatedLevelInsert, t]);
 
   const handlePlacementSubmit = useCallback(async ({ mode, parentId, index, name, description, levelIds }) => {
-    if (!pack?.id) return;
-
+    if (itemsSaveBusy) return;
     setPlacementSubmitting(true);
     try {
       const destParentId = parentId ?? 0;
+      const current = packItemsSourceRef.current;
 
       if (mode === 'move') {
         const movingItem = placement.item;
@@ -655,69 +815,47 @@ const PackDetailPage = () => {
 
         if (
           movingItem.type === 'folder' &&
-          isFolderMoveIntoDescendant(packItems, movingItem.id, destParentId)
+          isFolderMoveIntoDescendant(current, movingItem.id, destParentId)
         ) {
           toast.error(t('packDetail.move.cannotMoveIntoSelf'));
           return;
         }
 
-        const newTree = moveItemToPosition(packItems, movingItem.id, destParentId, index);
+        const newTree = moveItemToPosition(current, movingItem.id, destParentId, index);
         if (!newTree) {
           toast.error(t('packDetail.move.error'));
           return;
         }
 
-        await persistPackTree(newTree, destParentId, pack.id);
-        toast.success(t('packDetail.move.success'));
+        applyItemsDraft(newTree, destParentId);
         closePlacement();
       } else if (mode === 'add-folder') {
-        const response = await api.post(routes.database.levels.packs.items(pack.id), {
-          type: 'folder',
-          name,
-          description,
-          parentId: destParentId,
-        });
-
-        const created = response.data;
-        const node = {
-          ...created,
-          type: 'folder',
-          children: undefined,
-        };
-
-        const newTree = insertNodesAtPosition(packItems, [node], destParentId, index);
-        if (!newTree) {
-          await fetchPack(true);
-          closePlacement();
+        if (hasSiblingNameConflict(current, destParentId, name)) {
+          toast.error(t('packDetail.editItems.nameConflict', { name: String(name || '').trim() }));
           return;
         }
-
-        await persistPackTree(newTree, destParentId, pack.id);
-        toast.success(t('packDetail.createFolder.success'));
+        if (!assertCanAddItems()) return;
+        const node = createLocalFolderNode(allocLocalId(), name, description ?? null);
+        const newTree = insertNodesAtPosition(current, [node], destParentId, index);
+        if (!newTree) {
+          toast.error(t('packDetail.createFolder.error'));
+          return;
+        }
+        applyItemsDraft(newTree, destParentId);
         closePlacement();
       } else if (mode === 'add-note') {
-        const response = await api.post(routes.database.levels.packs.items(pack.id), {
-          type: 'note',
-          name,
-          description,
-          parentId: destParentId,
-        });
-
-        const created = response.data;
-        const node = {
-          ...created,
-          type: 'note',
-        };
-
-        const newTree = insertNodesAtPosition(packItems, [node], destParentId, index);
-        if (!newTree) {
-          await fetchPack(true);
-          closePlacement();
+        if (hasSiblingNameConflict(current, destParentId, name)) {
+          toast.error(t('packDetail.editItems.nameConflict', { name: String(name || '').trim() }));
           return;
         }
-
-        await persistPackTree(newTree, destParentId, pack.id);
-        toast.success(t('packDetail.createNote.success'));
+        if (!assertCanAddItems()) return;
+        const node = createLocalNoteNode(allocLocalId(), name, description ?? null);
+        const newTree = insertNodesAtPosition(current, [node], destParentId, index);
+        if (!newTree) {
+          toast.error(t('packDetail.createNote.error'));
+          return;
+        }
+        applyItemsDraft(newTree, destParentId);
         closePlacement();
       } else if (mode === 'add-level') {
         await requestLevelInsert({
@@ -726,12 +864,7 @@ const PackDetailPage = () => {
           index,
           fromPlacement: true,
         });
-        return;
       }
-
-      window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id },
-      }));
     } catch (error) {
       console.error('Placement submit failed:', error);
       const message =
@@ -744,23 +877,23 @@ const PackDetailPage = () => {
               ? t('packDetail.createNote.error')
               : t('packDetail.addLevel.error'));
       toast.error(message);
-      await fetchPack(true);
     } finally {
       setPlacementSubmitting(false);
     }
   }, [
-    pack?.id,
-    packItems,
     placement.item,
-    persistPackTree,
+    applyItemsDraft,
     closePlacement,
-    fetchPack,
     requestLevelInsert,
+    allocLocalId,
+    assertCanAddItems,
+    itemsSaveBusy,
     t,
   ]);
 
   // Handle adding new level (supports single ID or comma-separated IDs for bulk insert)
   const handleAddLevel = async () => {
+    if (itemsSaveBusy) return;
     const levelId = prompt(t('packDetail.addLevel.prompt'));
     if (!levelId?.trim()) return;
 
@@ -828,30 +961,24 @@ const PackDetailPage = () => {
     setEditFolderItem(null);
   }, [editFolderSubmitting]);
 
-  const handleSaveFolder = useCallback(async ({ name, description }) => {
-    if (!pack?.id || !editFolderItem) return;
-
-    setEditFolderSubmitting(true);
-    try {
-      await api.put(routes.database.levels.packs.item(pack.id, editFolderItem.id), {
-        name,
-        description,
-      });
-
-      toast.success(t('packDetail.editFolder.success'));
-      setEditFolderItem(null);
-      await fetchPack(true);
-
-      window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id }
-      }));
-    } catch (error) {
-      console.error('Error updating folder:', error);
-      toast.error(error.response?.data?.error || t('packDetail.editFolder.error'));
-    } finally {
-      setEditFolderSubmitting(false);
+  const handleSaveFolder = useCallback(({ name, description }) => {
+    if (!editFolderItem) return;
+    const parentId = findTreeParentId(packItemsSourceRef.current, editFolderItem.id) ?? 0;
+    if (hasSiblingNameConflict(packItemsSourceRef.current, parentId, name, editFolderItem.id)) {
+      toast.error(t('packDetail.editItems.nameConflict', { name: String(name || '').trim() }));
+      return;
     }
-  }, [pack?.id, editFolderItem, fetchPack, t]);
+    const newTree = patchItemInTree(packItemsSourceRef.current, editFolderItem.id, {
+      name: String(name || '').trim(),
+      description: description ?? null,
+    });
+    if (!newTree) {
+      toast.error(t('packDetail.editFolder.error'));
+      return;
+    }
+    applyItemsDraft(newTree);
+    setEditFolderItem(null);
+  }, [editFolderItem, applyItemsDraft, t]);
 
   const openEditNote = useCallback((item) => {
     setEditNoteItem(item);
@@ -862,33 +989,28 @@ const PackDetailPage = () => {
     setEditNoteItem(null);
   }, [editNoteSubmitting]);
 
-  const handleSaveNote = useCallback(async ({ name, description }) => {
-    if (!pack?.id || !editNoteItem) return;
-
-    setEditNoteSubmitting(true);
-    try {
-      await api.put(routes.database.levels.packs.item(pack.id, editNoteItem.id), {
-        name,
-        description,
-      });
-
-      toast.success(t('packDetail.editNote.success'));
-      setEditNoteItem(null);
-      await fetchPack(true);
-
-      window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id }
-      }));
-    } catch (error) {
-      console.error('Error updating note:', error);
-      toast.error(error.response?.data?.error || t('packDetail.editNote.error'));
-    } finally {
-      setEditNoteSubmitting(false);
+  const handleSaveNote = useCallback(({ name, description }) => {
+    if (!editNoteItem) return;
+    const parentId = findTreeParentId(packItemsSourceRef.current, editNoteItem.id) ?? 0;
+    if (hasSiblingNameConflict(packItemsSourceRef.current, parentId, name, editNoteItem.id)) {
+      toast.error(t('packDetail.editItems.nameConflict', { name: String(name || '').trim() }));
+      return;
     }
-  }, [pack?.id, editNoteItem, fetchPack, t]);
+    const newTree = patchItemInTree(packItemsSourceRef.current, editNoteItem.id, {
+      name: String(name || '').trim(),
+      description: description ?? null,
+    });
+    if (!newTree) {
+      toast.error(t('packDetail.editNote.error'));
+      return;
+    }
+    applyItemsDraft(newTree);
+    setEditNoteItem(null);
+  }, [editNoteItem, applyItemsDraft, t]);
 
   // Handle delete item
-  const handleDeleteItem = async (item) => {
+  const handleDeleteItem = (item) => {
+    if (itemsSaveBusy) return;
     const confirmMessage = item?.type === 'folder'
       ? t('packDetail.deleteFolder.confirm', { name: item.name })
       : item?.type === 'note'
@@ -897,20 +1019,12 @@ const PackDetailPage = () => {
     
     if (!confirm(confirmMessage)) return;
 
-    try {
-      await api.delete(routes.database.levels.packs.item(pack.id, item.id));
-      
-      toast.success(t('packDetail.deleteItem.success'));
-      await fetchPack(true); // Silent refetch
-      
-      // Notify any other listeners that the pack was updated
-      window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id }
-      }));
-    } catch (error) {
-      console.error('Error deleting item:', error);
-      toast.error(error.response?.data?.error || t('packDetail.deleteItem.error'));
+    const newTree = removeItemFromTree(packItemsSourceRef.current, item.id);
+    if (!newTree) {
+      toast.error(t('packDetail.deleteItem.error'));
+      return;
     }
+    applyItemsDraft(newTree);
   };
 
   // Helper to find item by ID in tree
@@ -937,71 +1051,6 @@ const PackDetailPage = () => {
     return undefined;
   };
 
-
-  // Helper to clone and update tree
-  const cloneTree = (items) => {
-    return items.map(item => ({
-      ...item,
-      children: item.children ? cloneTree(item.children) : undefined
-    }));
-  };
-
-  /**
-   * Reorder PUT returns structure-only items (no referencedLevel). Re-hydrate from the
-   * previous tree so we do not refetch the full pack or lose level cards.
-   */
-  const buildLevelMetaByPackItemId = (items, map = new Map()) => {
-    for (const item of items || []) {
-      if (item.type === 'level') {
-        map.set(item.id, {
-          referencedLevel: item.referencedLevel ?? null,
-          isCleared: !!item.isCleared,
-          isPurePerfect: !!item.isPurePerfect,
-          isPureXPerfect: !!item.isPureXPerfect,
-        });
-      }
-      if (item.children?.length) {
-        buildLevelMetaByPackItemId(item.children, map);
-      }
-    }
-    return map;
-  };
-
-  const mergePackStructureWithReferencedLevels = (prevItems, structureOnlyItems) => {
-    const metaByItemId = buildLevelMetaByPackItemId(prevItems);
-    const walk = (nodes) =>
-      (nodes || []).map((node) => {
-        if (node.type === 'level') {
-          const meta = metaByItemId.get(node.id);
-          return {
-            ...node,
-            referencedLevel: meta?.referencedLevel ?? null,
-            isCleared: meta?.isCleared ?? false,
-            isPurePerfect: meta?.isPurePerfect ?? false,
-            isPureXPerfect: meta?.isPureXPerfect ?? false,
-          };
-        }
-        if (node.type === 'folder') {
-          return {
-            ...node,
-            children: node.children ? walk(node.children) : undefined,
-          };
-        }
-        if (node.type === 'note') {
-          return { ...node };
-        }
-        return node;
-      });
-    return walk(structureOnlyItems);
-  };
-
-  // Helper to create minimal tree structure for backend (only id, parentId, sortOrder)
-  const createMinimalTreeStructure = (items) => {
-    return items.map(item => ({
-      id: item.id,
-      children: item.children ? createMinimalTreeStructure(item.children) : undefined
-    }));
-  };
 
   const findParentId = (items, itemId) => {
     const parentItem = findParent(items, itemId);
@@ -1114,8 +1163,8 @@ const PackDetailPage = () => {
   };
 
   // Handle drag end with DnD context
-  const handleDragEnd = async (result) => {
-    if (!result.destination || !pack?.items) {
+  const handleDragEnd = (result) => {
+    if (!isEditingItems || itemsSaveBusy || !result.destination || !pack?.items) {
       return;
     }
 
@@ -1164,52 +1213,19 @@ const PackDetailPage = () => {
       }
     }
 
-    try {
-      const newTree = cloneTree(packItems);
-      const moveSucceeded = moveItemInTree(newTree, {
-        sourceParentId,
-        sourceIndex: source.index,
-        destinationParentId,
-        destinationIndex
-      });
+    const newTree = cloneTree(packItemsSourceRef.current);
+    const moveSucceeded = moveItemInTree(newTree, {
+      sourceParentId,
+      sourceIndex: source.index,
+      destinationParentId,
+      destinationIndex
+    });
 
-      if (!moveSucceeded) {
-        return;
-      }
-
-      setPack({ ...pack, items: newTree });
-
-      if (destinationParentId !== 0 && destinationParentId !== undefined) {
-        setExpandedFolders(prev => {
-          const newSet = new Set(prev);
-          newSet.add(destinationParentId);
-          if (id) {
-            setPackExpandedFolders(id, newSet);
-          }
-          return newSet;
-        });
-      }
-
-      const minimalTree = createMinimalTreeStructure(newTree);
-      const response = await api.put(routes.database.levels.packs.tree(pack.id), {
-        items: minimalTree
-      });
-
-      setPack((prevPack) => ({
-        ...prevPack,
-        items: mergePackStructureWithReferencedLevels(prevPack.items, response.data.items),
-      }));
-      fetchPackCdnData();
-      toast.success(t('packDetail.move.success'));
-      
-      window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id }
-      }));
-    } catch (error) {
-      console.error('Failed to move item:', error);
-      toast.error(error.response?.data?.error || t('packDetail.move.error'));
-      await fetchPack(true);
+    if (!moveSucceeded) {
+      return;
     }
+
+    applyItemsDraft(newTree, destinationParentId);
   };
 
   // Get view mode icon and text
@@ -1242,11 +1258,11 @@ const PackDetailPage = () => {
     }
   };
 
-  // Check if user can edit pack
-  const canEdit = user && pack && (
-    pack.ownerId === user.id || 
+  const canManagePack = Boolean(user && pack && (
+    pack.ownerId === user.id ||
     hasFlag(user, permissionFlags.SUPER_ADMIN)
-  );
+  ));
+  const canEditItems = canManagePack && isEditingItems;
 
   if (loading) {
     return (
@@ -1431,7 +1447,7 @@ const PackDetailPage = () => {
             </button>
             <Tooltip id="download-pack-tooltip" place="bottom" noArrow />
           </div>
-          {canEdit && (
+          {canManagePack && (
             <div className="actions">
               <button
                 className="edit-btn"
@@ -1519,8 +1535,65 @@ const PackDetailPage = () => {
               {t('packDetail.items.title')}
             </h2>
             <div className="levels-header-right">
-              {canEdit && (
-                <div className="add-buttons">
+              {canManagePack && !isEditingItems && (
+                <button
+                  type="button"
+                  className="btn-fill-neutral"
+                  onClick={enterEditItems}
+                >
+                  {t('packDetail.actions.editItems')}
+                </button>
+              )}
+              {canEditItems && (
+                <div className="items-edit-toolbar">
+                  <div className="items-edit-toolbar__history">
+                    <button
+                      type="button"
+                      className="btn-fill-neutral"
+                      onClick={undoItems}
+                      disabled={itemsSaveBusy || !canUndo}
+                      data-tooltip-id="pack-items-undo"
+                    >
+                      {t('buttons.undo', { ns: 'common' })}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-fill-neutral"
+                      onClick={redoItems}
+                      disabled={itemsSaveBusy || !canRedo}
+                      data-tooltip-id="pack-items-redo"
+                    >
+                      {t('buttons.redo', { ns: 'common' })}
+                    </button>
+                    <Tooltip id="pack-items-undo" place="top" noArrow>
+                      {t('packDetail.editItems.undoHint')}
+                    </Tooltip>
+                    <Tooltip id="pack-items-redo" place="top" noArrow>
+                      {t('packDetail.editItems.redoHint')}
+                    </Tooltip>
+                  </div>
+                  <div className="items-edit-toolbar__persist">
+                    <button
+                      type="button"
+                      className="btn-fill-neutral"
+                      onClick={requestExitEditItems}
+                      disabled={itemsSaveBusy}
+                    >
+                      {t('buttons.cancel', { ns: 'common' })}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-fill-primary"
+                      onClick={handleSaveItems}
+                      disabled={itemsSaveBusy || !isItemsDirty}
+                    >
+                      {t('buttons.save', { ns: 'common' })}
+                    </button>
+                  </div>
+                </div>
+              )}
+              {canEditItems && (
+                <div className={`add-buttons${itemsSaveBusy ? ' is-disabled' : ''}`}>
                   <div className="add-buttons__group">
                     <button
                       type="button"
@@ -1571,7 +1644,7 @@ const PackDetailPage = () => {
                   </div>
                 </div>
               )}
-              {canEdit && totalRenderableItems > 1 && (
+              {canEditItems && totalRenderableItems > 1 && (
                 <span className="drag-hint">
                   {t('packDetail.items.dragHint')}
                 </span>
@@ -1595,7 +1668,7 @@ const PackDetailPage = () => {
                       provided={provided}
                       snapshot={snapshot}
                       user={user}
-                      canEdit={canEdit}
+                      canEdit={canEditItems}
                     />
                   );
                 }}
@@ -1614,7 +1687,7 @@ const PackDetailPage = () => {
                         depth={0}
                         expandedFolders={expandedFolders}
                         onToggleExpanded={toggleFolderExpanded}
-                        canEdit={canEdit}
+                        canEdit={canEditItems}
                         user={user}
                         onEditFolder={openEditFolder}
                         onEditNote={openEditNote}
@@ -1633,7 +1706,18 @@ const PackDetailPage = () => {
           ) : (
             <div className="empty">
               <p>{t('packDetail.items.empty')}</p>
-              {canEdit && (
+              {canManagePack && !isEditingItems && (
+                <div className="empty-actions">
+                  <button
+                    type="button"
+                    className="btn-fill-neutral"
+                    onClick={enterEditItems}
+                  >
+                    {t('packDetail.actions.editItems')}
+                  </button>
+                </div>
+              )}
+              {canEditItems && (
                 <div className="empty-actions">
                   <div className="add-buttons__group">
                     <button type="button" className="add-btn btn-fill-glass" onClick={handleAddFolder}>

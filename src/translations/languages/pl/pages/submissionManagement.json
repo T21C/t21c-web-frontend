@@ -16,6 +16,11 @@
     "placeholder": "Szukaj po utworze, artyście, twórcy, graczu lub zgłaszającym",
     "noMatches": "Brak pasujących zgłoszeń"
   },
+  "queue": {
+    "pending": "Oczekujące: {{count}}",
+    "drift": "Kolejka zmieniła się, gdy ta lista była otwarta. Dalsze przewijanie idzie po liście bez pomijania wpisów. Synchronizacja wczytuje od góry w bieżącej kolejności i ponownie ładuje filmy na ekranie.",
+    "resync": "Synchronizuj"
+  },
   "hideDifficulty": {
     "label": "Ukryj trudność",
     "hint": "Zaznacz podtyp, aby ukryć te przejścia. Kliknij etykietę, aby zaznaczyć lub wyczyścić wszystkie."

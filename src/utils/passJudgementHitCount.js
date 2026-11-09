@@ -43,9 +43,11 @@ export function getPassJudgementHitCountFromSubmissionJudgements(j) {
 }
 
 /**
- * Achievable manual judgements: persisted tilecount (excludes non-auto midspins)
- * minus auto-play tiles (including auto-range midspins).
- * `midspinCount` is ignored so existing call sites do not need a sweep.
+ * Achievable manual judgements.
+ * Persisted tilecount is path length minus non-auto midspins, so `midspinCount`
+ * must not be subtracted again. Auto tiles, including auto-range midspins, are
+ * still inside that count and are removed here.
+ * Example: 2579 tiles, 26 auto, 16 midspin → 2553 judgements.
  */
 export function getEffectiveTilecount(levelTilecount, autoTileCount = 0, _midspinCount = 0) {
   if (levelTilecount == null) return null;
@@ -57,12 +59,16 @@ export function getEffectiveTilecount(levelTilecount, autoTileCount = 0, _midspi
 }
 
 /**
- * Suffix for tilecount-mismatch i18n keys (`''` or `WithAuto`).
- * Midspins are already excluded from persisted tilecount.
+ * Suffix for tilecount-mismatch i18n keys.
+ * Midspins are already excluded from the achievable count; the suffix only
+ * names them alongside any auto tiles that were subtracted.
  */
-export function getTilecountMismatchI18nSuffix(autoTileCount = 0, _midspinCount = 0) {
+export function getTilecountMismatchI18nSuffix(autoTileCount = 0, midspinCount = 0) {
   const hasAuto = Math.floor(num(autoTileCount)) > 0;
+  const hasMidspin = Math.floor(num(midspinCount)) > 0;
+  if (hasAuto && hasMidspin) return 'WithAutoAndMidspin';
   if (hasAuto) return 'WithAuto';
+  if (hasMidspin) return 'WithMidspin';
   return '';
 }
 

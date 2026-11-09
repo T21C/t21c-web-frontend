@@ -66,6 +66,8 @@
     "upload": "업로드",
     "return": "Return",
     "reset": "초기화",
+    "undo": "실행 취소",
+    "redo": "다시 실행",
     "create": "만들기",
     "createNew": "새로 만들기",
     "yes": "예",

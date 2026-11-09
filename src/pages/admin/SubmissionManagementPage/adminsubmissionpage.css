@@ -1299,6 +1299,66 @@
     z-index: 0;
   }
 
+  .submission-admin-page .submission-queue-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0.75rem 0 1rem;
+  }
+
+  .submission-admin-page .submission-queue-sync {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--btn-radius);
+    background: var(--btn-warning-tint);
+    color: var(--text-color);
+  }
+
+  .submission-admin-page .submission-queue-sync p {
+    margin: 0;
+    flex: 1 1 16rem;
+  }
+
+  .submission-admin-page .submission-queue-pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .submission-admin-page .submission-queue-bar button {
+    background: var(--btn-neutral);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: var(--btn-sm-pad-y) var(--btn-pad-x);
+    font-size: var(--btn-sm-font-size);
+    font-weight: var(--btn-font-weight);
+    line-height: var(--btn-line-height);
+    cursor: pointer;
+  }
+
+  .submission-admin-page .submission-queue-bar button:hover:not(:disabled) {
+    background: var(--btn-neutral-dark-hover);
+  }
+
+  .submission-admin-page .submission-queue-bar button:disabled {
+    background: var(--btn-disabled-fill);
+    cursor: not-allowed;
+  }
+
+  .submission-admin-page .submission-queue-sync button {
+    background: var(--btn-warning);
+  }
+
+  .submission-admin-page .submission-queue-sync button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--btn-warning) 78%, #000);
+  }
+
   .submission-admin-page .pass-submission-card .judgements-details {
     background-color: rgba(0, 0, 0, 0.2);
     padding: 3px 3px 2px;
