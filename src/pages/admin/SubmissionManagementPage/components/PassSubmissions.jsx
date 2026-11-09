@@ -39,6 +39,33 @@ import { usePendingSubmissionPages } from './usePendingSubmissionPages';
 import SubmissionQueueBar from './SubmissionQueueBar';
 import { CommentFormatter } from '@/components/misc';
 
+const PASS_DECLINE_REASON_PRESETS = [
+  {
+    id: 'incorrectJudgementsVideo',
+    label: 'Incorrect Judgements Video',
+    text: 'Incorrect Judgement Count on Video. The submitted judgements do not match with the attached video.',
+  },
+  {
+    id: 'incorrectJudgementsLevel',
+    label: 'Incorrect Judgements Level',
+    text: 'Incorrect Judgement Count for Level. The submitted judgements do not add up to the tilecount of the level.',
+  },
+  {
+    id: 'wrongLevel',
+    label: 'Wrong Level',
+    text: 'Wrong Level. The attached video is a pass of a level different than the one picked for this submission.',
+  },
+  {
+    id: 'normalLenient',
+    label: 'Normal/Lenient',
+    text: 'Not on Strict. This pass was done on a judgement mode other than Strict (Cleared on Normal/Lenient).',
+  },
+  {
+    id: 'mobile',
+    label: 'Mobile',
+    text: "Mobile Clear. Mobile clears are not accepted as they're much more lenient than on PC version.",
+  },
+];
 
 const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [] }) => {
   const { t } = useTranslation(['components', 'pages']);
@@ -664,6 +691,7 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
         title={t('passSubmissions.declinePrompt.title')}
         message={t('passSubmissions.declinePrompt.message')}
         confirmLabel={t('passSubmissions.buttons.decline')}
+        presets={PASS_DECLINE_REASON_PRESETS}
         onCancel={() => setDeclinePromptId(null)}
         onConfirm={(reason) => {
           const id = declinePromptId;

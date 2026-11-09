@@ -14,12 +14,14 @@ export default function AdminReasonPrompt({
   message,
   confirmLabel,
   submitting = false,
+  presets = [],
   onConfirm,
   onCancel,
 }) {
   const { t } = useTranslation('common');
   const textareaRef = useRef(null);
   const [reason, setReason] = useState('');
+  const hasPresets = presets.length > 0;
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -59,9 +61,38 @@ export default function AdminReasonPrompt({
           {message ? (
             <p className="admin-reason-prompt__message">{message}</p>
           ) : null}
-          <label className="admin-reason-prompt__field">
-            <span className="admin-reason-prompt__label">{t('adminReasonPrompt.reason')}</span>
+          <div className="admin-reason-prompt__field">
+            <div className="admin-reason-prompt__label-row">
+              <label
+                htmlFor="admin-reason-prompt-textarea"
+                className="admin-reason-prompt__label"
+              >
+                {t('adminReasonPrompt.reason')}
+              </label>
+              {hasPresets && (
+                /* selector-reconciliation: skip — low-profile native preset paste */
+                <select
+                  data-selector-skip=""
+                  className="admin-reason-prompt__preset"
+                  value=""
+                  disabled={submitting}
+                  aria-label="Preset"
+                  onChange={(event) => {
+                    const selected = presets.find((preset) => preset.id === event.target.value);
+                    if (selected?.text) setReason(selected.text);
+                  }}
+                >
+                  <option value="">Preset</option>
+                  {presets.map((preset) => (
+                    <option key={preset.id} value={preset.id}>
+                      {preset.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
             <textarea
+              id="admin-reason-prompt-textarea"
               ref={textareaRef}
               className="admin-reason-prompt__textarea"
               value={reason}
@@ -71,7 +102,7 @@ export default function AdminReasonPrompt({
               disabled={submitting}
               rows={3}
             />
-          </label>
+          </div>
           <div className="admin-reason-prompt__actions">
             <button
               type="button"
