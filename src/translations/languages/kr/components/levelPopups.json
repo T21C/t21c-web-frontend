@@ -28,10 +28,13 @@
         "previousBaseScore": "이전 기본 점수",
         "ppBaseScore": "PP 기본 점수",
         "rerateNumber": "재평가 수치",
-        "rerateReason": "재평가 사유"
+        "rerateReason": "재평가 사유",
+        "curationRerateNumber": "Curation number",
+        "curationRerateReason": "Curation reason"
       },
       "checkboxes": {
-        "toRate": "평가 대상"
+        "toRate": "평가 대상",
+        "toCuration": "To Curation"
       },
       "buttons": {
         "save": {

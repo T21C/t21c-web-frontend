@@ -25,10 +25,13 @@
         "baseScore": "Score de base",
         "ppBaseScore": "Score de base PP",
         "rerateNumber": "Numéro de reclassement",
-        "rerateReason": "Raison de reclassement"
+        "rerateReason": "Raison de reclassement",
+        "curationRerateNumber": "Curation number",
+        "curationRerateReason": "Curation reason"
       },
       "checkboxes": {
-        "toRate": "À classer"
+        "toRate": "À classer",
+        "toCuration": "To Curation"
       },
       "buttons": {
         "save": {

@@ -5,6 +5,7 @@
   },
   "title": "Gestion de la curation",
   "description": "Attribuer des niveaux de qualité aux niveaux et gérer les programmes de curation",
+  "switchToQueue": "Curation rating",
   "filters": {
     "type": "Type de curation",
     "types": "Types de curation",

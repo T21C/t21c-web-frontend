@@ -31,6 +31,8 @@
         "previousBaseScore": "前回のベーススコア",
         "rerateNumber": "再レート番号",
         "rerateReason": "再レートの理由",
+        "curationRerateNumber": "Curation number",
+        "curationRerateReason": "Curation reason",
         "selectSong": "クリックして曲を選択してください",
         "suffix": "オプションの接尾辞（例：「Nerfed」）"
       },
@@ -38,7 +40,8 @@
         "selected": "選択済み"
       },
       "checkboxes": {
-        "toRate": "レート対象"
+        "toRate": "レート対象",
+        "toCuration": "To Curation"
       },
       "buttons": {
         "save": {

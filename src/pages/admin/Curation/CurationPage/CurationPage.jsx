@@ -18,6 +18,7 @@ import { TypeManagementPopup, CurationEditPopup, BulkCreateCurationsPopup, BulkC
 import { UserManagementPopup } from '@/components/popups/Users';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { CurationModeHeader } from '../CurationModeSwitch';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
@@ -586,10 +587,13 @@ const CurationPage = () => {
       
       
       <div className="curation-container page-content">
-        <div className="curation-header">
+        <CurationModeHeader
+          to="/admin/curations/rating"
+          label={t('curation.switchToQueue')}
+        >
           <h1>{t('curation.title')}</h1>
           <p>{t('curation.description')}</p>
-        </div>
+        </CurationModeHeader>
 
         {/* Filters */}
         <div className="curation-filters">

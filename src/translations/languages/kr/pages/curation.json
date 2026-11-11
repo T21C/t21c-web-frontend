@@ -5,6 +5,7 @@
   },
   "title": "큐레이션 관리",
   "description": "레벨에 품질 등급을 할당하고 큐레이션 프로그램 관리",
+  "switchToQueue": "Curation rating",
   "filters": {
     "type": "큐레이션 유형",
     "types": "큐레이션 유형",

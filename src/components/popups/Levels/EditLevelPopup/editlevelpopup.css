@@ -573,11 +573,10 @@
   cursor: not-allowed;
 }
 
-.edit-level-popup__xacc-curve-button {
+.edit-level-popup .edit-level-popup__xacc-curve-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: end;
   padding: 8px;
   background-color: var(--btn-primary);
   color: var(--color-white);
@@ -587,11 +586,11 @@
   transition: background-color 0.2s;
   width: 2.25rem;
   height: 2.25rem;
-  margin-bottom: 8px;
+  margin-left: auto;
   flex-shrink: 0;
 }
 
-.edit-level-popup__xacc-curve-button:hover {
+.edit-level-popup .edit-level-popup__xacc-curve-button:hover {
   background-color: var(--btn-primary-hover);
 }
 
@@ -846,9 +845,9 @@
 }
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-  .edit-level-popup__upload-button,
-  .edit-level-popup__chart-stats-button,
-  .edit-level-popup__xacc-curve-button {
+  .edit-level-popup .edit-level-popup__upload-button,
+  .edit-level-popup .edit-level-popup__chart-stats-button,
+  .edit-level-popup .edit-level-popup__xacc-curve-button {
     padding: 6px;
     min-width: 32px;
     height: 32px;
@@ -857,9 +856,9 @@
 
 /* Small Phone Adjustments */
 @media (max-width: 360px) {
-  .edit-level-popup__upload-button,
-  .edit-level-popup__chart-stats-button,
-  .edit-level-popup__xacc-curve-button {
+  .edit-level-popup .edit-level-popup__upload-button,
+  .edit-level-popup .edit-level-popup__chart-stats-button,
+  .edit-level-popup .edit-level-popup__xacc-curve-button {
     padding: 4px;
     min-width: 28px;
     height: 28px;
@@ -871,7 +870,7 @@
    ============================================ */
 
 /* Tag preview in EditLevelPopup */
-.edit-level-popup__tag-preview-container {
+.edit-level-popup .edit-level-popup__tag-preview-container {
   margin-top: 0.2rem;
   display: flex;
   align-items: center;

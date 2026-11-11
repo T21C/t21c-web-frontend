@@ -23,6 +23,9 @@ import { isAutoraterDetail } from '@/utils/autorater';
 import autoraterAvatar from '@/assets/icons/autorater-v2.png';
 import AutoraterEmbed from './AutoraterEmbed';
 import AutoraterStatus from './AutoraterStatus';
+import { formatCurationPickLabel } from '@/utils/curationTypeFamilies';
+import { CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 export const RatingItem = ({
   ratingDetail,
@@ -32,10 +35,14 @@ export const RatingItem = ({
   weeklyRaterActivity = [],
   career = null,
   showingConfirmed = false,
+  mode = 'difficulty',
 }) => {
     // Accept full rating detail object and extract fields from it
     const { rating, comment, createdAt, user, userId, isCommunityRating, ratedInZen, viewDurationSeconds } = ratingDetail || {};
-    const isAutorater = isAutoraterDetail(ratingDetail);
+    const isCurationMode = mode === 'curation';
+    const { curationTypesDict } = useDifficultyContext();
+    const pickLabel = isCurationMode ? formatCurationPickLabel(ratingDetail, curationTypesDict) : rating;
+    const isAutorater = !isCurationMode && isAutoraterDetail(ratingDetail);
     const hasAutoraterEmbed = isAutorater && Number.isSafeInteger(Number(levelId)) && Number(levelId) > 0;
     
     const [isExpanded, setIsExpanded] = useState(false);
@@ -84,7 +91,7 @@ export const RatingItem = ({
     const sample = ratingDetail?.accuracySample || null;
     const pguN = career?.pguN ?? 0;
     const isProvisional = pguN < RATING_ACCURACY_PROVISIONAL_N;
-    const canExpand = hasAutoraterEmbed || (!isAutorater && Boolean(comment)) || (showingConfirmed && sample);
+    const canExpand = hasAutoraterEmbed || (!isAutorater && Boolean(comment)) || (!isCurationMode && showingConfirmed && sample);
 
     return (
       <div className="rating-item-container">
@@ -110,8 +117,10 @@ export const RatingItem = ({
             <div className="rater-identity">
               <div className="rater-identity-main">
                 <span className="rater-name">{user?.username || user?.nickname}:</span>
-                {rating ? <span className="rater-rating">{rating}</span> : null}
-                {ratedInZen && (
+                {isCurationMode
+                  ? <CurationPickDisplay detail={ratingDetail} curationTypesDict={curationTypesDict} />
+                  : (pickLabel ? <span className="rater-rating">{pickLabel}</span> : null)}
+                {!isCurationMode && ratedInZen && (
                   <span className="zen-mode-chip">
                     <span className="zen-mode-chip-text">
                       {t('rating.detailPopup.zenModeChip')}
@@ -120,7 +129,7 @@ export const RatingItem = ({
                 )}
               </div>
               {hasAutoraterEmbed && <AutoraterStatus levelId={levelId} rating={rating} />}
-              {career && (
+              {!isCurationMode && career && (
                 <div className="rater-accuracy">
                   <span className={`rater-accuracy-career ${isProvisional ? 'is-provisional' : ''}`}>
                     {formatAccuracyScore(career.pguRawMean)} · {pguN}
@@ -216,7 +225,7 @@ export const RatingItem = ({
               </CollapsibleContent>
             </Collapsible>
           )}
-          {showingConfirmed && sample && (
+          {!isCurationMode && showingConfirmed && sample && (
             <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
               <CollapsibleContent>
                 <div className="rating-accuracy-explain">

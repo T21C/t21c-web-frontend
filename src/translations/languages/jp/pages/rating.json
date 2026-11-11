@@ -3,6 +3,22 @@
     "title": "レーティング管理",
     "description": "レベルのレーティングを管理します"
   },
+  "curationRating": {
+    "meta": {
+      "title": "Curation Rating",
+      "description": "Assign curation types from the rating queue"
+    },
+    "title": "Curation Rating",
+    "description": "Pick Chart, VFX, and Misc types, then settle them onto the level",
+    "switchToLegacy": "Curation list",
+    "total": "{{count}} in queue",
+    "messages": {
+      "empty": {
+        "title": "Curation queue is empty",
+        "subtitle": "Check To Curation on a level to add it here"
+      }
+    }
+  },
   "buttons": {
     "references": "参考レベル",
     "manageRaters": "レーティング担当者を管理",

@@ -3,6 +3,22 @@
     "title": "난이도 책정 관리",
     "description": "레벨 난이도 책정 관리"
   },
+  "curationRating": {
+    "meta": {
+      "title": "Curation Rating",
+      "description": "Assign curation types from the rating queue"
+    },
+    "title": "Curation Rating",
+    "description": "Pick Chart, VFX, and Misc types, then settle them onto the level",
+    "switchToLegacy": "Curation list",
+    "total": "{{count}} in queue",
+    "messages": {
+      "empty": {
+        "title": "Curation queue is empty",
+        "subtitle": "Check To Curation on a level to add it here"
+      }
+    }
+  },
   "buttons": {
     "references": "참고 레벨",
     "manageRaters": "평가자 관리",

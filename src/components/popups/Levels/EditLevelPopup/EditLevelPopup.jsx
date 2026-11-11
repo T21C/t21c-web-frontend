@@ -26,6 +26,7 @@ import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
 import { AdminLevelXaccCurvePopup } from './AdminLevelXaccCurvePopup';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { LevelMentionField } from '@/components/misc';
+import { ToQueueField } from './ToQueueField';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false, isRemotelySettled = false }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -86,6 +87,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     rerateNum: '',
     toRate: false,
     rerateReason: '',
+    curationRerateNum: '',
+    toCuration: false,
+    curationRerateReason: '',
     isDeleted: false,
     isHidden: false,
     isAnnounced: false,
@@ -233,6 +237,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         rerateNum: src.rerateNum ?? '',
         toRate: Boolean(src.toRate),
         rerateReason: src.rerateReason ?? '',
+        curationRerateNum: src.curationRerateNum ?? '',
+        toCuration: Boolean(src.toCuration),
+        curationRerateReason: src.curationRerateReason ?? '',
         isDeleted: Boolean(src.isDeleted),
         isHidden: Boolean(src.isHidden),
         isAnnounced: Boolean(src.isAnnounced),
@@ -854,42 +861,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   </div>
                 </div>
               ) : (
-                <div className={`to-rate-checkbox-container ${isSuperAdmin ? 'field-enabled' : ''}`}>
-                  <div className="to-rate-group">
-                    <label className="to-rate-checkbox">
-                      <input
-                        type="checkbox"
-                        name="toRate"
-                        checked={formData.toRate}
-                        onChange={handleInputChange}
-                        disabled={!isSuperAdmin}
-                      />
-                      {t('levelPopups.edit.form.checkboxes.toRate')}
-                    </label>
-                    <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
-                      <input
-                        type="text"
-                        autoComplete='off'
-                        name="rerateNum"
-                        value={formData.rerateNum}
-                        onChange={handleInputChange}
-                        placeholder={t('levelPopups.edit.form.placeholders.rerateNumber')}
-                        disabled={!isSuperAdmin}
-                      />
-                    </div>
-                  </div>
-                  <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
-                    <LevelMentionField
-                      as="input"
-                      autoComplete='off'
-                      name="rerateReason"
-                      value={formData.rerateReason}
-                      onChange={handleInputChange}
-                      placeholder={t('levelPopups.edit.form.placeholders.rerateReason')}
-                      disabled={!isSuperAdmin}
-                    />
-                  </div>
-                </div>
+                <ToQueueField
+                  enabled={isSuperAdmin}
+                  checked={formData.toRate}
+                  checkboxName="toRate"
+                  checkboxLabel={t('levelPopups.edit.form.checkboxes.toRate')}
+                  numberName="rerateNum"
+                  numberValue={formData.rerateNum}
+                  numberPlaceholder={t('levelPopups.edit.form.placeholders.rerateNumber')}
+                  reasonName="rerateReason"
+                  reasonValue={formData.rerateReason}
+                  reasonPlaceholder={t('levelPopups.edit.form.placeholders.rerateReason')}
+                  onChange={handleInputChange}
+                />
               )}
               
               <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
@@ -930,19 +914,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   </div>
                 )}
               </div>
-              <button
-                type="button"
-                disabled={!isSuperAdmin}
-                className={`edit-level-popup__xacc-curve-button ${isSuperAdmin ? 'field-enabled' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowXaccCurvePopup(true);
-                }}
-                title={t('levelPopups.edit.xaccCurve.openButtonTitle')}
-              >
-                <GraphIcon size="20px" />
-              </button>
+              <ToQueueField
+                enabled={isSuperAdmin}
+                checked={formData.toCuration}
+                checkboxName="toCuration"
+                checkboxLabel={t('levelPopups.edit.form.checkboxes.toCuration')}
+                numberName="curationRerateNum"
+                numberValue={formData.curationRerateNum}
+                numberPlaceholder={t('levelPopups.edit.form.placeholders.curationRerateNumber')}
+                reasonName="curationRerateReason"
+                reasonValue={formData.curationRerateReason}
+                reasonPlaceholder={t('levelPopups.edit.form.placeholders.curationRerateReason')}
+                onChange={handleInputChange}
+              />
             </div>
 
             <div className={`form-group ${canManageCharterTags ? 'field-enabled' : ''}`}>
@@ -985,6 +969,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   title="Refresh auto-assigned tags"
                 >
                   <RefreshIcon color="white" size={16} />
+                </button>
+                <button
+                  type="button"
+                  disabled={!isSuperAdmin}
+                  className={`edit-level-popup__xacc-curve-button ${isSuperAdmin ? 'field-enabled' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowXaccCurvePopup(true);
+                  }}
+                  title={t('levelPopups.edit.xaccCurve.openButtonTitle')}
+                >
+                  <GraphIcon size="20px" />
                 </button>
               </div>
             </div>
