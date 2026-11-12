@@ -11,6 +11,8 @@ import { VirtualList } from "@/components/common/VirtualList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useZenMode } from "@/contexts/ZenModeContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
+import { useCurationRatingFilters } from "@/hooks/useCurationRatingFilters";
+import { CurationModeHeader } from "@/pages/admin/Curation/CurationModeSwitch";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
 import { EditLevelPopup } from "@/components/popups/Levels";
@@ -32,35 +34,39 @@ import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from
 const RATINGS_BATCH = 30;
 const SEARCH_DEBOUNCE_MS = 300;
 
-const RatingPage = () => {
+const RatingPage = ({ mode = 'difficulty' }) => {
   const { t } = useTranslation('pages');
   const location = useLocation();
   const navigate = useNavigate();
   const { levelId: levelIdParam } = useParams();
+  const isCurationMode = mode === 'curation';
+  const listPath = isCurationMode ? '/admin/curations/rating' : '/rating';
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
-        title: t('rating.meta.title'),
-        description: t('rating.meta.description'),
+        title: isCurationMode ? t('rating.curationRating.meta.title') : t('rating.meta.title'),
+        description: isCurationMode ? t('rating.curationRating.meta.description') : t('rating.meta.description'),
         pathname: location.pathname,
-        image: levelIdParam && /^\d+$/.test(levelIdParam)
+        image: !isCurationMode && levelIdParam && /^\d+$/.test(levelIdParam)
           ? `/v2/media/thumbnail/rating/${levelIdParam}?wait=og`
           : '/og-image.jpg',
         type: 'website',
       }),
-    [t, location.pathname, levelIdParam],
+    [t, location.pathname, levelIdParam, isCurationMode],
   );
   const { user } = useAuth();
   const { hasActiveSession, hasUnfinishedDeck, sessionHydrated } = useZenMode();
   const zenLockToastRef = useRef(false);
-  const { 
-    sortOrder, 
-    myRatedFilter, 
+  const difficultyFilters = useRatingFilter();
+  const curationFilters = useCurationRatingFilters();
+  const {
+    sortOrder,
+    myRatedFilter,
     includeP,
     includeG,
     includeU,
     rankStateFilter,
-    setMyRatedFilter, 
+    setMyRatedFilter,
     setIncludeBands,
     setRankStateFilter,
     sortType,
@@ -77,8 +83,26 @@ const RatingPage = () => {
     showRaterManagement,
     setShowRaterManagement,
     showHelpPopup,
-    setShowHelpPopup
-  } = useRatingFilter();
+    setShowHelpPopup,
+  } = isCurationMode
+    ? {
+        ...curationFilters,
+        includeP: true,
+        includeG: true,
+        includeU: true,
+        rankStateFilter: 'all',
+        setIncludeBands: () => {},
+        setRankStateFilter: () => {},
+        ratingFlow: 1,
+        setRatingFlow: () => {},
+        showReferences: false,
+        setShowReferences: () => {},
+        showRaterManagement: false,
+        setShowRaterManagement: () => {},
+        showHelpPopup: false,
+        setShowHelpPopup: () => {},
+      }
+    : difficultyFilters;
 
   const [ratings, setRatings] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -131,18 +155,20 @@ const RatingPage = () => {
       limit: RATINGS_BATCH,
       sort: sortType,
       order: sortOrder,
-      includeP: includeP ? 'true' : 'false',
-      includeG: includeG ? 'true' : 'false',
-      includeU: includeU ? 'true' : 'false',
-      rankState: rankStateFilter,
       myRated: myRatedFilter,
-      flow: String(ratingFlow),
     };
+    if (!isCurationMode) {
+      params.includeP = includeP ? 'true' : 'false';
+      params.includeG = includeG ? 'true' : 'false';
+      params.includeU = includeU ? 'true' : 'false';
+      params.rankState = rankStateFilter;
+      params.flow = String(ratingFlow);
+    }
     if (debouncedQuery) {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, includeP, includeG, includeU, rankStateFilter, myRatedFilter, debouncedQuery, ratingFlow]);
+  }, [sortType, sortOrder, includeP, includeG, includeU, rankStateFilter, myRatedFilter, debouncedQuery, ratingFlow, isCurationMode]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -172,11 +198,12 @@ const RatingPage = () => {
     }
     try {
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-      const listPromise = api.get(routes.admin.rating(), { params: buildListParams(nextOffset) });
-      const weeklyPromise = append
+      const listUrl = isCurationMode ? routes.admin.curationRating() : routes.admin.rating();
+      const listPromise = api.get(listUrl, { params: buildListParams(nextOffset) });
+      const weeklyPromise = append || isCurationMode
         ? Promise.resolve(null)
         : api.get(`${routes.admin.statisticsRatingsPerUser()}?date=${weekAgo}&limit=1000`);
-      const accuracyPromise = append
+      const accuracyPromise = append || isCurationMode
         ? Promise.resolve(null)
         : api.get(routes.admin.statisticsRatingAccuracy()).catch((error) => {
             console.error('Error fetching rating accuracy:', error);
@@ -228,7 +255,7 @@ const RatingPage = () => {
         setIsLoadingMore(false);
       }
     }
-  }, [buildListParams]);
+  }, [buildListParams, isCurationMode]);
 
   const reloadFromStart = useCallback(() => {
     return fetchRatingsPage({ append: false, nextOffset: 0 });
@@ -242,21 +269,23 @@ const RatingPage = () => {
   const listRowMatchesFilters = useCallback((listRow) => {
     if (!listRow?.id) return false;
     if (debouncedQuery) return false;
-    const band = autoraterHideBand(listRow);
-    if (band === 'P' && !includeP) return false;
-    if (band === 'G' && !includeG) return false;
-    if (band === 'U' && !includeU) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
-    if (listRow.flow != null && listRow.flow !== ratingFlow) return false;
-    if (rankStateFilter === 'rankable' && listRow.rankState !== 'rankable') return false;
-    if (rankStateFilter === 'ratingOff' && listRow.rankState !== 'ratingOff') return false;
+    if (!isCurationMode) {
+      const band = autoraterHideBand(listRow);
+      if (band === 'P' && !includeP) return false;
+      if (band === 'G' && !includeG) return false;
+      if (band === 'U' && !includeU) return false;
+      if (listRow.flow != null && listRow.flow !== ratingFlow) return false;
+      if (rankStateFilter === 'rankable' && listRow.rankState !== 'rankable') return false;
+      if (rankStateFilter === 'ratingOff' && listRow.rankState !== 'ratingOff') return false;
+    }
     if (user?.id && myRatedFilter !== 'show') {
       const hasMyRating = details.some((d) => d.userId === user.id);
       if (myRatedFilter === 'hide' && hasMyRating) return false;
       if (myRatedFilter === 'only' && !hasMyRating) return false;
     }
     return true;
-  }, [debouncedQuery, includeP, includeG, includeU, rankStateFilter, myRatedFilter, user?.id, ratingFlow]);
+  }, [debouncedQuery, includeP, includeG, includeU, rankStateFilter, myRatedFilter, user?.id, ratingFlow, isCurationMode]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -302,9 +331,9 @@ const RatingPage = () => {
     const id = Number(levelId);
     if (!Number.isFinite(id) || id <= 0) return;
     if (levelIdParam && /^\d+$/.test(levelIdParam) && Number(levelIdParam) === id) {
-      navigate(`/levels/${id}`, { replace: true });
+      navigate(isCurationMode ? listPath : `/levels/${id}`, { replace: true });
     }
-  }, [levelIdParam, navigate]);
+  }, [levelIdParam, navigate, isCurationMode, listPath]);
 
   const removeRatingById = useCallback((ratingId) => {
     const levelId = selectedRatingIdRef.current === ratingId ? selectedLevelIdRef.current : null;
@@ -340,6 +369,7 @@ const RatingPage = () => {
   }, [reloadFromStart]);
 
   useEffect(() => {
+    if (isCurationMode) return undefined;
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -443,7 +473,7 @@ const RatingPage = () => {
       setConnectedUsers(0);
       setConnectedManagers(0);
     };
-  }, [user?.id]);
+  }, [user?.id, isCurationMode]);
 
   // Deep link /rating/:levelId (or legacy #levelId → redirect to slash)
   useEffect(() => {
@@ -454,17 +484,20 @@ const RatingPage = () => {
 
       (async () => {
         try {
-          const { data } = await api.get(routes.admin.ratingByLevelId(levelId), {
+          const byLevelUrl = isCurationMode
+            ? routes.admin.curationRatingByLevelId(levelId)
+            : routes.admin.ratingByLevelId(levelId);
+          const { data } = await api.get(byLevelUrl, {
             params: { completeObject: true },
           });
           if (data && !data.confirmedAt) {
             setSelectedRating(data);
             return;
           }
-          navigate(`/levels/${levelId}`, { replace: true });
+          navigate(isCurationMode ? listPath : `/levels/${levelId}`, { replace: true });
         } catch (err) {
           if (err.response?.status === 404) {
-            navigate(`/levels/${levelId}`, { replace: true });
+            navigate(isCurationMode ? listPath : `/levels/${levelId}`, { replace: true });
             return;
           }
           console.error('Error opening rating deep link:', err);
@@ -473,10 +506,11 @@ const RatingPage = () => {
       return;
     }
 
+    if (isCurationMode) return;
     const hashMatch = window.location.hash.match(/^#(\d+)$/);
     if (!hashMatch) return;
     navigate(`/rating/${hashMatch[1]}`, { replace: true });
-  }, [levelIdParam, navigate]);
+  }, [levelIdParam, navigate, isCurationMode, listPath]);
 
   const handleLocalSort = (order) => {
     setSortOrder(order);
@@ -495,11 +529,14 @@ const RatingPage = () => {
     // Open immediately with list-row data; hydrate complete details in the background
     setSelectedRating(rating);
     if (levelId) {
-      navigate(`/rating/${levelId}`, { replace: true, state: { preserveScroll: true } });
+      navigate(`${listPath}/${levelId}`, { replace: true, state: { preserveScroll: true } });
     }
     if (!rating?.id) return;
     try {
-      const { data } = await api.get(routes.admin.ratingById(rating.id), {
+      const byIdUrl = isCurationMode
+        ? routes.admin.curationRatingById(rating.id)
+        : routes.admin.ratingById(rating.id);
+      const { data } = await api.get(byIdUrl, {
         params: { completeObject: true },
       });
       if (!data) return;
@@ -507,15 +544,15 @@ const RatingPage = () => {
     } catch (err) {
       console.error('Error loading rating details:', err);
     }
-  }, [navigate]);
+  }, [navigate, isCurationMode, listPath]);
 
   const closeRatingDetails = useCallback(() => {
     deepLinkHandledRef.current = null;
     setSelectedRating(null);
     if (levelIdParam && /^\d+$/.test(levelIdParam)) {
-      navigate('/rating', { replace: true, state: { preserveScroll: true } });
+      navigate(listPath, { replace: true, state: { preserveScroll: true } });
     }
-  }, [levelIdParam, navigate]);
+  }, [levelIdParam, navigate, listPath]);
 
   const sortOptions = useMemo(() => [
     { value: 'id', label: t('rating.sort.byId') },
@@ -542,15 +579,16 @@ const RatingPage = () => {
   }, [reloadFromStart, showHelpPopup]);
 
   useEffect(() => {
+    if (isCurationMode) return;
     if (!sessionHydrated || !hasUnfinishedDeck) return;
     if (!zenLockToastRef.current) {
       zenLockToastRef.current = true;
       toast.error(t('rating.zen.errors.normalRatingLocked'));
     }
     navigate('/rating/zen', { replace: true });
-  }, [hasUnfinishedDeck, navigate, sessionHydrated, t]);
+  }, [hasUnfinishedDeck, navigate, sessionHydrated, t, isCurationMode]);
 
-  if (user === undefined || !sessionHydrated || hasUnfinishedDeck) {
+  if (user === undefined || (!isCurationMode && (!sessionHydrated || hasUnfinishedDeck))) {
     return (
       <div className="admin-rating-page">
         <MetaTags {...pageMeta} />
@@ -568,8 +606,18 @@ const RatingPage = () => {
       <MetaTags {...pageMeta} />
 
       <div className="admin-rating-body">
+        {isCurationMode && (
+          <CurationModeHeader
+            to="/admin/curations"
+            label={t('rating.curationRating.switchToLegacy')}
+          >
+            <h1>{t('rating.curationRating.title')}</h1>
+            <p>{t('rating.curationRating.description')}</p>
+          </CurationModeHeader>
+        )}
         <ScrollButton />
-        <ReferencesButton />
+        {!isCurationMode && <ReferencesButton />}
+        {!isCurationMode && (
         <div className="admin-buttons">
             <Link
               to="/rating/zen"
@@ -609,6 +657,8 @@ const RatingPage = () => {
               </Link>
             )}
           </div>
+        )}
+        {!isCurationMode && (
         <div className="rating-flow-tabs" role="tablist">
           {[1, 2, 3].map((flow) => (
             <button
@@ -623,6 +673,7 @@ const RatingPage = () => {
             </button>
           ))}
         </div>
+        )}
         <div className="view-controls">
           
           <div className="sort-controls">
@@ -679,6 +730,8 @@ const RatingPage = () => {
             label={t('rating.toggles.myRated.label')}
             width={60}
           />
+            {!isCurationMode && (
+            <>
             <div
               className="pgu-band-filter"
               title={t('rating.toggles.requestBands.hint')}
@@ -717,6 +770,8 @@ const RatingPage = () => {
               label={t('rating.toggles.rankState.label')}
               width={60}
             />
+            </>
+            )}
         </div>
 
 
@@ -739,6 +794,7 @@ const RatingPage = () => {
                 />
               </div>
               <div className="ratings-header-container">
+              {!isCurationMode && (
               <button 
                 className="help-button"
                 onClick={() => setShowHelpPopup(true)}
@@ -746,9 +802,11 @@ const RatingPage = () => {
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path> </g></svg>
                 {t('rating.buttons.help')}
               </button>
+              )}
               <div className="ratings-count">
-                {t('rating.labels.totalRatings', { count: totalCount })}
+                {t(isCurationMode ? 'rating.curationRating.total' : 'rating.labels.totalRatings', { count: totalCount })}
               </div>
+              {!isCurationMode && (
               <div className={`connected-users ${isConnected ? 'connected' : 'disconnected'}`}>
                 <div className={`indicator`} />
                 {isConnected ? (
@@ -762,6 +820,7 @@ const RatingPage = () => {
                   </>
                 ) : t('rating.labels.disconnected')}
               </div>
+              )}
               </div>
             </div>
           {Array.isArray(ratings) && ratings.length > 0 ? (
@@ -773,8 +832,8 @@ const RatingPage = () => {
               hasMore={hasMore && ratings.length > 0}
               loadingMore={isLoadingMore}
               listClassName="rating-cards"
-              scrollStorePath="/rating"
-              stateKey="admin-rating"
+              scrollStorePath={listPath}
+              stateKey={isCurationMode ? 'admin-curation-rating' : 'admin-rating'}
               loader={<div className="loader loader-relative" />}
               endMessage={
                 ratings.length > 0 && !hasMore && (
@@ -791,9 +850,10 @@ const RatingPage = () => {
                   user={user}
                   isSuperAdmin={isSuperAdmin}
                   showDetailedView={showDetailedView}
+                  mode={mode}
                   onEditLevel={() => handleEditLevel(rating.level.id)}
                   onFlowChange={(complete) => {
-                    if (complete?.confirmedAt || complete?.level?.toRate === false) {
+                    if (complete?.confirmedAt || complete?.level?.toRate === false || complete?.level?.toCuration === false) {
                       removeRatingById(complete.id);
                       return;
                     }
@@ -807,8 +867,8 @@ const RatingPage = () => {
         ) : 
         Array.isArray(ratings) && ratings.length === 0 && !isLoading ? (
           <div className="all-rated-message">
-            <h2>{t('rating.messages.noRatings.title')}</h2>
-            <p>{t('rating.messages.noRatings.subtitle')}</p>
+            <h2>{t(isCurationMode ? 'rating.curationRating.messages.empty.title' : 'rating.messages.noRatings.title')}</h2>
+            <p>{t(isCurationMode ? 'rating.curationRating.messages.empty.subtitle' : 'rating.messages.noRatings.subtitle')}</p>
           </div>
         ) : (
           <div className="loader loader-offset"/>
@@ -816,6 +876,7 @@ const RatingPage = () => {
 
             {selectedRating && (
               <RatingDetailPopup
+                mode={mode}
                 selectedRating={selectedRating}
                 setSelectedRating={(value) => {
                   if (typeof value === 'function') {
@@ -863,7 +924,9 @@ const RatingPage = () => {
                           : sel
                       ));
                     }
-                    const shouldRemove = updatedLevel.toRate === false;
+                    const shouldRemove = isCurationMode
+                      ? updatedLevel.toCuration === false
+                      : updatedLevel.toRate === false;
                     if (shouldRemove) {
                       removeRatingByLevelId(updatedLevel.id);
                     } else {

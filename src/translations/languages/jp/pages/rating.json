@@ -3,6 +3,22 @@
     "title": "レーティング管理",
     "description": "レベルのレーティングを管理します"
   },
+  "curationRating": {
+    "meta": {
+      "title": "キュレーションレーティング",
+      "description": "レーティングキューからキュレーションタイプを割り当てます"
+    },
+    "title": "キュレーションレーティング",
+    "description": "Chart、VFX、Miscのタイプを選び、レベルに確定します",
+    "switchToLegacy": "キュレーション一覧",
+    "total": "キュー内 {{count}}件",
+    "messages": {
+      "empty": {
+        "title": "キュレーションキューは空です",
+        "subtitle": "レベルのチェックボックスを切り替えると、ここに追加されます"
+      }
+    }
+  },
   "buttons": {
     "references": "参考レベル",
     "manageRaters": "レーティング担当者を管理",

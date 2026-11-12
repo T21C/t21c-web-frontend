@@ -13,6 +13,8 @@ import { CommentFormatter } from '@/components/misc';
 import { hasRatingDraft } from '@/utils/ratingDrafts';
 import { isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { RatingFlowActions, RatingFlowMarks } from './RatingFlowActions';
+import { formatCurationPickLabel } from '@/utils/curationTypeFamilies';
+import { CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
 
 const BAND_CLASS = {
   P: 'band-p',
@@ -34,15 +36,20 @@ export const RatingCard = ({
   showDetailedView,
   onEditLevel,
   onFlowChange,
+  mode = 'difficulty',
 }) => {
     const { t } = useTranslation('components');
     const [isEditing, setIsEditing] = useState(false);
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
-    const isVote = isVoteRatingCard(rating);
-    const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
-    const { difficultyDict } = useDifficultyContext();
-    const hasDraft = Boolean(user?.id && rating?.id && hasRatingDraft(user.id, rating.id));
+    const isCurationMode = mode === 'curation';
+    const isVote = !isCurationMode && isVoteRatingCard(rating);
+    const { difficultyDict, curationTypesDict } = useDifficultyContext();
+    const userDetail = rating.details?.find(detail => detail.userId === user?.id);
+    const userRating = isCurationMode
+      ? formatCurationPickLabel(userDetail, curationTypesDict)
+      : (userDetail?.rating || "");
+    const hasDraft = !isCurationMode && Boolean(user?.id && rating?.id && hasRatingDraft(user.id, rating.id));
     // Calculate averages
     const managerRatings = 
     trimString(
@@ -62,8 +69,12 @@ export const RatingCard = ({
           .join(', '),
       25);
         
-    const rerateValue = rating.level.rerateNum || rating.requesterFR;
-    const rerateReason = rating.level.rerateReason;
+    const rerateValue = isCurationMode
+      ? rating.level.curationRerateNum
+      : (rating.level.rerateNum || rating.requesterFR);
+    const rerateReason = isCurationMode
+      ? rating.level.curationRerateReason
+      : rating.level.rerateReason;
     const songTitle = trimString(getSongDisplayName(rating.level), 50);
     const fullTitle = `${getSongDisplayName(rating.level)} - ${rating.level.creator}`;
     
@@ -81,7 +92,7 @@ export const RatingCard = ({
     };
 
     const handleCopyLink = async () => {
-      const url = `${window.location.origin}/rating/${rating.level.id}`;
+      const url = `${window.location.origin}${isCurationMode ? '/admin/curations/rating' : '/rating'}/${rating.level.id}`;
       try {
         await navigator.clipboard.writeText(url);
         setCopySuccess(true);
@@ -93,7 +104,7 @@ export const RatingCard = ({
 
     return (
       <div
-        className={`rating-card ${BAND_CLASS[rating.cardBand] || ''}`}
+        className={`rating-card ${!isCurationMode && BAND_CLASS[rating.cardBand] ? BAND_CLASS[rating.cardBand] : ''}`}
       >
         {isVote && (
           <div className="vote-tag">
@@ -101,7 +112,7 @@ export const RatingCard = ({
           </div>
         )}
         <div className="rating-card-content">
-          <RatingFlowMarks rating={rating} />
+          {!isCurationMode && <RatingFlowMarks rating={rating} />}
           <div className="rating-card-header">
             <div className="header-content">
               <h3 title={fullTitle}>
@@ -129,8 +140,30 @@ export const RatingCard = ({
           </div>
           
           <div className="rating-card-details">
-            {/* Top row - Rating averages */}
-            {!showDetailedView && (rating.communityDifficultyId || rating.averageDifficulty || userRating) && (
+            {isCurationMode && (userRating || (showDetailedView && (rating.details || []).length > 0)) && (
+              <div className="rating-info-grid top-row">
+                <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
+                  <div className="content">
+                    <CurationPickDisplay detail={userDetail} curationTypesDict={curationTypesDict} />
+                    {!userDetail && userRating}
+                  </div>
+                </div>
+                {showDetailedView && (
+                  <div className="rating-info-item" data-label={t('rating.detailPopup.curation.otherPicks')}>
+                    <div className="content">
+                      {(rating.details || []).map((detail) => (
+                        <CurationPickDisplay
+                          key={detail.id || detail.userId}
+                          detail={detail}
+                          curationTypesDict={curationTypesDict}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {!isCurationMode && !showDetailedView && (rating.communityDifficultyId || rating.averageDifficulty || userRating) && (
               <div className="rating-info-grid top-row" >
                 <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">{userRating}</div>
@@ -144,7 +177,7 @@ export const RatingCard = ({
               </div>
             )}
 
-            {showDetailedView && (rating.communityDifficultyId || rating.averageDifficultyId || userRating) && (
+            {!isCurationMode && showDetailedView && (rating.communityDifficultyId || rating.averageDifficultyId || userRating) && (
               <div className="rating-info-grid top-row" >
                 <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">{userRating}</div>
@@ -164,7 +197,7 @@ export const RatingCard = ({
                 {rerateValue && (
                   <div 
                     className="rating-info-item" 
-                    data-label={t(`rating.ratingCard.labels.${rating.level.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
+                    data-label={t(`rating.ratingCard.labels.${(isCurationMode ? rating.level.curationRerateNum : rating.level.rerateNum) ? 'rerateNumber' : 'requestedRating'}`)}
                   >
                     <div className="content">{rerateValue}</div>
                   </div>
@@ -186,7 +219,7 @@ export const RatingCard = ({
             )}
           </div>
 
-          <RatingFlowActions rating={rating} user={user} onChange={onFlowChange} />
+          {!isCurationMode && <RatingFlowActions rating={rating} user={user} onChange={onFlowChange} />}
           <div className="rating-card-actions">
             <button 
               onClick={() => setSelectedRating(rating)} 
@@ -217,7 +250,7 @@ export const RatingCard = ({
               </button>
             )}
             <div className="rating-card-actions__end">
-              <RatingFlowActions only="block" rating={rating} user={user} onChange={onFlowChange} />
+              {!isCurationMode && <RatingFlowActions only="block" rating={rating} user={user} onChange={onFlowChange} />}
               <button
                 onClick={handleCopyLink}
                 className={`copy-link-btn ${copySuccess ? 'success' : ''}`}

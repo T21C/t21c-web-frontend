@@ -26,10 +26,13 @@
         "baseScore": "Wynik podstawowy",
         "ppBaseScore": "Bazowy wynik PP",
         "rerateNumber": "Numer rerate'u",
-        "rerateReason": "Powód rerate'u"
+        "rerateReason": "Powód rerate'u",
+        "curationRerateNumber": "Curation number",
+        "curationRerateReason": "Curation reason"
       },
       "checkboxes": {
-        "toRate": "Do oceny"
+        "toRate": "Do oceny",
+        "toCuration": "To Curation"
       },
       "buttons": {
         "save": {
@@ -50,7 +53,8 @@
         "permanentDelete": {
           "default": "Usuń trwale",
           "deleting": "Usuwanie..."
-        }
+        },
+        "bulk": "Zbiorczo"
       }
     },
     "confirmations": {

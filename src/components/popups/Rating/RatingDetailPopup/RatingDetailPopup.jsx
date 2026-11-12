@@ -27,6 +27,12 @@ import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter, LevelMentionField } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import { RatingHeaderMeta } from './RatingHeaderMeta';
+import { CurationRatingPicks } from './CurationRatingPicks';
+import {
+  getCurationTypesResolved,
+  sortCurationsForDisplay,
+  sortCurationTypesForDisplay,
+} from '@/utils/curationTypeUtils';
 import { useViewDurationTracker } from '@/utils/viewDurationTracker';
 import {
   getRatingDraft,
@@ -55,6 +61,25 @@ async function updateRating(id, rating, comment, isCommunityRating = false, view
   }
 }
 
+function picksFromDetail(detail) {
+  return {
+    chartTypeId: detail?.chartTypeId ?? null,
+    vfxTypeId: detail?.vfxTypeId ?? null,
+    miscTypeIds: Array.isArray(detail?.miscTypeIds) ? detail.miscTypeIds.map(Number) : [],
+  };
+}
+
+function picksEqual(a, b) {
+  if (a.chartTypeId !== b.chartTypeId || a.vfxTypeId !== b.vfxTypeId) return false;
+  if (a.miscTypeIds.length !== b.miscTypeIds.length) return false;
+  const other = new Set(b.miscTypeIds);
+  return a.miscTypeIds.every((id) => other.has(id));
+}
+
+function picksEmpty(picks) {
+  return picks.chartTypeId == null && picks.vfxTypeId == null && picks.miscTypeIds.length === 0;
+}
+
 export const RatingDetailPopup = ({ 
   selectedRating, 
   setSelectedRating = () => {},
@@ -65,19 +90,43 @@ export const RatingDetailPopup = ({
   weeklyRaterActivity = [],
   ratingAccuracyStats: ratingAccuracyStatsProp,
   onEditLevel = null,
+  mode = 'difficulty',
 }) => {
   const currentUser = user;
   const { t } = useTranslation(['components', 'common']);
+  const isCurationMode = mode === 'curation';
   const isRatingLocked = Boolean(showingConfirmed || selectedRating?.confirmedAt);
 
-  const { difficulties, difficultyDict } = useDifficultyContext();
+  const { difficulties, difficultyDict, curationTypesDict } = useDifficultyContext();
   const videoLink = selectedRating?.displayVideoLink || selectedRating?.level?.videoLink;
   const videoData = useMemo(() => (videoLink ? getLocalVideoPreview(videoLink) : null), [videoLink]);
+  const currentCurationTypes = useMemo(() => {
+    const level = selectedRating?.level;
+    if (!isCurationMode || !level) return [];
+    const raw = level.curations?.length
+      ? level.curations
+      : level.curation
+        ? [level.curation]
+        : [];
+    const seen = new Set();
+    const types = [];
+    for (const curation of sortCurationsForDisplay(raw, curationTypesDict)) {
+      for (const type of getCurationTypesResolved(curation, curationTypesDict)) {
+        if (type?.id == null || seen.has(type.id)) continue;
+        seen.add(type.id);
+        types.push(curationTypesDict[type.id] || type);
+      }
+    }
+    return sortCurationTypesForDisplay(types, curationTypesDict);
+  }, [isCurationMode, selectedRating?.level, curationTypesDict]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingRating, setPendingRating] = useState("");
   const [pendingComment, setPendingComment] = useState("");
   const [initialRating, setInitialRating] = useState("");
   const [initialComment, setInitialComment] = useState("");
+  const emptyPicks = { chartTypeId: null, vfxTypeId: null, miscTypeIds: [] };
+  const [pendingPicks, setPendingPicks] = useState(emptyPicks);
+  const [initialPicks, setInitialPicks] = useState(emptyPicks);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [otherRatings, setOtherRatings] = useState([]);
@@ -119,6 +168,8 @@ export const RatingDetailPopup = ({
       setPendingComment("");
       setInitialRating("");
       setInitialComment("");
+      setPendingPicks({ chartTypeId: null, vfxTypeId: null, miscTypeIds: [] });
+      setInitialPicks({ chartTypeId: null, vfxTypeId: null, miscTypeIds: [] });
       setHasUnsavedChanges(false);
       setSaveError(null);
       setCommentError(false);
@@ -135,8 +186,7 @@ export const RatingDetailPopup = ({
     if (isAnimating) return; // Prevent closing during entry animation
 
     if (hasUnsavedChanges) {
-      if (showingConfirmed || selectedRating?.confirmedAt) {
-        // Historical confirmed view: no draft persistence.
+      if (isCurationMode || showingConfirmed || selectedRating?.confirmedAt) {
         if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
           initiateClose();
         }
@@ -146,7 +196,7 @@ export const RatingDetailPopup = ({
       return;
     }
     initiateClose();
-  }, [isAnimating, hasUnsavedChanges, showingConfirmed, selectedRating?.confirmedAt, t, initiateClose]);
+  }, [isAnimating, hasUnsavedChanges, showingConfirmed, selectedRating?.confirmedAt, t, initiateClose, isCurationMode]);
 
   const handleCancelDraftPrompt = useCallback(() => {
     setShowUnsavedDraftPrompt(false);
@@ -218,6 +268,7 @@ export const RatingDetailPopup = ({
     const userDetail = details.find((detail) => detail.userId === currentUser?.id);
     const rating = userDetail?.rating || "";
     const comment = userDetail?.comment || "";
+    const nextPicks = picksFromDetail(userDetail);
     // Complete payloads include `comment` and/or nested `user`; list rows are slim.
     const detailsAreFull = details.some(
       (d) => d && (d.user != null || Object.prototype.hasOwnProperty.call(d, 'comment'))
@@ -232,7 +283,7 @@ export const RatingDetailPopup = ({
       let nextRating = rating;
       let nextComment = comment;
       let restoredDraft = false;
-      if (!showingConfirmed && !selectedRating?.confirmedAt && currentUser?.id) {
+      if (!isCurationMode && !showingConfirmed && !selectedRating?.confirmedAt && currentUser?.id) {
         const draft = getRatingDraft(currentUser.id, selectedRating.id);
         if (
           draft &&
@@ -250,20 +301,25 @@ export const RatingDetailPopup = ({
       setPendingComment(nextComment);
       setInitialRating(rating);
       setInitialComment(comment);
-      validateRating(nextRating);
+      setPendingPicks(nextPicks);
+      setInitialPicks(nextPicks);
+      if (!isCurationMode) validateRating(nextRating);
     } else if (detailsAreFull && !detailsHydratedSeededRef.current) {
       detailsHydratedSeededRef.current = true;
       if (!hasUnsavedChangesRef.current) {
         setPendingRating(rating);
         setPendingComment(comment);
-        validateRating(rating);
+        setPendingPicks(nextPicks);
+        if (!isCurationMode) validateRating(rating);
       }
       setInitialRating(rating);
       setInitialComment(comment);
+      setInitialPicks(nextPicks);
     } else {
       setInitialRating(rating);
       setInitialComment(comment);
-      validateRating(rating);
+      setInitialPicks(nextPicks);
+      if (!isCurationMode) validateRating(rating);
     }
 
     setOtherRatings(details);
@@ -271,6 +327,12 @@ export const RatingDetailPopup = ({
   }, [selectedRating, currentUser?.id, selectedRating?.details, showingConfirmed]);
 
   useEffect(() => {
+    if (isCurationMode) {
+      const picksChanged = !picksEqual(pendingPicks, initialPicks);
+      const commentChanged = pendingComment !== initialComment;
+      setHasUnsavedChanges(picksChanged || commentChanged);
+      return;
+    }
     const hasValidChanges = Boolean(
       (initialRating !== "" && pendingRating === "")
       ||
@@ -286,9 +348,10 @@ export const RatingDetailPopup = ({
     );
     
     setHasUnsavedChanges(hasValidChanges);
-  }, [pendingRating, pendingComment, initialRating, initialComment]);
+  }, [pendingRating, pendingComment, initialRating, initialComment, pendingPicks, initialPicks, isCurationMode]);
 
   useEffect(() => {
+    if (isCurationMode) return undefined;
     if (Array.isArray(ratingAccuracyStatsProp)) return undefined;
     let cancelled = false;
     api.get(routes.admin.statisticsRatingAccuracy())
@@ -302,7 +365,7 @@ export const RatingDetailPopup = ({
     return () => {
       cancelled = true;
     };
-  }, [ratingAccuracyStatsProp, selectedRating?.id]);
+  }, [ratingAccuracyStatsProp, selectedRating?.id, isCurationMode]);
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -312,7 +375,11 @@ export const RatingDetailPopup = ({
         if (
           !isRatingLocked
           && !isSaving
-          && ((hasUnsavedChanges && (!isCommentRequired || pendingComment.trim())) || (!pendingRating && initialRating))
+          && (
+            isCurationMode
+              ? hasUnsavedChanges
+              : ((hasUnsavedChanges && (!isCommentRequired || pendingComment.trim())) || (!pendingRating && initialRating))
+          )
         ) {
           handleSaveChanges();
         }
@@ -321,7 +388,7 @@ export const RatingDetailPopup = ({
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [hasUnsavedChanges, isSaving, pendingRating, pendingComment, isCommentRequired, initialRating, isRatingLocked]);
+  }, [hasUnsavedChanges, isSaving, pendingRating, pendingComment, isCommentRequired, initialRating, isRatingLocked, isCurationMode]);
 
 
   const runAutorate = async (ratingId) => {
@@ -431,8 +498,31 @@ export const RatingDetailPopup = ({
     return user && (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER]));
   };
 
+  const applyCurationSavePayload = (updatePayload) => {
+    const updatedRating = updatePayload.complete || updatePayload.listRow || updatePayload.rating;
+    const listRow = updatePayload.listRow;
+    setRatings((prevRatings) => {
+      if (!Array.isArray(prevRatings)) return prevRatings;
+      return prevRatings.map((rating) => {
+        if (rating.id !== (listRow?.id || updatedRating?.id)) return rating;
+        if (listRow) return { ...rating, ...listRow };
+        return { ...rating, ...updatedRating };
+      });
+    });
+    if (updatedRating) {
+      setSelectedRating((prev) => ({ ...prev, ...updatedRating, details: updatedRating.details }));
+      setOtherRatings(updatedRating.details || []);
+    }
+    setInitialPicks(pendingPicks);
+    setInitialComment(pendingComment);
+    setHasUnsavedChanges(false);
+    detailsHydratedSeededRef.current = true;
+  };
+
   const handleSaveChanges = async () => {
-    if (!selectedRating || !hasUnsavedChanges || isRatingLocked) return;
+    if (!selectedRating || isRatingLocked) return;
+    if (!isCurationMode && !hasUnsavedChanges) return;
+    if (isCurationMode && !hasUnsavedChanges) return;
   
     setIsSaving(true);
     setSaveError(null);
@@ -443,6 +533,18 @@ export const RatingDetailPopup = ({
         setCommentError(true);
         setSaveError(t('rating.detailPopup.errors.commentLength'));
         setIsSaving(false);
+        return;
+      }
+
+      if (isCurationMode) {
+        const response = await api.put(routes.admin.curationRatingById(selectedRating.id), {
+          chartTypeId: pendingPicks.chartTypeId,
+          vfxTypeId: pendingPicks.vfxTypeId,
+          miscTypeIds: pendingPicks.miscTypeIds,
+          comment: pendingComment,
+        });
+        applyCurationSavePayload(response.data || {});
+        toast.success(t('rating.detailPopup.curation.saved'));
         return;
       }
 
@@ -515,6 +617,33 @@ export const RatingDetailPopup = ({
     }
   };
 
+  const handleSettleCuration = async () => {
+    if (!selectedRating || isRatingLocked) return;
+    if (picksEmpty(pendingPicks)) {
+      toast.error(t('rating.detailPopup.curation.settleRequired'));
+      return;
+    }
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await api.post(routes.admin.curationRatingSettle(selectedRating.id), {
+        chartTypeId: pendingPicks.chartTypeId,
+        vfxTypeId: pendingPicks.vfxTypeId,
+        miscTypeIds: pendingPicks.miscTypeIds,
+        comment: pendingComment,
+      });
+      toast.success(t('rating.detailPopup.curation.settled'));
+      setRatings((prev) => (Array.isArray(prev) ? prev.filter((row) => row.id !== selectedRating.id) : prev));
+      initiateClose();
+    } catch (error) {
+      console.error('[RatingDetailPopup] Settle failed:', error);
+      setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || t('rating.detailPopup.curation.settleFailed'));
+      toast.error(error.response?.data?.error || t('rating.detailPopup.curation.settleFailed'));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleVideoLoad = () => {
     const iframe = document.querySelector('.video-iframe');
     if (iframe) {
@@ -525,7 +654,10 @@ export const RatingDetailPopup = ({
   const handleDeleteRating = async (userId) => {
     if (isRatingLocked) return;
     try {
-      const response = await api.delete(`${routes.admin.rating()}/${selectedRating.id}/detail/${userId}`);
+      const deleteUrl = isCurationMode
+        ? routes.admin.curationRatingDetail(selectedRating.id, userId)
+        : `${routes.admin.rating()}/${selectedRating.id}/detail/${userId}`;
+      const response = await api.delete(deleteUrl);
       
       if (response.status === 200) {
         const listRow = response.data?.listRow;
@@ -570,15 +702,18 @@ export const RatingDetailPopup = ({
               levelId={selectedRating?.level?.id || selectedRating?.levelId}
               isSuperAdmin={isSuperAdmin}
               onDelete={handleDeleteRating}
-              weeklyRaterActivity={weeklyRaterActivity}
-              career={careerForDetail(ratingDetail, ratingAccuracyStats)}
+              weeklyRaterActivity={isCurationMode ? [] : weeklyRaterActivity}
+              career={isCurationMode ? null : careerForDetail(ratingDetail, ratingAccuracyStats)}
               showingConfirmed={isRatingLocked}
+              mode={mode}
             />
           ))}
         </div>
       ) : (
         <div className="no-ratings-message">
-          {type === 'admin' ? t('rating.detailPopup.labels.noAdminRatings') : t('rating.detailPopup.labels.noCommunityRatings')}
+          {isCurationMode
+            ? t('rating.detailPopup.curation.noPicks')
+            : (type === 'admin' ? t('rating.detailPopup.labels.noAdminRatings') : t('rating.detailPopup.labels.noCommunityRatings'))}
         </div>
       )}
     </div>
@@ -586,6 +721,12 @@ export const RatingDetailPopup = ({
 
   const getSaveButtonText = () => {
     if (isSaving) return t('buttons.saving', { ns: 'common' });
+    if (isCurationMode) {
+      if (picksEmpty(pendingPicks) && !picksEmpty(initialPicks)) {
+        return t('rating.detailPopup.buttons.removeRating');
+      }
+      return t('rating.detailPopup.buttons.saveChanges');
+    }
     if (!pendingRating && initialRating) return t('rating.detailPopup.buttons.removeRating');
     return t('rating.detailPopup.buttons.saveChanges');
   };
@@ -593,12 +734,27 @@ export const RatingDetailPopup = ({
   const getSaveButtonClass = () => {
     const baseClass = 'save-rating-changes-btn';
     if (isSaving) return `${baseClass} saving`;
+    if (isCurationMode) {
+      if (picksEmpty(pendingPicks) && !picksEmpty(initialPicks)) return `${baseClass} remove`;
+      return baseClass;
+    }
     if (!pendingRating && initialRating) return `${baseClass} remove`;
     return baseClass;
   };
 
-  const isVoteCard = isVoteRatingCard(selectedRating, linkedRequest);
+  const isVoteCard = !isCurationMode && isVoteRatingCard(selectedRating, linkedRequest);
   const showDiscordSettlement = isVoteCard;
+  const canSaveCuration = hasAnyFlag(currentUser, [
+    permissionFlags.RATER,
+    permissionFlags.CURATOR,
+    permissionFlags.HEAD_CURATOR,
+    permissionFlags.SUPER_ADMIN,
+  ]);
+  const canSettleCuration = hasAnyFlag(currentUser, [
+    permissionFlags.CURATOR,
+    permissionFlags.HEAD_CURATOR,
+    permissionFlags.SUPER_ADMIN,
+  ]);
   const applyPostedRating = (next) => {
     if (!next) return;
     setSelectedRating((current) => mergeRatingThreadState(current, next));
@@ -611,7 +767,7 @@ export const RatingDetailPopup = ({
 
   useEffect(() => {
     const ratingId = selectedRating?.id;
-    if (!ratingId) {
+    if (!ratingId || isCurationMode) {
       setLinkedRequest(null);
       return undefined;
     }
@@ -626,7 +782,7 @@ export const RatingDetailPopup = ({
     return () => {
       cancelled = true;
     };
-  }, [selectedRating?.id]);
+  }, [selectedRating?.id, isCurationMode]);
 
   if (!selectedRating) return null;
 
@@ -703,23 +859,28 @@ export const RatingDetailPopup = ({
             </span>
             </div>
           </div>
-          {selectedRating.level.rerateReason && (
+          {(isCurationMode ? selectedRating.level.curationRerateReason : selectedRating.level.rerateReason) && (
             <div
             onClick={() => setIsCommentFieldOpen(!isCommentFieldOpen)} 
             className={`detail-field comment-field ${isCommentFieldOpen ? 'open' : ''}`}
             >
               <span className="detail-label">{t('rating.detailPopup.labels.rerateReason')}</span>
               <div className="detail-value">
-                <CommentFormatter>{selectedRating.level.rerateReason}</CommentFormatter>
+                <CommentFormatter>
+                  {isCurationMode ? selectedRating.level.curationRerateReason : selectedRating.level.rerateReason}
+                </CommentFormatter>
               </div>
             </div>
           )}
+          {!isCurationMode && (
           <div className="rating-popup__score-targets">
             <LevelRequestScoreTargets
               payload={linkedRequest?.payload}
               level={selectedRating.level}
             />
           </div>
+          )}
+          {!isCurationMode && (
           <div className="rating-popup__thread-actions">
             <RatingFlowActions
               only="block"
@@ -733,6 +894,7 @@ export const RatingDetailPopup = ({
               onUpdated={applyPostedRating}
             />
           </div>
+          )}
           {selectedRating.level.notes && (
             <div className="detail-field comment-field notes-field open">
               <div className="notes-field__header">
@@ -791,8 +953,34 @@ export const RatingDetailPopup = ({
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
                 <div className="detail-field rerate-field">
                   <span className="detail-label">{t('rating.detailPopup.labels.rerateNum')}</span>
-                  <span className="detail-value">{showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR)}</span>
+                  <span className="detail-value">
+                    {isCurationMode
+                      ? (selectedRating.level.curationRerateNum || '')
+                      : (showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR))}
+                  </span>
                 </div>
+                {isCurationMode && (
+                <div className="detail-field">
+                  <span className="detail-label">{t('rating.detailPopup.curation.currentTypes')}</span>
+                  <span className="detail-value curation-current-types">
+                    {currentCurationTypes.length > 0 ? currentCurationTypes.map((type) => (
+                      type.icon ? (
+                        <img
+                          key={type.id}
+                          src={selectIconSize(type.icon, ICON_SIZE.MEDIUM)}
+                          alt={type.name || ''}
+                          title={type.name}
+                          className="detail-value lv-icon"
+                        />
+                      ) : (
+                        <span key={type.id} className="curation-current-types__name">{type.name}</span>
+                      )
+                    )) : t('rating.detailPopup.curation.noCurrentTypes')}
+                  </span>
+                </div>
+                )}
+                {!isCurationMode && (
+                  <>
                 <div className="detail-field">
                   <span className="detail-label">{t('rating.detailPopup.labels.currentDifficulty')}</span>
                   <img src={selectIconSize(difficultyDict[selectedRating.level.diffId]?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />
@@ -805,6 +993,8 @@ export const RatingDetailPopup = ({
                   <span className="detail-label">{t('rating.detailPopup.labels.communityRating')}</span>
                   <img src={selectIconSize(difficultyDict[selectedRating.communityDifficultyId]?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />
                 </div>
+                  </>
+                )}
 
               </div>
             </div>
@@ -817,8 +1007,30 @@ export const RatingDetailPopup = ({
                   <div className="rating-banned-message">
                     {t('rating.detailPopup.messages.ratingBanned')}
                   </div>
-                ) : user ? (
+                ) : user && (!isCurationMode || canSaveCuration) ? (
                   <div className="rating-field-group">
+                    {isCurationMode ? (
+                      <CurationRatingPicks
+                        chartTypeId={pendingPicks.chartTypeId}
+                        vfxTypeId={pendingPicks.vfxTypeId}
+                        miscTypeIds={pendingPicks.miscTypeIds}
+                        disabled={isRatingLocked}
+                        onChartChange={(value) => setPendingPicks((prev) => ({ ...prev, chartTypeId: value }))}
+                        onVfxChange={(value) => setPendingPicks((prev) => ({ ...prev, vfxTypeId: value }))}
+                        onMiscToggle={(typeId) => {
+                          const id = Number(typeId);
+                          setPendingPicks((prev) => {
+                            const has = prev.miscTypeIds.includes(id);
+                            return {
+                              ...prev,
+                              miscTypeIds: has
+                                ? prev.miscTypeIds.filter((item) => item !== id)
+                                : [...prev.miscTypeIds, id],
+                            };
+                          });
+                        }}
+                      />
+                    ) : (
                     <div className="rating-field">
                       <label>
                         {t('rating.detailPopup.labels.yourRating')}
@@ -847,10 +1059,11 @@ export const RatingDetailPopup = ({
                           <img src={selectIconSize(difficulties.find(d => d.name === pendingRating)?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />}
                       </div>
                     </div>
+                    )}
                     <div className="rating-field">
                       <label>
                         {t('rating.detailPopup.labels.yourComment')}
-                        {isCommentRequired && <span className="required-mark" data-tooltip-id="required-tooltip" />}
+                        {!isCurationMode && isCommentRequired && <span className="required-mark" data-tooltip-id="required-tooltip" />}
                         {hasSavedDraft && (
                           <DraftIcon
                             className="rating-draft-icon"
@@ -868,21 +1081,26 @@ export const RatingDetailPopup = ({
                           borderColor: commentError ? 'red' : '',
                           backgroundColor: isCommentRequired && commentError ? 'rgba(255, 0, 0, 0.05)' : ''
                         }}
-                        placeholder={t('rating.detailPopup.placeholders.communityComment')}
+                        placeholder={t(isCurationMode ? 'rating.detailPopup.curation.commentPlaceholder' : 'rating.detailPopup.placeholders.communityComment')}
                       />
                     </div>
                     {!isRatingLocked && (
                     <>
-                    <RatingFlowMarks rating={selectedRating} />
+                    {!isCurationMode && <RatingFlowMarks rating={selectedRating} />}
+                    {!isCurationMode && (
                     <RatingFlowActions
                       rating={selectedRating}
                       user={currentUser}
                       onChange={(complete) => setSelectedRating(complete)}
                     />
+                    )}
                     <div className="save-button-container">
                       <button 
                         className={getSaveButtonClass()}
                         disabled={
+                          isCurationMode
+                            ? !hasUnsavedChanges || isSaving
+                            : (
                           (
                             !hasUnsavedChanges 
                             || 
@@ -896,11 +1114,22 @@ export const RatingDetailPopup = ({
                           )
                           ^
                           (!pendingRating && initialRating)
+                        )
                         }
                         onClick={handleSaveChanges}
                       >
                         {getSaveButtonText()}
                       </button>
+                      {isCurationMode && canSettleCuration && (
+                        <button
+                          type="button"
+                          className="save-rating-changes-btn curation-rating-settle-btn"
+                          disabled={isSaving || picksEmpty(pendingPicks)}
+                          onClick={handleSettleCuration}
+                        >
+                          {t('rating.detailPopup.curation.settle')}
+                        </button>
+                      )}
                     </div>
                     </>
                     )}
@@ -915,9 +1144,11 @@ export const RatingDetailPopup = ({
                 {!showDiscordSettlement && <div className="rating-field other-ratings">
                   <div className="other-ratings-header">
                     <label className="rating-field-label">
-                      {showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings')}
+                      {isCurationMode
+                        ? t('rating.detailPopup.curation.otherPicks')
+                        : (showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings'))}
                     </label>
-                    {isAdminRater() && !isRatingLocked && (
+                    {!isCurationMode && isAdminRater() && !isRatingLocked && (
                       <button
                         type="button"
                         className={`autorater-icon-btn ${isAutorating ? 'autorater-icon--loading' : ''}`}
@@ -934,12 +1165,15 @@ export const RatingDetailPopup = ({
                         />
                       </button>
                     )}
+                    {!isCurationMode && (
                     <Tooltip id="autorate-tooltip" place="right" noArrow >
                       Estimate rating
                       <br /> 
                       meow :3
                     </Tooltip>
+                    )}
                   
+                    {!isCurationMode && (
                     <button 
                       className={`ratings-toggle-btn ${showSecondRatings ? 'show-second' : ''}`}
                       onClick={() => setShowSecondRatings(!showSecondRatings)}
@@ -951,12 +1185,17 @@ export const RatingDetailPopup = ({
                         <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
+                    )}
                   </div>
                   <div className="other-ratings-container">
+                    {isCurationMode ? (
+                      renderRatingsContent(otherRatings, 'admin')
+                    ) : (
                     <div className={`other-ratings-slider ${showSecondRatings ? 'show-second' : ''}`}>
                       {renderRatingsContent(adminRatings, 'admin')}
                       {renderRatingsContent(communityRatings, 'community')}
                     </div>
+                    )}
                   </div>
                 </div>}
               </div>

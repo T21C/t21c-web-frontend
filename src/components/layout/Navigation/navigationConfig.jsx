@@ -4,7 +4,7 @@ import { ChromeIcon } from "@/components/common/icons/ChromeIcon";
 import { FirefoxIcon } from "@/components/common/icons/FirefoxIcon";
 import { showTufHelperLiteIntegrationBanner } from "@/hooks/useTufHelperLiteIpc";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-
+import ADOFAIModManagerIcon from "@/assets/icons/AMM.png";
 /**
  * Navigation configuration
  * Centralized configuration for navigation items
@@ -266,6 +266,15 @@ export const createNavigationConfig = (context = {}) => {
             to: "https://github.com/KGH1113/ADOFAIModManager/releases",
             translationKey: "navigation.main.dropdowns.tools.adofaiModManager",
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
+            icon: 
+              <img
+                src={ADOFAIModManagerIcon}
+                width={24}
+                height={24}
+                alt=""
+                style={{ flexShrink: 0, objectFit: "contain" }}
+              />
+            ,
           },
           {
             to: "/levels",

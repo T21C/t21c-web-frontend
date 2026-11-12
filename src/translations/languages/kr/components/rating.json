@@ -48,6 +48,23 @@
     "confirmations": {
       "deleteRating": "{{username}}의 책정을 삭제하시겠습니까?"
     },
+    "curation": {
+      "chart": "Chart (C/O)",
+      "vfx": "VFX (V)",
+      "misc": "Misc",
+      "chartPlaceholder": "Select a chart type",
+      "vfxPlaceholder": "Select a VFX type",
+      "commentPlaceholder": "Comment (optional)",
+      "otherPicks": "Other picks",
+      "currentTypes": "Current types:",
+      "noCurrentTypes": "None",
+      "noPicks": "No picks yet",
+      "settle": "Settle",
+      "saved": "Picks saved",
+      "settled": "Curation types settled",
+      "settleRequired": "Settle needs at least one type",
+      "settleFailed": "Failed to settle curation types"
+    },
     "messages": {
       "ratingBanned": "책정할 권한이 없습니다",
       "voteSettled": "투표 토론에서 확정된 평가입니다.",

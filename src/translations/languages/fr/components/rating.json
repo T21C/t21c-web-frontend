@@ -31,6 +31,23 @@
       "unsavedChanges": "Vous avez des changements non enregistrés. Etes-vous sûr de vouloir fermer?",
       "notesCopyFailed": "Impossible de copier les notes"
     },
+    "curation": {
+      "chart": "Chart (C/O)",
+      "vfx": "VFX (V)",
+      "misc": "Misc",
+      "chartPlaceholder": "Select a chart type",
+      "vfxPlaceholder": "Select a VFX type",
+      "commentPlaceholder": "Comment (optional)",
+      "otherPicks": "Other picks",
+      "currentTypes": "Current types:",
+      "noCurrentTypes": "None",
+      "noPicks": "No picks yet",
+      "settle": "Settle",
+      "saved": "Picks saved",
+      "settled": "Curation types settled",
+      "settleRequired": "Settle needs at least one type",
+      "settleFailed": "Failed to settle curation types"
+    },
     "messages": {
       "notesCopied": "Notes copiées"
     }

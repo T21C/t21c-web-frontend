@@ -69,3 +69,66 @@ export function collapseCurationTypeIdsByFamilyTier(selectedIds, types) {
   }
   return out;
 }
+
+/**
+ * Chart = C/O, VFX = V, everything else (including H and Epic) is misc.
+ * @param {unknown} name
+ * @returns {'chart' | 'vfx' | 'misc'}
+ */
+export function curationTypeRatingBucket(name) {
+  const parsed = parseCurationFamilyTier(name);
+  if (!parsed) return 'misc';
+  if (parsed.letter === 'C' || parsed.letter === 'O') return 'chart';
+  if (parsed.letter === 'V') return 'vfx';
+  return 'misc';
+}
+
+/**
+ * @param {{ id: number, name?: string, sortOrder?: number, groupSortOrder?: number }[]} types
+ * @returns {{ chart: object[], vfx: object[], misc: object[] }}
+ */
+export function groupCurationTypesForRating(types) {
+  const chart = [];
+  const vfx = [];
+  const misc = [];
+  const sorted = [...(types || [])].sort((a, b) => {
+    const groupDelta = (a.groupSortOrder ?? 0) - (b.groupSortOrder ?? 0);
+    if (groupDelta !== 0) return groupDelta;
+    const sortDelta = (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+    if (sortDelta !== 0) return sortDelta;
+    return String(a.name || '').localeCompare(String(b.name || ''));
+  });
+  for (const type of sorted) {
+    const bucket = curationTypeRatingBucket(type?.name);
+    if (bucket === 'chart') chart.push(type);
+    else if (bucket === 'vfx') vfx.push(type);
+    else misc.push(type);
+  }
+  return { chart, vfx, misc };
+}
+
+/**
+ * @param {{ chartTypeId?: number | null, vfxTypeId?: number | null, miscTypeIds?: number[] } | null | undefined} detail
+ * @param {Record<number, { name?: string }>} curationTypesDict
+ * @returns {string}
+ */
+export function collectCurationPickIds(detail) {
+  if (!detail) return [];
+  const ids = [];
+  if (detail.chartTypeId) ids.push(Number(detail.chartTypeId));
+  if (detail.vfxTypeId) ids.push(Number(detail.vfxTypeId));
+  for (const id of Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds : []) {
+    const n = Number(id);
+    if (Number.isInteger(n) && n > 0) ids.push(n);
+  }
+  return ids;
+}
+
+export function formatCurationPickLabel(detail, curationTypesDict) {
+  if (!detail) return '';
+  const dict = curationTypesDict || {};
+  return collectCurationPickIds(detail)
+    .map((id) => dict[id]?.name)
+    .filter(Boolean)
+    .join(' · ');
+}

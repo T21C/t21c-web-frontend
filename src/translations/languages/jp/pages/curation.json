@@ -5,6 +5,7 @@
   },
   "title": "キュレーション管理",
   "description": "レベルに品質ランクを割り当て、キュレーションのスケジュールを管理する",
+  "switchToQueue": "Curation rating",
   "filters": {
     "type": "キュレーションタイプ",
     "types": "キュレーションタイプ",

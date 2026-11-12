@@ -3,6 +3,22 @@
     "title": "Evaluation",
     "description": "Gérer et évaluer les niveaux pour The Universal Forums (TUF)"
   },
+  "curationRating": {
+    "meta": {
+      "title": "Évaluation de curation",
+      "description": "Attribuer les types de curation depuis la file d'évaluation"
+    },
+    "title": "Évaluation de curation",
+    "description": "Choisissez les types Chart, VFX et Misc, puis validez-les sur le niveau",
+    "switchToLegacy": "Liste de curation",
+    "total": "{{count}} en file",
+    "messages": {
+      "empty": {
+        "title": "La file de curation est vide",
+        "subtitle": "Basculez la case à cocher d'un niveau pour l'ajouter ici"
+      }
+    }
+  },
   "buttons": {
     "references": "Niveaux références",
     "manageRaters": "Gérer les évaluateurs"
