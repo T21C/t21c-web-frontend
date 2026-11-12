@@ -55,7 +55,8 @@
         "permanentDelete": {
           "default": "영구 삭제",
           "deleting": "삭제 중..."
-        }
+        },
+        "bulk": "일괄"
       }
     },
     "confirmations": {

@@ -62,7 +62,8 @@
           "default": "Delete permanently",
           "deleting": "Deleting..."
         },
-        "manageTags": "Manage Tags"
+        "manageTags": "Manage Tags",
+        "bulk": "Bulk"
       }
     },
     "confirmations": {

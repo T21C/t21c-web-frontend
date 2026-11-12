@@ -1094,6 +1094,10 @@
     gap: 0.75rem;
   }
 
+  .rating-popup .curation-rating-picks {
+    grid-template-columns: 1fr;
+  }
+
   .rating-popup .rating-field textarea,
   .rating-popup .rating-field .level-mention-field {
     height: 3rem;
@@ -1471,9 +1475,10 @@
 }
 
 .rating-popup .curation-rating-picks {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.85rem;
+  align-items: start;
 }
 
 .rating-popup .curation-rating-picks__field {

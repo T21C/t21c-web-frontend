@@ -919,12 +919,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 checked={formData.toCuration}
                 checkboxName="toCuration"
                 checkboxLabel={t('levelPopups.edit.form.checkboxes.toCuration')}
-                numberName="curationRerateNum"
-                numberValue={formData.curationRerateNum}
-                numberPlaceholder={t('levelPopups.edit.form.placeholders.curationRerateNumber')}
-                reasonName="curationRerateReason"
-                reasonValue={formData.curationRerateReason}
-                reasonPlaceholder={t('levelPopups.edit.form.placeholders.curationRerateReason')}
+                accessory="bulk"
+                bulkLabel={t('levelPopups.edit.form.buttons.bulk')}
                 onChange={handleInputChange}
               />
             </div>

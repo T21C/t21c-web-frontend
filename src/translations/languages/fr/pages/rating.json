@@ -5,17 +5,17 @@
   },
   "curationRating": {
     "meta": {
-      "title": "Curation Rating",
-      "description": "Assign curation types from the rating queue"
+      "title": "Évaluation de curation",
+      "description": "Attribuer les types de curation depuis la file d'évaluation"
     },
-    "title": "Curation Rating",
-    "description": "Pick Chart, VFX, and Misc types, then settle them onto the level",
-    "switchToLegacy": "Curation list",
-    "total": "{{count}} in queue",
+    "title": "Évaluation de curation",
+    "description": "Choisissez les types Chart, VFX et Misc, puis validez-les sur le niveau",
+    "switchToLegacy": "Liste de curation",
+    "total": "{{count}} en file",
     "messages": {
       "empty": {
-        "title": "Curation queue is empty",
-        "subtitle": "Check To Curation on a level to add it here"
+        "title": "La file de curation est vide",
+        "subtitle": "Basculez la case à cocher d'un niveau pour l'ajouter ici"
       }
     }
   },

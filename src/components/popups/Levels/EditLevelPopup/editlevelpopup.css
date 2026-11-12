@@ -386,6 +386,38 @@
   grid-template-columns: auto 120px;
 }
 
+.edit-level-popup-overlay .to-queue-bulk-slot {
+  display: flex;
+  justify-content: center;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.edit-level-popup-overlay .to-queue-bulk-slot.show {
+  max-height: 2rem;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.edit-level-popup-overlay .to-queue-bulk.is-on,
+.edit-level-popup-overlay .to-queue-bulk.is-on:hover:not(:disabled) {
+  color: var(--color-white);
+}
+
+.edit-level-popup-overlay .to-queue-bulk.is-on::before,
+.edit-level-popup-overlay .to-queue-bulk.is-on:hover:not(:disabled)::before,
+.edit-level-popup-overlay .to-queue-bulk.is-on:active:not(:disabled)::before {
+  filter: none;
+  background-color: var(--color-white-t20);
+}
+
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .to-queue-bulk:disabled {
+  cursor: not-allowed;
+}
+
 .edit-level-popup-overlay .difficulty-select {
   width: 100%;
   padding: 8px;

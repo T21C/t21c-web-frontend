@@ -15,7 +15,7 @@
     "messages": {
       "empty": {
         "title": "Curation queue is empty",
-        "subtitle": "Check To Curation on a level to add it here"
+        "subtitle": "Toggle the checkbox on a level to add it here"
       }
     }
   },

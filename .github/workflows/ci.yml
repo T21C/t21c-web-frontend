@@ -235,6 +235,7 @@ jobs:
         if: ${{ vars.PRODUCTION_DEPLOY_ENABLED == 'true' }}
         env:
           DEPLOY_HOST: ${{ vars.TUF_DEPLOY_HOST }}
+          RUNNER_ENVIRONMENT: ${{ runner.environment }}
         run: |
           set -euo pipefail
           [[ -n "$DEPLOY_HOST" ]] || {
@@ -266,14 +267,17 @@ jobs:
           fi
 
           if [[ "$reachable" == true ]]; then
-            echo "Tailscale can already reach ${DEPLOY_HOST}; keeping the current login"
+            echo "Tailscale can already reach ${DEPLOY_HOST}"
+          elif [[ "$RUNNER_ENVIRONMENT" == "github-hosted" ]]; then
+            echo "GitHub-hosted runner cannot reach ${DEPLOY_HOST}; logging in"
           else
-            echo "Tailscale cannot reach ${DEPLOY_HOST}; logging in"
+            echo "::error::Self-hosted runner cannot reach ${DEPLOY_HOST} over Tailscale. The workflow will not change the machine login." >&2
+            exit 1
           fi
           printf 'reachable=%s\n' "$reachable" >> "$GITHUB_OUTPUT"
 
       - name: Connect to Tailscale
-        if: ${{ vars.PRODUCTION_DEPLOY_ENABLED == 'true' && steps.tailscale_reachability.outputs.reachable != 'true' }}
+        if: ${{ vars.PRODUCTION_DEPLOY_ENABLED == 'true' && runner.environment == 'github-hosted' && steps.tailscale_reachability.outputs.reachable != 'true' }}
         uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}

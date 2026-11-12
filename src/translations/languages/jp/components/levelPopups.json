@@ -62,7 +62,8 @@
           "default": "完全に削除する",
           "deleting": "削除中..."
         },
-        "manageTags": "タグの管理"
+        "manageTags": "タグの管理",
+        "bulk": "一括"
       }
     },
     "confirmations": {

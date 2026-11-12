@@ -62,7 +62,8 @@
           "default": "永久删除",
           "deleting": "删除中……"
         },
-        "manageTags": "管理标签"
+        "manageTags": "管理标签",
+        "bulk": "批量"
       }
     },
     "confirmations": {

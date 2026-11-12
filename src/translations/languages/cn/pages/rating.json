@@ -5,17 +5,17 @@
   },
   "curationRating": {
     "meta": {
-      "title": "Curation Rating",
-      "description": "Assign curation types from the rating queue"
+      "title": "精选评级",
+      "description": "从评级队列中分配精选类型"
     },
-    "title": "Curation Rating",
-    "description": "Pick Chart, VFX, and Misc types, then settle them onto the level",
-    "switchToLegacy": "Curation list",
-    "total": "{{count}} in queue",
+    "title": "精选评级",
+    "description": "选择 Chart、VFX 和 Misc 类型，然后将其确定到关卡上",
+    "switchToLegacy": "精选列表",
+    "total": "队列中 {{count}} 个",
     "messages": {
       "empty": {
-        "title": "Curation queue is empty",
-        "subtitle": "Check To Curation on a level to add it here"
+        "title": "精选队列为空",
+        "subtitle": "切换关卡上的复选框，即可将其添加到此处"
       }
     }
   },

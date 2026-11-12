@@ -5,17 +5,17 @@
   },
   "curationRating": {
     "meta": {
-      "title": "Curation Rating",
-      "description": "Assign curation types from the rating queue"
+      "title": "キュレーションレーティング",
+      "description": "レーティングキューからキュレーションタイプを割り当てます"
     },
-    "title": "Curation Rating",
-    "description": "Pick Chart, VFX, and Misc types, then settle them onto the level",
-    "switchToLegacy": "Curation list",
-    "total": "{{count}} in queue",
+    "title": "キュレーションレーティング",
+    "description": "Chart、VFX、Miscのタイプを選び、レベルに確定します",
+    "switchToLegacy": "キュレーション一覧",
+    "total": "キュー内 {{count}}件",
     "messages": {
       "empty": {
-        "title": "Curation queue is empty",
-        "subtitle": "Check To Curation on a level to add it here"
+        "title": "キュレーションキューは空です",
+        "subtitle": "レベルのチェックボックスを切り替えると、ここに追加されます"
       }
     }
   },

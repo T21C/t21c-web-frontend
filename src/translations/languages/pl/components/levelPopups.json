@@ -53,7 +53,8 @@
         "permanentDelete": {
           "default": "Usuń trwale",
           "deleting": "Usuwanie..."
-        }
+        },
+        "bulk": "Zbiorczo"
       }
     },
     "confirmations": {
