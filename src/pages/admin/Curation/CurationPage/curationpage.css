@@ -1,20 +1,6 @@
 /* tuf-search: #CurationPage #curationPage #admin #curation */
 .curation-page .curation-header {
-  text-align: center;
   margin-bottom: 3rem;
-}
-
-.curation-page .curation-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-.curation-page .curation-header p {
-  font-size: 1.1rem;
-  color: #a0a0a0;
-  max-width: 600px;
-  margin: 0 auto;
 }
 
 .curation-page .curation-filter-group-content {

@@ -31,6 +31,8 @@
         "previousBaseScore": "先前基础分",
         "rerateNumber": "重评评级",
         "rerateReason": "重评原因",
+        "curationRerateNumber": "Curation number",
+        "curationRerateReason": "Curation reason",
         "selectSong": "点击选择歌曲",
         "suffix": "可选后缀（例如，\"Nerfed\"）"
       },
@@ -38,7 +40,8 @@
         "selected": "已选择"
       },
       "checkboxes": {
-        "toRate": "标记为待评级"
+        "toRate": "标记为待评级",
+        "toCuration": "To Curation"
       },
       "buttons": {
         "save": {
@@ -59,7 +62,8 @@
           "default": "永久删除",
           "deleting": "删除中……"
         },
-        "manageTags": "管理标签"
+        "manageTags": "管理标签",
+        "bulk": "批量"
       }
     },
     "confirmations": {

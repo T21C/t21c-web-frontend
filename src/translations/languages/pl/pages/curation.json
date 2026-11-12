@@ -5,6 +5,7 @@
   },
   "title": "Zarządzanie kuratorem",
   "description": "Przypisywanie poziomów jakości do poziomów i zarządzanie programami kuratorskimi",
+  "switchToQueue": "Curation rating",
   "filters": {
     "type": "Typ kuratora",
     "types": "Typy kuracji",

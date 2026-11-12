@@ -3,6 +3,22 @@
     "title": "Zarządzanie ocenami",
     "description": "Zarządzaj ocenami poziomów"
   },
+  "curationRating": {
+    "meta": {
+      "title": "Ocena kuracji",
+      "description": "Przypisuj typy kuracji z kolejki ocen"
+    },
+    "title": "Ocena kuracji",
+    "description": "Wybierz typy Chart, VFX i Misc, a następnie zatwierdź je na poziomie",
+    "switchToLegacy": "Lista kuracji",
+    "total": "{{count}} w kolejce",
+    "messages": {
+      "empty": {
+        "title": "Kolejka kuracji jest pusta",
+        "subtitle": "Przełącz pole wyboru na poziomie, aby dodać go tutaj"
+      }
+    }
+  },
   "buttons": {
     "references": "Odniesienia",
     "manageRaters": "Zarządzaj rater'ami",

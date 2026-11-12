@@ -3,6 +3,22 @@
     "title": "管理评级",
     "description": "管理论坛上的关卡并为其评级"
   },
+  "curationRating": {
+    "meta": {
+      "title": "精选评级",
+      "description": "从评级队列中分配精选类型"
+    },
+    "title": "精选评级",
+    "description": "选择 Chart、VFX 和 Misc 类型，然后将其确定到关卡上",
+    "switchToLegacy": "精选列表",
+    "total": "队列中 {{count}} 个",
+    "messages": {
+      "empty": {
+        "title": "精选队列为空",
+        "subtitle": "切换关卡上的复选框，即可将其添加到此处"
+      }
+    }
+  },
   "buttons": {
     "references": "参考关卡列表",
     "manageRaters": "管理评级员",

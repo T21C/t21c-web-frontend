@@ -3,6 +3,22 @@
     "title": "난이도 책정 관리",
     "description": "레벨 난이도 책정 관리"
   },
+  "curationRating": {
+    "meta": {
+      "title": "큐레이션 평가",
+      "description": "평가 대기열에서 큐레이션 유형을 지정합니다"
+    },
+    "title": "큐레이션 평가",
+    "description": "Chart, VFX, Misc 유형을 고른 뒤 레벨에 확정하세요",
+    "switchToLegacy": "큐레이션 목록",
+    "total": "대기열 {{count}}개",
+    "messages": {
+      "empty": {
+        "title": "큐레이션 대기열이 비어 있습니다",
+        "subtitle": "레벨의 체크박스를 전환하면 여기에 추가됩니다"
+      }
+    }
+  },
   "buttons": {
     "references": "참고 레벨",
     "manageRaters": "평가자 관리",

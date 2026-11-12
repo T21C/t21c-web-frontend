@@ -65,6 +65,21 @@ const PASS_DECLINE_REASON_PRESETS = [
     label: 'Mobile',
     text: "Mobile Clear. Mobile clears are not accepted as they're much more lenient than on PC version.",
   },
+  {
+    id: 'keyviewer',
+    label: 'No keyviewer/mic',
+    text: 'No keyviewer / microphone. The submission does have a visible keyviewer/handcam or audible keyboard sounds to verify the clear.',
+  },
+  {
+    id: 'privateVideo',
+    label: 'Private/Deleted Video',
+    text: 'Missing video. The attached video is inaccessible or deleted.',
+  },
+  {
+    id: 'invalidVideo',
+    label: 'Invalid Video',
+    text: 'Invalid video. The attached video contains no gameplay footage.',
+  }
 ];
 
 const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [] }) => {
