@@ -112,6 +112,27 @@ export function groupCurationTypesForRating(types) {
  * @param {Record<number, { name?: string }>} curationTypesDict
  * @returns {string}
  */
+export function emptyCurationPicks() {
+  return {chartTypeId: null, vfxTypeId: null, miscTypeIds: []};
+}
+
+export function picksAreEmpty(picks) {
+  return !picks || (picks.chartTypeId == null && picks.vfxTypeId == null && (!picks.miscTypeIds || picks.miscTypeIds.length === 0));
+}
+
+export function picksFromCurationTypes(types) {
+  const picks = emptyCurationPicks();
+  for (const type of types || []) {
+    const id = Number(type?.id);
+    if (!Number.isInteger(id) || id <= 0) continue;
+    const bucket = curationTypeRatingBucket(type?.name);
+    if (bucket === 'chart' && picks.chartTypeId == null) picks.chartTypeId = id;
+    else if (bucket === 'vfx' && picks.vfxTypeId == null) picks.vfxTypeId = id;
+    else if (bucket === 'misc' && !picks.miscTypeIds.includes(id)) picks.miscTypeIds.push(id);
+  }
+  return picks;
+}
+
 export function collectCurationPickIds(detail) {
   if (!detail) return [];
   const ids = [];

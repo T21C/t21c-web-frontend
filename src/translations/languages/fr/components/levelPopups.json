@@ -53,6 +53,7 @@
           "default": "Supprimer définitivement",
           "deleting": "Suppression..."
         },
+        "manageCurations": "Gérer les curations",
         "bulk": "Lot"
       }
     },

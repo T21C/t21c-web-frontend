@@ -30,6 +30,8 @@ import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/utils/autorater';
 import { REQUEST_BANDS, autoraterHideBand, isVoteRatingCard } from '@/utils/ratingRequestBand';
+import { CurationRatingPicks, CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
+import { emptyCurationPicks, picksAreEmpty } from '@/utils/curationTypeFamilies';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
@@ -75,12 +77,29 @@ async function submitZenRating(id, rating, comment, isCommunityRating, viewDurat
   return response.data;
 }
 
-const RatingZenPage = () => {
+async function submitZenCuration(id, picks, comment, viewDurationSeconds = 0) {
+  const response = await api.put(routes.admin.curationRatingById(id), {
+    chartTypeId: picks.chartTypeId,
+    vfxTypeId: picks.vfxTypeId,
+    miscTypeIds: picks.miscTypeIds,
+    comment,
+    ratedInZen: true,
+    viewDurationSeconds,
+  });
+  if (!response.data?.complete && !response.data?.listRow) {
+    throw new Error(response.data?.error || 'Failed to update curation rating');
+  }
+  return response.data;
+}
+
+const RatingZenPage = ({ mode = 'difficulty' }) => {
   const { t } = useTranslation(['pages', 'components', 'common']);
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { difficulties, difficultyDict } = useDifficultyContext();
+  const { difficulties, difficultyDict, curationTypesDict } = useDifficultyContext();
+  const isCurationMode = mode === 'curation';
+  const listPath = isCurationMode ? '/admin/curations/rating' : '/rating';
   const {
     session,
     patchSession,
@@ -91,7 +110,7 @@ const RatingZenPage = () => {
     hasResumableDeck,
     hasUnfinishedDeck,
     sessionHydrated,
-  } = useZenMode();
+  } = useZenMode(isCurationMode ? 'curation' : 'difficulty');
 
   const {
     phase,
@@ -114,6 +133,7 @@ const RatingZenPage = () => {
     streak,
     pendingRating,
     pendingComment,
+    pendingPicks = emptyCurationPicks(),
   } = session;
 
   useEffect(() => {
@@ -138,13 +158,13 @@ const RatingZenPage = () => {
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
-        title: t('rating.zen.meta.title'),
-        description: t('rating.zen.meta.description'),
+        title: t(isCurationMode ? 'rating.curationRating.zen.meta.title' : 'rating.zen.meta.title'),
+        description: t(isCurationMode ? 'rating.curationRating.zen.meta.description' : 'rating.zen.meta.description'),
         pathname: location.pathname,
         image: '/og-image.jpg',
         type: 'website',
       }),
-    [t, location.pathname]
+    [t, location.pathname, isCurationMode]
   );
 
   const [isDealing, setIsDealing] = useState(false);
@@ -198,6 +218,7 @@ const RatingZenPage = () => {
       nextAnswers[prev.index] = {
         rating: prev.pendingRating,
         comment: prev.pendingComment,
+        picks: prev.pendingPicks || emptyCurationPicks(),
         peeked: prev.cardPeeked,
         viewDurationSeconds,
       };
@@ -228,6 +249,7 @@ const RatingZenPage = () => {
             nextAnswers[s.index] = {
               rating: s.pendingRating,
               comment: s.pendingComment,
+              picks: s.pendingPicks || emptyCurationPicks(),
               peeked: s.cardPeeked,
               viewDurationSeconds,
             };
@@ -241,11 +263,13 @@ const RatingZenPage = () => {
   );
 
   const current = cards[index] || null;
-  const isVoteCard = isVoteRatingCard(current, linkedRequest);
+  const isVoteCard = isCurationMode
+    ? Boolean(current?.isDiscordVote)
+    : isVoteRatingCard(current, linkedRequest);
 
   useEffect(() => {
     const ratingId = current?.id;
-    if (!ratingId) {
+    if (!ratingId || isCurationMode) {
       setLinkedRequest(null);
       return undefined;
     }
@@ -405,12 +429,17 @@ const RatingZenPage = () => {
     }
     setIsDealing(true);
     try {
-      const { data } = await api.get(routes.admin.ratingZenDeal(), {
+      const dealUrl = isCurationMode ? routes.admin.curationRatingZenDeal() : routes.admin.ratingZenDeal();
+      const { data } = await api.get(dealUrl, {
         params: {
           deckSize: requestedSize,
-          includeP: includeP ? 'true' : 'false',
-          includeG: includeG ? 'true' : 'false',
-          includeU: includeU ? 'true' : 'false',
+          ...(isCurationMode
+            ? {}
+            : {
+                includeP: includeP ? 'true' : 'false',
+                includeG: includeG ? 'true' : 'false',
+                includeU: includeU ? 'true' : 'false',
+              }),
           randomness,
           ...sortParams,
         },
@@ -432,6 +461,7 @@ const RatingZenPage = () => {
         streak: 0,
         pendingRating: '',
         pendingComment: '',
+        pendingPicks: emptyCurationPicks(),
         phase: dealt.length === 0 ? 'done' : 'stage',
         deckSize: requestedSize,
         includeP,
@@ -470,6 +500,7 @@ const RatingZenPage = () => {
     t,
     startSession,
     disposeViewTrackers,
+    isCurationMode,
   ]);
 
   useEffect(() => {
@@ -477,6 +508,7 @@ const RatingZenPage = () => {
     patchSession({
       pendingRating: saved?.rating ?? '',
       pendingComment: saved?.comment ?? '',
+      pendingPicks: saved?.picks || emptyCurationPicks(),
       cardPeeked: Boolean(saved?.peeked || cardOutcomes[index] === 'peeked'),
     });
     setSaveError(null);
@@ -516,13 +548,19 @@ const RatingZenPage = () => {
         nextAnswers[prev.index] = {
           rating: prev.pendingRating,
           comment: prev.pendingComment,
+          picks: prev.pendingPicks || emptyCurationPicks(),
           peeked: prev.cardPeeked,
           viewDurationSeconds,
         };
+        const nextSaved = nextAnswers[target];
         return {
           cardAnswers: nextAnswers,
           phase: prev.phase === 'done' ? 'stage' : prev.phase,
           index: target,
+          pendingRating: nextSaved?.rating ?? '',
+          pendingComment: nextSaved?.comment ?? '',
+          pendingPicks: nextSaved?.picks || emptyCurationPicks(),
+          cardPeeked: Boolean(nextSaved?.peeked || prev.cardOutcomes[target] === 'peeked'),
         };
       });
       void flushSession();
@@ -586,9 +624,14 @@ const RatingZenPage = () => {
             submitted: nextSubmitted,
             skipped: nextSkipped,
             phase: 'done',
+            pendingRating: '',
+            pendingComment: '',
+            pendingPicks: emptyCurationPicks(),
+            cardPeeked: false,
             ...streakPatch,
           };
         }
+        const nextSaved = nextAnswers[nextOpen];
         return {
           cardOutcomes: nextOutcomes,
           cardAnswers: nextAnswers,
@@ -596,6 +639,10 @@ const RatingZenPage = () => {
           skipped: nextSkipped,
           phase: 'stage',
           index: nextOpen,
+          pendingRating: nextSaved?.rating ?? '',
+          pendingComment: nextSaved?.comment ?? '',
+          pendingPicks: nextSaved?.picks || emptyCurationPicks(),
+          cardPeeked: Boolean(nextSaved?.peeked || nextOutcomes[nextOpen] === 'peeked'),
           ...streakPatch,
         };
       });
@@ -615,6 +662,7 @@ const RatingZenPage = () => {
       {
         rating: '',
         comment: '',
+        picks: emptyCurationPicks(),
         peeked: cardPeeked,
         viewDurationSeconds,
       },
@@ -639,6 +687,7 @@ const RatingZenPage = () => {
       nextAnswers[prev.index] = {
         rating: prev.pendingRating,
         comment: prev.pendingComment,
+        picks: prev.pendingPicks || emptyCurationPicks(),
         peeked: true,
         viewDurationSeconds,
       };
@@ -662,7 +711,7 @@ const RatingZenPage = () => {
     );
     if (note === null) return;
     try {
-      await api.post(routes.admin.ratingZenReport(), {
+      await api.post(isCurationMode ? routes.admin.curationRatingZenReport() : routes.admin.ratingZenReport(), {
         ratingId: current.id,
         levelId: current.level?.id || current.levelId,
         note: note || undefined,
@@ -678,13 +727,20 @@ const RatingZenPage = () => {
 
   const handleSubmit = async () => {
     if (!current || !user || alreadyRated) return;
-    if (!pendingRating.trim()) {
-      setSaveError(t('rating.zen.errors.ratingRequired'));
-      return;
-    }
-    if (!pendingComment.trim()) {
-      setSaveError(t('rating.zen.errors.commentRequired'));
-      return;
+    if (isCurationMode) {
+      if (picksAreEmpty(pendingPicks)) {
+        setSaveError(t('rating.zen.errors.picksRequired'));
+        return;
+      }
+    } else {
+      if (!pendingRating.trim()) {
+        setSaveError(t('rating.zen.errors.ratingRequired'));
+        return;
+      }
+      if (!pendingComment.trim()) {
+        setSaveError(t('rating.zen.errors.commentRequired'));
+        return;
+      }
     }
     setIsSaving(true);
     setSaveError(null);
@@ -694,19 +750,29 @@ const RatingZenPage = () => {
       cardAnswers[index]?.viewDurationSeconds
     );
     try {
-      await submitZenRating(
-        current.id,
-        pendingRating.trim(),
-        pendingComment.trim(),
-        !isAdminRater,
-        viewDurationSeconds
-      );
+      if (isCurationMode) {
+        await submitZenCuration(
+          current.id,
+          pendingPicks,
+          pendingComment.trim(),
+          viewDurationSeconds
+        );
+      } else {
+        await submitZenRating(
+          current.id,
+          pendingRating.trim(),
+          pendingComment.trim(),
+          !isAdminRater,
+          viewDurationSeconds
+        );
+      }
       applyOutcomeAndAdvance(
         index,
         outcome,
         {
-          rating: pendingRating.trim(),
+          rating: isCurationMode ? '' : pendingRating.trim(),
           comment: pendingComment.trim(),
+          picks: pendingPicks,
           peeked: cardPeeked,
           viewDurationSeconds,
         },
@@ -728,11 +794,12 @@ const RatingZenPage = () => {
     }
   };
 
-  const canSubmit =
-    Boolean(pendingRating.trim()) &&
-    Boolean(pendingComment.trim()) &&
-    !isSaving &&
-    !alreadyRated;
+  const canSubmit = isCurationMode
+    ? !picksAreEmpty(pendingPicks) && !isSaving && !alreadyRated
+    : Boolean(pendingRating.trim()) &&
+      Boolean(pendingComment.trim()) &&
+      !isSaving &&
+      !alreadyRated;
 
   useEffect(() => {
     if (phase !== 'stage') return undefined;
@@ -745,12 +812,16 @@ const RatingZenPage = () => {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
     // Intentionally bind to current stage fields each render cycle of deps below
-  }, [phase, canSubmit, pendingRating, pendingComment, current?.id]);
+  }, [phase, canSubmit, pendingRating, pendingComment, pendingPicks, current?.id]);
 
   const peerDetails = (current?.details || []).filter((d) => !isPeekAutorater(d));
   const adminRatings = peerDetails.filter((d) => !d.isCommunityRating);
   const communityRatings = peerDetails.filter((d) => d.isCommunityRating);
-  const visiblePeers = showCommunityPeers ? communityRatings : adminRatings;
+  const visiblePeers = isCurationMode
+    ? peerDetails
+    : showCommunityPeers
+      ? communityRatings
+      : adminRatings;
   const hasPeersToPeek = peerDetails.length > 0;
   const peekSourceKind =
     adminRatings.length > 0
@@ -835,7 +906,7 @@ const RatingZenPage = () => {
       {phase === 'setup' && (
         <div className="rating-zen-page__setup">
           <header className="rating-zen-page__setup-header">
-            <h1>{t('rating.zen.setup.title')}</h1>
+            <h1>{t(isCurationMode ? 'rating.curationRating.zen.setupTitle' : 'rating.zen.setup.title')}</h1>
             <p>
               {t('rating.zen.setup.subtitle')}
             </p>
@@ -898,6 +969,7 @@ const RatingZenPage = () => {
               ) : null}
             </div>
 
+            {!isCurationMode && (
             <div className="rating-zen-page__field">
               <span>{t('rating.zen.setup.requestBands')}</span>
               <div className="rating-zen-page__pgu">
@@ -924,6 +996,7 @@ const RatingZenPage = () => {
               </div>
               <small>{t('rating.zen.setup.requestBandsHint')}</small>
             </div>
+            )}
 
             <div className="rating-zen-page__field">
               <span>{t('rating.zen.setup.sort')}</span>
@@ -973,7 +1046,7 @@ const RatingZenPage = () => {
                   : t('rating.zen.setup.start')}
               </button>
               {!hasUnfinishedDeck && (
-                <Link to="/rating" className="btn-fill-neutral-dark">
+                <Link to={listPath} className="btn-fill-neutral-dark">
                   {t('rating.zen.setup.back')}
                 </Link>
               )}
@@ -989,9 +1062,6 @@ const RatingZenPage = () => {
             onClick={handleExit}
             aria-label={t('rating.zen.exit')}
           />
-          {current.level?.id && current.level?.fileId ? (
-            <WebAdofaiViewerButton levelId={current.level.id} />
-          ) : null}
           <header className="rating-zen-page__bar">
             <div className="rating-zen-page__bar-main">
               <div className="rating-zen-page__bar-stats">
@@ -1020,9 +1090,11 @@ const RatingZenPage = () => {
                 </span>
               </div>
             </div>
+            {!isCurationMode && (
             <div className="rating-zen-page__bar-actions">
               <ReferencesButton />
             </div>
+            )}
           </header>
 
           <div className="rating-zen-page__main">
@@ -1056,6 +1128,9 @@ const RatingZenPage = () => {
                   </div>
                 )}
               </div>
+              {current.level?.id && current.level?.fileId ? (
+                <WebAdofaiViewerButton levelId={current.level.id} portaled={false} />
+              ) : null}
               {current.level?.notes?.trim() && (
                 <div className="rating-zen-page__notes">
                   <span className="rating-zen-page__notes-label">
@@ -1075,6 +1150,7 @@ const RatingZenPage = () => {
                   <RatingDiscordThreadButton
                     rating={current}
                     allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                    endpoint={isCurationMode ? routes.admin.curationRatingDiscord : undefined}
                     onUpdated={(next) => {
                       patchSession((prev) => ({
                         cards: prev.cards.map((card) => (
@@ -1107,6 +1183,7 @@ const RatingZenPage = () => {
                   <RatingDiscordThreadButton
                     rating={current}
                     allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                    endpoint={isCurationMode ? routes.admin.curationRatingDiscord : undefined}
                     onUpdated={(next) => {
                       patchSession((prev) => ({
                         cards: prev.cards.map((card) => (
@@ -1168,11 +1245,15 @@ const RatingZenPage = () => {
                       title={
                         isSaving
                           ? t('loading.saving', { ns: 'common' })
-                          : !pendingRating.trim()
-                            ? t('rating.zen.errors.ratingRequired')
-                            : !pendingComment.trim()
-                              ? t('rating.zen.errors.commentRequired')
-                              : t('rating.zen.actions.submit')
+                          : isCurationMode
+                            ? (picksAreEmpty(pendingPicks)
+                              ? t('rating.zen.errors.picksRequired')
+                              : t('rating.zen.actions.submit'))
+                            : !pendingRating.trim()
+                              ? t('rating.zen.errors.ratingRequired')
+                              : !pendingComment.trim()
+                                ? t('rating.zen.errors.commentRequired')
+                                : t('rating.zen.actions.submit')
                       }
                     >
                       <span aria-hidden="true">
@@ -1283,19 +1364,24 @@ const RatingZenPage = () => {
                     )}
                   </div>
                 )}
-                {showRequestedRating && (current.level?.rerateNum || current.requesterFR) && (
+                {isCurationMode && current.level?.curationRerateReason && (
+                  <div className="rating-zen-page__reason">
+                    <CommentFormatter>{current.level.curationRerateReason}</CommentFormatter>
+                  </div>
+                )}
+                {!isCurationMode && showRequestedRating && (current.level?.rerateNum || current.requesterFR) && (
                   <p className="rating-zen-page__request-rating">
                     {t(`components:rating.ratingCard.labels.${current.level?.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
                     {': '}
                     {current.level?.rerateNum || current.requesterFR}
                   </p>
                 )}
-                {showRequestedRating && current.level?.rerateReason && (
+                {!isCurationMode && showRequestedRating && current.level?.rerateReason && (
                   <div className="rating-zen-page__reason">
                     <CommentFormatter>{current.level.rerateReason}</CommentFormatter>
                   </div>
                 )}
-                {showRequestedRating && (
+                {!isCurationMode && showRequestedRating && (
                   <div className="rating-zen-page__score-targets">
                     <LevelRequestScoreTargets
                       payload={linkedRequest?.payload}
@@ -1307,6 +1393,39 @@ const RatingZenPage = () => {
 
               {!isVoteCard && !hasFlag(user, permissionFlags.RATING_BANNED) && (
                 <div className="rating-zen-page__form">
+                  {isCurationMode ? (
+                    <CurationRatingPicks
+                      chartTypeId={pendingPicks.chartTypeId}
+                      vfxTypeId={pendingPicks.vfxTypeId}
+                      miscTypeIds={pendingPicks.miscTypeIds}
+                      disabled={alreadyRated}
+                      onChartChange={(value) =>
+                        patchSession((prev) => ({
+                          pendingPicks: { ...(prev.pendingPicks || emptyCurationPicks()), chartTypeId: value },
+                        }))
+                      }
+                      onVfxChange={(value) =>
+                        patchSession((prev) => ({
+                          pendingPicks: { ...(prev.pendingPicks || emptyCurationPicks()), vfxTypeId: value },
+                        }))
+                      }
+                      onMiscToggle={(typeId) => {
+                        const id = Number(typeId);
+                        patchSession((prev) => {
+                          const currentPicks = prev.pendingPicks || emptyCurationPicks();
+                          const has = (currentPicks.miscTypeIds || []).includes(id);
+                          return {
+                            pendingPicks: {
+                              ...currentPicks,
+                              miscTypeIds: has
+                                ? currentPicks.miscTypeIds.filter((item) => item !== id)
+                                : [...currentPicks.miscTypeIds, id],
+                            },
+                          };
+                        });
+                      }}
+                    />
+                  ) : (
                   <div className="rating-zen-page__field">
                     <span>{t('components:rating.detailPopup.labels.yourRating')}</span>
                     <div className="rating-zen-page__rating-row">
@@ -1320,6 +1439,7 @@ const RatingZenPage = () => {
                       />
                     </div>
                   </div>
+                  )}
                   <label className="rating-zen-page__field">
                     <span>{t('components:rating.detailPopup.labels.yourComment')}</span>
                     <LevelMentionField
@@ -1330,7 +1450,7 @@ const RatingZenPage = () => {
                       }
                       rows={4}
                       disabled={alreadyRated}
-                      placeholder={t('components:rating.detailPopup.placeholders.communityComment')}
+                      placeholder={t(isCurationMode ? 'components:rating.detailPopup.curation.commentPlaceholder' : 'components:rating.detailPopup.placeholders.communityComment')}
                     />
                   </label>
                   {alreadyRated && (
@@ -1348,10 +1468,13 @@ const RatingZenPage = () => {
                 <div className="rating-zen-page__peers">
                   <div className="rating-zen-page__peers-header">
                     <span>
-                      {showCommunityPeers
-                        ? t('components:rating.detailPopup.labels.communityRatings')
-                        : t('components:rating.detailPopup.labels.adminRatings')}
+                      {isCurationMode
+                        ? t('components:rating.detailPopup.curation.otherPicks')
+                        : showCommunityPeers
+                          ? t('components:rating.detailPopup.labels.communityRatings')
+                          : t('components:rating.detailPopup.labels.adminRatings')}
                     </span>
+                    {!isCurationMode && (
                     <button
                       type="button"
                       className="btn-fill-neutral-dark"
@@ -1361,6 +1484,7 @@ const RatingZenPage = () => {
                         ? t('components:rating.detailPopup.buttons.viewAdminRatings')
                         : t('components:rating.detailPopup.buttons.viewCommunityRatings')}
                     </button>
+                    )}
                   </div>
                   <div className="rating-zen-page__peers-list">
                     {visiblePeers.length === 0 ? (
@@ -1369,6 +1493,13 @@ const RatingZenPage = () => {
                       </p>
                     ) : (
                       visiblePeers.map((detail) => (
+                        isCurationMode ? (
+                          <CurationPickDisplay
+                            key={detail.id || detail.userId}
+                            detail={detail}
+                            curationTypesDict={curationTypesDict}
+                          />
+                        ) : (
                         <RatingItem
                           key={detail.id || detail.userId}
                           ratingDetail={detail}
@@ -1376,6 +1507,7 @@ const RatingZenPage = () => {
                           isSuperAdmin={false}
                           weeklyRaterActivity={[]}
                         />
+                        )
                       ))
                     )}
                   </div>
@@ -1426,7 +1558,7 @@ const RatingZenPage = () => {
             >
               {t('rating.zen.done.again')}
             </button>
-            <Link to="/rating" className="btn-fill-neutral-dark">
+            <Link to={listPath} className="btn-fill-neutral-dark">
               {t('rating.zen.done.queue')}
             </Link>
           </div>

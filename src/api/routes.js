@@ -126,6 +126,10 @@ export const routes = {
     curationRatingByLevelId: (levelId) => `/v2/admin/curation-rating/by-level/${enc(levelId)}`,
     curationRatingSettle: (id) => `/v2/admin/curation-rating/${enc(id)}/settle`,
     curationRatingDetail: (id, userId) => `/v2/admin/curation-rating/${enc(id)}/detail/${enc(userId)}`,
+    curationRatingDiscord: (id) => `/v2/admin/curation-rating/${enc(id)}/discord`,
+    curationRatingZenDeal: () => '/v2/admin/curation-rating/zen/deal',
+    curationRatingZenReport: () => '/v2/admin/curation-rating/zen/report',
+    curationRatingZenSession: () => '/v2/admin/curation-rating/zen/session',
     ratingZenDeal: () => '/v2/admin/rating/zen/deal',
     ratingZenReport: () => '/v2/admin/rating/zen/report',
     ratingZenSession: () => '/v2/admin/rating/zen/session',
@@ -413,6 +417,8 @@ export const routes = {
       },
       unannouncedNew: () => '/v2/database/levels/unannounced/new',
       unannouncedRerates: () => '/v2/database/levels/unannounced/rerates',
+      unannouncedCurations: () => '/v2/database/levels/unannounced/curations',
+      unannouncedCurationRerates: () => '/v2/database/levels/unannounced/curation-rerates',
       aliases: (levelId) => `/v2/database/levels/${enc(levelId)}/aliases`,
       alias: (levelId, aliasId) =>
         `/v2/database/levels/${enc(levelId)}/aliases/${enc(aliasId)}`,
@@ -668,6 +674,9 @@ export const routes = {
     silentRemoveLevels: () => '/v2/webhook/silent-remove/levels',
     silentRemoveRerates: () => '/v2/webhook/silent-remove/rerates',
     silentRemovePasses: () => '/v2/webhook/silent-remove/passes',
+    silentRemoveCurations: () => '/v2/webhook/silent-remove/curations',
+    curations: () => '/v2/webhook/curations',
+    curationRerates: () => '/v2/webhook/curation-rerates',
   },
 
   notifications: {

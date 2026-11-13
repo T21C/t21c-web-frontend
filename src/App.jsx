@@ -210,6 +210,7 @@ function App() {
           <Route path='health' element={<Pages.HealthCheckPage />} />
           <Route path='translation' element={<Pages.TranslationsPage />} />
           <Route path='asset-list' element={<Pages.AssetsCatalogPage />} />
+          <Route path='admin/curations/rating/zen' element={<Pages.RatingZenPage mode="curation" />} />
           <Route path='admin/curations/rating/:levelId?' element={<Pages.RatingPage mode="curation" />} />
           <Route path='admin/curations' element={<Pages.CurationPage />} />
           <Route path='admin/curations/preview' element={<PrivateRoute><Pages.CurationPreviewPage /></PrivateRoute>} />

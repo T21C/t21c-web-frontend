@@ -10,6 +10,8 @@
   "tabs": {
     "newLevels": "新たなレベル",
     "rerates": "再レート",
+    "curations": "キュレーション",
+    "curationRerates": "キュレーション再レート",
     "passes": "クリア"
   },
   "buttons": {

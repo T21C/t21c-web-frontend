@@ -10,6 +10,8 @@
   "tabs": {
     "newLevels": "새 레벨",
     "rerates": "난이도 재책정 ",
+    "curations": "큐레이션",
+    "curationRerates": "큐레이션 재평가",
     "passes": "클리어"
   },
   "buttons": {

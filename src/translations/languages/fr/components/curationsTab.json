@@ -1,0 +1,17 @@
+{
+  "noCurations": "Aucune curation à annoncer",
+  "noRerates": "Aucune recuration à annoncer",
+  "errors": {
+    "removeLevel": "Échec de la suppression de {{song}}. Réessaie."
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "change": "{{before}} → {{after}}",
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "Modifier le niveau",
+    "remove": "Retirer sans annoncer",
+    "removeTooltip": "Retirer sans annoncer"
+  }
+}

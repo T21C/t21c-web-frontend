@@ -59,6 +59,18 @@
     row-gap: 0.75rem;
   }
 
+  .curation-mode-header .curation-header__titles {
+    padding: 0 0.5rem;
+  }
+
+  .curation-mode-header .curation-header__titles h1 {
+    font-size: 1.85rem;
+  }
+
+  .curation-mode-header .curation-header__titles p {
+    font-size: 1rem;
+  }
+
   .curation-mode-header .curation-header__spacer {
     display: none;
   }

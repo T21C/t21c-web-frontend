@@ -17,6 +17,19 @@
         "title": "キュレーションキューは空です",
         "subtitle": "レベルのチェックボックスを切り替えると、ここに追加されます"
       }
+    },
+    "zenLocked": "キュレーションキューを使う前に、キュレーションZenモードを終了または破棄してください",
+    "flows": {
+      "recent": "最近",
+      "rerate": "再レート",
+      "bulk": "一括"
+    },
+    "zen": {
+      "meta": {
+        "title": "キュレーションZenモード",
+        "description": "集中してキュレーションするセッション"
+      },
+      "setupTitle": "キュレーションZenモード"
     }
   },
   "buttons": {
@@ -177,6 +190,7 @@
       "invalidDeckSize": "デッキサイズは1～200で入力してください",
       "reportFailed": "報告の送信に失敗しました",
       "ratingRequired": "レーティングを入力してください",
+      "picksRequired": "少なくとも1つのキュレーションタイプを選んでください",
       "commentRequired": "コメントは必須です",
       "submitFailed": "提出に失敗しました",
       "alreadyRated": "このレベルはZenモードですでにレーティング済みです",
