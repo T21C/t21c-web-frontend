@@ -186,15 +186,11 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
       const request = response.data?.request || null;
       setSelected(request);
       setEditingLevel(false);
-      if (preferEdit && userOwnsPendingRequest(user, request)) {
-        setEditing(true);
-      } else {
-        setEditing(false);
-      }
+      setEditing(mode === 'mine' && preferEdit && userOwnsPendingRequest(user, request));
     } catch (err) {
       toast.error(requestErrorMessage(t, err));
     }
-  }, [t, user]);
+  }, [mode, t, user]);
 
   useEffect(() => {
     if (highlightId) openRequest(highlightId);
@@ -320,6 +316,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   const showCurationBulk = mode === 'admin'
     && (type === 'curation' || type === 'curation_rerate')
     && canManageRequestType(user, type);
+  const showOwnerForm = Boolean(editing && selected && userOwnsPendingRequest(user, selected));
 
   const runBulkAction = async (action) => {
     if (!showCurationBulk) return;
@@ -549,7 +546,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
               key={request.id}
               type="button"
               className={`level-requests__card level-requests__card--${request.status}${selected?.id === request.id ? ' level-requests__card--active' : ''}`}
-              onClick={() => openRequest(request.id, { preferEdit: true })}
+              onClick={() => openRequest(request.id, { preferEdit: mode === 'mine' })}
             >
               {currentIcon && (
                 <img className="level-requests__diff" src={currentIcon} alt={request.level.difficulty.name || ''} />
@@ -629,9 +626,9 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
         </div>
       )}
 
-      {selected && (
-        <PopupShell onClose={() => setSelected(null)} panelClassName="level-requests level-requests__popup">
-          <CloseButton variant="floating" onClick={() => setSelected(null)} />
+      {selected && !showOwnerForm && (
+        <PopupShell onClose={() => { setSelected(null); setEditing(false); }} panelClassName="level-requests level-requests__popup">
+          <CloseButton variant="floating" onClick={() => { setSelected(null); setEditing(false); }} />
           <LevelRequestDetail
             request={selected}
             user={user}
@@ -652,7 +649,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           />
         </PopupShell>
       )}
-      {editing && selected && userOwnsPendingRequest(user, selected) && (
+      {showOwnerForm && (
         <LevelRequestFormPopup
           levelId={selected.levelId}
           type={selected.type}
@@ -660,9 +657,12 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           level={selected.level}
           levelTagIds={selected.level?.tagIds}
           canEditChart={userCanEditLevel(user, selected.level)}
-          onClose={() => setEditing(false)}
+          onClose={() => {
+            setEditing(false);
+            if (mode === 'mine') setSelected(null);
+          }}
           onSaved={(request) => {
-            setSelected(request);
+            if (mode !== 'mine') setSelected(request);
             load();
           }}
         />

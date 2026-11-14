@@ -1,5 +1,5 @@
 // tuf-search: #LevelMentionField #levelMention
-import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Portal } from '@/components/common/Portal';
 import { PORTALED_PANEL_CLASS } from '@/hooks/usePortaledPanelAnchor';
@@ -10,26 +10,9 @@ import { usePopoverRoot } from '@/utils/portalRoot';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getArtistDisplayName, getSongDisplayName } from '@/utils/levelHelpers';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
-import { navbarOffsetPx } from './textareaCaretCoordinates';
-import {
-  createLevelChip,
-  findComposerMention,
-  getMentionAnchorRect,
-  hydrateEditor,
-  insertChipAtMention,
-  insertEditorLineBreak,
-  insertPlainTextAtCaret,
-  normalizeEditorChips,
-  placeCaretAfterChip,
-  placeCaretAtTokenEnd,
-  refreshEditorChips,
-  serializeEditor,
-  serializeSelection,
-  deleteSelection,
-  deleteChipAtCaret,
-  selectionIntersectsChip,
-} from './levelMentionEditor';
+import { getLevelReferences } from '@/utils/levelReferences';
+import { getCaretClientRect, navbarOffsetPx } from './textareaCaretCoordinates';
+import { findMentionToken, insertLevelMention } from './levelMentionToken';
 import './levelMentionField.css';
 
 const SEARCH_DELAY_MS = 200;
@@ -57,17 +40,15 @@ function mergePinId(idHits, textHits, id) {
   return out;
 }
 
-function emitChange(onChange, name, value) {
-  if (!onChange) return;
-  onChange({
-    target: { name: name || '', value },
-    currentTarget: { name: name || '', value },
-  });
-}
-
 function mentionKey(token) {
   if (!token) return '';
   return `${token.kind}:${token.query}:${token.start}:${token.end}`;
+}
+
+function setEditorCaret(editor, pos) {
+  if (!editor) return;
+  const next = Math.max(0, Math.min(pos, editor.value.length));
+  editor.setSelectionRange(next, next);
 }
 
 export function LevelMentionField({
@@ -96,7 +77,7 @@ export function LevelMentionField({
   maxLength,
   rows,
   autoFocus,
-  autoComplete: _autoComplete,
+  autoComplete,
   spellCheck,
   readOnly,
   ...rest
@@ -114,9 +95,8 @@ export function LevelMentionField({
   const composingRef = useRef(false);
   const cancelRef = useRef([]);
   const searchGenRef = useRef(0);
-  const lastEmittedRef = useRef(null);
-  const hydratedRef = useRef(false);
   const focusedSearchRef = useRef(false);
+  const pendingCaretRef = useRef(null);
   const [mention, setMention] = useState(null);
   const [open, setOpen] = useState(false);
   const [popupQuery, setPopupQuery] = useState('');
@@ -126,22 +106,21 @@ export function LevelMentionField({
   const [activeIndex, setActiveIndex] = useState(0);
   const [panelStyle, setPanelStyle] = useState(undefined);
   const [caretTick, setCaretTick] = useState(0);
-  const [isEmpty, setIsEmpty] = useState(!value);
 
   const isSingleLine = as === 'input';
   const isLocked = Boolean(disabled || readOnly);
   const textValue = value == null ? '' : String(value);
   const showSearch = Boolean(open && mention?.kind === 'search');
-  const chipIds = useMemo(() => collectLevelReferenceIds(textValue), [textValue]);
-  const [levelsById, setLevelsById] = useState(() => peekLevelReferences(chipIds) || {});
-  const levelsByIdRef = useRef(levelsById);
-  const difficultyDictRef = useRef(difficultyDict);
-  levelsByIdRef.current = levelsById;
-  difficultyDictRef.current = difficultyDict;
+  const FieldTag = isSingleLine ? 'input' : 'textarea';
 
   const cancelSearches = useCallback(() => {
     cancelRef.current.forEach((source) => source.cancel('New search initiated'));
     cancelRef.current = [];
+  }, []);
+
+  const closeList = useCallback(() => {
+    dismissedRef.current = true;
+    setOpen(false);
   }, []);
 
   const closeMention = useCallback(() => {
@@ -151,11 +130,6 @@ export function LevelMentionField({
     setMention(null);
     setOpen(false);
     setPopupQuery('');
-  }, []);
-
-  const closeList = useCallback(() => {
-    dismissedRef.current = true;
-    setOpen(false);
   }, []);
 
   const applyToken = useCallback((next) => {
@@ -191,73 +165,34 @@ export function LevelMentionField({
 
   const refreshToken = useCallback(() => {
     if (composingRef.current) return;
-    applyToken(findComposerMention(editorRef.current));
-  }, [applyToken]);
-
-  const emitSerialized = useCallback(() => {
     const editor = editorRef.current;
-    if (!editor) return '';
-    let next = serializeEditor(editor);
-    if (maxLength && next.length > maxLength) {
-      next = next.slice(0, maxLength);
-    }
-    lastEmittedRef.current = next;
-    setIsEmpty(next === '');
-    emitChange(onChange, name, next);
-    return next;
-  }, [maxLength, name, onChange]);
+    if (!editor) return;
+    applyToken(findMentionToken(editor.value, editor.selectionStart ?? 0));
+  }, [applyToken]);
 
   const insertLevel = useCallback((level) => {
     const editor = editorRef.current;
     const currentToken = tokenRef.current;
     if (!editor || !currentToken || !level || isLocked) return;
-    const chip = createLevelChip(level.id, { level, difficultyDict });
-    const inserted = insertChipAtMention(editor, currentToken, chip);
-    if (!inserted) return;
-    editor.focus();
-    placeCaretAfterChip(inserted);
-    emitSerialized();
+    const { value: next, caret } = insertLevelMention(editor.value, currentToken, level.id);
+    if (maxLength && next.length > maxLength) return;
+    pendingCaretRef.current = caret;
+    onChange?.({
+      target: { name: name || '', value: next },
+      currentTarget: { name: name || '', value: next },
+    });
     closeMention();
     setResults([]);
-  }, [closeMention, difficultyDict, emitSerialized, isLocked]);
+    editor.focus();
+  }, [closeMention, isLocked, maxLength, name, onChange]);
 
   useLayoutEffect(() => {
     const editor = editorRef.current;
-    if (!editor) return;
-    if (textValue === lastEmittedRef.current && hydratedRef.current) return;
-    lastEmittedRef.current = textValue;
-    hydratedRef.current = true;
-    hydrateEditor(editor, textValue, (id) => createLevelChip(id, {
-      level: levelsById[id],
-      difficultyDict,
-    }));
-    setIsEmpty(textValue === '');
-    // Chip cards are filled in a later effect so caret is not reset when they load.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate only when the stored value changes
+    const caret = pendingCaretRef.current;
+    if (!editor || caret == null) return;
+    pendingCaretRef.current = null;
+    setEditorCaret(editor, caret);
   }, [textValue]);
-
-  useEffect(() => {
-    if (chipIds.length === 0) {
-      setLevelsById({});
-      return undefined;
-    }
-    const cached = peekLevelReferences(chipIds);
-    if (cached) {
-      setLevelsById(cached);
-      return undefined;
-    }
-    let cancelled = false;
-    getLevelReferences(chipIds).then((map) => {
-      if (!cancelled) setLevelsById(map);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [chipIds]);
-
-  useEffect(() => {
-    refreshEditorChips(editorRef.current, levelsById, difficultyDict);
-  }, [difficultyDict, levelsById]);
 
   useEffect(() => () => cancelSearches(), [cancelSearches]);
 
@@ -391,11 +326,11 @@ export function LevelMentionField({
   }, [open]);
 
   useLayoutEffect(() => {
-    if (!open || !mention || !editorRef.current) {
+    if (!open || !mention || !editorRef.current || !tokenRef.current) {
       setPanelStyle(undefined);
       return;
     }
-    const caret = getMentionAnchorRect(tokenRef.current, editorRef.current);
+    const caret = getCaretClientRect(editorRef.current, tokenRef.current.start);
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const minTop = navbarOffsetPx() + PANEL_MARGIN;
@@ -437,7 +372,7 @@ export function LevelMentionField({
       event.stopImmediatePropagation();
       closeList();
       editorRef.current?.focus();
-      placeCaretAtTokenEnd(tokenRef.current);
+      if (tokenRef.current) setEditorCaret(editorRef.current, tokenRef.current.end);
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
@@ -510,51 +445,7 @@ export function LevelMentionField({
       onKeyDown?.(event);
       return;
     }
-    if ((event.ctrlKey || event.metaKey) && !event.altKey) {
-      const key = event.key.toLowerCase();
-      if (key === 'z' || key === 'y') {
-        onKeyDown?.(event);
-        return;
-      }
-    }
     if (handlePopupKeys(event)) return;
-    if (event.defaultPrevented) {
-      onKeyDown?.(event);
-      return;
-    }
-    if ((event.key === 'Backspace' || event.key === 'Delete') && selectionIntersectsChip(editorRef.current)) {
-      event.preventDefault();
-      deleteSelection(editorRef.current);
-      emitSerialized();
-      refreshToken();
-      return;
-    }
-    if (event.key === 'Backspace' && window.getSelection()?.isCollapsed && deleteChipAtCaret(editorRef.current, 'before')) {
-      event.preventDefault();
-      emitSerialized();
-      refreshToken();
-      return;
-    }
-    if (event.key === 'Delete' && window.getSelection()?.isCollapsed && deleteChipAtCaret(editorRef.current, 'after')) {
-      event.preventDefault();
-      emitSerialized();
-      refreshToken();
-      return;
-    }
-    if (event.key === 'Enter' && isSingleLine) {
-      event.preventDefault();
-      if (!open) editorRef.current?.closest('form')?.requestSubmit();
-      onKeyDown?.(event);
-      return;
-    }
-    if (event.key === 'Enter' && !event.shiftKey && !isSingleLine) {
-      event.preventDefault();
-      insertEditorLineBreak(editorRef.current);
-      emitSerialized();
-      refreshToken();
-      onKeyDown?.(event);
-      return;
-    }
     onKeyDown?.(event);
   };
 
@@ -562,18 +453,11 @@ export function LevelMentionField({
     if (handlePopupKeys(event)) event.stopPropagation();
   };
 
-  const handleEditorInput = (event) => {
-    if (composingRef.current) {
-      onInput?.(event);
-      return;
+  const handleChange = (event) => {
+    onChange?.(event);
+    if (!composingRef.current) {
+      applyToken(findMentionToken(event.target.value, event.target.selectionStart ?? 0));
     }
-    const editor = editorRef.current;
-    normalizeEditorChips(editor);
-    if (event.inputType === 'historyUndo' || event.inputType === 'historyRedo') {
-      refreshEditorChips(editor, levelsByIdRef.current, difficultyDictRef.current);
-    }
-    emitSerialized();
-    refreshToken();
     onInput?.(event);
   };
 
@@ -588,15 +472,6 @@ export function LevelMentionField({
   };
 
   const handleEditorKeyUp = (event) => {
-    if ((event.ctrlKey || event.metaKey) && !event.altKey) {
-      const key = event.key.toLowerCase();
-      if (key === 'z' || key === 'y') {
-        const editor = editorRef.current;
-        normalizeEditorChips(editor);
-        refreshEditorChips(editor, levelsByIdRef.current, difficultyDictRef.current);
-        emitSerialized();
-      }
-    }
     refreshToken();
     onKeyUp?.(event);
   };
@@ -607,10 +482,6 @@ export function LevelMentionField({
     onFocus?.(event);
   };
 
-  const handleEditorBlur = (event) => {
-    onBlur?.(event);
-  };
-
   const handleCompositionStart = (event) => {
     composingRef.current = true;
     onCompositionStart?.(event);
@@ -618,128 +489,51 @@ export function LevelMentionField({
 
   const handleCompositionEnd = (event) => {
     composingRef.current = false;
-    emitSerialized();
     refreshToken();
     onCompositionEnd?.(event);
   };
 
-  const handleCopy = (event) => {
-    const editor = editorRef.current;
-    if (!editor) return;
-    const text = serializeSelection(editor);
-    if (text === '' && window.getSelection()?.isCollapsed) {
-      onCopy?.(event);
-      return;
-    }
-    event.preventDefault();
-    event.clipboardData.setData('text/plain', text);
-    onCopy?.(event);
-  };
-
-  const handleCut = (event) => {
-    const editor = editorRef.current;
-    if (!editor || isLocked) return;
-    const text = serializeSelection(editor);
-    event.preventDefault();
-    event.clipboardData.setData('text/plain', text);
-    deleteSelection(editor);
-    emitSerialized();
-    refreshToken();
-    onCut?.(event);
-  };
-
-  const handlePaste = (event) => {
-    if (isLocked) {
-      event.preventDefault();
-      return;
-    }
-    event.preventDefault();
-    let text = event.clipboardData?.getData('text/plain') || '';
-    if (isSingleLine) text = text.replace(/[\r\n]+/g, ' ');
-    const editor = editorRef.current;
-    const current = serializeEditor(editor);
-    const selected = serializeSelection(editor);
-    if (maxLength) {
-      const room = maxLength - (current.length - selected.length);
-      text = text.slice(0, Math.max(0, room));
-    }
-    insertPlainTextAtCaret(editor, text);
-    emitSerialized();
-    refreshToken();
-    onPaste?.(event);
-  };
-
-  const handleBeforeInput = (event) => {
-    if (isLocked) {
-      event.preventDefault();
-      return;
-    }
-    const inputType = event.inputType || '';
-    if (inputType === 'insertParagraph' || inputType === 'insertLineBreak') {
-      event.preventDefault();
-      if (isSingleLine || event.ctrlKey || event.metaKey) return;
-      insertEditorLineBreak(editorRef.current);
-      emitSerialized();
-      refreshToken();
-      return;
-    }
-    if (!maxLength || !inputType.startsWith('insert')) return;
-    const incoming = event.data || '';
-    if (!incoming) return;
-    const current = serializeEditor(editorRef.current);
-    const selected = serializeSelection(editorRef.current);
-    if (current.length - selected.length + incoming.length > maxLength) {
-      event.preventDefault();
-    }
-  };
-
-  const minHeightStyle = !isSingleLine && rows
-    ? { minHeight: `${Number(rows) * 1.5}em` }
-    : undefined;
-
   const editorClass = [
     'level-mention-field',
     isSingleLine ? 'is-single-line' : '',
-    isEmpty ? 'is-empty' : '',
     className || '',
   ].filter(Boolean).join(' ');
 
   return (
     <>
-      <div
+      <FieldTag
         {...rest}
         ref={editorRef}
         id={id}
-        role="textbox"
-        aria-multiline={!isSingleLine}
+        name={name}
+        className={editorClass}
+        style={style}
+        value={textValue}
+        placeholder={placeholder || ''}
+        maxLength={maxLength}
+        rows={isSingleLine ? undefined : rows}
+        autoFocus={autoFocus}
+        autoComplete={autoComplete}
+        spellCheck={spellCheck}
+        disabled={disabled}
+        readOnly={readOnly}
+        type={isSingleLine ? 'text' : undefined}
         aria-autocomplete="list"
         aria-expanded={open}
         aria-controls={open ? listDomId : undefined}
         aria-activedescendant={activeId}
-        aria-placeholder={placeholder}
-        aria-disabled={isLocked || undefined}
-        aria-readonly={readOnly || undefined}
-        data-placeholder={placeholder || ''}
-        data-name={name || ''}
-        contentEditable={!isLocked}
-        suppressContentEditableWarning
-        spellCheck={spellCheck}
-        className={editorClass}
-        style={{ ...minHeightStyle, ...style }}
-        tabIndex={isLocked ? -1 : 0}
+        onChange={handleChange}
         onKeyDown={handleEditorKeyDown}
         onKeyUp={handleEditorKeyUp}
         onClick={handleEditorClick}
         onSelect={handleEditorSelect}
         onFocus={handleEditorFocus}
-        onBlur={handleEditorBlur}
-        onInput={handleEditorInput}
-        onBeforeInput={handleBeforeInput}
+        onBlur={onBlur}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
-        onCopy={handleCopy}
-        onCut={handleCut}
-        onPaste={handlePaste}
+        onCopy={onCopy}
+        onCut={onCut}
+        onPaste={onPaste}
       />
       <Portal when={open && Boolean(portalRoot)} root={portalRoot} hideOnNavigate={false}>
         <div

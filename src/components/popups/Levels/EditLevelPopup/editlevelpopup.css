@@ -31,7 +31,7 @@
 /* Ensure disabled inputs are visually distinct and non-selectable */
 .edit-level-popup .form-group:not(.field-enabled) input:disabled,
 .edit-level-popup .form-group:not(.field-enabled) textarea:disabled,
-.edit-level-popup .form-group:not(.field-enabled) .level-mention-field[contenteditable="false"],
+.edit-level-popup .form-group:not(.field-enabled) .level-mention-field:disabled,
 .edit-level-popup .form-group:not(.field-enabled) button:disabled {
   cursor: not-allowed;
   -webkit-user-select: none;
@@ -79,7 +79,7 @@
 
 .edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-num input:disabled,
 .edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason input:disabled,
-.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason .level-mention-field[contenteditable="false"] {
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason .level-mention-field:disabled {
   cursor: not-allowed;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -294,6 +294,10 @@
   gap: 8px;
   transition: grid-template-columns 0.3s ease-out;
   justify-content: center;
+}
+
+.edit-level-popup-overlay .to-rate-checkbox-wrap {
+  position: relative;
 }
 
 .edit-level-popup-overlay .to-rate-checkbox {
@@ -701,6 +705,15 @@
     justify-content: flex-start;
   }
 
+  .edit-level-popup-overlay .to-rate-checkbox-wrap {
+    width: 100%;
+  }
+
+  .edit-level-popup .edit-level-popup__manage-curations-button {
+    left: auto;
+    right: 0.4rem;
+  }
+
   .edit-level-popup-overlay .rerate-num.show {
     width: 100px;
   }
@@ -947,13 +960,15 @@
 }
 
 .edit-level-popup .edit-level-popup__curation-queue-row {
+  overflow: visible;
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0.5rem;
+  justify-content: center;
 }
 
 .edit-level-popup .edit-level-popup__manage-curations-button {
+  position: absolute;
+  left: calc(100% + 0.5rem);
+  top: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -965,16 +980,11 @@
   border-radius: 4px;
   color: #fff;
   cursor: pointer;
-  flex: 0 0 auto;
+  transform: translateY(-50%);
 }
 
-.edit-level-popup .edit-level-popup__manage-curations-button:hover:not(:disabled) {
+.edit-level-popup .edit-level-popup__manage-curations-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
-}
-
-.edit-level-popup .edit-level-popup__manage-curations-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
 }
 
 .edit-level-popup__manage-tags-button {

@@ -940,23 +940,20 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     setHasUnsavedChanges(true);
                   }}
                   onChange={handleInputChange}
+                  trailing={
+                    canSettleCuration && hasOpenCurationRating && (
+                      <button
+                        type="button"
+                        className="edit-level-popup__manage-curations-button"
+                        onClick={() => setShowCurationSettle(true)}
+                        aria-label={t('levelPopups.edit.form.buttons.manageCurations')}
+                        title={t('levelPopups.edit.form.buttons.manageCurations')}
+                      >
+                        <GearIcon size={18} color="currentColor" />
+                      </button>
+                    )
+                  }
                 />
-                {canSettleCuration && (
-                  <button
-                    type="button"
-                    className="edit-level-popup__manage-curations-button"
-                    onClick={() => setShowCurationSettle(true)}
-                    disabled={!hasOpenCurationRating}
-                    aria-label={t('levelPopups.edit.form.buttons.manageCurations')}
-                    title={
-                      hasOpenCurationRating
-                        ? t('levelPopups.edit.form.buttons.manageCurations')
-                        : t('levelPopups.edit.form.buttons.manageCurationsDisabled')
-                    }
-                  >
-                    <GearIcon size={18} color="currentColor" />
-                  </button>
-                )}
               </div>
             </div>
 

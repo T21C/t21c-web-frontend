@@ -18,6 +18,7 @@ export function ToQueueField({
   bulkLabel,
   bulkOn = false,
   onBulkChange,
+  trailing = null,
 }) {
   const [localBulkOn, setLocalBulkOn] = useState(false);
   const showBulk = accessory === 'bulk';
@@ -30,16 +31,19 @@ export function ToQueueField({
   return (
     <div className={`to-rate-checkbox-container ${enabled ? 'field-enabled' : ''}`}>
       <div className="to-rate-group">
-        <label className="to-rate-checkbox">
-          <input
-            type="checkbox"
-            name={checkboxName}
-            checked={checked}
-            onChange={onChange}
-            disabled={!enabled}
-          />
-          {checkboxLabel}
-        </label>
+        <div className="to-rate-checkbox-wrap">
+          <label className="to-rate-checkbox">
+            <input
+              type="checkbox"
+              name={checkboxName}
+              checked={checked}
+              onChange={onChange}
+              disabled={!enabled}
+            />
+            {checkboxLabel}
+          </label>
+          {trailing}
+        </div>
         {!showBulk && (
           <div className={`rerate-num ${checked ? 'show' : ''}`}>
             <input

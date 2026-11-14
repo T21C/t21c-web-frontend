@@ -31,8 +31,9 @@
 
 .requested-curation-changes .requested-curation-changes__types {
   display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  gap: 0.45rem 0.7rem;
 }
 
 .requested-curation-changes .requested-curation-changes__type {
@@ -45,15 +46,14 @@
 }
 
 .requested-curation-changes .requested-curation-changes__type-mark {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.15rem;
 }
 
 .requested-curation-changes .requested-curation-changes__change {
-  position: absolute;
-  right: calc(100% + 0.1rem);
+  flex: 0 0 auto;
   color: transparent;
   font-size: 0.75rem;
   font-weight: 700;
@@ -111,6 +111,10 @@
 .requested-curation-changes.requested-curation-changes--compact .requested-curation-changes__column-title {
   font-size: 0.75rem;
   color: #aaa;
+}
+
+.requested-curation-changes.requested-curation-changes--compact .requested-curation-changes__types {
+  gap: 0.3rem 0.55rem;
 }
 
 .requested-curation-changes.requested-curation-changes--compact .requested-curation-changes__type img {
