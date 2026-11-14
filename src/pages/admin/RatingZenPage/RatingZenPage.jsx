@@ -31,6 +31,7 @@ import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/utils/autorater';
 import { REQUEST_BANDS, autoraterHideBand, isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { CurationRatingPicks, CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
+import { CurationSettlePopup } from '@/components/popups/Levels/EditLevelPopup/CurationSettlePopup';
 import { emptyCurationPicks, picksAreEmpty } from '@/utils/curationTypeFamilies';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
@@ -176,6 +177,7 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
   );
   const [customDeckDraft, setCustomDeckDraft] = useState(() => String(session.deckSize));
   const [linkedRequest, setLinkedRequest] = useState(null);
+  const [settleTarget, setSettleTarget] = useState(null);
   const viewTrackersRef = useRef(new Map());
 
   const disposeViewTrackers = useCallback(() => {
@@ -293,7 +295,20 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
     || (currentRequestBand === 'G' && includeG)
     || (currentRequestBand === 'U' && includeU);
   const isAdminRater = Boolean(
-    user && hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])
+    user && hasAnyFlag(user, [
+      permissionFlags.SUPER_ADMIN,
+      permissionFlags.RATER,
+      ...(isCurationMode ? [permissionFlags.CURATOR, permissionFlags.HEAD_CURATOR] : []),
+    ])
+  );
+  const canSettleCuration = Boolean(
+    isCurationMode &&
+    user &&
+    hasAnyFlag(user, [
+      permissionFlags.CURATOR,
+      permissionFlags.HEAD_CURATOR,
+      permissionFlags.SUPER_ADMIN,
+    ])
   );
   const alreadyRated = Boolean(
     cardOutcomes[index] === 'rated' ||
@@ -1192,6 +1207,18 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
                       }));
                     }}
                   />
+                  {canSettleCuration && (
+                    <button
+                      type="button"
+                      className="btn-fill-primary btn-block"
+                      onClick={() => setSettleTarget({
+                        ratingId: current.id,
+                        levelId: current.level?.id,
+                      })}
+                    >
+                      {t('components:rating.detailPopup.curation.settle')}
+                    </button>
+                  )}
                   <div className="rating-zen-page__actions">
                     <button
                       type="button"
@@ -1563,6 +1590,34 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
             </Link>
           </div>
         </div>
+      )}
+
+      {isCurationMode && settleTarget && (
+        <CurationSettlePopup
+          ratingId={settleTarget.ratingId}
+          levelId={settleTarget.levelId}
+          onClose={() => setSettleTarget(null)}
+          onSettled={() => {
+            setSettleTarget(null);
+            const viewDurationSeconds = readViewDurationSeconds(
+              current?.id,
+              cardAnswers[index]?.viewDurationSeconds
+            );
+            applyOutcomeAndAdvance(
+              index,
+              alreadyRated ? (cardOutcomes[index] || 'rated') : 'skipped',
+              {
+                rating: '',
+                comment: pendingComment,
+                picks: pendingPicks,
+                peeked: cardPeeked,
+                viewDurationSeconds,
+              },
+              alreadyRated ? null : 0
+            );
+            void flushSession();
+          }}
+        />
       )}
     </div>
   );
