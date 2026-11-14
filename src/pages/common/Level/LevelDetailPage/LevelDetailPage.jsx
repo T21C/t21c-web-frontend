@@ -1346,6 +1346,19 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
     const renderRole = (list) => {
       if (!Array.isArray(list) || list.length === 0) return null;
+      if (list.length === 2) {
+        return (
+          <span className="level-creator-role">
+            <Link className="level-creator-link" to={`/creator/${list[0].id}`}>
+              {list[0].name}
+            </Link>
+            <span className="level-creator-sep"> & </span>
+            <Link className="level-creator-link" to={`/creator/${list[1].id}`}>
+              {list[1].name}
+            </Link>
+          </span>
+        );
+      }
       const first = list[0];
       const moreCount = list.length - 1;
       return (
@@ -1353,7 +1366,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
           <Link className="level-creator-link" to={`/creator/${first.id}`}>
             {first.name}
           </Link>
-          {moreCount > 0 ? (
+          {moreCount > 0 && (
             <span
               className="level-creator-more"
               role="button"
@@ -1368,7 +1381,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             >
               {` & ${moreCount} more`}
             </span>
-          ) : null}
+          )}
         </span>
       );
     };
@@ -1397,6 +1410,19 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             <span className="level-creator-sep"> & </span>
             <Link className="level-creator-link" to={`/creator/${charters[1].id}`}>
               {charters[1].name}
+            </Link>
+          </span>
+        );
+      }
+      if (vfxers.length === 2) {
+        return (
+          <span className="level-creator-multi">
+            <Link className="level-creator-link" to={`/creator/${vfxers[0].id}`}>
+              {vfxers[0].name}
+            </Link>
+            <span className="level-creator-sep"> & </span>
+            <Link className="level-creator-link" to={`/creator/${vfxers[1].id}`}>
+              {vfxers[1].name}
             </Link>
           </span>
         );
