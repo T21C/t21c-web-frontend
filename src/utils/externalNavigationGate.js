@@ -1,6 +1,5 @@
 // tuf-search: #externalNavigationGate #linkConfirm
 import {
-  getUnapprovedExternalUrl,
   isApprovedNavigationUrl,
   resolveNavigationUrl,
 } from '@/utils/externalNavigation';
@@ -51,12 +50,12 @@ export function isExternalNavigationBypassActive() {
  * Ask the exit-warning modal when needed. Approved / same-origin URLs resolve true.
  * Returns false when the URL is invalid or the user cancels.
  */
-export async function confirmExternalNavigation(rawUrl) {
+export async function confirmExternalNavigation(rawUrl, { force = false } = {}) {
   const safe = parseSafeUrl(resolveNavigationUrl(rawUrl) || '');
   if (!safe) return false;
-  if (isApprovedNavigationUrl(safe)) return true;
+  if (!force && isApprovedNavigationUrl(safe)) return true;
   if (!confirmer) return false;
-  return confirmer(safe);
+  return confirmer(safe, { force });
 }
 
 /**
@@ -64,26 +63,23 @@ export async function confirmExternalNavigation(rawUrl) {
  * `skipWarning` is for flows that already disclosed the destination (OAuth provider hops
  * and the consent redirect). Unsafe schemes are still rejected.
  */
-export async function navigateExternal(rawUrl, { newTab = false, skipWarning = false } = {}) {
+export async function navigateExternal(rawUrl, { newTab = false, skipWarning = false, forceWarning = false } = {}) {
   const absolute = resolveNavigationUrl(rawUrl);
   if (!absolute) return false;
+  const safe = parseSafeUrl(absolute);
+  if (!safe) return false;
 
-  const unapproved = getUnapprovedExternalUrl(absolute);
-  const target = unapproved || absolute;
-
-  if (unapproved && !skipWarning) {
-    const ok = await confirmExternalNavigation(unapproved);
+  const needsWarning = !skipWarning && (forceWarning || !isApprovedNavigationUrl(safe));
+  if (needsWarning) {
+    const ok = await confirmExternalNavigation(safe, { force: true });
     if (!ok) return false;
-  } else if (!isApprovedNavigationUrl(absolute) && !parseSafeUrl(absolute)) {
-    // mailto/blob/etc. — leave to caller; we only gate http(s)
-    return false;
   }
 
   withExternalNavigationBypass(() => {
     if (newTab) {
-      nativeWindowOpen(target, '_blank', 'noopener,noreferrer');
+      nativeWindowOpen(safe, '_blank', 'noopener,noreferrer');
     } else {
-      nativeLocationAssign(target);
+      nativeLocationAssign(safe);
     }
   });
   return true;

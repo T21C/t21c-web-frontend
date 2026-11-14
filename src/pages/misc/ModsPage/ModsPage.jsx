@@ -16,11 +16,13 @@ import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import toast from 'react-hot-toast';
 import { LikeButton } from '@/components/common/buttons';
+import { ExternalLink } from '@/components/common/LinkConfirm';
 import ModsListControls from './ModsListControls';
 import ModReportPopup from './ModReportPopup';
 import { assignedPeople, dumpCreatorLabel, hasAssignees } from './modPeople';
 import { useModsList } from './useModsList';
-import { modDownloadHref, modPermalink } from './modUrls';
+import { recordModDownload } from './ModDownloadLinks';
+import { modDirectDownloadHref, modPermalink } from './modUrls';
 import './modsPage.css';
 
 function formatUploadedAt(value) {
@@ -85,6 +87,7 @@ function AuthorLine({ mod }) {
 
 function ModCatalogCard({ mod, t, onReport }) {
   const href = modPermalink(mod.slug);
+  const downloadHref = modDirectDownloadHref(mod);
   const summary = excerpt(mod.description);
   const uploaded = formatUploadedAt(mod.sourceUploadedAt);
   const hasAuthor = hasAssignees(mod) ? assignedPeople(mod).length > 0 : Boolean(dumpCreatorLabel(mod));
@@ -163,12 +166,17 @@ function ModCatalogCard({ mod, t, onReport }) {
           <span aria-hidden="true">{t('mods.report.label')}</span>
         </button>
         <div className="mods-page__card-actions">
-          {mod.slug ? (
-            <a href={modDownloadHref(mod.slug)} className="btn-fill-primary mods-page__card-download">
+          {mod.slug && downloadHref && (
+            <ExternalLink
+              href={downloadHref}
+              forceWarning
+              className="btn-fill-primary mods-page__card-download"
+              onConfirmed={() => recordModDownload(mod.slug)}
+            >
               <DownloadIcon size={16} color="currentColor" />
               <span>{t('mods.download')}</span>
-            </a>
-          ) : null}
+            </ExternalLink>
+          )}
           <Link to={href} className="btn-fill-glass mods-page__card-details">
             <InfoIcon size={16} color="currentColor" />
             <span>{t('mods.details')}</span>

@@ -151,11 +151,11 @@ export function LinkConfirmProvider({ children }) {
   const confirmLinkRef = useRef(null);
   const [pending, setPending] = useState(null);
 
-  const confirmLink = useCallback((rawUrl) => {
+  const confirmLink = useCallback((rawUrl, options) => {
     const url = parseSafeUrl(typeof rawUrl === "string" ? rawUrl : String(rawUrl ?? ""));
     if (!url) return Promise.resolve(false);
 
-    if (isApprovedNavigationUrl(url)) {
+    if (!options?.force && isApprovedNavigationUrl(url)) {
       return Promise.resolve(true);
     }
 
@@ -172,7 +172,7 @@ export function LinkConfirmProvider({ children }) {
 
   confirmLinkRef.current = confirmLink;
 
-  useEffect(() => registerExternalNavigationConfirmer((url) => confirmLinkRef.current?.(url)), []);
+  useEffect(() => registerExternalNavigationConfirmer((url, options) => confirmLinkRef.current?.(url, options)), []);
 
   const finish = useCallback(
     (result, trustMode = "none") => {
@@ -209,6 +209,28 @@ export function LinkConfirmProvider({ children }) {
 
       if (isDangerousHref(hrefAttr) || isDangerousHref(anchor.href)) {
         event.preventDefault();
+        return;
+      }
+
+      const forceConfirm = anchor.hasAttribute("data-link-confirm-force");
+      const safeHref = parseSafeUrl(anchor.href);
+      if (forceConfirm) {
+        if (!safeHref) {
+          event.preventDefault();
+          return;
+        }
+        event.preventDefault();
+        const openInNewTab =
+          forceNewTab ||
+          anchor.target === "_blank" ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey;
+        void (async () => {
+          const ok = await confirmLinkRef.current?.(safeHref, { force: true });
+          if (!ok) return;
+          openConfirmedUrl(safeHref, { newTab: openInNewTab });
+        })();
         return;
       }
 

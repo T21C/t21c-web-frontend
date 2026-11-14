@@ -13,6 +13,8 @@ export function ExternalLink({
   target = '_blank',
   rel = 'noopener noreferrer',
   onClick,
+  onConfirmed,
+  forceWarning = false,
   ...rest
 }) {
   return (
@@ -21,13 +23,16 @@ export function ExternalLink({
       className={className}
       target={target}
       rel={rel}
+      {...(forceWarning ? { 'data-link-confirm-force': '' } : {})}
+      {...rest}
       onClick={(event) => {
         onClick?.(event);
         if (event.defaultPrevented) return;
         event.preventDefault();
-        void navigateExternal(href, { newTab: target === '_blank' });
+        void navigateExternal(href, { newTab: target === '_blank', forceWarning }).then((ok) => {
+          if (ok) onConfirmed?.();
+        });
       }}
-      {...rest}
     >
       {children}
     </a>
