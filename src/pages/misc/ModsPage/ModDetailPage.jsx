@@ -237,7 +237,7 @@ const ModDetailPage = () => {
                       <ExternalLinkIcon size={16} color="currentColor" />
                     </ExternalLink>
                   ) : null}
-                  <ModDownloadLinks slug={mod.slug} release={latest} latest />
+                  <ModDownloadLinks slug={mod.slug} release={latest} />
                   <button type="button" className="mods-page__download btn-fill-glass" onClick={copyLatest}>
                     {t('mods.copy.latest')}
                   </button>

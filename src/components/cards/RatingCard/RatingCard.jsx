@@ -5,7 +5,7 @@ import './ratingcard.css';
 import { calculateRatingValue, formatCreatorDisplay, formatDate } from '@/utils/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import i18next from 'i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -35,6 +35,7 @@ export const RatingCard = ({
   user, 
   showDetailedView,
   onEditLevel,
+  onSettleCuration,
   onFlowChange,
   mode = 'difficulty',
 }) => {
@@ -43,7 +44,12 @@ export const RatingCard = ({
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
     const isCurationMode = mode === 'curation';
-    const isVote = !isCurationMode && isVoteRatingCard(rating);
+    const canSettleCuration = isCurationMode && hasAnyFlag(user, [
+      permissionFlags.CURATOR,
+      permissionFlags.HEAD_CURATOR,
+      permissionFlags.SUPER_ADMIN,
+    ]);
+    const isVote = isCurationMode ? Boolean(rating?.isDiscordVote) : isVoteRatingCard(rating);
     const { difficultyDict, curationTypesDict } = useDifficultyContext();
     const userDetail = rating.details?.find(detail => detail.userId === user?.id);
     const userRating = isCurationMode
@@ -234,6 +240,18 @@ export const RatingCard = ({
               )}
               {t('rating.ratingCard.buttons.viewDetails')}
             </button>
+            {canSettleCuration && !isVote && typeof onSettleCuration === 'function' && (
+              <button
+                type="button"
+                className="edit-level-btn"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSettleCuration();
+                }}
+              >
+                {t('rating.detailPopup.curation.settle')}
+              </button>
+            )}
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <button 
                 onClick={handleEditClick} 

@@ -16,13 +16,16 @@ export function ToQueueField({
   onChange,
   accessory = 'inputs',
   bulkLabel,
+  bulkOn = false,
+  onBulkChange,
 }) {
-  const [bulkOn, setBulkOn] = useState(false);
+  const [localBulkOn, setLocalBulkOn] = useState(false);
   const showBulk = accessory === 'bulk';
+  const bulkPressed = typeof onBulkChange === 'function' ? bulkOn : localBulkOn;
 
   useEffect(() => {
-    if (!checked) setBulkOn(false);
-  }, [checked]);
+    if (!checked && typeof onBulkChange !== 'function') setLocalBulkOn(false);
+  }, [checked, onBulkChange]);
 
   return (
     <div className={`to-rate-checkbox-container ${enabled ? 'field-enabled' : ''}`}>
@@ -55,12 +58,15 @@ export function ToQueueField({
         <div className={`to-queue-bulk-slot ${checked ? 'show' : ''}`}>
           <button
             type="button"
-            className={`to-queue-bulk btn-fill-ghost btn-sm${bulkOn ? ' is-on' : ''}`}
-            aria-pressed={bulkOn}
+            className={`to-queue-bulk btn-fill-ghost btn-sm${bulkPressed ? ' is-on' : ''}`}
+            aria-pressed={bulkPressed}
             aria-hidden={!checked}
             tabIndex={checked ? 0 : -1}
             disabled={!enabled || !checked}
-            onClick={() => setBulkOn((on) => !on)}
+            onClick={() => {
+              if (typeof onBulkChange === 'function') onBulkChange(!bulkPressed);
+              else setLocalBulkOn((on) => !on);
+            }}
           >
             {bulkLabel}
           </button>

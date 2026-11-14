@@ -1,0 +1,17 @@
+{
+  "noCurations": "没有待公告的精选",
+  "noRerates": "没有待公告的精选重评",
+  "errors": {
+    "removeLevel": "移除 {{song}} 失败，请重试。"
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "change": "{{before}} → {{after}}",
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "编辑关卡",
+    "remove": "不公告并移除",
+    "removeTooltip": "不公告并移除"
+  }
+}

@@ -16,6 +16,7 @@ import { CurationModeHeader } from "@/pages/admin/Curation/CurationModeSwitch";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
 import { EditLevelPopup } from "@/components/popups/Levels";
+import { CurationSettlePopup } from "@/components/popups/Levels/EditLevelPopup/CurationSettlePopup";
 import { RaterManagementPopup, RatingDetailPopup, TopRatersPopup } from "@/components/popups/Rating";
 import { ReferencesPopup } from "@/components/popups/Difficulties";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
@@ -55,7 +56,8 @@ const RatingPage = ({ mode = 'difficulty' }) => {
     [t, location.pathname, levelIdParam, isCurationMode],
   );
   const { user } = useAuth();
-  const { hasActiveSession, hasUnfinishedDeck, sessionHydrated } = useZenMode();
+  const { hasActiveSession, hasUnfinishedDeck, sessionHydrated } = useZenMode(isCurationMode ? 'curation' : 'difficulty');
+  const zenPath = isCurationMode ? '/admin/curations/rating/zen' : '/rating/zen';
   const zenLockToastRef = useRef(false);
   const difficultyFilters = useRatingFilter();
   const curationFilters = useCurationRatingFilters();
@@ -93,8 +95,6 @@ const RatingPage = ({ mode = 'difficulty' }) => {
         rankStateFilter: 'all',
         setIncludeBands: () => {},
         setRankStateFilter: () => {},
-        ratingFlow: 1,
-        setRatingFlow: () => {},
         showReferences: false,
         setShowReferences: () => {},
         showRaterManagement: false,
@@ -117,6 +117,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   const [connectedUsers, setConnectedUsers] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [connectedManagers, setConnectedManagers] = useState(0);
+  const [settleTarget, setSettleTarget] = useState(null);
   const [showTopRaters, setShowTopRaters] = useState(false);
   const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
   const [ratingAccuracyStats, setRatingAccuracyStats] = useState([]);
@@ -162,8 +163,8 @@ const RatingPage = ({ mode = 'difficulty' }) => {
       params.includeG = includeG ? 'true' : 'false';
       params.includeU = includeU ? 'true' : 'false';
       params.rankState = rankStateFilter;
-      params.flow = String(ratingFlow);
     }
+    params.flow = String(ratingFlow);
     if (debouncedQuery) {
       params.query = debouncedQuery;
     }
@@ -270,7 +271,9 @@ const RatingPage = ({ mode = 'difficulty' }) => {
     if (!listRow?.id) return false;
     if (debouncedQuery) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
-    if (!isCurationMode) {
+    if (isCurationMode) {
+      if (listRow.level?.curationFlow && listRow.level.curationFlow !== ratingFlow) return false;
+    } else {
       const band = autoraterHideBand(listRow);
       if (band === 'P' && !includeP) return false;
       if (band === 'G' && !includeG) return false;
@@ -579,16 +582,15 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   }, [reloadFromStart, showHelpPopup]);
 
   useEffect(() => {
-    if (isCurationMode) return;
     if (!sessionHydrated || !hasUnfinishedDeck) return;
     if (!zenLockToastRef.current) {
       zenLockToastRef.current = true;
-      toast.error(t('rating.zen.errors.normalRatingLocked'));
+      toast.error(t(isCurationMode ? 'rating.curationRating.zenLocked' : 'rating.zen.errors.normalRatingLocked'));
     }
-    navigate('/rating/zen', { replace: true });
-  }, [hasUnfinishedDeck, navigate, sessionHydrated, t, isCurationMode]);
+    navigate(zenPath, { replace: true });
+  }, [hasUnfinishedDeck, navigate, sessionHydrated, t, isCurationMode, zenPath]);
 
-  if (user === undefined || (!isCurationMode && (!sessionHydrated || hasUnfinishedDeck))) {
+  if (user === undefined || !sessionHydrated || hasUnfinishedDeck) {
     return (
       <div className="admin-rating-page">
         <MetaTags {...pageMeta} />
@@ -617,25 +619,24 @@ const RatingPage = ({ mode = 'difficulty' }) => {
         )}
         <ScrollButton />
         {!isCurationMode && <ReferencesButton />}
-        {!isCurationMode && (
         <div className="admin-buttons">
             <Link
-              to="/rating/zen"
+              to={zenPath}
               className="admin-button"
             >
               {hasActiveSession
                 ? t('rating.buttons.resumeZenMode', { defaultValue: 'Resume Zen Mode' })
                 : t('rating.buttons.zenMode', { defaultValue: 'Zen Mode' })}
             </Link>
-            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+            {!isCurationMode && (
               <>
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button 
                   className="admin-button rater-management-button"
                   onClick={() => setShowRaterManagement(true)}
                 >
                   {t('rating.buttons.manageRaters')}
                 </button>
-              </>
             )}
             <button 
               className="admin-button top-rater-button"
@@ -656,11 +657,11 @@ const RatingPage = ({ mode = 'difficulty' }) => {
                 )}
               </Link>
             )}
+              </>
+            )}
           </div>
-        )}
-        {!isCurationMode && (
         <div className="rating-flow-tabs" role="tablist">
-          {[1, 2, 3].map((flow) => (
+          {(isCurationMode ? ['recent', 'rerate', 'bulk'] : [1, 2, 3]).map((flow) => (
             <button
               key={flow}
               type="button"
@@ -669,11 +670,10 @@ const RatingPage = ({ mode = 'difficulty' }) => {
               className={`admin-button rating-flow-tab${ratingFlow === flow ? ' rating-flow-tab--active' : ''}`}
               onClick={() => setRatingFlow(flow)}
             >
-              {t(`rating.flows.flow${flow}`)}
+              {t(isCurationMode ? `rating.curationRating.flows.${flow}` : `rating.flows.flow${flow}`)}
             </button>
           ))}
         </div>
-        )}
         <div className="view-controls">
           
           <div className="sort-controls">
@@ -852,6 +852,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
                   showDetailedView={showDetailedView}
                   mode={mode}
                   onEditLevel={() => handleEditLevel(rating.level.id)}
+                  onSettleCuration={() => setSettleTarget({ ratingId: rating.id, levelId: rating.level.id })}
                   onFlowChange={(complete) => {
                     if (complete?.confirmedAt || complete?.level?.toRate === false || complete?.level?.toCuration === false) {
                       removeRatingById(complete.id);
@@ -897,6 +898,23 @@ const RatingPage = ({ mode = 'difficulty' }) => {
                 weeklyRaterActivity={weeklyRaterActivity}
                 ratingAccuracyStats={ratingAccuracyStats}
                 onEditLevel={isSuperAdmin ? handleEditLevel : undefined}
+                onSettleCuration={() => setSettleTarget({
+                  ratingId: selectedRating.id,
+                  levelId: selectedRating.level?.id,
+                })}
+              />
+            )}
+
+            {isCurationMode && settleTarget && (
+              <CurationSettlePopup
+                ratingId={settleTarget.ratingId}
+                levelId={settleTarget.levelId}
+                onClose={() => setSettleTarget(null)}
+                onSettled={(settled) => {
+                  const id = settled?.id || settleTarget.ratingId;
+                  if (id) removeRatingById(id);
+                  setSettleTarget(null);
+                }}
               />
             )}
 

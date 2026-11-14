@@ -17,6 +17,19 @@
         "title": "精选队列为空",
         "subtitle": "切换关卡上的复选框，即可将其添加到此处"
       }
+    },
+    "zenLocked": "请先结束或丢弃精选 Zen 模式，再使用精选队列",
+    "flows": {
+      "recent": "最近",
+      "rerate": "重评",
+      "bulk": "批量"
+    },
+    "zen": {
+      "meta": {
+        "title": "精选 Zen 模式",
+        "description": "专注的精选传送带会话"
+      },
+      "setupTitle": "精选 Zen 模式"
     }
   },
   "buttons": {
@@ -174,6 +187,7 @@
       "reportFailed": "报告发送失败",
       "ratingRequired": "输入你的评级",
       "commentRequired": "需要理由",
+      "picksRequired": "请至少选择一种精选类型",
       "submitFailed": "提交失败",
       "alreadyRated": "此关卡已在沉浸模式中评过",
       "normalRatingLocked": "查看评级列表前请先结束或取消沉浸模式"

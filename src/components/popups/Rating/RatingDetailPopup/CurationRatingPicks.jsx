@@ -1,4 +1,5 @@
 // tuf-search: #CurationRatingPicks #ratingDetailPopup
+import './curationratingpicks.css';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';

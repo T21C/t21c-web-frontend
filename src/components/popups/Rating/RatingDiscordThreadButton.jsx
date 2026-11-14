@@ -10,7 +10,7 @@ import './discordvotenotice.css';
 
 export { mergeRatingThreadState };
 
-const RatingDiscordThreadButton = ({ rating, allowed, onUpdated }) => {
+const RatingDiscordThreadButton = ({ rating, allowed, onUpdated, endpoint }) => {
   const { t } = useTranslation('components');
   const [busy, setBusy] = useState(false);
   const [prompt, setPrompt] = useState(false);
@@ -33,7 +33,8 @@ const RatingDiscordThreadButton = ({ rating, allowed, onUpdated }) => {
   const run = async (nextAction, ping) => {
     setBusy(true);
     try {
-      const response = await api.post(routes.admin.ratingDiscord(rating.id), {action: nextAction, ping});
+      const url = typeof endpoint === 'function' ? endpoint(rating.id) : routes.admin.ratingDiscord(rating.id);
+      const response = await api.post(url, {action: nextAction, ping});
       toast.success(t(successKey));
       if (response.data?.rating) onUpdated?.(response.data.rating);
     } catch (error) {

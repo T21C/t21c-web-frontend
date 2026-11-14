@@ -90,6 +90,7 @@ export const RatingDetailPopup = ({
   weeklyRaterActivity = [],
   ratingAccuracyStats: ratingAccuracyStatsProp,
   onEditLevel = null,
+  onSettleCuration = null,
   mode = 'difficulty',
 }) => {
   const currentUser = user;
@@ -617,33 +618,6 @@ export const RatingDetailPopup = ({
     }
   };
 
-  const handleSettleCuration = async () => {
-    if (!selectedRating || isRatingLocked) return;
-    if (picksEmpty(pendingPicks)) {
-      toast.error(t('rating.detailPopup.curation.settleRequired'));
-      return;
-    }
-    setIsSaving(true);
-    setSaveError(null);
-    try {
-      await api.post(routes.admin.curationRatingSettle(selectedRating.id), {
-        chartTypeId: pendingPicks.chartTypeId,
-        vfxTypeId: pendingPicks.vfxTypeId,
-        miscTypeIds: pendingPicks.miscTypeIds,
-        comment: pendingComment,
-      });
-      toast.success(t('rating.detailPopup.curation.settled'));
-      setRatings((prev) => (Array.isArray(prev) ? prev.filter((row) => row.id !== selectedRating.id) : prev));
-      initiateClose();
-    } catch (error) {
-      console.error('[RatingDetailPopup] Settle failed:', error);
-      setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || t('rating.detailPopup.curation.settleFailed'));
-      toast.error(error.response?.data?.error || t('rating.detailPopup.curation.settleFailed'));
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const handleVideoLoad = () => {
     const iframe = document.querySelector('.video-iframe');
     if (iframe) {
@@ -742,7 +716,9 @@ export const RatingDetailPopup = ({
     return baseClass;
   };
 
-  const isVoteCard = !isCurationMode && isVoteRatingCard(selectedRating, linkedRequest);
+  const isVoteCard = isCurationMode
+    ? Boolean(selectedRating?.isDiscordVote)
+    : isVoteRatingCard(selectedRating, linkedRequest);
   const showDiscordSettlement = isVoteCard;
   const canSaveCuration = hasAnyFlag(currentUser, [
     permissionFlags.RATER,
@@ -805,7 +781,7 @@ export const RatingDetailPopup = ({
       onClose={handleClose}
       closeDisabled={isAnimating}
       overlayClassName={`rating-popup-overlay${isExiting ? ' exiting' : ''}`}
-      panelClassName={`rating-popup${isExiting ? ' exiting' : ''}${showEditLevel ? ' rating-popup--can-edit' : ''}`}
+      panelClassName={`rating-popup${isExiting ? ' exiting' : ''}${showEditLevel ? ' rating-popup--can-edit' : ''}${isCurationMode ? ' rating-popup--curation' : ''}`}
       overlayChildren={
         selectedRating.level?.id && selectedRating.level?.fileId ? (
           <WebAdofaiViewerButton levelId={selectedRating.level.id} portaled={false} />
@@ -880,21 +856,31 @@ export const RatingDetailPopup = ({
             />
           </div>
           )}
-          {!isCurationMode && (
           <div className="rating-popup__thread-actions">
+            {!isCurationMode && (
             <RatingFlowActions
               only="block"
               rating={selectedRating}
               user={currentUser}
               onChange={(complete) => setSelectedRating(complete)}
             />
+            )}
             <RatingDiscordThreadButton
               rating={selectedRating}
               allowed={isSuperAdmin}
+              endpoint={isCurationMode ? routes.admin.curationRatingDiscord : undefined}
               onUpdated={applyPostedRating}
             />
+            {isCurationMode && canSettleCuration && !isVoteCard && typeof onSettleCuration === 'function' && (
+              <button
+                type="button"
+                className="save-rating-changes-btn curation-rating-settle-btn"
+                onClick={onSettleCuration}
+              >
+                {t('rating.detailPopup.curation.settle')}
+              </button>
+            )}
           </div>
-          )}
           {selectedRating.level.notes && (
             <div className="detail-field comment-field notes-field open">
               <div className="notes-field__header">
@@ -951,6 +937,7 @@ export const RatingDetailPopup = ({
               </div>
 
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
+                {(!isCurationMode || selectedRating.level.curationRerateNum) && (
                 <div className="detail-field rerate-field">
                   <span className="detail-label">{t('rating.detailPopup.labels.rerateNum')}</span>
                   <span className="detail-value">
@@ -959,6 +946,7 @@ export const RatingDetailPopup = ({
                       : (showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR))}
                   </span>
                 </div>
+                )}
                 {isCurationMode && (
                 <div className="detail-field">
                   <span className="detail-label">{t('rating.detailPopup.curation.currentTypes')}</span>
@@ -1120,16 +1108,6 @@ export const RatingDetailPopup = ({
                       >
                         {getSaveButtonText()}
                       </button>
-                      {isCurationMode && canSettleCuration && (
-                        <button
-                          type="button"
-                          className="save-rating-changes-btn curation-rating-settle-btn"
-                          disabled={isSaving || picksEmpty(pendingPicks)}
-                          onClick={handleSettleCuration}
-                        >
-                          {t('rating.detailPopup.curation.settle')}
-                        </button>
-                      )}
                     </div>
                     </>
                     )}

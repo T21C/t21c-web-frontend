@@ -17,6 +17,19 @@
         "title": "La file de curation est vide",
         "subtitle": "Basculez la case à cocher d'un niveau pour l'ajouter ici"
       }
+    },
+    "zenLocked": "Termine ou jette le mode Zen de curation avant d'utiliser la file",
+    "flows": {
+      "recent": "Récents",
+      "rerate": "Recurations",
+      "bulk": "Lot"
+    },
+    "zen": {
+      "meta": {
+        "title": "Mode Zen curation",
+        "description": "Session de curation concentrée"
+      },
+      "setupTitle": "Mode Zen curation"
     }
   },
   "buttons": {

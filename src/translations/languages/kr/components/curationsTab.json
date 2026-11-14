@@ -1,0 +1,17 @@
+{
+  "noCurations": "공지할 큐레이션이 없습니다",
+  "noRerates": "공지할 큐레이션 재평가가 없습니다",
+  "errors": {
+    "removeLevel": "{{song}}을(를) 제거하지 못했습니다. 다시 시도하세요."
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "change": "{{before}} → {{after}}",
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "레벨 편집",
+    "remove": "공지 없이 제거",
+    "removeTooltip": "공지 없이 제거"
+  }
+}

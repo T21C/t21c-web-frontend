@@ -1,14 +1,21 @@
-import { API_BASE } from '@/config/env';
-import { routes } from '@/api/routes';
+import { parseSafeUrl } from '@/utils/bioCanvas/urls';
 import { detectClientModPlatform } from './modReleaseDownloads';
 
-export function modDownloadHref(slug, version, platform = detectClientModPlatform(
+/** Stored release URL for this platform, otherwise the common download URL. */
+export function selectClientModDownloadUrl(release, platform) {
+  if (!release) return '';
+  if (platform) {
+    const specific = release.platformDownloadUrls?.[platform];
+    if (typeof specific === 'string' && specific.trim()) return specific.trim();
+  }
+  return typeof release.downloadUrl === 'string' ? release.downloadUrl.trim() : '';
+}
+
+/** Safe http(s) href for the current device, taken from the mod payload itself. */
+export function modDirectDownloadHref(release, platform = detectClientModPlatform(
   typeof navigator !== 'undefined' ? navigator.userAgentData?.platform || navigator.userAgent : '',
 )) {
-  const path = version
-    ? routes.mods.downloadVersion(slug, version)
-    : routes.mods.download(slug);
-  return `${API_BASE}${path}${platform ? `?platform=${encodeURIComponent(platform)}` : ''}`;
+  return parseSafeUrl(selectClientModDownloadUrl(release, platform));
 }
 
 export function modPermalink(slug, version) {

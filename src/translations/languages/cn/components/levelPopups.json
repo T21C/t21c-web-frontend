@@ -63,6 +63,7 @@
           "deleting": "删除中……"
         },
         "manageTags": "管理标签",
+        "manageCurations": "管理精选",
         "bulk": "批量"
       }
     },
