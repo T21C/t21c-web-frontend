@@ -1,16 +1,34 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ItemPickManager } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { isSilentCurationAnnouncementName } from '@/utils/curationTypeFamilies';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 
 const normalizeIds = (ids) =>
   [...new Set((ids || []).map((id) => Number(id)).filter((id) => Number.isInteger(id) && id > 0))];
 
-const LevelRequestCurationTypes = ({ ids = [], onChange, variant = 'picker' }) => {
+const LevelRequestCurationTypes = ({
+  ids = [],
+  onChange,
+  variant = 'picker',
+  excludePlaceholders = false,
+}) => {
   const { t } = useTranslation(['pages', 'components']);
   const { curationTypes } = useDifficultyContext();
-  const selectedIds = useMemo(() => normalizeIds(ids), [ids]);
+  const placeholderIds = useMemo(
+    () => new Set(
+      (curationTypes || [])
+        .filter((item) => isSilentCurationAnnouncementName(item.name))
+        .map((item) => item.id),
+    ),
+    [curationTypes],
+  );
+  const selectedIds = useMemo(() => {
+    const normalized = normalizeIds(ids);
+    if (!excludePlaceholders) return normalized;
+    return normalized.filter((id) => !placeholderIds.has(id));
+  }, [excludePlaceholders, ids, placeholderIds]);
   const items = useMemo(() => {
     const catalog = curationTypes || [];
     const known = new Set(catalog.map((item) => item.id));
@@ -19,6 +37,25 @@ const LevelRequestCurationTypes = ({ ids = [], onChange, variant = 'picker' }) =
       .map((id) => ({ id, name: `#${id}` }));
     return extras.length ? [...catalog, ...extras] : catalog;
   }, [curationTypes, selectedIds]);
+  const poolFilter = useCallback(
+    (item) => {
+      if (!excludePlaceholders) return true;
+      if (placeholderIds.has(item.id)) return false;
+      return !isSilentCurationAnnouncementName(item.name);
+    },
+    [excludePlaceholders, placeholderIds],
+  );
+  const handleSelectedIdsChange = useCallback(
+    (nextIds) => {
+      if (!onChange) return;
+      if (!excludePlaceholders) {
+        onChange(nextIds);
+        return;
+      }
+      onChange((nextIds || []).filter((id) => !placeholderIds.has(id)));
+    },
+    [excludePlaceholders, onChange, placeholderIds],
+  );
 
   const pickLabels = useMemo(
     () => ({
@@ -42,7 +79,8 @@ const LevelRequestCurationTypes = ({ ids = [], onChange, variant = 'picker' }) =
         className="level-requests__item-pick"
         items={items}
         selectedIds={selectedIds}
-        onSelectedIdsChange={onChange}
+        onSelectedIdsChange={handleSelectedIdsChange}
+        poolFilter={excludePlaceholders ? poolFilter : undefined}
         enableGrouping
         fallbackGroupLabel={fallbackGroupLabel}
         labels={pickLabels}

@@ -29,7 +29,9 @@
         "title": "Curation Zen Mode",
         "description": "Focused conveyor curation session"
       },
-      "setupTitle": "Curation Zen Mode"
+      "setupTitle": "Curation Zen Mode",
+      "pools": "Hide pools",
+      "poolsHint": "Check to leave that pool out of the deck"
     }
   },
   "buttons": {
@@ -70,7 +72,8 @@
     "byId": "Level ID",
     "byRatings": "Rating Count",
     "byRatingsFull": "Sort by Number of Ratings",
-    "byDate": "Last Updated"
+    "byDate": "Last Updated",
+    "byAdded": "Date added"
   },
   "search": {
     "placeholder": "Search by level name, creator, or difficulty"
@@ -119,7 +122,7 @@
       "description": "Focused conveyor rating session"
     },
     "confirmPeek": "Reveal other raters' ratings and comments? This uses 1 peek.",
-    "reportPrompt": "Report note (optional) — describe the media issue:",
+    "reportPrompt": "Describe the media issue:",
     "report": "Report media issue",
     "exit": "Pause session",
     "noVideo": "No video available",
@@ -144,6 +147,7 @@
       "sortMost": "Most rated first",
       "sortId": "By level id",
       "sortRecent": "Recently updated",
+      "sortAdded": "Date added",
       "randomness": "Mix",
       "randomnessValue": "{{n}}",
       "randomnessHint": "Low sticks to priority order; high picks more randomly",
@@ -189,6 +193,7 @@
       "dealFailed": "Failed to deal deck",
       "invalidDeckSize": "Enter a deck size from 1 to 200",
       "reportFailed": "Failed to send report",
+      "reportNoteRequired": "A note is required to send a report",
       "ratingRequired": "Enter a rating",
       "commentRequired": "Comment is required",
       "picksRequired": "Pick at least one curation type",

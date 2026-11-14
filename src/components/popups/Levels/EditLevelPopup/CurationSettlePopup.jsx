@@ -8,11 +8,13 @@ import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { LevelMentionField } from '@/components/misc';
 import { CurationRatingPicks } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
+import { RequestedCurationChanges } from '@/components/popups/Rating/RatingDetailPopup/RequestedCurationChanges';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import {
   emptyCurationPicks,
   picksAreEmpty,
   picksFromCurationTypes,
+  requestedCurationBuckets,
 } from '@/utils/curationTypeFamilies';
 import { toastError, toastSuccess } from '@/utils/toastMessage';
 
@@ -46,7 +48,12 @@ export function CurationSettlePopup({
         const { data } = await api.get(url);
         if (cancelled) return;
         setRating(data);
-        setPicks(picksFromCurationTypes(publishedTypes(data?.level, curationTypesDict)));
+        const published = picksFromCurationTypes(publishedTypes(data?.level, curationTypesDict));
+        setPicks({
+          ...published,
+          chartTypeId: data?.averageChartTypeId ?? published.chartTypeId,
+          vfxTypeId: data?.averageVfxTypeId ?? published.vfxTypeId,
+        });
         setReason(data?.level?.curationRerateReason || '');
       } catch (error) {
         if (cancelled) return;
@@ -63,6 +70,10 @@ export function CurationSettlePopup({
   }, [ratingId, levelId, curationTypesDict, onClose, t]);
 
   const canSettle = useMemo(() => !picksAreEmpty(picks) && !isSaving && !isLoading && rating?.id, [picks, isSaving, isLoading, rating?.id]);
+  const requestedBuckets = useMemo(
+    () => requestedCurationBuckets(rating?.curationRequests, curationTypesDict),
+    [rating?.curationRequests, curationTypesDict],
+  );
 
   const handleSettle = async (event) => {
     event?.preventDefault();
@@ -118,10 +129,13 @@ export function CurationSettlePopup({
           <div className="loader loader-relative" />
         ) : (
           <>
+            <RequestedCurationChanges requests={rating?.curationRequests} />
             <CurationRatingPicks
               chartTypeId={picks.chartTypeId}
               vfxTypeId={picks.vfxTypeId}
               miscTypeIds={picks.miscTypeIds}
+              requestedBuckets={requestedBuckets}
+              allowRange={false}
               onChartChange={(value) => setPicks((prev) => ({ ...prev, chartTypeId: value }))}
               onVfxChange={(value) => setPicks((prev) => ({ ...prev, vfxTypeId: value }))}
               onMiscToggle={(typeId) => {

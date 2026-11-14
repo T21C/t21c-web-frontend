@@ -19,7 +19,7 @@ import { UserManagementPopup } from '@/components/popups/Users';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { CurationModeHeader } from '../CurationModeSwitch';
-import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canModerateCuration, hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { FacetQueryBuilder } from '@/components/common/selectors';
@@ -31,7 +31,7 @@ const CurationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const canReviewCurationRequests = hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]);
+  const canReviewCurationRequests = canModerateCuration(user);
   const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewCurationRequests);
   const pendingCurationLabel = formatRequestCount(
     pendingRequestTotal(pendingRequestCounts, ['curation', 'curation_rerate']),
@@ -643,7 +643,7 @@ const CurationPage = () => {
           </div>
           )}
 
-          { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]) && (
+          { canModerateCuration(user) && (
           <div className="curation-buttons">
           { hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                       <button

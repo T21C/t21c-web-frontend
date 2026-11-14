@@ -104,6 +104,110 @@ export function curationTypeRatingBucket(name) {
   return 'misc';
 }
 
+export function curationRequestHasTypes(request) {
+  if (!request) return false;
+  return (
+    (request.curationTypeIds || []).length > 0 ||
+    (request.addCurationTypeIds || []).length > 0 ||
+    (request.removeCurationTypeIds || []).length > 0
+  );
+}
+
+export function visibleCurationRequests(requests) {
+  return (requests || []).filter(curationRequestHasTypes);
+}
+
+export function collectRequestedCurationTypeIds(requests) {
+  const ids = [];
+  const seen = new Set();
+  for (const request of requests || []) {
+    for (const raw of [
+      ...(request.curationTypeIds || []),
+      ...(request.addCurationTypeIds || []),
+      ...(request.removeCurationTypeIds || []),
+    ]) {
+      const id = Number(raw);
+      if (!Number.isInteger(id) || id <= 0 || seen.has(id)) continue;
+      seen.add(id);
+      ids.push(id);
+    }
+  }
+  return ids;
+}
+
+export function requestedCurationBuckets(requests, typesDict) {
+  const buckets = new Set();
+  const dict = typesDict || {};
+  for (const id of collectRequestedCurationTypeIds(requests)) {
+    const type = dict[id] || dict[String(id)];
+    if (!type) continue;
+    buckets.add(curationTypeRatingBucket(type.name));
+  }
+  return buckets;
+}
+
+function resolveRequestedCurationType(raw, typesDict) {
+  const id = Number(raw);
+  if (!Number.isInteger(id) || id <= 0) return null;
+  const type = typesDict[id] || typesDict[String(id)];
+  if (type) return type;
+  return { id, name: `#${id}` };
+}
+
+function sortRequestedCurationTypeEntries(entries) {
+  return entries.sort((a, b) => {
+    const parsedA = parseCurationFamilyTier(a.type.name);
+    const parsedB = parseCurationFamilyTier(b.type.name);
+    if (parsedA && parsedB) {
+      if (parsedA.letter !== parsedB.letter) return parsedA.letter.localeCompare(parsedB.letter);
+      if (parsedA.tier !== parsedB.tier) return parsedA.tier - parsedB.tier;
+    } else if (parsedA && !parsedB) return -1;
+    else if (!parsedA && parsedB) return 1;
+    const groupDelta = (a.type.groupSortOrder ?? 0) - (b.type.groupSortOrder ?? 0);
+    if (groupDelta !== 0) return groupDelta;
+    const sortDelta = (a.type.sortOrder ?? 0) - (b.type.sortOrder ?? 0);
+    if (sortDelta !== 0) return sortDelta;
+    return String(a.type.name || '').localeCompare(String(b.type.name || ''));
+  });
+}
+
+/**
+ * Requested types stacked as C | V | Misc. Rerate add/remove keep a change marker.
+ * @returns {{ chart: { type: object, change: 'add' | 'remove' | 'set' }[], vfx: object[], misc: object[] }}
+ */
+export function requestedCurationTypesByBucket(requests, typesDict) {
+  const dict = typesDict || {};
+  const grouped = { chart: [], vfx: [], misc: [] };
+  const seen = { chart: new Set(), vfx: new Set(), misc: new Set() };
+
+  const push = (raw, change) => {
+    const type = resolveRequestedCurationType(raw, dict);
+    if (!type) return;
+    const bucket = curationTypeRatingBucket(type.name);
+    if (seen[bucket].has(type.id)) return;
+    seen[bucket].add(type.id);
+    grouped[bucket].push({ type, change });
+  };
+
+  for (const request of visibleCurationRequests(requests)) {
+    const addIds = request.addCurationTypeIds || [];
+    const removeIds = request.removeCurationTypeIds || [];
+    const selectedIds = request.curationTypeIds || [];
+    if (request.type === 'curation_rerate' && (addIds.length > 0 || removeIds.length > 0)) {
+      for (const id of addIds) push(id, 'add');
+      for (const id of removeIds) push(id, 'remove');
+      continue;
+    }
+    const source = selectedIds.length > 0 ? selectedIds : addIds;
+    for (const id of source) push(id, 'set');
+  }
+
+  sortRequestedCurationTypeEntries(grouped.chart);
+  sortRequestedCurationTypeEntries(grouped.vfx);
+  sortRequestedCurationTypeEntries(grouped.misc);
+  return grouped;
+}
+
 /**
  * @param {{ id: number, name?: string, sortOrder?: number, groupSortOrder?: number }[]} types
  * @returns {{ chart: object[], vfx: object[], misc: object[] }}
@@ -134,11 +238,50 @@ export function groupCurationTypesForRating(types) {
  * @returns {string}
  */
 export function emptyCurationPicks() {
-  return {chartTypeId: null, vfxTypeId: null, miscTypeIds: []};
+  return {
+    chartTypeId: null,
+    chartTypeHighId: null,
+    vfxTypeId: null,
+    vfxTypeHighId: null,
+    chartRating: '',
+    vfxRating: '',
+    miscTypeIds: [],
+  };
+}
+
+export function updateCurationPicks(picks, patch) {
+  const current = {
+    ...emptyCurationPicks(),
+    ...(picks || {}),
+    miscTypeIds: Array.isArray(picks?.miscTypeIds) ? [...picks.miscTypeIds] : [],
+  };
+  if (patch && Object.prototype.hasOwnProperty.call(patch, 'miscToggle')) {
+    const id = Number(patch.miscToggle);
+    const has = current.miscTypeIds.includes(id);
+    return {
+      ...current,
+      miscTypeIds: has
+        ? current.miscTypeIds.filter((item) => item !== id)
+        : [...current.miscTypeIds, id],
+    };
+  }
+  return { ...current, ...(patch || {}) };
+}
+
+function ratingTextEmpty(value) {
+  return value == null || String(value).trim() === '';
 }
 
 export function picksAreEmpty(picks) {
-  return !picks || (picks.chartTypeId == null && picks.vfxTypeId == null && (!picks.miscTypeIds || picks.miscTypeIds.length === 0));
+  return !picks || (
+    picks.chartTypeId == null &&
+    picks.chartTypeHighId == null &&
+    picks.vfxTypeId == null &&
+    picks.vfxTypeHighId == null &&
+    ratingTextEmpty(picks.chartRating) &&
+    ratingTextEmpty(picks.vfxRating) &&
+    (!picks.miscTypeIds || picks.miscTypeIds.length === 0)
+  );
 }
 
 export function picksFromCurationTypes(types) {
@@ -158,7 +301,9 @@ export function collectCurationPickIds(detail) {
   if (!detail) return [];
   const ids = [];
   if (detail.chartTypeId) ids.push(Number(detail.chartTypeId));
+  if (detail.chartTypeHighId) ids.push(Number(detail.chartTypeHighId));
   if (detail.vfxTypeId) ids.push(Number(detail.vfxTypeId));
+  if (detail.vfxTypeHighId) ids.push(Number(detail.vfxTypeHighId));
   for (const id of Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds : []) {
     const n = Number(id);
     if (Number.isInteger(n) && n > 0) ids.push(n);
@@ -166,11 +311,110 @@ export function collectCurationPickIds(detail) {
   return ids;
 }
 
+export function formatCurationRangeLabel(lowId, highId, curationTypesDict) {
+  const dict = curationTypesDict || {};
+  const lowName = dict[lowId]?.name;
+  if (!lowName) return '';
+  const highName = highId && Number(highId) !== Number(lowId) ? dict[highId]?.name : '';
+  if (!highName) return lowName;
+  const lowParsed = parseCurationFamilyTier(lowName);
+  const highParsed = parseCurationFamilyTier(highName);
+  if (lowParsed && highParsed && lowParsed.letter === highParsed.letter) {
+    return `${lowName}-${highParsed.tier}`;
+  }
+  return `${lowName}-${highName}`;
+}
+
+function sortedMiscTypeIds(picks) {
+  return [...new Set((picks?.miscTypeIds || []).map(Number).filter((id) => Number.isInteger(id) && id > 0))]
+    .sort((a, b) => a - b);
+}
+
+/** Typed `C0-1` and saved `{chartTypeId: C0, chartTypeHighId: C1}` are the same pick. */
+export function effectiveCurationRating(picks, bucket, curationTypesDict) {
+  const current = picks || emptyCurationPicks();
+  if (bucket === 'vfx') {
+    return String(
+      current.vfxRating
+        || formatCurationRangeLabel(current.vfxTypeId, current.vfxTypeHighId, curationTypesDict)
+        || '',
+    ).trim();
+  }
+  return String(
+    current.chartRating
+      || formatCurationRangeLabel(current.chartTypeId, current.chartTypeHighId, curationTypesDict)
+      || '',
+  ).trim();
+}
+
+export function picksEqual(a, b, curationTypesDict) {
+  if (effectiveCurationRating(a, 'chart', curationTypesDict) !== effectiveCurationRating(b, 'chart', curationTypesDict)) {
+    return false;
+  }
+  if (effectiveCurationRating(a, 'vfx', curationTypesDict) !== effectiveCurationRating(b, 'vfx', curationTypesDict)) {
+    return false;
+  }
+  const aMisc = sortedMiscTypeIds(a);
+  const bMisc = sortedMiscTypeIds(b);
+  if (aMisc.length !== bMisc.length) return false;
+  return aMisc.every((id, index) => id === bMisc[index]);
+}
+
+export function curationRatingPayload(picks, curationTypesDict) {
+  const current = picks || emptyCurationPicks();
+  return {
+    chartRating: current.chartRating || formatCurationRangeLabel(
+      current.chartTypeId,
+      current.chartTypeHighId,
+      curationTypesDict,
+    ),
+    vfxRating: current.vfxRating || formatCurationRangeLabel(
+      current.vfxTypeId,
+      current.vfxTypeHighId,
+      curationTypesDict,
+    ),
+    miscTypeIds: Array.isArray(current.miscTypeIds) ? current.miscTypeIds : [],
+  };
+}
+
+export function picksFromRatingDetail(detail, curationTypesDict) {
+  const picks = emptyCurationPicks();
+  if (!detail) return picks;
+  picks.chartTypeId = detail.chartTypeId ?? null;
+  picks.chartTypeHighId = detail.chartTypeHighId ?? null;
+  picks.vfxTypeId = detail.vfxTypeId ?? null;
+  picks.vfxTypeHighId = detail.vfxTypeHighId ?? null;
+  picks.chartRating = formatCurationRangeLabel(
+    picks.chartTypeId,
+    picks.chartTypeHighId,
+    curationTypesDict,
+  );
+  picks.vfxRating = formatCurationRangeLabel(
+    picks.vfxTypeId,
+    picks.vfxTypeHighId,
+    curationTypesDict,
+  );
+  picks.miscTypeIds = Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds.map(Number) : [];
+  return picks;
+}
+
 export function formatCurationPickLabel(detail, curationTypesDict) {
   if (!detail) return '';
   const dict = curationTypesDict || {};
-  return collectCurationPickIds(detail)
-    .map((id) => dict[id]?.name)
-    .filter(Boolean)
-    .join(' · ');
+  const parts = [
+    formatCurationRangeLabel(detail.chartTypeId, detail.chartTypeHighId, dict),
+    formatCurationRangeLabel(detail.vfxTypeId, detail.vfxTypeHighId, dict),
+  ];
+  for (const id of Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds : []) {
+    const name = dict[id]?.name;
+    if (name) parts.push(name);
+  }
+  return parts.filter(Boolean).join(' · ');
+}
+
+export function curationTypesInFamily(types, typeId, dict) {
+  const selected = dict?.[typeId] || (types || []).find((type) => type.id === typeId);
+  const letter = parseCurationFamilyTier(selected?.name)?.letter;
+  if (!letter) return [];
+  return (types || []).filter((type) => parseCurationFamilyTier(type.name)?.letter === letter);
 }

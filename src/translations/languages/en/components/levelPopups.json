@@ -64,6 +64,7 @@
         },
         "manageTags": "Manage Tags",
         "manageCurations": "Manage curations",
+        "manageCurationsDisabled": "This level has no curation rating to manage",
         "bulk": "Bulk"
       }
     },

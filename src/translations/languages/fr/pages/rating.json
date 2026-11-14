@@ -29,7 +29,9 @@
         "title": "Mode Zen curation",
         "description": "Session de curation concentrée"
       },
-      "setupTitle": "Mode Zen curation"
+      "setupTitle": "Mode Zen curation",
+      "pools": "Masquer les files",
+      "poolsHint": "Cochez pour laisser cette file hors du paquet"
     }
   },
   "buttons": {

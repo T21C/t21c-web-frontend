@@ -27,7 +27,7 @@ import { apiUrl } from '@/config/urls';
 import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { RatingHelpPopup } from "@/components/popups/Rating";
-import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { canModerateCuration, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import { REQUEST_BANDS, autoraterHideBand } from '@/utils/ratingRequestBand';
 import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
@@ -127,6 +127,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   const selectedLevelIdRef = useRef(null);
   const sseHandlersRef = useRef({});
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const canModerateQueue = isCurationMode ? canModerateCuration(user) : isSuperAdmin;
   const canReviewRerates = hasFlag(user, permissionFlags.RATER) || isSuperAdmin;
   const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewRerates);
   const pendingRerateLabel = formatRequestCount(pendingRequestTotal(pendingRequestCounts, ['rerate']));
@@ -308,7 +309,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
       if (!listRowMatchesFilters(listRow)) return prev;
       didInsert = true;
       const isDesc = String(sortOrder).toUpperCase() !== 'ASC';
-      const prepend = (sortType === 'id' || sortType === 'updatedAt') && isDesc;
+      const prepend = (sortType === 'id' || sortType === 'updatedAt' || sortType === 'createdAt') && isDesc;
       return prepend ? [listRow, ...prev] : [...prev, listRow];
     });
     if (didInsert) {
@@ -560,7 +561,8 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   const sortOptions = useMemo(() => [
     { value: 'id', label: t('rating.sort.byId') },
     { value: 'ratings', label: t('rating.sort.byRatings'), title: t('rating.sort.byRatingsFull') },
-    { value: 'updatedAt', label: t('rating.sort.byDate') }
+    { value: 'updatedAt', label: t('rating.sort.byDate') },
+    { value: 'createdAt', label: t('rating.sort.byAdded') }
   ], [t]);
 
   const selectedSortOption = useMemo(() => 
@@ -710,7 +712,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
               />
             </div>
           </div>
-          {isSuperAdmin && (
+          {canModerateQueue && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{t('rating.toggles.detailedView.label')}</span>
               <label className="switch">
@@ -894,7 +896,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
                 ratings={Array.isArray(ratings) ? ratings : []}
                 setRatings={setRatings}
                 user={user}
-                isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                isSuperAdmin={canModerateQueue}
                 weeklyRaterActivity={weeklyRaterActivity}
                 ratingAccuracyStats={ratingAccuracyStats}
                 onEditLevel={isSuperAdmin ? handleEditLevel : undefined}
