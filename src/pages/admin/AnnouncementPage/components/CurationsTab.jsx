@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { announcedCurationTypeIds } from '@/utils/curationTypeFamilies';
 import { toastError } from '@/utils/toastMessage';
 
 function typeLabel(id, dict) {
@@ -59,8 +60,14 @@ const CurationsTab = ({
           entries.map((entry) => {
             const level = entry.level;
             if (!level) return null;
-            const afterLabel = formatTypes(entry.afterTypeIds, curationTypesDict);
-            const beforeLabel = formatTypes(entry.beforeTypeIds, curationTypesDict);
+            const afterLabel = formatTypes(
+              announcedCurationTypeIds(entry.afterTypeIds, curationTypesDict),
+              curationTypesDict,
+            );
+            const beforeLabel = formatTypes(
+              announcedCurationTypeIds(entry.beforeTypeIds, curationTypesDict),
+              curationTypesDict,
+            );
             return (
               <div key={entry.queueRowId} className="announcement-item">
                 <label className="checkbox-container">

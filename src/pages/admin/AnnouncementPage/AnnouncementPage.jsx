@@ -144,6 +144,25 @@ const AnnouncementPage = () => {
     fetchSnapshot(kind);
   }, [kind, canUsePanel, fetchSnapshot]);
 
+  const removeAnnouncedQueueRow = useCallback((completedId, rowKind) => {
+    if (completedId == null) return;
+    if (rowKind === 'pass') {
+      setPasses(prev => prev.filter(p => p.id !== completedId));
+      setSelectedPasses(prev => prev.filter(id => id !== completedId));
+      return;
+    }
+    if (rowKind === 'level') {
+      setNewLevelEntries(prev => prev.filter(e => e.queueRowId !== completedId));
+    } else if (rowKind === 'rerate') {
+      setRerateEntries(prev => prev.filter(e => e.queueRowId !== completedId));
+    } else if (rowKind === 'curation') {
+      setCurationEntries(prev => prev.filter(e => e.queueRowId !== completedId));
+    } else if (rowKind === 'curation_rerate') {
+      setCurationRerateEntries(prev => prev.filter(e => e.queueRowId !== completedId));
+    }
+    setSelectedQueueRowIds(prev => prev.filter(id => id !== completedId));
+  }, []);
+
   const handleSseEvent = useCallback((event) => {
     const { type, data } = event || {};
     if (!type) return;
@@ -191,6 +210,12 @@ const AnnouncementPage = () => {
           );
           return prev.filter(r => r.requestId !== request.requestId);
         });
+        if (request.status === 'completed') {
+          const deliveredIds = request.itemIds || [];
+          for (const completedId of deliveredIds) {
+            removeAnnouncedQueueRow(completedId, kind);
+          }
+        }
         if (request.status === 'failed') {
           if (request.error !== 'Discarded') {
             toastError(request.error || t('announcement.errors.announceFailed'));
@@ -213,19 +238,9 @@ const AnnouncementPage = () => {
     if (type === 'announcement.item.completed' && item) {
       setOpenJobs(prev => patchItemInTrees(prev, item));
       setRecentJobs(prev => patchItemInTrees(prev, item));
-      const completedId = item.itemId;
-      if (kind === 'pass') {
-        setPasses(prev => prev.filter(p => p.id !== completedId));
-        setSelectedPasses(prev => prev.filter(id => id !== completedId));
-      } else if (kind === 'level') {
-        setNewLevelEntries(prev => prev.filter(e => e.queueRowId !== completedId));
-        setSelectedQueueRowIds(prev => prev.filter(id => id !== completedId));
-      } else if (kind === 'rerate') {
-        setRerateEntries(prev => prev.filter(e => e.queueRowId !== completedId));
-        setSelectedQueueRowIds(prev => prev.filter(id => id !== completedId));
-      }
+      removeAnnouncedQueueRow(item.itemId, kind);
     }
-  }, [kind, t]);
+  }, [kind, t, removeAnnouncedQueueRow]);
 
   useAnnouncementEvents({
     enabled: canUsePanel,
@@ -371,6 +386,11 @@ const AnnouncementPage = () => {
         requestId = data?.requestId || requestId;
       }
 
+      if (validQueueRowIds.length > 0) {
+        for (const queueRowId of validQueueRowIds) {
+          removeAnnouncedQueueRow(queueRowId, kind);
+        }
+      }
       setSelectedQueueRowIds([]);
       setSelectedPasses([]);
       if (requestId) setFocusedRequestId(requestId);

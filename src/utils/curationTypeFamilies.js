@@ -70,6 +70,27 @@ export function collapseCurationTypeIdsByFamilyTier(selectedIds, types) {
   return out;
 }
 
+/** C0/V0 are internal placeholders — never shown in curation announcements. */
+export function isSilentCurationAnnouncementName(name) {
+  const normalized = String(name ?? '').trim().toUpperCase();
+  return normalized === 'C0' || normalized === 'V0';
+}
+
+export function announcedCurationTypeIds(ids, typesById) {
+  const dict = typesById || {};
+  const out = [];
+  const seen = new Set();
+  for (const raw of ids || []) {
+    const id = Number(raw);
+    if (!Number.isInteger(id) || id <= 0 || seen.has(id)) continue;
+    seen.add(id);
+    const type = dict[id] || dict.get?.(id);
+    if (isSilentCurationAnnouncementName(type?.name)) continue;
+    out.push(id);
+  }
+  return out;
+}
+
 /**
  * Chart = C/O, VFX = V, everything else (including H and Epic) is misc.
  * @param {unknown} name
