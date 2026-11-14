@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
 import LevelUploadManagementPopup from '../LevelUploadManagementPopup/LevelUploadManagementPopup';
 import LevelPayloadSwapPopup from '../LevelPayloadSwapPopup/LevelPayloadSwapPopup';
-import { UploadIcon, RefreshIcon } from '@/components/common/icons';
+import { UploadIcon, RefreshIcon, GearIcon } from '@/components/common/icons';
 import toast from 'react-hot-toast';
 import { LevelCreditsEditPopup, levelNeedsCreditHydration } from '@/components/popups/Creators';
 import { TagManagementPopup } from './TagManagementPopup';
@@ -171,6 +171,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     permissionFlags.HEAD_CURATOR,
     permissionFlags.SUPER_ADMIN,
   ]);
+  const hasOpenCurationRating = Boolean(editorLevel?.toCuration || level?.toCuration);
   const canManageCharterTags = (() => {
     if (isSuperAdmin) return true;
     const creatorId = user?.creatorId;
@@ -943,10 +944,17 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 {canSettleCuration && (
                   <button
                     type="button"
-                    className="edit-level-popup__manage-tags-button"
+                    className="edit-level-popup__manage-curations-button"
                     onClick={() => setShowCurationSettle(true)}
+                    disabled={!hasOpenCurationRating}
+                    aria-label={t('levelPopups.edit.form.buttons.manageCurations')}
+                    title={
+                      hasOpenCurationRating
+                        ? t('levelPopups.edit.form.buttons.manageCurations')
+                        : t('levelPopups.edit.form.buttons.manageCurationsDisabled')
+                    }
                   >
-                    {t('levelPopups.edit.form.buttons.manageCurations')}
+                    <GearIcon size={18} color="currentColor" />
                   </button>
                 )}
               </div>
@@ -1304,6 +1312,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           onClose={() => setShowCurationSettle(false)}
           onSettled={(settled) => {
             const settledLevel = settled?.level;
+            const nextLevel = {
+              ...editorLevel,
+              ...settledLevel,
+              toCuration: false,
+              curationFlow: null,
+            };
+            setEditorLevel(nextLevel);
             setFormData((prev) => ({
               ...prev,
               toCuration: false,
@@ -1311,7 +1326,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               curationRerateReason: settledLevel?.curationRerateReason ?? prev.curationRerateReason,
             }));
             if (typeof onUpdate === 'function' && settledLevel) {
-              onUpdate({ keepEditOpen: true, level: { ...editorLevel, ...settledLevel, toCuration: false, curationFlow: null } });
+              onUpdate({ keepEditOpen: true, level: nextLevel });
             }
           }}
         />

@@ -25,13 +25,14 @@ import api from '@/utils/api';
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '@/utils/levelHelpers';
-import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canModerateCuration, hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/utils/autorater';
 import { REQUEST_BANDS, autoraterHideBand, isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
 import { RatingModeInput } from '@/components/popups/Rating/RatingDetailPopup/RatingModeInput';
+import { RequestedCurationChanges } from '@/components/popups/Rating/RatingDetailPopup/RequestedCurationChanges';
 import { curationRatingPayload, emptyCurationPicks, picksAreEmpty, requestedCurationBuckets } from '@/utils/curationTypeFamilies';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
@@ -1212,7 +1213,7 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
                   <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl || current?.discordMessageUrl} />
                   <RatingDiscordThreadButton
                     rating={current}
-                    allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                    allowed={isCurationMode ? canModerateCuration(user) : hasFlag(user, permissionFlags.SUPER_ADMIN)}
                     endpoint={isCurationMode ? routes.admin.curationRatingDiscord : undefined}
                     onUpdated={(next) => {
                       patchSession((prev) => ({
@@ -1245,7 +1246,7 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
                 <div className="rating-zen-page__actions-block">
                   <RatingDiscordThreadButton
                     rating={current}
-                    allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                    allowed={isCurationMode ? canModerateCuration(user) : hasFlag(user, permissionFlags.SUPER_ADMIN)}
                     endpoint={isCurationMode ? routes.admin.curationRatingDiscord : undefined}
                     onUpdated={(next) => {
                       patchSession((prev) => ({
@@ -1432,6 +1433,9 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
                     <CommentFormatter>{current.level.curationRerateReason}</CommentFormatter>
                   </div>
                 )}
+                {isCurationMode && (
+                  <RequestedCurationChanges requests={current?.curationRequests} />
+                )}
                 {!isCurationMode && showRequestedRating && (current.level?.rerateNum || current.requesterFR) && (
                   <p className="rating-zen-page__request-rating">
                     {t(`components:rating.ratingCard.labels.${current.level?.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
@@ -1463,7 +1467,6 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
                       picks={pendingPicks}
                       onPicksChange={(next) => patchSession({ pendingPicks: next })}
                       requestedBuckets={requestedBuckets}
-                      requests={current?.curationRequests}
                     />
                   ) : (
                   <div className="rating-zen-page__field">

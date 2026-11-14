@@ -42,6 +42,10 @@ export const hasAnyFlag = (user, permissions) => {
   return permissions.some(permission => hasFlag(user, permission));
 };
 
+/** Super-admin-equivalent control over curation queue actions (others' votes, Discord threads). */
+export const canModerateCuration = (user) =>
+  hasAnyFlag(user, [permissionFlags.HEAD_CURATOR, permissionFlags.SUPER_ADMIN]);
+
 export const setUserPermission = (user, permission, value) => {
   if (!user) return user;
   const current = toPermissionFlags(user);

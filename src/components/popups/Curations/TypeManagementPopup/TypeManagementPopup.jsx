@@ -22,6 +22,11 @@ const POPUP_MODES = {
   EDIT: 'EDIT'
 };
 
+function typeAdminHeaders(verifiedPassword, extra = {}) {
+  if (!verifiedPassword) return extra;
+  return { ...extra, 'X-Super-Admin-Password': verifiedPassword };
+}
+
 const TypeManagementPopup = ({
   isOpen,
   onClose,
@@ -150,9 +155,7 @@ const TypeManagementPopup = ({
     try {
       setIsLoading(true);
       await api.delete(`${routes.admin.curations.root()}/types/${type.id}`, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
+        headers: typeAdminHeaders(verifiedPassword),
       });
       
       toast.success(t('typeManagementPopup.notifications.deleted'));
@@ -247,16 +250,12 @@ const TypeManagementPopup = ({
       let response;
       if (mode === POPUP_MODES.CREATE) {
         response = await api.post(`${routes.admin.curations.root()}/types`, submitData, {
-          headers: {
-            'X-Super-Admin-Password': verifiedPassword
-          }
+          headers: typeAdminHeaders(verifiedPassword),
         });
         toast.success(t('typeManagementPopup.notifications.created'));
       } else {
         response = await api.put(`${routes.admin.curations.root()}/types/${selectedType.id}`, submitData, {
-          headers: {
-            'X-Super-Admin-Password': verifiedPassword
-          }
+          headers: typeAdminHeaders(verifiedPassword),
         });
         toast.success(t('typeManagementPopup.notifications.updated'));
       }
@@ -270,10 +269,9 @@ const TypeManagementPopup = ({
           `${routes.admin.curations.root()}/types/${response.data.id}/icon`,
           formDataIcon,
           {
-            headers: {
-              'X-Super-Admin-Password': verifiedPassword,
-              'Content-Type': 'multipart/form-data'
-            }
+            headers: typeAdminHeaders(verifiedPassword, {
+              'Content-Type': 'multipart/form-data',
+            }),
           }
         );
       }
@@ -327,9 +325,7 @@ const TypeManagementPopup = ({
           })),
         },
         {
-          headers: {
-            'X-Super-Admin-Password': verifiedPassword,
-          },
+          headers: typeAdminHeaders(verifiedPassword),
         }
       );
 
@@ -384,9 +380,7 @@ const TypeManagementPopup = ({
         `${routes.admin.curations.root()}/types/group-sort-orders`,
         { groups: groupUpdates },
         {
-          headers: {
-            'X-Super-Admin-Password': verifiedPassword,
-          },
+          headers: typeAdminHeaders(verifiedPassword),
         }
       );
 

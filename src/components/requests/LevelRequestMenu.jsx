@@ -17,6 +17,7 @@ function choiceBlockKey(gate) {
   if (!gate || gate.allowed) return null;
   if (gate.code === 'open') return gate.own === true ? 'alreadyRequested' : 'alreadySent';
   if (gate.code === 'unsettled') return 'onRatingPage';
+  if (gate.code === 'on_curation') return 'onCurationPage';
   if (gate.code === 'reference') return 'referenceLevel';
   return null;
 }

@@ -4,6 +4,7 @@
   "alreadyRequested": "You already requested this",
   "alreadySent": "The request for this has been already sent",
   "onRatingPage": "Level already on rating",
+  "onCurationPage": "Level already on curation",
   "referenceLevel": "Cannot rerate a reference level",
   "types": {
     "rerate": "Rerate",
@@ -52,6 +53,7 @@
     "deleted": "Deleted levels cannot be requested",
     "hidden": "Hidden levels cannot be requested",
     "unsettled": "This chart is still on the rating page",
+    "on_curation": "This level is already on the curation page",
     "reference": "Cannot rerate a reference level",
     "missing_level": "Level not found",
     "reason": "A reason is required",
@@ -70,6 +72,7 @@
     "type": "Choose a request type",
     "curation_types": "One or more curation types do not exist",
     "curation_empty": "Choose at least one curation type",
+    "curation_placeholder": "C0 and V0 can only be chosen when changing an existing curation",
     "unchanged": "This already matches the level",
     "unchanged_tags": "Selected tags already match the level",
     "unchanged_curation": "Selected types already match the level",

@@ -9,6 +9,7 @@ import { usePopupHistory } from '@/hooks/usePopupHistory';
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { RatingItem } from '@/components/cards';
 import { RatingModeInput } from './RatingModeInput';
+import { RequestedCurationChanges } from './RequestedCurationChanges';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
@@ -19,7 +20,7 @@ import { mergeRatingThreadState } from '@/components/discord/ratingThread';
 import { isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { canModerateCuration, hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import { RatingFlowActions, RatingFlowMarks } from '@/components/cards/RatingCard/RatingFlowActions';
 import autoratercato from "@/assets/icons/autorater-v2.png";
@@ -78,6 +79,7 @@ export const RatingDetailPopup = ({
   const currentUser = user;
   const { t } = useTranslation(['components', 'common']);
   const isCurationMode = mode === 'curation';
+  const canModerateVotes = isCurationMode ? canModerateCuration(currentUser) : isSuperAdmin;
   const isRatingLocked = Boolean(showingConfirmed || selectedRating?.confirmedAt);
 
   const { difficulties, difficultyDict, curationTypesDict } = useDifficultyContext();
@@ -665,7 +667,7 @@ export const RatingDetailPopup = ({
               key={ratingDetail.id || ratingDetail.userId || ratingDetail.user?.id}
               ratingDetail={ratingDetail}
               levelId={selectedRating?.level?.id || selectedRating?.levelId}
-              isSuperAdmin={isSuperAdmin}
+              isSuperAdmin={canModerateVotes}
               onDelete={handleDeleteRating}
               weeklyRaterActivity={isCurationMode ? [] : weeklyRaterActivity}
               career={isCurationMode ? null : careerForDetail(ratingDetail, ratingAccuracyStats)}
@@ -858,7 +860,7 @@ export const RatingDetailPopup = ({
             )}
             <RatingDiscordThreadButton
               rating={selectedRating}
-              allowed={isSuperAdmin}
+              allowed={canModerateVotes}
               endpoint={isCurationMode ? routes.admin.curationRatingDiscord : undefined}
               onUpdated={applyPostedRating}
             />
@@ -972,6 +974,7 @@ export const RatingDetailPopup = ({
                     ) : t('rating.detailPopup.curation.noAverage')}
                   </span>
                 </div>
+                <RequestedCurationChanges requests={selectedRating.curationRequests} />
                 </>
                 )}
                 {!isCurationMode && (
@@ -1011,7 +1014,6 @@ export const RatingDetailPopup = ({
                         picks={pendingPicks}
                         onPicksChange={setPendingPicks}
                         requestedBuckets={requestedBuckets}
-                        requests={selectedRating.curationRequests}
                       />
                     ) : (
                     <div className="rating-field">

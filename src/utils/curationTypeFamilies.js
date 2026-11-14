@@ -104,8 +104,6 @@ export function curationTypeRatingBucket(name) {
   return 'misc';
 }
 
-const REQUESTED_BUCKET_ORDER = ['chart', 'vfx', 'misc'];
-
 export function curationRequestHasTypes(request) {
   if (!request) return false;
   return (
@@ -148,9 +146,66 @@ export function requestedCurationBuckets(requests, typesDict) {
   return buckets;
 }
 
-export function orderedRequestedCurationBuckets(requests, typesDict) {
-  const buckets = requestedCurationBuckets(requests, typesDict);
-  return REQUESTED_BUCKET_ORDER.filter((bucket) => buckets.has(bucket));
+function resolveRequestedCurationType(raw, typesDict) {
+  const id = Number(raw);
+  if (!Number.isInteger(id) || id <= 0) return null;
+  const type = typesDict[id] || typesDict[String(id)];
+  if (type) return type;
+  return { id, name: `#${id}` };
+}
+
+function sortRequestedCurationTypeEntries(entries) {
+  return entries.sort((a, b) => {
+    const parsedA = parseCurationFamilyTier(a.type.name);
+    const parsedB = parseCurationFamilyTier(b.type.name);
+    if (parsedA && parsedB) {
+      if (parsedA.letter !== parsedB.letter) return parsedA.letter.localeCompare(parsedB.letter);
+      if (parsedA.tier !== parsedB.tier) return parsedA.tier - parsedB.tier;
+    } else if (parsedA && !parsedB) return -1;
+    else if (!parsedA && parsedB) return 1;
+    const groupDelta = (a.type.groupSortOrder ?? 0) - (b.type.groupSortOrder ?? 0);
+    if (groupDelta !== 0) return groupDelta;
+    const sortDelta = (a.type.sortOrder ?? 0) - (b.type.sortOrder ?? 0);
+    if (sortDelta !== 0) return sortDelta;
+    return String(a.type.name || '').localeCompare(String(b.type.name || ''));
+  });
+}
+
+/**
+ * Requested types stacked as C | V | Misc. Rerate add/remove keep a change marker.
+ * @returns {{ chart: { type: object, change: 'add' | 'remove' | 'set' }[], vfx: object[], misc: object[] }}
+ */
+export function requestedCurationTypesByBucket(requests, typesDict) {
+  const dict = typesDict || {};
+  const grouped = { chart: [], vfx: [], misc: [] };
+  const seen = { chart: new Set(), vfx: new Set(), misc: new Set() };
+
+  const push = (raw, change) => {
+    const type = resolveRequestedCurationType(raw, dict);
+    if (!type) return;
+    const bucket = curationTypeRatingBucket(type.name);
+    if (seen[bucket].has(type.id)) return;
+    seen[bucket].add(type.id);
+    grouped[bucket].push({ type, change });
+  };
+
+  for (const request of visibleCurationRequests(requests)) {
+    const addIds = request.addCurationTypeIds || [];
+    const removeIds = request.removeCurationTypeIds || [];
+    const selectedIds = request.curationTypeIds || [];
+    if (request.type === 'curation_rerate' && (addIds.length > 0 || removeIds.length > 0)) {
+      for (const id of addIds) push(id, 'add');
+      for (const id of removeIds) push(id, 'remove');
+      continue;
+    }
+    const source = selectedIds.length > 0 ? selectedIds : addIds;
+    for (const id of source) push(id, 'set');
+  }
+
+  sortRequestedCurationTypeEntries(grouped.chart);
+  sortRequestedCurationTypeEntries(grouped.vfx);
+  sortRequestedCurationTypeEntries(grouped.misc);
+  return grouped;
 }
 
 /**

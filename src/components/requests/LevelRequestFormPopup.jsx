@@ -13,6 +13,7 @@ import { AdminLevelXaccCurvePopup } from '@/components/popups/Levels/EditLevelPo
 import { uploadLevelZip } from '@/utils/submissions/levelSubmission';
 import { prepareArchiveForUpload } from '@/utils/zipUtils';
 import { CLIENT_PREF_KEYS, getClientPreference, setClientPreferences } from '@/utils/clientPreferences';
+import { isSilentCurationAnnouncementName } from '@/utils/curationTypeFamilies';
 import {
   CREATOR_EDITABLE_KINDS,
   INFO_KINDS,
@@ -59,7 +60,7 @@ const LevelRequestFormPopup = ({
   onSaved,
 }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const { difficulties, tags: catalogTags, tagsLoading } = useDifficultyContext();
+  const { difficulties, tags: catalogTags, tagsLoading, curationTypes } = useDifficultyContext();
   const payload = request?.payload || {};
   const seededApplied = Array.isArray(levelTagIds)
     ? normalizeTagIds(levelTagIds)
@@ -142,6 +143,14 @@ const LevelRequestFormPopup = ({
   const [curationTypeIds, setCurationTypeIds] = useState(initialCurationTarget);
   const [curationReady, setCurationReady] = useState(
     (type !== 'curation' && type !== 'curation_rerate') || curationSeedKnown || Boolean(request),
+  );
+  const placeholderCurationTypeIds = useMemo(
+    () => new Set(
+      (curationTypes || [])
+        .filter((item) => isSilentCurationAnnouncementName(item.name))
+        .map((item) => item.id),
+    ),
+    [curationTypes],
   );
   const [saving, setSaving] = useState(false);
   const [reratingComparison, setReratingComparison] = useState(null);
@@ -344,6 +353,20 @@ const LevelRequestFormPopup = ({
       cancelled = true;
     };
   }, [type, levelId, t]);
+
+  useEffect(() => {
+    if (type !== 'curation' || placeholderCurationTypeIds.size === 0) return;
+    const withoutPlaceholders = (ids) => ids.filter((id) => !placeholderCurationTypeIds.has(id));
+    setCurationTypeIds((prev) => {
+      const next = withoutPlaceholders(prev);
+      return next.length === prev.length ? prev : next;
+    });
+    setBaseline((current) => {
+      const ids = current.curationTypeIds || [];
+      const next = withoutPlaceholders(ids);
+      return next.length === ids.length ? current : { ...current, curationTypeIds: next };
+    });
+  }, [type, placeholderCurationTypeIds]);
 
   useEffect(() => {
     if (type !== 'info_change' || !levelId) return undefined;
@@ -556,7 +579,11 @@ const LevelRequestFormPopup = ({
       }
     }
     if (type === 'tag') body.targetTagIds = withoutUnrequestableTagIds(targetIds, communityTagSources);
-    if (type === 'curation' || type === 'curation_rerate') body.curationTypeIds = curationTypeIds;
+    if (type === 'curation') {
+      body.curationTypeIds = curationTypeIds.filter((id) => !placeholderCurationTypeIds.has(id));
+    } else if (type === 'curation_rerate') {
+      body.curationTypeIds = curationTypeIds;
+    }
     const abortController = new AbortController();
     uploadAbortRef.current = abortController;
     try {
@@ -798,6 +825,7 @@ const LevelRequestFormPopup = ({
           <div className="level-requests__field">
             <LevelRequestCurationTypes
               ids={curationTypeIds}
+              excludePlaceholders
               onChange={(ids) => {
                 userEditedCuration.current = true;
                 setCurationTypeIds(ids);
