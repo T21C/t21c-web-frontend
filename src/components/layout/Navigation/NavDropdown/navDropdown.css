@@ -223,6 +223,14 @@
   flex: 1;
 }
 
+.nav-dropdown-item .nav-item-brand-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+}
+
 .nav-dropdown-item.not-implemented {
   opacity: 0.55;
   cursor: not-allowed;

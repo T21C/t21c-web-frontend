@@ -266,15 +266,16 @@ export const createNavigationConfig = (context = {}) => {
             to: "https://github.com/KGH1113/ADOFAIModManager/releases",
             translationKey: "navigation.main.dropdowns.tools.adofaiModManager",
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
-            icon: 
+            icon: (
               <img
+                className="nav-item-brand-icon"
                 src={ADOFAIModManagerIcon}
                 width={24}
+                style={{ filter: "drop-shadow(0 0 1px var(--color-white-t40)) brightness(1.75)"}}
                 height={24}
                 alt=""
-                style={{ flexShrink: 0, objectFit: "contain" }}
               />
-            ,
+            ),
           },
           {
             to: "/levels",
