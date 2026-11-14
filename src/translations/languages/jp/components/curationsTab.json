@@ -1,0 +1,17 @@
+{
+  "noCurations": "アナウンスするキュレーションはありません",
+  "noRerates": "アナウンスするキュレーション再レートはありません",
+  "errors": {
+    "removeLevel": "{{song}} を削除できませんでした。もう一度お試しください。"
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "change": "{{before}} → {{after}}",
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "レベルを編集",
+    "remove": "アナウンスせずに削除",
+    "removeTooltip": "アナウンスせずに削除"
+  }
+}

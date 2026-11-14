@@ -17,6 +17,19 @@
         "title": "큐레이션 대기열이 비어 있습니다",
         "subtitle": "레벨의 체크박스를 전환하면 여기에 추가됩니다"
       }
+    },
+    "zenLocked": "큐레이션 대기열을 쓰기 전에 큐레이션 Zen 모드를 끝내거나 버리세요",
+    "flows": {
+      "recent": "최근",
+      "rerate": "재평가",
+      "bulk": "일괄"
+    },
+    "zen": {
+      "meta": {
+        "title": "큐레이션 Zen 모드",
+        "description": "집중 큐레이션 세션"
+      },
+      "setupTitle": "큐레이션 Zen 모드"
     }
   },
   "buttons": {

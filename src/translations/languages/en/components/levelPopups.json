@@ -63,6 +63,7 @@
           "deleting": "Deleting..."
         },
         "manageTags": "Manage Tags",
+        "manageCurations": "Manage curations",
         "bulk": "Bulk"
       }
     },

@@ -7,13 +7,21 @@ const STORAGE_KEYS = {
   SORT_TYPE: 'curationRating_sort_type',
   SEARCH_QUERY: 'curationRating_search_query',
   DETAILED_VIEW: 'curationRating_detailed_view',
+  FLOW: 'curationRating_flow',
 };
+
+const CURATION_FLOWS = ['recent', 'rerate', 'bulk'];
 
 const MY_RATED_STATES = ['show', 'hide', 'only'];
 
 function readMyRatedFilter() {
   const stored = localStorage.getItem(STORAGE_KEYS.MY_RATED);
   return MY_RATED_STATES.includes(stored) ? stored : 'show';
+}
+
+function readCurationFlow() {
+  const stored = localStorage.getItem(STORAGE_KEYS.FLOW);
+  return CURATION_FLOWS.includes(stored) ? stored : 'recent';
 }
 
 export function useCurationRatingFilters() {
@@ -24,6 +32,7 @@ export function useCurationRatingFilters() {
   const [showDetailedView, setShowDetailedView] = useState(
     () => localStorage.getItem(STORAGE_KEYS.DETAILED_VIEW) === 'true',
   );
+  const [ratingFlow, setRatingFlow] = useState(readCurationFlow);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SORT_ORDER, sortOrder);
@@ -45,6 +54,10 @@ export function useCurationRatingFilters() {
     localStorage.setItem(STORAGE_KEYS.DETAILED_VIEW, showDetailedView);
   }, [showDetailedView]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.FLOW, ratingFlow);
+  }, [ratingFlow]);
+
   return {
     sortOrder,
     setSortOrder,
@@ -56,5 +69,7 @@ export function useCurationRatingFilters() {
     setSearchQuery,
     showDetailedView,
     setShowDetailedView,
+    ratingFlow,
+    setRatingFlow,
   };
 }

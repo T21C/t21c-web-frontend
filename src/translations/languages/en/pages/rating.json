@@ -17,6 +17,19 @@
         "title": "Curation queue is empty",
         "subtitle": "Toggle the checkbox on a level to add it here"
       }
+    },
+    "zenLocked": "Finish or discard Curation Zen Mode before using the curation queue",
+    "flows": {
+      "recent": "Recent",
+      "rerate": "Rerates",
+      "bulk": "Bulk"
+    },
+    "zen": {
+      "meta": {
+        "title": "Curation Zen Mode",
+        "description": "Focused conveyor curation session"
+      },
+      "setupTitle": "Curation Zen Mode"
     }
   },
   "buttons": {
@@ -178,6 +191,7 @@
       "reportFailed": "Failed to send report",
       "ratingRequired": "Enter a rating",
       "commentRequired": "Comment is required",
+      "picksRequired": "Pick at least one curation type",
       "submitFailed": "Submit failed",
       "alreadyRated": "This level is already rated in Zen Mode",
       "normalRatingLocked": "Finish or discard Zen Mode before using the rating queue"

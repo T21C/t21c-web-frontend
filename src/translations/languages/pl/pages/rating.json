@@ -17,6 +17,19 @@
         "title": "Kolejka kuracji jest pusta",
         "subtitle": "Przełącz pole wyboru na poziomie, aby dodać go tutaj"
       }
+    },
+    "zenLocked": "Zakończ lub odrzuć tryb Zen kuracji, zanim użyjesz kolejki",
+    "flows": {
+      "recent": "Ostatnie",
+      "rerate": "Rerate'y",
+      "bulk": "Zbiorczo"
+    },
+    "zen": {
+      "meta": {
+        "title": "Tryb Zen kuracji",
+        "description": "Skupiona sesja kuracji"
+      },
+      "setupTitle": "Tryb Zen kuracji"
     }
   },
   "buttons": {

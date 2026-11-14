@@ -68,6 +68,7 @@ export function createDefaultZenSession() {
     streak: 0,
     pendingRating: '',
     pendingComment: '',
+    pendingPicks: { chartTypeId: null, vfxTypeId: null, miscTypeIds: [] },
   };
 }
 
@@ -96,8 +97,8 @@ function includeBandsFromParsed(parsed) {
   return { includeP: true, includeG: true, includeU: true };
 }
 
-function storageKeyForUser(userId) {
-  return `${STORAGE_KEY_PREFIX}${userId}`;
+function storageKeyForUser(userId, prefix = STORAGE_KEY_PREFIX) {
+  return `${prefix}${userId}`;
 }
 
 function mergeSession(parsed) {
@@ -205,6 +206,7 @@ export function toZenSessionPayload(session) {
     streak: session.streak,
     pendingRating: session.pendingRating || '',
     pendingComment: session.pendingComment || '',
+    pendingPicks: session.pendingPicks || { chartTypeId: null, vfxTypeId: null, miscTypeIds: [] },
   };
 }
 
@@ -217,10 +219,10 @@ export function isUnfinishedZenSession(session) {
   return session.phase === 'stage' || session.phase === 'setup';
 }
 
-function readStoredSession(userId) {
+function readStoredSession(userId, prefix = STORAGE_KEY_PREFIX) {
   if (!userId) return null;
   try {
-    const raw = sessionStorage.getItem(storageKeyForUser(userId));
+    const raw = sessionStorage.getItem(storageKeyForUser(userId, prefix));
     if (!raw) return null;
     return mergeSession(JSON.parse(raw));
   } catch {
@@ -228,11 +230,11 @@ function readStoredSession(userId) {
   }
 }
 
-function writeStoredSession(userId, session) {
+function writeStoredSession(userId, session, prefix = STORAGE_KEY_PREFIX) {
   if (!userId) return;
   try {
     sessionStorage.setItem(
-      storageKeyForUser(userId),
+      storageKeyForUser(userId, prefix),
       JSON.stringify(toZenSessionPayload(session))
     );
   } catch {
@@ -240,10 +242,10 @@ function writeStoredSession(userId, session) {
   }
 }
 
-function clearStoredSession(userId) {
+function clearStoredSession(userId, prefix = STORAGE_KEY_PREFIX, legacyKey = LEGACY_STORAGE_KEY) {
   try {
-    if (userId) sessionStorage.removeItem(storageKeyForUser(userId));
-    sessionStorage.removeItem(LEGACY_STORAGE_KEY);
+    if (userId) sessionStorage.removeItem(storageKeyForUser(userId, prefix));
+    if (legacyKey) sessionStorage.removeItem(legacyKey);
   } catch {
     /* ignore */
   }
@@ -251,7 +253,7 @@ function clearStoredSession(userId) {
 
 const ZenModeContext = createContext(null);
 
-export function ZenModeProvider({ children }) {
+function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
   const userId = user?.id ?? null;
   const [session, setSession] = useState(createDefaultZenSession);
@@ -271,23 +273,23 @@ export function ZenModeProvider({ children }) {
     const uid = userIdRef.current;
     if (!uid) return;
     const next = snapshot || sessionRef.current;
-    writeStoredSession(uid, next);
+    writeStoredSession(uid, next, storagePrefix);
     if (saveTimerRef.current) {
       clearTimeout(saveTimerRef.current);
       saveTimerRef.current = null;
     }
     if (!hasPersistableDeck(next)) {
       if (serverHasSessionRef.current) {
-        await api.delete(routes.admin.ratingZenSession());
+        await api.delete(sessionRoute());
         serverHasSessionRef.current = false;
       }
       dirtyRef.current = false;
       return;
     }
-    await api.put(routes.admin.ratingZenSession(), toZenSessionPayload(next));
+    await api.put(sessionRoute(), toZenSessionPayload(next));
     serverHasSessionRef.current = true;
     dirtyRef.current = false;
-  }, []);
+  }, [sessionRoute, storagePrefix]);
 
   const scheduleSave = useCallback(() => {
     if (skipPersistRef.current) return;
@@ -305,7 +307,7 @@ export function ZenModeProvider({ children }) {
     (next, { persist = true } = {}) => {
       sessionRef.current = next;
       setSession(next);
-      if (userIdRef.current) writeStoredSession(userIdRef.current, next);
+      if (userIdRef.current) writeStoredSession(userIdRef.current, next, storagePrefix);
       if (persist) scheduleSave();
       return next;
     },
@@ -343,7 +345,7 @@ export function ZenModeProvider({ children }) {
   const clearSession = useCallback(async () => {
     const next = createDefaultZenSession();
     applySession(next, { persist: false });
-    clearStoredSession(userIdRef.current);
+    clearStoredSession(userIdRef.current, storagePrefix, legacyKey);
     dirtyRef.current = false;
     if (saveTimerRef.current) {
       clearTimeout(saveTimerRef.current);
@@ -351,11 +353,11 @@ export function ZenModeProvider({ children }) {
     }
     if (!userIdRef.current) return;
     try {
-      await api.delete(routes.admin.ratingZenSession());
+      await api.delete(sessionRoute());
     } finally {
       serverHasSessionRef.current = false;
     }
-  }, [applySession]);
+  }, [applySession, sessionRoute, storagePrefix, legacyKey]);
 
   const resetToSetup = useCallback(async () => {
     const prev = sessionRef.current;
@@ -377,12 +379,12 @@ export function ZenModeProvider({ children }) {
     }
     if (!userIdRef.current) return;
     try {
-      await api.delete(routes.admin.ratingZenSession());
+      await api.delete(sessionRoute());
     } finally {
       serverHasSessionRef.current = false;
-      clearStoredSession(userIdRef.current);
+      clearStoredSession(userIdRef.current, storagePrefix, legacyKey);
     }
-  }, [applySession]);
+  }, [applySession, sessionRoute, storagePrefix, legacyKey]);
 
   const flushSession = useCallback(async () => {
     if (!userIdRef.current) return;
@@ -420,14 +422,14 @@ export function ZenModeProvider({ children }) {
     }
 
     setSessionHydrated(false);
-    const cached = readStoredSession(userId);
+    const cached = readStoredSession(userId, storagePrefix);
     if (cached && hasPersistableDeck(cached)) {
       applySession({ ...cached, cards: [] }, { persist: false });
     }
 
     (async () => {
       try {
-        const { data } = await api.get(routes.admin.ratingZenSession());
+        const { data } = await api.get(sessionRoute());
         if (cancelled) return;
         if (data?.session) {
           serverHasSessionRef.current = true;
@@ -435,7 +437,7 @@ export function ZenModeProvider({ children }) {
         } else {
           serverHasSessionRef.current = false;
           applySession(createDefaultZenSession(), { persist: false });
-          clearStoredSession(userId);
+          clearStoredSession(userId, storagePrefix, legacyKey);
         }
       } catch {
         if (cancelled) return;
@@ -516,13 +518,31 @@ export function ZenModeProvider({ children }) {
     ]
   );
 
+  return value;
+}
+
+export function ZenModeProvider({ children }) {
+  const difficulty = useZenSessionController({
+    sessionRoute: routes.admin.ratingZenSession,
+    storagePrefix: STORAGE_KEY_PREFIX,
+    legacyKey: LEGACY_STORAGE_KEY,
+  });
+  const curation = useZenSessionController({
+    sessionRoute: routes.admin.curationRatingZenSession,
+    storagePrefix: 'tuf.curationZen:',
+    legacyKey: null,
+  });
+  const value = useMemo(
+    () => ({ difficulty, curation }),
+    [difficulty, curation],
+  );
   return <ZenModeContext.Provider value={value}>{children}</ZenModeContext.Provider>;
 }
 
-export function useZenMode() {
+export function useZenMode(mode = 'difficulty') {
   const ctx = useContext(ZenModeContext);
   if (!ctx) {
     throw new Error('useZenMode must be used within ZenModeProvider');
   }
-  return ctx;
+  return ctx[mode] || ctx.difficulty;
 }

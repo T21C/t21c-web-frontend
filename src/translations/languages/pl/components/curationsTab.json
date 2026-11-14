@@ -1,0 +1,17 @@
+{
+  "noCurations": "Brak kuracji do ogłoszenia",
+  "noRerates": "Brak rerate'ów kuracji do ogłoszenia",
+  "errors": {
+    "removeLevel": "Nie udało się usunąć {{song}}. Spróbuj ponownie."
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "change": "{{before}} → {{after}}",
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "Edytuj poziom",
+    "remove": "Usuń bez ogłaszania",
+    "removeTooltip": "Usuń bez ogłaszania"
+  }
+}

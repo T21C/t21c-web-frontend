@@ -54,6 +54,7 @@
           "default": "Usuń trwale",
           "deleting": "Usuwanie..."
         },
+        "manageCurations": "Zarządzaj kuracjami",
         "bulk": "Zbiorczo"
       }
     },

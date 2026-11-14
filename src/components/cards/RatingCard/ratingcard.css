@@ -195,17 +195,17 @@
   gap: 0.25rem;
 }
 
-.song-title {
+.rating-card .song-title {
   color: #fff;
   flex-shrink: 0;
 }
 
-.title-separator {
+.rating-card .title-separator {
   color: #777;
   flex-shrink: 0;
 }
 
-.song-creator {
+.rating-card .song-creator {
   color: #aaa;
   font-size: 1rem;
   overflow: hidden;
@@ -282,7 +282,32 @@
 
 .rating-card .rating-card-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .rating-card .rating-card-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .rating-card .header-meta {
+    width: 100%;
+  }
+
+  .rating-card .rating-card-header h3 {
+    white-space: normal;
+    flex-wrap: wrap;
+  }
+
+  .rating-card .rating-card-actions {
+    gap: 0.5rem;
+  }
+
+  .rating-card .rating-card-actions__end {
+    margin-left: auto;
+  }
 }
 
 .rating-card .rating-card-actions__end {

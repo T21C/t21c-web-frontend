@@ -10,6 +10,8 @@
   "tabs": {
     "newLevels": "Nouveaux niveaux",
     "rerates": "Réévaluations",
+    "curations": "Curations",
+    "curationRerates": "Recurations",
     "passes": "Complétions"
   },
   "buttons": {

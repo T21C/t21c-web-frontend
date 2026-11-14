@@ -70,6 +70,7 @@ const ROUTE_DOCUMENT_META = [
   { path: '/admin/curations/preview/:levelId', titleKey: 'curationCssPreview.meta.title', descriptionKey: 'curationPreview.meta.description', noindex: true },
   { path: '/admin/curations/preview', titleKey: 'curationPreview.meta.title', descriptionKey: 'curationPreview.meta.description', noindex: true },
   { path: '/admin/curations/schedules', titleKey: 'curationSchedule.meta.title', descriptionKey: 'curationSchedule.meta.description', noindex: true },
+  { path: '/admin/curations/rating/zen', titleKey: 'rating.curationRating.zen.meta.title', descriptionKey: 'rating.curationRating.zen.meta.description', noindex: true },
   { path: '/admin/curations/rating/:levelId', titleKey: 'rating.curationRating.meta.title', descriptionKey: 'rating.curationRating.meta.description', noindex: true },
   { path: '/admin/curations/rating', titleKey: 'rating.curationRating.meta.title', descriptionKey: 'rating.curationRating.meta.description', noindex: true },
   { path: '/admin/curations', titleKey: 'curation.meta.title', descriptionKey: 'curation.meta.description', noindex: true },

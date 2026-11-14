@@ -1,0 +1,107 @@
+/* tuf-search: #CurationRatingPicks #curationRatingPicks */
+.curation-rating-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.curation-rating-picks .curation-rating-picks__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.curation-rating-picks .curation-rating-picks__field label {
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.curation-rating-picks .curation-rating-picks__select-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.curation-rating-picks .curation-rating-picks__select-row .custom-select-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.curation-rating-picks .curation-rating-picks__option,
+.custom-select-menu .curation-rating-picks__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.curation-rating-picks .curation-rating-picks__icon,
+.custom-select-menu .curation-rating-picks__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.curation-rating-picks .curation-rating-picks__icon-fallback {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-white);
+  flex-shrink: 0;
+}
+
+.curation-rating-picks .curation-rating-picks__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.curation-rating-picks .curation-rating-picks__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--btn-radius);
+  border: 1px solid var(--color-white-t20);
+  background: var(--btn-neutral-dark);
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.curation-rating-picks .curation-rating-picks__chip:hover {
+  background: var(--btn-neutral-dark-hover);
+}
+
+.curation-rating-picks .curation-rating-picks__chip.is-selected {
+  background: var(--btn-primary);
+  border-color: var(--btn-primary);
+}
+
+.curation-rating-picks .curation-rating-picks__chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.curation-pick-display {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.curation-pick-display .curation-pick-display__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.curation-pick-display .curation-rating-picks__icon,
+.curation-pick-display .curation-rating-picks__icon-fallback {
+  width: 1.25rem;
+  height: 1.25rem;
+}

@@ -17,7 +17,8 @@ import { TagManagementPopup } from './TagManagementPopup';
 import { ICON_SIZE, isCdnUrl, selectIconSize } from '@/utils/Utility';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { useAuth } from '@/contexts/AuthContext';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { CurationSettlePopup } from './CurationSettlePopup';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { CloseButton } from '@/components/common/buttons';
 import { VideoLinkResolver } from '@/components/common/cores/VideoLinkResolver';
@@ -89,6 +90,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     rerateReason: '',
     curationRerateNum: '',
     toCuration: false,
+    curationBulk: false,
     curationRerateReason: '',
     isDeleted: false,
     isHidden: false,
@@ -139,6 +141,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [showPayloadSwap, setShowPayloadSwap] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
   const [showTagManagement, setShowTagManagement] = useState(false);
+  const [showCurationSettle, setShowCurationSettle] = useState(false);
   const [levelTags, setLevelTags] = useState([]);
   const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
   const [isRefreshingTags, setIsRefreshingTags] = useState(false);
@@ -163,6 +166,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     )
   );
   const canManageCredits = isSuperAdmin || isLevelOwner;
+  const canSettleCuration = hasAnyFlag(user, [
+    permissionFlags.CURATOR,
+    permissionFlags.HEAD_CURATOR,
+    permissionFlags.SUPER_ADMIN,
+  ]);
   const canManageCharterTags = (() => {
     if (isSuperAdmin) return true;
     const creatorId = user?.creatorId;
@@ -239,6 +247,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         rerateReason: src.rerateReason ?? '',
         curationRerateNum: src.curationRerateNum ?? '',
         toCuration: Boolean(src.toCuration),
+        curationBulk: src.curationFlow === 'bulk',
         curationRerateReason: src.curationRerateReason ?? '',
         isDeleted: Boolean(src.isDeleted),
         isHidden: Boolean(src.isHidden),
@@ -280,6 +289,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     showSongSelector ||
     showUploadManagement ||
     showTagManagement ||
+    showCurationSettle ||
     showAliasManagement ||
     showChartStatsPopup ||
     showXaccCurvePopup ||
@@ -315,7 +325,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
+      ...(name === 'toCuration' && !checked ? {curationBulk: false} : {}),
     }));
     setHasUnsavedChanges(true);
   };
@@ -914,15 +925,31 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   </div>
                 )}
               </div>
-              <ToQueueField
-                enabled={isSuperAdmin}
-                checked={formData.toCuration}
-                checkboxName="toCuration"
-                checkboxLabel={t('levelPopups.edit.form.checkboxes.toCuration')}
-                accessory="bulk"
-                bulkLabel={t('levelPopups.edit.form.buttons.bulk')}
-                onChange={handleInputChange}
-              />
+              <div className="edit-level-popup__curation-queue-row">
+                <ToQueueField
+                  enabled={isSuperAdmin}
+                  checked={formData.toCuration}
+                  checkboxName="toCuration"
+                  checkboxLabel={t('levelPopups.edit.form.checkboxes.toCuration')}
+                  accessory="bulk"
+                  bulkLabel={t('levelPopups.edit.form.buttons.bulk')}
+                  bulkOn={formData.curationBulk}
+                  onBulkChange={(next) => {
+                    setFormData((prev) => ({ ...prev, curationBulk: next }));
+                    setHasUnsavedChanges(true);
+                  }}
+                  onChange={handleInputChange}
+                />
+                {canSettleCuration && (
+                  <button
+                    type="button"
+                    className="edit-level-popup__manage-tags-button"
+                    onClick={() => setShowCurationSettle(true)}
+                  >
+                    {t('levelPopups.edit.form.buttons.manageCurations')}
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className={`form-group ${canManageCharterTags ? 'field-enabled' : ''}`}>
@@ -1271,6 +1298,24 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         />
       )}
 
+      {showCurationSettle && (
+        <CurationSettlePopup
+          levelId={level.id}
+          onClose={() => setShowCurationSettle(false)}
+          onSettled={(settled) => {
+            const settledLevel = settled?.level;
+            setFormData((prev) => ({
+              ...prev,
+              toCuration: false,
+              curationBulk: false,
+              curationRerateReason: settledLevel?.curationRerateReason ?? prev.curationRerateReason,
+            }));
+            if (typeof onUpdate === 'function' && settledLevel) {
+              onUpdate({ keepEditOpen: true, level: { ...editorLevel, ...settledLevel, toCuration: false, curationFlow: null } });
+            }
+          }}
+        />
+      )}
       {showTagManagement && (
         <TagManagementPopup
           levelId={level.id}
