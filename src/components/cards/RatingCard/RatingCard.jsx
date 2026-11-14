@@ -15,6 +15,7 @@ import { isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { RatingFlowActions, RatingFlowMarks } from './RatingFlowActions';
 import { formatCurationPickLabel } from '@/utils/curationTypeFamilies';
 import { CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
+import { RequestedCurationChanges } from '@/components/popups/Rating/RatingDetailPopup/RequestedCurationChanges';
 
 const BAND_CLASS = {
   P: 'band-p',
@@ -146,12 +147,23 @@ export const RatingCard = ({
           </div>
           
           <div className="rating-card-details">
-            {isCurationMode && (userRating || (showDetailedView && (rating.details || []).length > 0)) && (
+            {isCurationMode && (userRating || rating.averageChartTypeId || rating.averageVfxTypeId || (showDetailedView && (rating.details || []).length > 0)) && (
               <div className="rating-info-grid top-row">
                 <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">
                     <CurationPickDisplay detail={userDetail} curationTypesDict={curationTypesDict} />
                     {!userDetail && userRating}
+                  </div>
+                </div>
+                <div className="rating-info-item" data-label={t('rating.ratingCard.labels.average')}>
+                  <div className="content">
+                    <CurationPickDisplay
+                      detail={{
+                        chartTypeId: rating.averageChartTypeId,
+                        vfxTypeId: rating.averageVfxTypeId,
+                      }}
+                      curationTypesDict={curationTypesDict}
+                    />
                   </div>
                 </div>
                 {showDetailedView && (
@@ -222,6 +234,9 @@ export const RatingCard = ({
                   </div>
                 )}
               </div>
+            )}
+            {isCurationMode && (
+              <RequestedCurationChanges requests={rating.curationRequests} compact />
             )}
           </div>
 

@@ -594,6 +594,10 @@
     gap: 1rem;
 }
 
+.rating-popup .requested-curation-changes {
+    width: 100%;
+}
+
 .rating-popup .rating-field {
     display: flex;
     flex-direction: column;
@@ -1510,10 +1514,24 @@
   gap: 0.4rem;
 }
 
-.rating-popup .curation-rating-picks__field label {
+.rating-popup .curation-rating-picks__field label,
+.rating-popup .curation-rating-picks__field-label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
   color: var(--color-white);
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+.rating-popup .curation-rating-picks__field.is-not-requested {
+  opacity: 0.55;
+}
+
+.rating-popup .curation-rating-picks__hint {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-gray-2);
 }
 
 .rating-popup .curation-rating-picks__select-row {

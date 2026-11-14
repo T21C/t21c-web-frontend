@@ -32,7 +32,8 @@
   color: var(--color-white-t70, rgba(255, 255, 255, 0.7));
 }
 
-.curation-settle-popup .curation-rating-picks {
+.curation-settle-popup .curation-rating-picks,
+.curation-settle-popup .requested-curation-changes {
   width: 100%;
 }
 

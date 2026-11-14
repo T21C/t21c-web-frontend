@@ -29,7 +29,9 @@
         "title": "Tryb Zen kuracji",
         "description": "Skupiona sesja kuracji"
       },
-      "setupTitle": "Tryb Zen kuracji"
+      "setupTitle": "Tryb Zen kuracji",
+      "pools": "Ukryj pule",
+      "poolsHint": "Zaznacz, aby pominąć tę pulę w talii"
     }
   },
   "buttons": {
@@ -63,7 +65,8 @@
     "byId": "ID poziomu",
     "byRatings": "Numer oceny",
     "byRatingsFull": "Sortuj według liczby ocen",
-    "byDate": "Ostatnio zaktualizowane"
+    "byDate": "Ostatnio zaktualizowane",
+    "byAdded": "Data dodania"
   },
   "labels": {
     "totalRatings": "Łącznie ocen: {{count}}"

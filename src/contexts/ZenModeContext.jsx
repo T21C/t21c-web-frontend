@@ -28,6 +28,9 @@ export const DEFAULT_RANDOMNESS = 40;
  * @property {boolean} includeP
  * @property {boolean} includeG
  * @property {boolean} includeU
+ * @property {boolean} includeRecent
+ * @property {boolean} includeRerate
+ * @property {boolean} includeBulk
  * @property {string} sortPreset
  * @property {number} randomness
  * @property {array} cards
@@ -53,6 +56,9 @@ export function createDefaultZenSession() {
     includeP: true,
     includeG: true,
     includeU: true,
+    includeRecent: true,
+    includeRerate: true,
+    includeBulk: true,
     sortPreset: 'least',
     randomness: DEFAULT_RANDOMNESS,
     cards: [],
@@ -68,7 +74,15 @@ export function createDefaultZenSession() {
     streak: 0,
     pendingRating: '',
     pendingComment: '',
-    pendingPicks: { chartTypeId: null, vfxTypeId: null, miscTypeIds: [] },
+    pendingPicks: {
+      chartTypeId: null,
+      chartTypeHighId: null,
+      vfxTypeId: null,
+      vfxTypeHighId: null,
+      chartRating: '',
+      vfxRating: '',
+      miscTypeIds: [],
+    },
   };
 }
 
@@ -191,6 +205,9 @@ export function toZenSessionPayload(session) {
     includeP: session.includeP !== false,
     includeG: session.includeG !== false,
     includeU: session.includeU !== false,
+    includeRecent: session.includeRecent !== false,
+    includeRerate: session.includeRerate !== false,
+    includeBulk: session.includeBulk !== false,
     sortPreset: session.sortPreset || 'least',
     randomness: session.randomness,
     ratingIds,
@@ -206,7 +223,15 @@ export function toZenSessionPayload(session) {
     streak: session.streak,
     pendingRating: session.pendingRating || '',
     pendingComment: session.pendingComment || '',
-    pendingPicks: session.pendingPicks || { chartTypeId: null, vfxTypeId: null, miscTypeIds: [] },
+    pendingPicks: session.pendingPicks || {
+      chartTypeId: null,
+      chartTypeHighId: null,
+      vfxTypeId: null,
+      vfxTypeHighId: null,
+      chartRating: '',
+      vfxRating: '',
+      miscTypeIds: [],
+    },
   };
 }
 
@@ -367,6 +392,9 @@ function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
       includeP: prev.includeP,
       includeG: prev.includeG,
       includeU: prev.includeU,
+      includeRecent: prev.includeRecent,
+      includeRerate: prev.includeRerate,
+      includeBulk: prev.includeBulk,
       sortPreset: prev.sortPreset,
       randomness: prev.randomness,
       phase: 'setup',

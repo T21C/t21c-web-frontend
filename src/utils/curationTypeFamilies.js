@@ -104,6 +104,55 @@ export function curationTypeRatingBucket(name) {
   return 'misc';
 }
 
+const REQUESTED_BUCKET_ORDER = ['chart', 'vfx', 'misc'];
+
+export function curationRequestHasTypes(request) {
+  if (!request) return false;
+  return (
+    (request.curationTypeIds || []).length > 0 ||
+    (request.addCurationTypeIds || []).length > 0 ||
+    (request.removeCurationTypeIds || []).length > 0
+  );
+}
+
+export function visibleCurationRequests(requests) {
+  return (requests || []).filter(curationRequestHasTypes);
+}
+
+export function collectRequestedCurationTypeIds(requests) {
+  const ids = [];
+  const seen = new Set();
+  for (const request of requests || []) {
+    for (const raw of [
+      ...(request.curationTypeIds || []),
+      ...(request.addCurationTypeIds || []),
+      ...(request.removeCurationTypeIds || []),
+    ]) {
+      const id = Number(raw);
+      if (!Number.isInteger(id) || id <= 0 || seen.has(id)) continue;
+      seen.add(id);
+      ids.push(id);
+    }
+  }
+  return ids;
+}
+
+export function requestedCurationBuckets(requests, typesDict) {
+  const buckets = new Set();
+  const dict = typesDict || {};
+  for (const id of collectRequestedCurationTypeIds(requests)) {
+    const type = dict[id] || dict[String(id)];
+    if (!type) continue;
+    buckets.add(curationTypeRatingBucket(type.name));
+  }
+  return buckets;
+}
+
+export function orderedRequestedCurationBuckets(requests, typesDict) {
+  const buckets = requestedCurationBuckets(requests, typesDict);
+  return REQUESTED_BUCKET_ORDER.filter((bucket) => buckets.has(bucket));
+}
+
 /**
  * @param {{ id: number, name?: string, sortOrder?: number, groupSortOrder?: number }[]} types
  * @returns {{ chart: object[], vfx: object[], misc: object[] }}
@@ -134,11 +183,50 @@ export function groupCurationTypesForRating(types) {
  * @returns {string}
  */
 export function emptyCurationPicks() {
-  return {chartTypeId: null, vfxTypeId: null, miscTypeIds: []};
+  return {
+    chartTypeId: null,
+    chartTypeHighId: null,
+    vfxTypeId: null,
+    vfxTypeHighId: null,
+    chartRating: '',
+    vfxRating: '',
+    miscTypeIds: [],
+  };
+}
+
+export function updateCurationPicks(picks, patch) {
+  const current = {
+    ...emptyCurationPicks(),
+    ...(picks || {}),
+    miscTypeIds: Array.isArray(picks?.miscTypeIds) ? [...picks.miscTypeIds] : [],
+  };
+  if (patch && Object.prototype.hasOwnProperty.call(patch, 'miscToggle')) {
+    const id = Number(patch.miscToggle);
+    const has = current.miscTypeIds.includes(id);
+    return {
+      ...current,
+      miscTypeIds: has
+        ? current.miscTypeIds.filter((item) => item !== id)
+        : [...current.miscTypeIds, id],
+    };
+  }
+  return { ...current, ...(patch || {}) };
+}
+
+function ratingTextEmpty(value) {
+  return value == null || String(value).trim() === '';
 }
 
 export function picksAreEmpty(picks) {
-  return !picks || (picks.chartTypeId == null && picks.vfxTypeId == null && (!picks.miscTypeIds || picks.miscTypeIds.length === 0));
+  return !picks || (
+    picks.chartTypeId == null &&
+    picks.chartTypeHighId == null &&
+    picks.vfxTypeId == null &&
+    picks.vfxTypeHighId == null &&
+    ratingTextEmpty(picks.chartRating) &&
+    ratingTextEmpty(picks.vfxRating) &&
+    (!picks.miscTypeIds || picks.miscTypeIds.length === 0)
+  );
 }
 
 export function picksFromCurationTypes(types) {
@@ -158,7 +246,9 @@ export function collectCurationPickIds(detail) {
   if (!detail) return [];
   const ids = [];
   if (detail.chartTypeId) ids.push(Number(detail.chartTypeId));
+  if (detail.chartTypeHighId) ids.push(Number(detail.chartTypeHighId));
   if (detail.vfxTypeId) ids.push(Number(detail.vfxTypeId));
+  if (detail.vfxTypeHighId) ids.push(Number(detail.vfxTypeHighId));
   for (const id of Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds : []) {
     const n = Number(id);
     if (Number.isInteger(n) && n > 0) ids.push(n);
@@ -166,11 +256,110 @@ export function collectCurationPickIds(detail) {
   return ids;
 }
 
+export function formatCurationRangeLabel(lowId, highId, curationTypesDict) {
+  const dict = curationTypesDict || {};
+  const lowName = dict[lowId]?.name;
+  if (!lowName) return '';
+  const highName = highId && Number(highId) !== Number(lowId) ? dict[highId]?.name : '';
+  if (!highName) return lowName;
+  const lowParsed = parseCurationFamilyTier(lowName);
+  const highParsed = parseCurationFamilyTier(highName);
+  if (lowParsed && highParsed && lowParsed.letter === highParsed.letter) {
+    return `${lowName}-${highParsed.tier}`;
+  }
+  return `${lowName}-${highName}`;
+}
+
+function sortedMiscTypeIds(picks) {
+  return [...new Set((picks?.miscTypeIds || []).map(Number).filter((id) => Number.isInteger(id) && id > 0))]
+    .sort((a, b) => a - b);
+}
+
+/** Typed `C0-1` and saved `{chartTypeId: C0, chartTypeHighId: C1}` are the same pick. */
+export function effectiveCurationRating(picks, bucket, curationTypesDict) {
+  const current = picks || emptyCurationPicks();
+  if (bucket === 'vfx') {
+    return String(
+      current.vfxRating
+        || formatCurationRangeLabel(current.vfxTypeId, current.vfxTypeHighId, curationTypesDict)
+        || '',
+    ).trim();
+  }
+  return String(
+    current.chartRating
+      || formatCurationRangeLabel(current.chartTypeId, current.chartTypeHighId, curationTypesDict)
+      || '',
+  ).trim();
+}
+
+export function picksEqual(a, b, curationTypesDict) {
+  if (effectiveCurationRating(a, 'chart', curationTypesDict) !== effectiveCurationRating(b, 'chart', curationTypesDict)) {
+    return false;
+  }
+  if (effectiveCurationRating(a, 'vfx', curationTypesDict) !== effectiveCurationRating(b, 'vfx', curationTypesDict)) {
+    return false;
+  }
+  const aMisc = sortedMiscTypeIds(a);
+  const bMisc = sortedMiscTypeIds(b);
+  if (aMisc.length !== bMisc.length) return false;
+  return aMisc.every((id, index) => id === bMisc[index]);
+}
+
+export function curationRatingPayload(picks, curationTypesDict) {
+  const current = picks || emptyCurationPicks();
+  return {
+    chartRating: current.chartRating || formatCurationRangeLabel(
+      current.chartTypeId,
+      current.chartTypeHighId,
+      curationTypesDict,
+    ),
+    vfxRating: current.vfxRating || formatCurationRangeLabel(
+      current.vfxTypeId,
+      current.vfxTypeHighId,
+      curationTypesDict,
+    ),
+    miscTypeIds: Array.isArray(current.miscTypeIds) ? current.miscTypeIds : [],
+  };
+}
+
+export function picksFromRatingDetail(detail, curationTypesDict) {
+  const picks = emptyCurationPicks();
+  if (!detail) return picks;
+  picks.chartTypeId = detail.chartTypeId ?? null;
+  picks.chartTypeHighId = detail.chartTypeHighId ?? null;
+  picks.vfxTypeId = detail.vfxTypeId ?? null;
+  picks.vfxTypeHighId = detail.vfxTypeHighId ?? null;
+  picks.chartRating = formatCurationRangeLabel(
+    picks.chartTypeId,
+    picks.chartTypeHighId,
+    curationTypesDict,
+  );
+  picks.vfxRating = formatCurationRangeLabel(
+    picks.vfxTypeId,
+    picks.vfxTypeHighId,
+    curationTypesDict,
+  );
+  picks.miscTypeIds = Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds.map(Number) : [];
+  return picks;
+}
+
 export function formatCurationPickLabel(detail, curationTypesDict) {
   if (!detail) return '';
   const dict = curationTypesDict || {};
-  return collectCurationPickIds(detail)
-    .map((id) => dict[id]?.name)
-    .filter(Boolean)
-    .join(' · ');
+  const parts = [
+    formatCurationRangeLabel(detail.chartTypeId, detail.chartTypeHighId, dict),
+    formatCurationRangeLabel(detail.vfxTypeId, detail.vfxTypeHighId, dict),
+  ];
+  for (const id of Array.isArray(detail.miscTypeIds) ? detail.miscTypeIds : []) {
+    const name = dict[id]?.name;
+    if (name) parts.push(name);
+  }
+  return parts.filter(Boolean).join(' · ');
+}
+
+export function curationTypesInFamily(types, typeId, dict) {
+  const selected = dict?.[typeId] || (types || []).find((type) => type.id === typeId);
+  const letter = parseCurationFamilyTier(selected?.name)?.letter;
+  if (!letter) return [];
+  return (types || []).filter((type) => parseCurationFamilyTier(type.name)?.letter === letter);
 }

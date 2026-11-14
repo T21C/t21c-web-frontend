@@ -308,7 +308,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
       if (!listRowMatchesFilters(listRow)) return prev;
       didInsert = true;
       const isDesc = String(sortOrder).toUpperCase() !== 'ASC';
-      const prepend = (sortType === 'id' || sortType === 'updatedAt') && isDesc;
+      const prepend = (sortType === 'id' || sortType === 'updatedAt' || sortType === 'createdAt') && isDesc;
       return prepend ? [listRow, ...prev] : [...prev, listRow];
     });
     if (didInsert) {
@@ -560,7 +560,8 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   const sortOptions = useMemo(() => [
     { value: 'id', label: t('rating.sort.byId') },
     { value: 'ratings', label: t('rating.sort.byRatings'), title: t('rating.sort.byRatingsFull') },
-    { value: 'updatedAt', label: t('rating.sort.byDate') }
+    { value: 'updatedAt', label: t('rating.sort.byDate') },
+    { value: 'createdAt', label: t('rating.sort.byAdded') }
   ], [t]);
 
   const selectedSortOption = useMemo(() => 

@@ -235,6 +235,19 @@ html.rating-zen-active .background::after {
   cursor: pointer;
 }
 
+.rating-zen-page .rating-zen-page__pgu--pools {
+  flex-wrap: wrap;
+  gap: 0.45rem 0.85rem;
+}
+
+.rating-zen-page .rating-zen-page__pgu--pools .rating-zen-page__pgu-item {
+  flex-direction: row;
+  gap: 0.35rem;
+  min-width: 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
 .rating-zen-page__setup-actions {
   display: flex;
   flex-wrap: wrap;
@@ -626,6 +639,10 @@ html.rating-zen-active .background::after {
   gap: 0.75rem;
 }
 
+.rating-zen-page .rating-zen-page__form .requested-curation-changes {
+  width: 100%;
+}
+
 .rating-zen-page .rating-zen-page__form .curation-rating-picks {
   width: 100%;
 }
@@ -665,11 +682,18 @@ html.rating-zen-active .background::after {
   gap: 0.45rem;
   position: sticky;
   top: -1rem;
-  z-index: 3;
+  z-index: 4;
   margin: -1rem -1rem 0;
   padding: 1rem 1rem 0.5rem;
   border-bottom: 1px solid var(--color-white-t10);
   background: #141218;
+}
+
+.rating-zen-page .rating-zen-page__meta,
+.rating-zen-page .rating-zen-page__form,
+.rating-zen-page .rating-zen-page__peers {
+  position: relative;
+  z-index: 1;
 }
 
 .rating-zen-page .rating-zen-page__peek-sources {

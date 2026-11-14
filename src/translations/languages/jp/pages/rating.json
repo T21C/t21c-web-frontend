@@ -29,7 +29,9 @@
         "title": "キュレーションZenモード",
         "description": "集中してキュレーションするセッション"
       },
-      "setupTitle": "キュレーションZenモード"
+      "setupTitle": "キュレーションZenモード",
+      "pools": "プールを非表示",
+      "poolsHint": "チェックすると、そのプールをデッキから除外します"
     }
   },
   "buttons": {
@@ -70,7 +72,8 @@
     "byId": "レベルID",
     "byRatings": "レーティング数",
     "byRatingsFull": "レーティング数順に並べ替え",
-    "byDate": "最終更新日時"
+    "byDate": "最終更新日時",
+    "byAdded": "追加日"
   },
   "search": {
     "placeholder": "レベル名、クリエイター、難易度で検索"
@@ -119,7 +122,7 @@
       "description": "集中してレベルを順番にレーティングするセッション"
     },
     "confirmPeek": "他のレーティング担当者のレーティングとコメントを表示しますか？のぞき見を1回消費します。",
-    "reportPrompt": "報告メモ（任意）— メディアの問題について説明してください：",
+    "reportPrompt": "報告メモ — メディアの問題について説明してください：",
     "report": "メディアの問題を報告",
     "exit": "セッションを一時停止",
     "noVideo": "動画がありません",
@@ -144,6 +147,7 @@
       "sortMost": "レーティング数が多い順",
       "sortId": "レベルID順",
       "sortRecent": "更新日時が新しい順",
+      "sortAdded": "追加日が新しい順",
       "randomness": "ランダム度",
       "randomnessValue": "{{n}}",
       "randomnessHint": "低いほど優先順位順になり、高いほどランダムに選ばれます",
@@ -189,6 +193,7 @@
       "dealFailed": "デッキの準備に失敗しました",
       "invalidDeckSize": "デッキサイズは1～200で入力してください",
       "reportFailed": "報告の送信に失敗しました",
+      "reportNoteRequired": "報告を送るにはメモが必要です",
       "ratingRequired": "レーティングを入力してください",
       "picksRequired": "少なくとも1つのキュレーションタイプを選んでください",
       "commentRequired": "コメントは必須です",

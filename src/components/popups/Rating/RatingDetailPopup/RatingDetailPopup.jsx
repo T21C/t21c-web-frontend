@@ -8,7 +8,7 @@ import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { usePopupHistory } from '@/hooks/usePopupHistory';
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { RatingItem } from '@/components/cards';
-import { RatingInput } from '@/components/common/selectors';
+import { RatingModeInput } from './RatingModeInput';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
@@ -27,7 +27,8 @@ import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter, LevelMentionField } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import { RatingHeaderMeta } from './RatingHeaderMeta';
-import { CurationRatingPicks } from './CurationRatingPicks';
+import { CurationPickDisplay } from './CurationRatingPicks';
+import { curationRatingPayload, emptyCurationPicks, picksAreEmpty, picksEqual, picksFromRatingDetail, requestedCurationBuckets } from '@/utils/curationTypeFamilies';
 import {
   getCurationTypesResolved,
   sortCurationsForDisplay,
@@ -59,25 +60,6 @@ async function updateRating(id, rating, comment, isCommunityRating = false, view
     console.error('Error updating rating:', error);
     throw error;
   }
-}
-
-function picksFromDetail(detail) {
-  return {
-    chartTypeId: detail?.chartTypeId ?? null,
-    vfxTypeId: detail?.vfxTypeId ?? null,
-    miscTypeIds: Array.isArray(detail?.miscTypeIds) ? detail.miscTypeIds.map(Number) : [],
-  };
-}
-
-function picksEqual(a, b) {
-  if (a.chartTypeId !== b.chartTypeId || a.vfxTypeId !== b.vfxTypeId) return false;
-  if (a.miscTypeIds.length !== b.miscTypeIds.length) return false;
-  const other = new Set(b.miscTypeIds);
-  return a.miscTypeIds.every((id) => other.has(id));
-}
-
-function picksEmpty(picks) {
-  return picks.chartTypeId == null && picks.vfxTypeId == null && picks.miscTypeIds.length === 0;
 }
 
 export const RatingDetailPopup = ({ 
@@ -120,14 +102,17 @@ export const RatingDetailPopup = ({
     }
     return sortCurationTypesForDisplay(types, curationTypesDict);
   }, [isCurationMode, selectedRating?.level, curationTypesDict]);
+  const requestedBuckets = useMemo(
+    () => requestedCurationBuckets(selectedRating?.curationRequests, curationTypesDict),
+    [selectedRating?.curationRequests, curationTypesDict],
+  );
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingRating, setPendingRating] = useState("");
   const [pendingComment, setPendingComment] = useState("");
   const [initialRating, setInitialRating] = useState("");
   const [initialComment, setInitialComment] = useState("");
-  const emptyPicks = { chartTypeId: null, vfxTypeId: null, miscTypeIds: [] };
-  const [pendingPicks, setPendingPicks] = useState(emptyPicks);
-  const [initialPicks, setInitialPicks] = useState(emptyPicks);
+  const [pendingPicks, setPendingPicks] = useState(emptyCurationPicks);
+  const [initialPicks, setInitialPicks] = useState(emptyCurationPicks);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [otherRatings, setOtherRatings] = useState([]);
@@ -169,8 +154,8 @@ export const RatingDetailPopup = ({
       setPendingComment("");
       setInitialRating("");
       setInitialComment("");
-      setPendingPicks({ chartTypeId: null, vfxTypeId: null, miscTypeIds: [] });
-      setInitialPicks({ chartTypeId: null, vfxTypeId: null, miscTypeIds: [] });
+      setPendingPicks(emptyCurationPicks());
+      setInitialPicks(emptyCurationPicks());
       setHasUnsavedChanges(false);
       setSaveError(null);
       setCommentError(false);
@@ -269,7 +254,7 @@ export const RatingDetailPopup = ({
     const userDetail = details.find((detail) => detail.userId === currentUser?.id);
     const rating = userDetail?.rating || "";
     const comment = userDetail?.comment || "";
-    const nextPicks = picksFromDetail(userDetail);
+    const nextPicks = picksFromRatingDetail(userDetail, curationTypesDict);
     // Complete payloads include `comment` and/or nested `user`; list rows are slim.
     const detailsAreFull = details.some(
       (d) => d && (d.user != null || Object.prototype.hasOwnProperty.call(d, 'comment'))
@@ -317,6 +302,11 @@ export const RatingDetailPopup = ({
       setInitialComment(comment);
       setInitialPicks(nextPicks);
     } else {
+      if (!hasUnsavedChangesRef.current) {
+        setPendingComment(comment);
+        setPendingPicks(nextPicks);
+        if (!isCurationMode) setPendingRating(rating);
+      }
       setInitialRating(rating);
       setInitialComment(comment);
       setInitialPicks(nextPicks);
@@ -325,11 +315,11 @@ export const RatingDetailPopup = ({
 
     setOtherRatings(details);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- seed once per open/hydrate; avoid pending loops
-  }, [selectedRating, currentUser?.id, selectedRating?.details, showingConfirmed]);
+  }, [selectedRating, currentUser?.id, selectedRating?.details, showingConfirmed, curationTypesDict]);
 
   useEffect(() => {
     if (isCurationMode) {
-      const picksChanged = !picksEqual(pendingPicks, initialPicks);
+      const picksChanged = !picksEqual(pendingPicks, initialPicks, curationTypesDict);
       const commentChanged = pendingComment !== initialComment;
       setHasUnsavedChanges(picksChanged || commentChanged);
       return;
@@ -349,7 +339,7 @@ export const RatingDetailPopup = ({
     );
     
     setHasUnsavedChanges(hasValidChanges);
-  }, [pendingRating, pendingComment, initialRating, initialComment, pendingPicks, initialPicks, isCurationMode]);
+  }, [pendingRating, pendingComment, initialRating, initialComment, pendingPicks, initialPicks, isCurationMode, curationTypesDict]);
 
   useEffect(() => {
     if (isCurationMode) return undefined;
@@ -514,7 +504,10 @@ export const RatingDetailPopup = ({
       setSelectedRating((prev) => ({ ...prev, ...updatedRating, details: updatedRating.details }));
       setOtherRatings(updatedRating.details || []);
     }
-    setInitialPicks(pendingPicks);
+    const userDetail = (updatedRating?.details || []).find((detail) => detail.userId === currentUser?.id);
+    const nextPicks = picksFromRatingDetail(userDetail, curationTypesDict);
+    setPendingPicks(nextPicks);
+    setInitialPicks(nextPicks);
     setInitialComment(pendingComment);
     setHasUnsavedChanges(false);
     detailsHydratedSeededRef.current = true;
@@ -539,9 +532,7 @@ export const RatingDetailPopup = ({
 
       if (isCurationMode) {
         const response = await api.put(routes.admin.curationRatingById(selectedRating.id), {
-          chartTypeId: pendingPicks.chartTypeId,
-          vfxTypeId: pendingPicks.vfxTypeId,
-          miscTypeIds: pendingPicks.miscTypeIds,
+          ...curationRatingPayload(pendingPicks, curationTypesDict),
           comment: pendingComment,
         });
         applyCurationSavePayload(response.data || {});
@@ -696,7 +687,7 @@ export const RatingDetailPopup = ({
   const getSaveButtonText = () => {
     if (isSaving) return t('buttons.saving', { ns: 'common' });
     if (isCurationMode) {
-      if (picksEmpty(pendingPicks) && !picksEmpty(initialPicks)) {
+      if (picksAreEmpty(pendingPicks) && !picksAreEmpty(initialPicks)) {
         return t('rating.detailPopup.buttons.removeRating');
       }
       return t('rating.detailPopup.buttons.saveChanges');
@@ -709,7 +700,7 @@ export const RatingDetailPopup = ({
     const baseClass = 'save-rating-changes-btn';
     if (isSaving) return `${baseClass} saving`;
     if (isCurationMode) {
-      if (picksEmpty(pendingPicks) && !picksEmpty(initialPicks)) return `${baseClass} remove`;
+      if (picksAreEmpty(pendingPicks) && !picksAreEmpty(initialPicks)) return `${baseClass} remove`;
       return baseClass;
     }
     if (!pendingRating && initialRating) return `${baseClass} remove`;
@@ -948,6 +939,7 @@ export const RatingDetailPopup = ({
                 </div>
                 )}
                 {isCurationMode && (
+                <>
                 <div className="detail-field">
                   <span className="detail-label">{t('rating.detailPopup.curation.currentTypes')}</span>
                   <span className="detail-value curation-current-types">
@@ -966,6 +958,21 @@ export const RatingDetailPopup = ({
                     )) : t('rating.detailPopup.curation.noCurrentTypes')}
                   </span>
                 </div>
+                <div className="detail-field">
+                  <span className="detail-label">{t('rating.detailPopup.curation.average')}</span>
+                  <span className="detail-value">
+                    {selectedRating.averageChartTypeId || selectedRating.averageVfxTypeId ? (
+                      <CurationPickDisplay
+                        detail={{
+                          chartTypeId: selectedRating.averageChartTypeId,
+                          vfxTypeId: selectedRating.averageVfxTypeId,
+                        }}
+                        curationTypesDict={curationTypesDict}
+                      />
+                    ) : t('rating.detailPopup.curation.noAverage')}
+                  </span>
+                </div>
+                </>
                 )}
                 {!isCurationMode && (
                   <>
@@ -998,25 +1005,13 @@ export const RatingDetailPopup = ({
                 ) : user && (!isCurationMode || canSaveCuration) ? (
                   <div className="rating-field-group">
                     {isCurationMode ? (
-                      <CurationRatingPicks
-                        chartTypeId={pendingPicks.chartTypeId}
-                        vfxTypeId={pendingPicks.vfxTypeId}
-                        miscTypeIds={pendingPicks.miscTypeIds}
+                      <RatingModeInput
+                        mode="curation"
                         disabled={isRatingLocked}
-                        onChartChange={(value) => setPendingPicks((prev) => ({ ...prev, chartTypeId: value }))}
-                        onVfxChange={(value) => setPendingPicks((prev) => ({ ...prev, vfxTypeId: value }))}
-                        onMiscToggle={(typeId) => {
-                          const id = Number(typeId);
-                          setPendingPicks((prev) => {
-                            const has = prev.miscTypeIds.includes(id);
-                            return {
-                              ...prev,
-                              miscTypeIds: has
-                                ? prev.miscTypeIds.filter((item) => item !== id)
-                                : [...prev.miscTypeIds, id],
-                            };
-                          });
-                        }}
+                        picks={pendingPicks}
+                        onPicksChange={setPendingPicks}
+                        requestedBuckets={requestedBuckets}
+                        requests={selectedRating.curationRequests}
                       />
                     ) : (
                     <div className="rating-field">
@@ -1032,16 +1027,15 @@ export const RatingDetailPopup = ({
                         )}
                       </label>
                       <div className="rating-input-container">
-                        <RatingInput
-                          value={pendingRating}
-                          onChange={(value) => {
+                        <RatingModeInput
+                          mode="difficulty"
+                          disabled={isRatingLocked}
+                          difficulties={difficulties}
+                          rating={pendingRating}
+                          onRatingChange={(value) => {
                             setPendingRating(value);
                             validateRating(value);
                           }}
-                          showDiff={false}
-                          difficulties={difficulties}
-                          allowCustomInput={true}
-                          disabled={isRatingLocked}
                         />
                         {(pendingRating && difficulties.find(d => d.name === pendingRating)) && 
                           <img src={selectIconSize(difficulties.find(d => d.name === pendingRating)?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />}

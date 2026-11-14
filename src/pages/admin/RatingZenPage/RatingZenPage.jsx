@@ -14,7 +14,7 @@ import {
   DEFAULT_RANDOMNESS,
 } from '@/contexts/ZenModeContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
-import { CustomSelect, RatingInput } from '@/components/common/selectors';
+import { CustomSelect } from '@/components/common/selectors';
 import { RatingItem } from '@/components/cards';
 import { CloseButton, ReferencesButton } from '@/components/common/buttons';
 import { CheckmarkIcon, ChartIcon, EyeIcon, MetronomeIcon, SkipIcon, TimeIcon } from '@/components/common/icons';
@@ -30,9 +30,9 @@ import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/utils/autorater';
 import { REQUEST_BANDS, autoraterHideBand, isVoteRatingCard } from '@/utils/ratingRequestBand';
-import { CurationRatingPicks, CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
-import { CurationSettlePopup } from '@/components/popups/Levels/EditLevelPopup/CurationSettlePopup';
-import { emptyCurationPicks, picksAreEmpty } from '@/utils/curationTypeFamilies';
+import { CurationPickDisplay } from '@/components/popups/Rating/RatingDetailPopup/CurationRatingPicks';
+import { RatingModeInput } from '@/components/popups/Rating/RatingDetailPopup/RatingModeInput';
+import { curationRatingPayload, emptyCurationPicks, picksAreEmpty, requestedCurationBuckets } from '@/utils/curationTypeFamilies';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
@@ -45,6 +45,11 @@ const DECK_UNIT = 5;
 const MIN_DECK_SIZE = 1;
 const MAX_DECK_SIZE = 200;
 const CUSTOM_DECK_VALUE = 'custom';
+const CURATION_POOLS = [
+  ['recent', 'includeRecent'],
+  ['rerate', 'includeRerate'],
+  ['bulk', 'includeBulk'],
+];
 
 function peeksForDeckSize(n) {
   return Math.floor(Math.max(0, Number(n) || 0) / DECK_UNIT);
@@ -78,11 +83,9 @@ async function submitZenRating(id, rating, comment, isCommunityRating, viewDurat
   return response.data;
 }
 
-async function submitZenCuration(id, picks, comment, viewDurationSeconds = 0) {
+async function submitZenCuration(id, picks, comment, viewDurationSeconds = 0, curationTypesDict) {
   const response = await api.put(routes.admin.curationRatingById(id), {
-    chartTypeId: picks.chartTypeId,
-    vfxTypeId: picks.vfxTypeId,
-    miscTypeIds: picks.miscTypeIds,
+    ...curationRatingPayload(picks, curationTypesDict),
     comment,
     ratedInZen: true,
     viewDurationSeconds,
@@ -119,6 +122,9 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
     includeP,
     includeG,
     includeU,
+    includeRecent = true,
+    includeRerate = true,
+    includeBulk = true,
     sortPreset,
     randomness,
     cards,
@@ -177,7 +183,6 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
   );
   const [customDeckDraft, setCustomDeckDraft] = useState(() => String(session.deckSize));
   const [linkedRequest, setLinkedRequest] = useState(null);
-  const [settleTarget, setSettleTarget] = useState(null);
   const viewTrackersRef = useRef(new Map());
 
   const disposeViewTrackers = useCallback(() => {
@@ -268,6 +273,10 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
   const isVoteCard = isCurationMode
     ? Boolean(current?.isDiscordVote)
     : isVoteRatingCard(current, linkedRequest);
+  const requestedBuckets = useMemo(
+    () => requestedCurationBuckets(current?.curationRequests, curationTypesDict),
+    [current?.curationRequests, curationTypesDict],
+  );
 
   useEffect(() => {
     const ratingId = current?.id;
@@ -299,15 +308,6 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
       permissionFlags.SUPER_ADMIN,
       permissionFlags.RATER,
       ...(isCurationMode ? [permissionFlags.CURATOR, permissionFlags.HEAD_CURATOR] : []),
-    ])
-  );
-  const canSettleCuration = Boolean(
-    isCurationMode &&
-    user &&
-    hasAnyFlag(user, [
-      permissionFlags.CURATOR,
-      permissionFlags.HEAD_CURATOR,
-      permissionFlags.SUPER_ADMIN,
     ])
   );
   const alreadyRated = Boolean(
@@ -369,6 +369,10 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
         value: 'recent',
         label: t('rating.zen.setup.sortRecent'),
       },
+      {
+        value: 'added',
+        label: t('rating.zen.setup.sortAdded'),
+      },
     ],
     [t]
   );
@@ -386,6 +390,8 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
         return { sort: 'id', order: 'ASC' };
       case 'recent':
         return { sort: 'updatedAt', order: 'DESC' };
+      case 'added':
+        return { sort: 'createdAt', order: 'DESC' };
       case 'least':
       default:
         return { sort: 'ratings', order: 'ASC' };
@@ -449,7 +455,11 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
         params: {
           deckSize: requestedSize,
           ...(isCurationMode
-            ? {}
+            ? {
+                includeRecent: includeRecent ? 'true' : 'false',
+                includeRerate: includeRerate ? 'true' : 'false',
+                includeBulk: includeBulk ? 'true' : 'false',
+              }
             : {
                 includeP: includeP ? 'true' : 'false',
                 includeG: includeG ? 'true' : 'false',
@@ -482,6 +492,9 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
         includeP,
         includeG,
         includeU,
+        includeRecent,
+        includeRerate,
+        includeBulk,
         sortPreset,
         randomness,
       });
@@ -508,6 +521,9 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
     includeP,
     includeG,
     includeU,
+    includeRecent,
+    includeRerate,
+    includeBulk,
     randomness,
     sortPreset,
     sortParams,
@@ -720,16 +736,18 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
 
   const handleReport = async () => {
     if (!current) return;
-    const note = window.prompt(
-      t('rating.zen.reportPrompt'),
-      ''
-    );
-    if (note === null) return;
+    const entered = window.prompt(t('rating.zen.reportPrompt'), '');
+    if (entered === null) return;
+    const note = entered.trim();
+    if (!note) {
+      toast.error(t('rating.zen.errors.reportNoteRequired'));
+      return;
+    }
     try {
       await api.post(isCurationMode ? routes.admin.curationRatingZenReport() : routes.admin.ratingZenReport(), {
         ratingId: current.id,
         levelId: current.level?.id || current.levelId,
-        note: note || undefined,
+        note,
       });
       toast.success(t('rating.zen.messages.reportSent'));
     } catch (err) {
@@ -770,7 +788,8 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
           current.id,
           pendingPicks,
           pendingComment.trim(),
-          viewDurationSeconds
+          viewDurationSeconds,
+          curationTypesDict
         );
       } else {
         await submitZenRating(
@@ -1013,6 +1032,35 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
             </div>
             )}
 
+            {isCurationMode && (
+            <div className="rating-zen-page__field">
+              <span>{t('rating.curationRating.zen.pools')}</span>
+              <div className="rating-zen-page__pgu rating-zen-page__pgu--pools">
+                {CURATION_POOLS.map(([pool, key]) => {
+                  const included =
+                    key === 'includeRecent'
+                      ? includeRecent
+                      : key === 'includeRerate'
+                        ? includeRerate
+                        : includeBulk;
+                  return (
+                    <label key={pool} className="rating-zen-page__pgu-item">
+                      <input
+                        type="checkbox"
+                        checked={!included}
+                        onChange={(e) =>
+                          patchSession({ [key]: !e.target.checked })
+                        }
+                      />
+                      <span>{t(`rating.curationRating.flows.${pool}`)}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <small>{t('rating.curationRating.zen.poolsHint')}</small>
+            </div>
+            )}
+
             <div className="rating-zen-page__field">
               <span>{t('rating.zen.setup.sort')}</span>
               <CustomSelect
@@ -1207,18 +1255,6 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
                       }));
                     }}
                   />
-                  {canSettleCuration && (
-                    <button
-                      type="button"
-                      className="btn-fill-primary btn-block"
-                      onClick={() => setSettleTarget({
-                        ratingId: current.id,
-                        levelId: current.level?.id,
-                      })}
-                    >
-                      {t('components:rating.detailPopup.curation.settle')}
-                    </button>
-                  )}
                   <div className="rating-zen-page__actions">
                     <button
                       type="button"
@@ -1421,48 +1457,24 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
               {!isVoteCard && !hasFlag(user, permissionFlags.RATING_BANNED) && (
                 <div className="rating-zen-page__form">
                   {isCurationMode ? (
-                    <CurationRatingPicks
-                      chartTypeId={pendingPicks.chartTypeId}
-                      vfxTypeId={pendingPicks.vfxTypeId}
-                      miscTypeIds={pendingPicks.miscTypeIds}
+                    <RatingModeInput
+                      mode="curation"
                       disabled={alreadyRated}
-                      onChartChange={(value) =>
-                        patchSession((prev) => ({
-                          pendingPicks: { ...(prev.pendingPicks || emptyCurationPicks()), chartTypeId: value },
-                        }))
-                      }
-                      onVfxChange={(value) =>
-                        patchSession((prev) => ({
-                          pendingPicks: { ...(prev.pendingPicks || emptyCurationPicks()), vfxTypeId: value },
-                        }))
-                      }
-                      onMiscToggle={(typeId) => {
-                        const id = Number(typeId);
-                        patchSession((prev) => {
-                          const currentPicks = prev.pendingPicks || emptyCurationPicks();
-                          const has = (currentPicks.miscTypeIds || []).includes(id);
-                          return {
-                            pendingPicks: {
-                              ...currentPicks,
-                              miscTypeIds: has
-                                ? currentPicks.miscTypeIds.filter((item) => item !== id)
-                                : [...currentPicks.miscTypeIds, id],
-                            },
-                          };
-                        });
-                      }}
+                      picks={pendingPicks}
+                      onPicksChange={(next) => patchSession({ pendingPicks: next })}
+                      requestedBuckets={requestedBuckets}
+                      requests={current?.curationRequests}
                     />
                   ) : (
                   <div className="rating-zen-page__field">
                     <span>{t('components:rating.detailPopup.labels.yourRating')}</span>
                     <div className="rating-zen-page__rating-row">
-                      <RatingInput
-                        value={pendingRating}
-                        onChange={(value) => patchSession({ pendingRating: value })}
-                        showDiff={false}
-                        difficulties={difficulties}
-                        allowCustomInput={true}
+                      <RatingModeInput
+                        mode="difficulty"
                         disabled={alreadyRated}
+                        difficulties={difficulties}
+                        rating={pendingRating}
+                        onRatingChange={(value) => patchSession({ pendingRating: value })}
                       />
                     </div>
                   </div>
@@ -1592,33 +1604,6 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
         </div>
       )}
 
-      {isCurationMode && settleTarget && (
-        <CurationSettlePopup
-          ratingId={settleTarget.ratingId}
-          levelId={settleTarget.levelId}
-          onClose={() => setSettleTarget(null)}
-          onSettled={() => {
-            setSettleTarget(null);
-            const viewDurationSeconds = readViewDurationSeconds(
-              current?.id,
-              cardAnswers[index]?.viewDurationSeconds
-            );
-            applyOutcomeAndAdvance(
-              index,
-              alreadyRated ? (cardOutcomes[index] || 'rated') : 'skipped',
-              {
-                rating: '',
-                comment: pendingComment,
-                picks: pendingPicks,
-                peeked: cardPeeked,
-                viewDurationSeconds,
-              },
-              alreadyRated ? null : 0
-            );
-            void flushSession();
-          }}
-        />
-      )}
     </div>
   );
 };

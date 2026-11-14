@@ -29,7 +29,9 @@
         "title": "큐레이션 Zen 모드",
         "description": "집중 큐레이션 세션"
       },
-      "setupTitle": "큐레이션 Zen 모드"
+      "setupTitle": "큐레이션 Zen 모드",
+      "pools": "풀 숨기기",
+      "poolsHint": "체크하면 해당 풀을 덱에서 제외합니다"
     }
   },
   "buttons": {
@@ -63,7 +65,8 @@
     "byId": "레벨 ID",
     "byRatings": "평가 수",
     "byRatingsFull": "평가 수로 정렬",
-    "byDate": "최종 업데이트"
+    "byDate": "최종 업데이트",
+    "byAdded": "추가된 날짜"
   },
   "search": {
     "placeholder": "레벨 이름, 제작자, 난이도로 검색"
