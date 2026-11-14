@@ -7,8 +7,8 @@ import { requestedCurationTypesByBucket } from '@/utils/curationTypeFamilies';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 
 const COLUMNS = [
-  { bucket: 'chart', key: 'columnChart', fallback: 'C' },
-  { bucket: 'vfx', key: 'columnVfx', fallback: 'V' },
+  { bucket: 'chart', key: 'columnChart', fallback: 'Chart' },
+  { bucket: 'vfx', key: 'columnVfx', fallback: 'VFX' },
   { bucket: 'misc', key: 'columnMisc', fallback: 'Misc' },
 ];
 

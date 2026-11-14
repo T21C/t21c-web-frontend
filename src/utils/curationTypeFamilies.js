@@ -117,15 +117,26 @@ export function visibleCurationRequests(requests) {
   return (requests || []).filter(curationRequestHasTypes);
 }
 
+/** Rerates only count add/remove; unchanged leftover types are not a requested bucket. */
+function requestedChangeEntries(request) {
+  const addIds = request.addCurationTypeIds || [];
+  const removeIds = request.removeCurationTypeIds || [];
+  const selectedIds = request.curationTypeIds || [];
+  if (request.type === 'curation_rerate' && (addIds.length > 0 || removeIds.length > 0)) {
+    return [
+      ...addIds.map((id) => ({ id, change: 'add' })),
+      ...removeIds.map((id) => ({ id, change: 'remove' })),
+    ];
+  }
+  const source = selectedIds.length > 0 ? selectedIds : addIds;
+  return source.map((id) => ({ id, change: 'set' }));
+}
+
 export function collectRequestedCurationTypeIds(requests) {
   const ids = [];
   const seen = new Set();
-  for (const request of requests || []) {
-    for (const raw of [
-      ...(request.curationTypeIds || []),
-      ...(request.addCurationTypeIds || []),
-      ...(request.removeCurationTypeIds || []),
-    ]) {
+  for (const request of visibleCurationRequests(requests)) {
+    for (const { id: raw } of requestedChangeEntries(request)) {
       const id = Number(raw);
       if (!Number.isInteger(id) || id <= 0 || seen.has(id)) continue;
       seen.add(id);
@@ -190,16 +201,9 @@ export function requestedCurationTypesByBucket(requests, typesDict) {
   };
 
   for (const request of visibleCurationRequests(requests)) {
-    const addIds = request.addCurationTypeIds || [];
-    const removeIds = request.removeCurationTypeIds || [];
-    const selectedIds = request.curationTypeIds || [];
-    if (request.type === 'curation_rerate' && (addIds.length > 0 || removeIds.length > 0)) {
-      for (const id of addIds) push(id, 'add');
-      for (const id of removeIds) push(id, 'remove');
-      continue;
+    for (const { id, change } of requestedChangeEntries(request)) {
+      push(id, change);
     }
-    const source = selectedIds.length > 0 ? selectedIds : addIds;
-    for (const id of source) push(id, 'set');
   }
 
   sortRequestedCurationTypeEntries(grouped.chart);

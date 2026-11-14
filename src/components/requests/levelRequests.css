@@ -124,6 +124,12 @@
   width: 100%;
 }
 
+.level-requests .level-requests__required {
+  color: var(--danger-color);
+  font-weight: 700;
+  margin-inline-start: 0.2rem;
+}
+
 .level-requests .level-requests__field > .rating-input-container > .lv-icon {
   width: 1.5rem;
   height: 1.5rem;
@@ -209,6 +215,10 @@
   background: transparent;
   color: var(--text-color);
   padding: 0.45rem 0.6rem;
+}
+
+.level-requests .level-requests__field > .level-mention-field:user-invalid {
+  border-color: var(--danger-color);
 }
 
 .level-requests .level-requests__field textarea,

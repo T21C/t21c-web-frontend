@@ -658,7 +658,7 @@
 }
 
 .rating-popup .rating-field textarea::placeholder,
-.rating-popup .rating-field .level-mention-field.is-empty::before {
+.rating-popup .rating-field .level-mention-field::placeholder {
     color: #999;
 }
 

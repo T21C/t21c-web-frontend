@@ -257,7 +257,6 @@ const LevelRequestFormPopup = ({
     || (type === 'curation_rerate' && (!curationReady || appliedCurationIds == null));
   const formBlocked = stillLoading
     || ratingMissing
-    || reasonMissing
     || Boolean(tagIssue || infoIssue || curationSlotIssue || curationIssue || reratingComparison);
   const isDirty = useMemo(() => {
     if (reason !== baseline.reason) return true;
@@ -632,7 +631,13 @@ const LevelRequestFormPopup = ({
           ? t('levelRequests.form.editTitle', { type: t(`levelRequests.types.${type}`) })
           : t('levelRequests.form.title', { type: t(`levelRequests.types.${type}`) })}
       </h2>
-      <div className="level-requests__form">
+      <form
+        className="level-requests__form"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void submit();
+        }}
+      >
         {type === 'rerate' && (
           <div className="level-requests__field">
             <span>{t('levelRequests.form.requestedRating')}</span>
@@ -863,16 +868,20 @@ const LevelRequestFormPopup = ({
           </div>
         )}
         <label className="level-requests__field">
-          <span>{reasonRequired ? t('levelRequests.form.reason') : t('levelRequests.form.reasonOptional')}</span>
+          <span>
+            {reasonRequired ? t('levelRequests.form.reason') : t('levelRequests.form.reasonOptional')}
+            {reasonRequired && (
+              <span className="level-requests__required" aria-hidden="true">*</span>
+            )}
+          </span>
           <LevelMentionField
+            name="reason"
             value={reason}
             maxLength={1000}
+            required={reasonRequired}
             onChange={(event) => setReason(event.target.value)}
             placeholder={reasonRequired ? t('levelRequests.form.reasonPlaceholder') : t('levelRequests.form.reasonPlaceholderOptional')}
           />
-          {reasonMissing && (
-            <span className="level-requests__hint level-requests__hint--issue">{t('levelRequests.errors.reason')}</span>
-          )}
           {reratingComparison && (
             <span className="level-requests__hint level-requests__hint--issue">
               {t('levelRequests.errors.comparison_rerating', { label: reratingComparison.label })}
@@ -884,9 +893,8 @@ const LevelRequestFormPopup = ({
             <span className="level-requests__hint level-requests__upload-progress">{progressLabel()}</span>
           )}
           <button
-            type="button"
+            type="submit"
             className="level-requests__button level-requests__button--primary"
-            onClick={submit}
             disabled={saving || formBlocked}
           >
             {saving ? t('levelRequests.form.submitting') : request ? t('levelRequests.form.save') : t('levelRequests.form.submit')}
@@ -895,7 +903,7 @@ const LevelRequestFormPopup = ({
             {t('levelRequests.form.cancel')}
           </button>
         </div>
-      </div>
+      </form>
     </PopupShell>
     {levelFiles.length > 0 && (
       <LevelSelectionPopup
