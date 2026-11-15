@@ -36,7 +36,7 @@
       "discordThreadClosed": "Discordスレッドは閉じられています"
     },
     "errors": {
-      "commentLength": "コメントは1000文字未満にしてください",
+      "commentLength": "コメントは{{max}}文字以内にしてください",
       "commentRequired": "-2のレーティングにはコメントが必要です",
       "saveFailed": "変更の保存に失敗しました",
       "updateFailed": "レーティングの更新に失敗しました",

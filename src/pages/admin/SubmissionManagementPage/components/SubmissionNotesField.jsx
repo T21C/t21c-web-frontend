@@ -70,7 +70,6 @@ export default function SubmissionNotesField({ notes = '', onSave }) {
               }
             }}
             placeholder={t('levelSubmissions.details.notesPlaceholder')}
-            maxLength={4000}
             disabled={saving}
             autoFocus
           />

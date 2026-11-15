@@ -11,7 +11,7 @@
     "empty": "Aucune vidéo correspondante",
     "loadOlder": "Charger des vidéos plus anciennes",
     "unlisted": "Non répertoriée",
-    "unlistedNote": "Les vidéos non répertoriées restent masquées.",
+    "unlistedNote": "Impossible de voir les vidéos non répertoriées.",
     "allowAccess": "Autoriser l'accès à la chaîne",
     "loadFailed": "Impossible de charger vos vidéos YouTube"
   },

@@ -237,7 +237,7 @@
       "mergeFailed": "플레이어 병합 실패",
       "mergeSelf": "플레이어를 자기 자신에게 병합할 수 없습니다",
       "noticeFailed": "알림을 보내지 못했습니다",
-      "noticeLength": "메모는 4000자 이하여야 합니다"
+      "noticeLength": "메모는 {{max}}자 이하여야 합니다"
     },
     "success": {
       "updated": "플레이어가 업데이트되었습니다",

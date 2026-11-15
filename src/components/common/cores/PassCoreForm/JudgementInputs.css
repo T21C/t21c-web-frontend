@@ -29,6 +29,53 @@
   white-space: nowrap;
 }
 
+.judgement-inputs .judgement-inputs__control {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+.judgement-inputs.judgement-inputs--xperfect .judgement-inputs__control {
+  flex: 0 0 auto;
+}
+
+.judgement-inputs .judgement-inputs__fill {
+  position: absolute;
+  right: 0.15rem;
+  bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0.6;
+  border-radius: 0.2rem;
+  background: transparent;
+  color: var(--color-white, #fff);
+  text-shadow: none;
+  box-shadow: none;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.judgement-inputs .judgement-inputs__fill:hover,
+.judgement-inputs .judgement-inputs__fill:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.judgement-inputs .judgement-inputs__fill:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 1px;
+}
+
+.judgement-inputs .judgement-inputs__field--has-fill input,
+.pass-core-form .judgement-inputs .judgement-inputs__field--has-fill input {
+  padding-right: 1.45rem;
+}
+
 .judgement-inputs .judgement-inputs__row--top .judgement-inputs__field--ePerfect,
 .judgement-inputs .judgement-inputs__row--top .judgement-inputs__field--lPerfect {
   flex: 4;

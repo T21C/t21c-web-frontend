@@ -251,7 +251,7 @@
       "mergeFailed": "プレイヤーの統合に失敗しました",
       "mergeSelf": "プレイヤーを自分自身に統合することはできません",
       "noticeFailed": "通知の送信に失敗しました",
-      "noticeLength": "メモは4000文字以内で入力してください"
+      "noticeLength": "メモは{{max}}文字以内で入力してください"
     },
     "success": {
       "updated": "プレイヤーの更新に成功しました",

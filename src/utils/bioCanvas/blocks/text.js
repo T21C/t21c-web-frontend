@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { LARGE_TEXT_MAX } from "@shared/textLimits";
 
 const DANGEROUS_TEXT = /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\/\*|\*\/|<\/|<>/i;
 
 export const TEXT_BLOCK_TYPE = "text";
 export const MAX_TEXT_HEADING_LENGTH = 120;
-export const MAX_TEXT_BODY_LENGTH = 4000;
+export const MAX_TEXT_BODY_LENGTH = LARGE_TEXT_MAX;
 export const MIN_TEXT_FONT_SIZE = 12;
 export const MAX_TEXT_FONT_SIZE = 72;
 export const DEFAULT_TEXT_FONT_SIZE = 16;

@@ -251,7 +251,7 @@
       "mergeFailed": "玩家失合并败",
       "mergeSelf": "不能将玩家与自己合并",
       "noticeFailed": "通知发送失败",
-      "noticeLength": "备注不超过 4000 个字符"
+      "noticeLength": "备注不超过 {{max}} 个字符"
     },
     "success": {
       "updated": "玩家更新成功",

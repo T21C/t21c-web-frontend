@@ -15,6 +15,7 @@ import {
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
 import { applyDerivedPerfects } from '@/utils/CalcAcc';
 import { formToScoringJudgements } from '@/utils/ParseJudgements';
+import { getEffectiveTilecount } from '@/utils/passJudgementHitCount';
 import './PassCoreForm.css';
 import { JudgementInputs } from './JudgementInputs';
 import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
@@ -68,6 +69,7 @@ export const PASS_CORE_COPY = {
     tooEarly: 'passSubmission.judgements.tooearly',
     early: 'passSubmission.judgements.early',
     late: 'passSubmission.judgements.late',
+    fillRemainder: 'passSubmission.judgements.fillRemainder',
     accPrefix: 'passSubmission.acc',
     scorePrefix: 'passSubmission.scoreCalc',
     scoreNeedId: 'passSubmission.score.needId',
@@ -240,6 +242,9 @@ export function PassCoreForm({
   const adofaiVersion = parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0);
   const showXPerfectToggle = canUseXPerfectMode(adofaiVersion);
   const showXPerfectFields = showXPerfectToggle && !!form.isXPerfectMode;
+  const judgementAutofillCount = mode === 'submit'
+    ? getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount)
+    : null;
   const eraOptions = [
     { value: ADOFAI_VERSION.V3_4_0, label: t(copy.adofaiVersionLatest, { ns: copy.ns }) },
     { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
@@ -620,7 +625,13 @@ export function PassCoreForm({
                 placeholder={t(copy.adofaiVersionLabel, { ns: copy.ns })}
                 width="11rem"
               />
-              <Tooltip className="tooltip" id="adofaiVersionTooltip" place="bottom-end" effect="solid" />
+              <Tooltip
+                className="tooltip"
+                id="adofaiVersionTooltip"
+                place="bottom-end"
+                effect="solid"
+                style={{ maxWidth: '300px', whiteSpace: 'normal' }}
+              />
             </div>
 
             <div
@@ -669,6 +680,7 @@ export function PassCoreForm({
             score={score}
             copy={copy}
             showXPerfectFields={showXPerfectFields}
+            achievableCount={judgementAutofillCount}
           />
           {renderJudgementActions ? (
             <div className="judgement-tool-actions">{renderJudgementActions()}</div>

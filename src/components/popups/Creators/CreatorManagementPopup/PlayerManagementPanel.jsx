@@ -12,10 +12,10 @@ import { hasFlag, isBanExpired, permissionFlags, setUserPermission } from '@/uti
 import api from '@/utils/api';
 import { CreatorAssignmentPanel } from '@/components/popups/Creators/CreatorAssignmentPopup/CreatorAssignmentPanel';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
+import { LargeTextarea } from '@/components/common/LargeTextarea';
+import { LARGE_TEXT_MAX } from '@shared/textLimits';
 import AliasListEditor from './AliasListEditor';
 import '@/components/popups/Creators/CreatorAssignmentPopup/creatorAssignmentPopup.css';
-
-const NOTICE_MESSAGE_MAX = 4000;
 
 const PLAYER_TABS = [
   { id: 'update', i18nKey: 'player.modes.update' },
@@ -530,8 +530,8 @@ const PlayerManagementPanel = ({
     const userId = player?.user?.id;
     const message = noticeMessage.trim();
     if (!userId || !message) return;
-    if (message.length > NOTICE_MESSAGE_MAX) {
-      const msg = tt('player.errors.noticeLength');
+    if (message.length > LARGE_TEXT_MAX) {
+      const msg = tt('player.errors.noticeLength', { max: LARGE_TEXT_MAX });
       setError(msg);
       toast.error(msg);
       return;
@@ -1066,12 +1066,11 @@ const PlayerManagementPanel = ({
                 )}
                 <div className="form-group">
                   <label htmlFor="player-notice-message">{tt('player.notice.notes.label')}</label>
-                  <textarea
+                  <LargeTextarea
                     id="player-notice-message"
                     value={noticeMessage}
                     onChange={(e) => setNoticeMessage(e.target.value)}
                     placeholder={tt('player.notice.notes.placeholder')}
-                    maxLength={NOTICE_MESSAGE_MAX}
                     rows={6}
                     disabled={isLoading || !player?.user?.id}
                   />

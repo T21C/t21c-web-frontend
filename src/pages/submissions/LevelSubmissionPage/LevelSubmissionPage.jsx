@@ -1562,7 +1562,6 @@ const LevelSubmissionPage = () => {
                 onChange={handleInputChange}
                 placeholder={t('levelSubmission.placeholders.notes')}
                 rows={4}
-                maxLength={4000}
                 autoComplete="off"
               />
             </div>

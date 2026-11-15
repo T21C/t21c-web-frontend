@@ -1,9 +1,12 @@
 // tuf-search: #JudgementInputs #passCoreForm #judgementInputs
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Tooltip } from '@/components/common/display/Tooltip';
+import { SparkleIcon } from '@/components/common/icons';
 import calcAcc from '@/utils/CalcAcc';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { judgementsAreComplete, parseJudgements } from '@/utils/ParseJudgements';
+import { getJudgementRemainderFill } from '@/utils/passJudgementHitCount';
 import './JudgementInputs.css';
 
 const DEFAULT_COPY = {
@@ -16,6 +19,7 @@ const DEFAULT_COPY = {
   tooEarly: 'passSubmission.judgements.tooearly',
   early: 'passSubmission.judgements.early',
   late: 'passSubmission.judgements.late',
+  fillRemainder: 'passSubmission.judgements.fillRemainder',
   accPrefix: 'passSubmission.acc',
   scorePrefix: 'passSubmission.scoreCalc',
 };
@@ -59,11 +63,24 @@ export function JudgementInputs({
   className = '',
   integerOnly = false,
   showXPerfectFields = false,
+  achievableCount = null,
 }) {
   const copy = copyProp || DEFAULT_COPY;
   const { t } = useTranslation([copy.ns, 'common']);
   const shouldShowScore = showScore ?? score != null;
   const topFields = showXPerfectFields ? XPERFECT_TOP_FIELDS : TOP_FIELDS;
+  const fillTooltipId = `judgement-remainder-${useId().replace(/:/g, '')}`;
+  const remainderFill = useMemo(
+    () => getJudgementRemainderFill(values, achievableCount, { includeXPerfect: showXPerfectFields }),
+    [values, achievableCount, showXPerfectFields],
+  );
+  const fillLabel = remainderFill
+    ? t(copy.fillRemainder || DEFAULT_COPY.fillRemainder, {
+        ns: copy.ns,
+        count: remainderFill.value,
+        defaultValue: 'Fill remaining {{count}}',
+      })
+    : '';
 
   const resolvedAccuracy = useMemo(() => {
     if (accuracy !== undefined) return accuracy;
@@ -76,23 +93,46 @@ export function JudgementInputs({
     const valid = !isValidDisplay || isValidDisplay[name];
     const fullKey = copy[name];
     const label = fullKey ? t(fullKey, { ns: copy.ns, defaultValue: name }) : name;
+    const showFill = remainderFill?.field === name;
     return (
-      <div className={`judgement-inputs__field judgement-inputs__field--${name}`} key={name}>
+      <div
+        className={`judgement-inputs__field judgement-inputs__field--${name}${showFill ? ' judgement-inputs__field--has-fill' : ''}`}
+        key={name}
+      >
         <p>{label}</p>
-        <input
-          type="text"
-          inputMode={integerOnly ? 'numeric' : undefined}
-          pattern={integerOnly ? '[0-9]*' : undefined}
-          autoComplete="off"
-          placeholder="#"
-          name={name}
-          value={values[name] ?? ''}
-          onChange={(e) => {
-            if (integerOnly && !isIntegerInputValue(e.target.value)) return;
-            onChange(e);
-          }}
-          style={{ borderColor: valid ? '' : 'red', color }}
-        />
+        <div className="judgement-inputs__control">
+          <input
+            type="text"
+            inputMode={integerOnly ? 'numeric' : undefined}
+            pattern={integerOnly ? '[0-9]*' : undefined}
+            autoComplete="off"
+            placeholder="#"
+            name={name}
+            value={values[name] ?? ''}
+            onChange={(e) => {
+              if (integerOnly && !isIntegerInputValue(e.target.value)) return;
+              onChange(e);
+            }}
+            style={{ borderColor: valid ? '' : 'red', color }}
+          />
+          {showFill && (
+            <button
+              type="button"
+              className="judgement-inputs__fill"
+              aria-label={fillLabel}
+              data-tooltip-id={fillTooltipId}
+              data-tooltip-content={fillLabel}
+              onClick={(event) => {
+                event.preventDefault();
+                onChange({
+                  target: { name, value: String(remainderFill.value), type: 'text' },
+                });
+              }}
+            >
+              <SparkleIcon size={16} />
+            </button>
+          )}
+        </div>
       </div>
     );
   };
@@ -126,6 +166,9 @@ export function JudgementInputs({
           ) : null}
         </div>
       ) : null}
+      {remainderFill && (
+        <Tooltip className="tooltip" id={fillTooltipId} place="top" effect="solid" />
+      )}
     </div>
   );
 }

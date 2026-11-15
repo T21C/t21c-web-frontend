@@ -7,8 +7,6 @@ import { reratingComparisonFromRefs } from '@/components/requests/levelRequestSh
 import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
 import { LevelMentionField } from '@/components/misc';
 
-const FEELING_EXPLANATION_MAX = 1000;
-
 function comparisonIdsFromExplanation(text, levelId) {
   const currentId = Number(levelId);
   return collectLevelReferenceIds(text).filter((id) => id !== currentId);
@@ -122,7 +120,6 @@ export function FeelingExplanationPopup({
           <label className="feeling-explanation-modal-field">
             <LevelMentionField
               value={explanation}
-              maxLength={FEELING_EXPLANATION_MAX}
               onChange={(event) => setExplanation(event.target.value)}
               placeholder={t('passSubmission.feelingExplanation.placeholder')}
               disabled={submitting}

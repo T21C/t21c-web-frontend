@@ -139,7 +139,7 @@
     "empty": "일치하는 영상이 없습니다",
     "loadOlder": "이전 영상 더 보기",
     "unlisted": "일부 공개",
-    "unlistedNote": "일부 공개 영상은 숨겨져 있습니다.",
+    "unlistedNote": "일부 공개 영상을 볼 수 없습니다.",
     "allowAccess": "채널 접근 허용",
     "loadFailed": "YouTube 영상을 불러오지 못했습니다"
   }

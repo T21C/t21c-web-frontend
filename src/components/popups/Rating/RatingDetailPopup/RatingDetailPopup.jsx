@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 import { RatingFlowActions, RatingFlowMarks } from '@/components/cards/RatingCard/RatingFlowActions';
 import autoratercato from "@/assets/icons/autorater-v2.png";
 import { Tooltip } from '@/components/common/display/Tooltip';
+import { LARGE_TEXT_MAX } from '@shared/textLimits';
 import { CommentFormatter, LevelMentionField } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import { RatingHeaderMeta } from './RatingHeaderMeta';
@@ -525,9 +526,9 @@ export const RatingDetailPopup = ({
     setCommentError(false);
 
     try {
-      if (pendingComment.length > 10000) {
+      if (pendingComment.length > LARGE_TEXT_MAX) {
         setCommentError(true);
-        setSaveError(t('rating.detailPopup.errors.commentLength'));
+        setSaveError(t('rating.detailPopup.errors.commentLength', { max: LARGE_TEXT_MAX }));
         setIsSaving(false);
         return;
       }

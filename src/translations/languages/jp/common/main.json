@@ -139,7 +139,7 @@
     "empty": "一致する動画がありません",
     "loadOlder": "古い動画を読み込む",
     "unlisted": "限定公開",
-    "unlistedNote": "限定公開動画は表示されません。",
+    "unlistedNote": "限定公開動画を表示できません。",
     "allowAccess": "チャンネルへのアクセスを許可",
     "loadFailed": "YouTube動画を読み込めませんでした"
   }

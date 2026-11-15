@@ -7,11 +7,11 @@ import { routes } from '@/api/routes';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
+import { LargeTextarea } from '@/components/common/LargeTextarea';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import './modReportPopup.css';
 
 const REASONS = ['deprecated', 'abuse', 'duplicate'];
-const NOTE_MAX = 4000;
 const VERSION_MAX = 64;
 
 const EMPTY_FORM = {
@@ -143,10 +143,9 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
               </label>
               <label className="mod-report-popup__field">
                 <span>{t('mods.report.brokenEffect')}</span>
-                <textarea
+                <LargeTextarea
                   value={form.brokenEffect}
                   onChange={setField('brokenEffect')}
-                  maxLength={NOTE_MAX}
                   disabled={submitting}
                   rows={4}
                   required
@@ -157,10 +156,9 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
           {form.reason === 'abuse' ? (
             <label className="mod-report-popup__field">
               <span>{t('mods.report.note')}</span>
-              <textarea
+              <LargeTextarea
                 value={form.note}
                 onChange={setField('note')}
-                maxLength={NOTE_MAX}
                 disabled={submitting}
                 rows={4}
                 required
@@ -181,10 +179,9 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
               </label>
               <label className="mod-report-popup__field">
                 <span>{t('mods.report.mergeWhy')}</span>
-                <textarea
+                <LargeTextarea
                   value={form.mergeWhy}
                   onChange={setField('mergeWhy')}
-                  maxLength={NOTE_MAX}
                   disabled={submitting}
                   rows={4}
                   required

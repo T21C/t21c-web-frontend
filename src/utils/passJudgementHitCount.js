@@ -103,3 +103,50 @@ export function isIncludedMidspinOnLatestVersion({
   if (hits !== effective + midspin) return false;
   return Math.floor(num(perfect)) >= midspin;
 }
+
+/** Inputs that add up to achievable tilecount. `tooEarly` is a miss and is left out. */
+const TILECOUNT_JUDGEMENT_FIELDS = ['ePerfect', 'perfect', 'lPerfect', 'early', 'late'];
+const XPERFECT_TILECOUNT_JUDGEMENT_FIELDS = ['perfectMinus', 'perfect', 'perfectPlus', 'ePerfect', 'lPerfect', 'early', 'late'];
+
+function parseCountingInput(value) {
+  if (value == null) return { state: 'empty' };
+  const text = String(value).trim();
+  if (text === '') return { state: 'empty' };
+  if (!/^\d+$/.test(text)) return { state: 'invalid' };
+  return { state: 'filled', count: parseInt(text, 10) };
+}
+
+/**
+ * The one blank judgement whose count is fixed by the achievable tilecount
+ * minus judgements already entered. Misses do not count, so a blank `tooEarly`
+ * neither receives the fill nor blocks it. Returns null when that difference
+ * is not uniquely determined (unknown tilecount, more than one blank counting
+ * field, a non-numeric entry, or a negative remainder).
+ *
+ * @returns {{ field: string, value: number } | null}
+ */
+export function getJudgementRemainderFill(values, achievableCount, { includeXPerfect = false } = {}) {
+  if (achievableCount == null || achievableCount === '') return null;
+  const target = typeof achievableCount === 'number' ? achievableCount : Number(achievableCount);
+  if (!Number.isFinite(target) || target < 0) return null;
+  const achievable = Math.floor(target);
+  const fields = includeXPerfect ? XPERFECT_TILECOUNT_JUDGEMENT_FIELDS : TILECOUNT_JUDGEMENT_FIELDS;
+
+  let emptyField = null;
+  let filledSum = 0;
+  for (const field of fields) {
+    const parsed = parseCountingInput(values?.[field]);
+    if (parsed.state === 'invalid') return null;
+    if (parsed.state === 'empty') {
+      if (emptyField != null) return null;
+      emptyField = field;
+      continue;
+    }
+    filledSum += parsed.count;
+  }
+
+  if (emptyField == null) return null;
+  const value = achievable - filledSum;
+  if (value < 0) return null;
+  return { field: emptyField, value };
+}

@@ -6,6 +6,7 @@ import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
+import { LargeTextarea } from '@/components/common/LargeTextarea';
 import { requestErrorMessage } from './levelRequestShared';
 
 const LevelRequestStatusPopup = ({ request, onClose, onSaved }) => {
@@ -45,11 +46,11 @@ const LevelRequestStatusPopup = ({ request, onClose, onSaved }) => {
       <div className="level-requests__form">
         <label className="level-requests__field">
           <span>{t('levelRequests.statusPopup.publicNote')}</span>
-          <textarea value={publicNote} maxLength={1000} onChange={(event) => setPublicNote(event.target.value)} />
+          <LargeTextarea value={publicNote} onChange={(event) => setPublicNote(event.target.value)} />
         </label>
         <label className="level-requests__field">
           <span>{t('levelRequests.statusPopup.internalNote')}</span>
-          <textarea value={internalNote} maxLength={1000} onChange={(event) => setInternalNote(event.target.value)} />
+          <LargeTextarea value={internalNote} onChange={(event) => setInternalNote(event.target.value)} />
         </label>
         <div className="level-requests__actions">
           <button type="button" className="level-requests__button level-requests__button--primary" onClick={save} disabled={saving}>

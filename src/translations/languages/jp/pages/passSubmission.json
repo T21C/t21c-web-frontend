@@ -43,7 +43,8 @@
     "lPerfect": "LPerfect",
     "tooearly": "Too Early",
     "early": "Early",
-    "late": "Late"
+    "late": "Late",
+    "fillRemainder": "残り{{count}}を入力"
   },
   "acc": "精度：",
   "scoreCalc": "スコア：",
