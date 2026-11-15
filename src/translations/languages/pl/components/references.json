@@ -25,7 +25,8 @@
     "loading": "Ładowanie odniesień...",
     "errors": {
       "loadFailed": "Nie udało się załadować odniesień",
-      "saveFailed": "Nie udało się zapisać zmian"
+      "saveFailed": "Nie udało się zapisać zmian",
+      "missingLevels": "Nie znaleziono poziomów: {{ids}}"
     },
     "levelCount": {
       "singular": "1 poziom",

@@ -29,6 +29,7 @@
     "errors": {
       "loadFailed": "기줄 레벨 불러오기 실패",
       "saveFailed": "변경 사항 저장 실패",
+      "missingLevels": "레벨 ID를 찾을 수 없습니다: {{ids}}",
       "invalidType": "잘못된 기준 유형: {{type}}"
     },
     "messages": {

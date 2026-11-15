@@ -289,7 +289,7 @@ const parseReferenceString = (str) => {
       }
 
       // Parse level IDs
-      const levelIds = levelParts[0].split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+      const levelIds = levelParts[0].split(',').map(id => parseInt(id.trim(), 10)).filter(id => Number.isInteger(id) && id > 0);
 
       // Add each level ID with the type
       levelIds.forEach(levelId => {
@@ -297,7 +297,7 @@ const parseReferenceString = (str) => {
       });
     } else {
       // Handle untyped references (no colon)
-      const levelIds = line.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+      const levelIds = line.split(',').map(id => parseInt(id.trim(), 10)).filter(id => Number.isInteger(id) && id > 0);
       levelIds.forEach(levelId => {
         references.push({ type: '', levelId });
       });
@@ -558,31 +558,31 @@ const ReferencesPopup = ({ onClose }) => {
   const handleSaveChanges = async (diffId) => {
     setSaving(true);
     try {
-      try {
-        const newReferences = parseReferenceString(editedLevelIds[diffId]);
-        
-        // Send bulk update request
-        await api.put(routes.database.referencesBulk(diffId), {
-          references: newReferences
-        });
+      const newReferences = parseReferenceString(editedLevelIds[diffId]);
+      await api.put(routes.database.referencesBulk(diffId), {
+        references: newReferences
+      });
 
-        // Update changedDifficulties
-        setChangedDifficulties(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(diffId);
-          return newSet;
-        });
+      setChangedDifficulties(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(diffId);
+        return newSet;
+      });
 
-        await fetchReferences();
-        toast.success(t('references.popup.messages.saveSuccess'));
-      } catch (error) {
-        console.error('Error saving references:', error);
-        toast.error(t('references.popup.errors.saveFailed'));
-        throw error;
+      await fetchReferences();
+      toast.success(t('references.popup.messages.saveSuccess'));
+    } catch (error) {
+      console.error('Error saving references:', error);
+      const missing = error?.response?.data?.missingLevelIds;
+      if (Array.isArray(missing) && missing.length) {
+        toast.error(t('references.popup.errors.missingLevels', { ids: missing.join(', ') }));
+      } else {
+        toast.error(
+          error?.response?.data?.error
+          || error?.message
+          || t('references.popup.errors.saveFailed')
+        );
       }
-    } catch (err) {
-      console.error('Error in handleSaveChanges:', err);
-      toast.error(t('references.popup.errors.saveFailed'));
     } finally {
       setSaving(false);
     }
