@@ -15,6 +15,13 @@
       "saving": "Zapisywanie...",
       "cancel": "Anuluj"
     },
+    "watch": {
+      "watchDifficulty": "Obserwuj referencje {{name}}",
+      "unwatchDifficulty": "Przestań obserwować referencje {{name}}",
+      "watchGroup": "Obserwuj wszystkie trudności {{group}}",
+      "unwatchGroup": "Przestań obserwować trudności {{group}}",
+      "saveFailed": "Nie udało się zaktualizować obserwowanych referencji"
+    },
     "loading": "Ładowanie odniesień...",
     "errors": {
       "loadFailed": "Nie udało się załadować odniesień",

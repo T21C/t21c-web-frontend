@@ -290,23 +290,24 @@ export function formatCreatorDisplay (level) {
     const vfxers = creditsByRole['vfxer'] || [];
     const primaryCount = charters.length + vfxers.length;
 
+    const formatRoleList = (names) => {
+      if (names.length === 1) return names[0];
+      if (names.length === 2) return `${names[0]} & ${names[1]}`;
+      return `${names[0]} & ${names.length - 1} more`;
+    };
+
     // Handle different cases based on number of charter/vfxer credits
     if (primaryCount >= 3) {
       const parts = [];
-      if (charters.length > 0) {
-        parts.push(charters.length === 1 
-          ? charters[0] 
-          : `${charters[0]} & ${charters.length - 1} more`);
-      }
-      if (vfxers.length > 0) {
-        parts.push(vfxers.length === 1
-          ? vfxers[0]
-          : `${vfxers[0]} & ${vfxers.length - 1} more`);
-      }
+      if (charters.length > 0) parts.push(formatRoleList(charters));
+      if (vfxers.length > 0) parts.push(formatRoleList(vfxers));
       return parts.join(' | ');
     } else if (primaryCount === 2) {
       if (charters.length === 2) {
         return `${charters[0]} & ${charters[1]}`;
+      }
+      if (vfxers.length === 2) {
+        return `${vfxers[0]} & ${vfxers[1]}`;
       }
       if (charters.length === 1 && vfxers.length === 1) {
         return `${charters[0]} | ${vfxers[0]}`;

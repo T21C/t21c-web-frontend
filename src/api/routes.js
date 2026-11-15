@@ -338,6 +338,9 @@ export const routes = {
     references: () => '/v2/database/references',
     referencesByLevel: (levelId) => `/v2/database/references/level/${enc(levelId)}`,
     referencesBulk: (diffId) => `/v2/database/references/bulk/${enc(diffId)}`,
+    referenceWatches: () => '/v2/database/references/watches',
+    referenceWatch: (difficultyId) => `/v2/database/references/watches/${enc(difficultyId)}`,
+    referenceWatchGroup: () => '/v2/database/references/watches/group',
     allLevels: () => '/v2/database/levels/all-levels',
     songs: {
       root: () => '/v2/database/songs',

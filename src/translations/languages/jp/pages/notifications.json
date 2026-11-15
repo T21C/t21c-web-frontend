@@ -201,6 +201,40 @@
           "body": "{{creatorName}} が {{artist}} ー {{song}} を公開しました。"
         }
       }
+    },
+    "reference": {
+      "changed": {
+        "title": "参照チャートが更新されました",
+        "body": "{{artist}} ー {{song}} が更新されました。{{difficultyNames}} の参照です。",
+        "added": {
+          "title": "参照に追加",
+          "body": "{{artist}} ー {{song}} が {{difficultyNames}} の参照に追加されました。"
+        },
+        "removed": {
+          "title": "参照から削除",
+          "body": "{{artist}} ー {{song}} が {{difficultyNames}} の参照から削除されました。"
+        },
+        "type": {
+          "title": "参照タイプが変更",
+          "body": "{{artist}} ー {{song}} は {{difficultyNames}} の {{type}} 参照になりました。"
+        },
+        "file": {
+          "title": "参照チャートのファイルが変更",
+          "body": "{{artist}} ー {{song}} が更新されました。{{difficultyNames}} の参照です。"
+        },
+        "rerated": {
+          "title": "参照チャートの難易度が変更",
+          "body": "{{artist}} ー {{song}} の難易度が変更されました。{{difficultyNames}} の参照です。"
+        },
+        "hidden": {
+          "title": "参照チャートの公開状態が変更",
+          "body": "{{artist}} ー {{song}} の公開状態が変更されました。{{difficultyNames}} の参照です。"
+        },
+        "deleted": {
+          "title": "参照チャートが削除",
+          "body": "{{artist}} ー {{song}} が削除されました。{{difficultyNames}} の参照です。"
+        }
+      }
     }
   }
 }

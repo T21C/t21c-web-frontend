@@ -142,6 +142,16 @@ const MobileDropdown = ({
                 onItemClick?.();
               };
 
+              const content = (
+                <>
+                  <span className="nav-mobile-dropdown-item-label">
+                    {itemLabel(item, t)}
+                    {item.attachIcon}
+                  </span>
+                  {item.icon}
+                </>
+              );
+
               if (isExternalNavPath(item.to)) {
                 return (
                   <a
@@ -150,8 +160,7 @@ const MobileDropdown = ({
                     className={`nav-mobile-dropdown-item${extraClass}`}
                     onClick={handleClick}
                   >
-                    {itemLabel(item, t)}
-                    {item.attachIcon}
+                    {content}
                   </a>
                 );
               }
@@ -167,8 +176,7 @@ const MobileDropdown = ({
                   }
                   onClick={handleClick}
                 >
-                  {itemLabel(item, t)}
-                  {item.attachIcon}
+                  {content}
                 </NavLink>
               );
             })}

@@ -16,6 +16,13 @@
       "switchToExtended": "拡大表示に切り替える",
       "switchToCompact": "コンパクト表示に切り替える"
     },
+    "watch": {
+      "watchDifficulty": "{{name}} の参照を監視",
+      "unwatchDifficulty": "{{name}} の参照の監視を解除",
+      "watchGroup": "{{group}} 難易度をすべて監視",
+      "unwatchGroup": "{{group}} 難易度の監視をすべて解除",
+      "saveFailed": "参照の監視を更新できませんでした"
+    },
     "loading": "参照を読み込み中...",
     "errors": {
       "loadFailed": "参照を読み込めませんでした",

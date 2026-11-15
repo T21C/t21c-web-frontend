@@ -16,6 +16,13 @@
       "switchToExtended": "切换到扩展视图",
       "switchToCompact": "切换到紧凑视图"
     },
+    "watch": {
+      "watchDifficulty": "关注 {{name}} 参考谱面",
+      "unwatchDifficulty": "取消关注 {{name}} 参考谱面",
+      "watchGroup": "关注全部 {{group}} 难度",
+      "unwatchGroup": "取消关注全部 {{group}} 难度",
+      "saveFailed": "未能更新参考谱面关注"
+    },
     "loading": "正在加载参考列表……",
     "errors": {
       "loadFailed": "加载参考列表失败",

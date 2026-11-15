@@ -143,6 +143,40 @@
           "body": "{{creatorName}} opublikował {{song}} — {{artist}}."
         }
       }
+    },
+    "reference": {
+      "changed": {
+        "title": "Zmiana chartu referencyjnego",
+        "body": "{{song}} — {{artist}} zostało zmienione. To referencja dla {{difficultyNames}}.",
+        "added": {
+          "title": "Dodano jako referencję",
+          "body": "{{song}} — {{artist}} dodano jako referencję {{difficultyNames}}."
+        },
+        "removed": {
+          "title": "Usunięto z referencji",
+          "body": "{{song}} — {{artist}} usunięto z referencji {{difficultyNames}}."
+        },
+        "type": {
+          "title": "Zmieniono typ referencji",
+          "body": "{{song}} — {{artist}} jest teraz referencją {{type}} dla {{difficultyNames}}."
+        },
+        "file": {
+          "title": "Zmieniono plik chartu referencyjnego",
+          "body": "{{song}} — {{artist}} zostało zmienione. To referencja dla {{difficultyNames}}."
+        },
+        "rerated": {
+          "title": "Zmieniono ocenę chartu referencyjnego",
+          "body": "{{song}} — {{artist}} zostało przeszacowane. To referencja dla {{difficultyNames}}."
+        },
+        "hidden": {
+          "title": "Zmieniono widoczność chartu referencyjnego",
+          "body": "Widoczność {{song}} — {{artist}} została zmieniona. To referencja dla {{difficultyNames}}."
+        },
+        "deleted": {
+          "title": "Usunięto chart referencyjny",
+          "body": "{{song}} — {{artist}} zostało usunięte. To referencja dla {{difficultyNames}}."
+        }
+      }
     }
   }
 }

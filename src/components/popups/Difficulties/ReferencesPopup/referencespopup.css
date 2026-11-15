@@ -428,6 +428,41 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.references-popup-overlay .watch-bell-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  opacity: 0.25;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.references-popup-overlay .watch-bell-btn.watching {
+  opacity: 0.5;
+}
+
+.references-popup-overlay .watch-bell-btn:hover:not(:disabled) {
+  opacity: 1;
+  background: var(--color-white-t20);
+}
+
+.references-popup-overlay .watch-bell-btn:hover:not(:disabled):active {
+  opacity: 1;
+  background: var(--color-white-t10);
+}
+
+.references-popup-overlay .edit-difficulty-name .watch-bell-btn {
+  margin-left: auto;
+}
+
 .references-popup-overlay .help-popup {
   position: absolute;
   top: 4rem;
@@ -689,9 +724,16 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+.references-popup-overlay .header-buttons-end {
+  margin-left: auto;
+  margin-right: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .references-popup-overlay .edit-mode-btn {
-  position: absolute;
-  right: 3rem;
+  position: static;
 }
 
 .references-popup-overlay .save-changes-btn {

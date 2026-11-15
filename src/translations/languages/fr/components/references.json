@@ -15,6 +15,13 @@
       "saving": "Enregistrement...",
       "cancel": "Annuler"
     },
+    "watch": {
+      "watchDifficulty": "Suivre les références {{name}}",
+      "unwatchDifficulty": "Ne plus suivre les références {{name}}",
+      "watchGroup": "Suivre toutes les difficultés {{group}}",
+      "unwatchGroup": "Ne plus suivre les difficultés {{group}}",
+      "saveFailed": "Impossible de mettre à jour les suivis de références"
+    },
     "loading": "Chargement des références...",
     "errors": {
       "loadFailed": "Echec du chargement des références",
