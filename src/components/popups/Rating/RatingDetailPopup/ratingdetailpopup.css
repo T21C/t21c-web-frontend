@@ -790,6 +790,7 @@
     line-height: 1.4;
     white-space: pre-wrap;
     overflow: hidden;
+    overflow-y: auto;
     transition: all 0.2s;
 }
 

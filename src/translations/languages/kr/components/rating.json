@@ -27,7 +27,7 @@
       "copyNotes": "메모 복사"
     },
     "errors": {
-      "commentLength": "댓글은 1000자 미만이어야 합니다",
+      "commentLength": "댓글은 {{max}}자 이하여야 합니다",
       "commentRequired": "-2 책정에는 댓글이 필수입니다",
       "saveFailed": "변경 사항 저장 실패",
       "updateFailed": "책정 업데이트 실패",

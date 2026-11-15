@@ -11,6 +11,7 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { LargeTextarea } from '@/components/common/LargeTextarea';
 import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, requestErrorMessage, songRequestLabel, storedRequestIssue, tagRequestDiff, tagRequestTargetIds, userCanOpenAdminLevelEditor, userOwnsPendingRequest } from './levelRequestShared';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import LevelRequestScoreTargets from './LevelRequestScoreTargets';
@@ -485,9 +486,8 @@ const LevelRequestDetail = ({
         <div className="level-requests__reject">
           <label className="level-requests__field">
             <span>{t('levelRequests.pipeline.rejectNote')}</span>
-            <textarea
+            <LargeTextarea
               value={rejectNote}
-              maxLength={1000}
               onChange={(event) => setRejectNote(event.target.value)}
             />
           </label>

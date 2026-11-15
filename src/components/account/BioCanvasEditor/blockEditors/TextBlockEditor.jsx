@@ -1,4 +1,5 @@
 import { CustomSelect } from "@/components/common/selectors";
+import { LargeTextarea } from "@/components/common/LargeTextarea";
 import {
   DEFAULT_TEXT_COLOR_PICKER,
   TEXT_ALIGNMENTS,
@@ -39,10 +40,9 @@ export default function TextBlockEditor({ block, onPatchData }) {
       </label>
       <label className="bio-canvas-editor__field">
         <span>Body</span>
-        <textarea
+        <LargeTextarea
           rows={4}
           value={body ?? ""}
-          maxLength={4000}
           onChange={(ev) => onPatchData({ body: ev.target.value })}
         />
       </label>

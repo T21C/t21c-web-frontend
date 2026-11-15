@@ -32,7 +32,7 @@
       "copyNotes": "复制备注"
     },
     "errors": {
-      "commentLength": "理由必须少于1000个字符",
+      "commentLength": "理由必须不超过{{max}}个字符",
       "commentRequired": "Censored 评级需要理由",
       "saveFailed": "更改保存失败",
       "updateFailed": "评级更新失败",

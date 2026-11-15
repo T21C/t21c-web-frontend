@@ -8,6 +8,8 @@ import {
   creditsFromLevel,
   teamFromLevel,
 } from './levelRequestShared';
+import { LargeTextarea } from '@/components/common/LargeTextarea';
+import { LARGE_TEXT_MAX } from '@/utils/textLimits';
 import { ARCHIVE_ACCEPT_ATTR } from '@/utils/zipUtils';
 
 const TEXT_KINDS = new Set(['video', 'download', 'description', 'multiple']);
@@ -180,16 +182,15 @@ const LevelRequestInfoFields = ({
         <label className="level-requests__field">
           <span>{t('levelRequests.form.changeTo')}</span>
           {kind === 'description' || kind === 'multiple' ? (
-            <textarea
+            <LargeTextarea
               value={value}
-              maxLength={4000}
               onChange={(event) => onValue(event.target.value)}
             />
           ) : (
             <input
               type="text"
               value={value}
-              maxLength={4000}
+              maxLength={LARGE_TEXT_MAX}
               onChange={(event) => onValue(event.target.value)}
             />
           )}

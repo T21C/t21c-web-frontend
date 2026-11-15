@@ -189,7 +189,7 @@ export default defineConfig(({ command, mode }) => {
     logLevel: 'info',
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src')
+        '@': path.resolve(__dirname, './src'),
       }
     },
     optimizeDeps: {

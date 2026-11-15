@@ -43,7 +43,8 @@
     "lPerfect": "稍慢",
     "tooearly": "提前",
     "early": "太快",
-    "late": "太慢"
+    "late": "太慢",
+    "fillRemainder": "填入剩余 {{count}}"
   },
   "acc": "精准度：",
   "scoreCalc": "分数：",

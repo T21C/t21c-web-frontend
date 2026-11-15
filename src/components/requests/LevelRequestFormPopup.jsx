@@ -877,7 +877,6 @@ const LevelRequestFormPopup = ({
           <LevelMentionField
             name="reason"
             value={reason}
-            maxLength={1000}
             required={reasonRequired}
             onChange={(event) => setReason(event.target.value)}
             placeholder={reasonRequired ? t('levelRequests.form.reasonPlaceholder') : t('levelRequests.form.reasonPlaceholderOptional')}

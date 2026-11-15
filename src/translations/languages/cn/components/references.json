@@ -27,6 +27,7 @@
     "errors": {
       "loadFailed": "加载参考列表失败",
       "saveFailed": "保存更改失败",
+      "missingLevels": "找不到关卡 ID：{{ids}}",
       "invalidType": "参考列表类型无效：{{type}}"
     },
     "messages": {

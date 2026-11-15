@@ -17,7 +17,7 @@
       "copyNotes": "Kopiuj notatki"
     },
     "errors": {
-      "commentLength": "Komentarz musi być krótszy niż 1000 znaków",
+      "commentLength": "Komentarz może mieć co najwyżej {{max}} znaków",
       "commentRequired": "Komentarz jest wymagany dla oceny -2",
       "saveFailed": "Nie udało się zapisać zmian",
       "updateFailed": "Nie udało się zaaktualizować oceny",

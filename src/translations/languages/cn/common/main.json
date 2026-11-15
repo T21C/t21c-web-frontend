@@ -139,7 +139,7 @@
     "empty": "没有匹配的视频",
     "loadOlder": "加载更早的视频",
     "unlisted": "不公开列出",
-    "unlistedNote": "不公开列出的视频仍会隐藏。",
+    "unlistedNote": "无法查看不公开列出的视频。",
     "allowAccess": "允许读取频道",
     "loadFailed": "无法加载你的 YouTube 视频"
   }

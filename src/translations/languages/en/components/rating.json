@@ -36,7 +36,7 @@
       "discordThreadClosed": "Closed Discord thread"
     },
     "errors": {
-      "commentLength": "Comment must be less than 1000 characters",
+      "commentLength": "Comment must be at most {{max}} characters",
       "commentRequired": "Comment is required for -2 ratings",
       "saveFailed": "Failed to save changes",
       "updateFailed": "Failed to update rating",

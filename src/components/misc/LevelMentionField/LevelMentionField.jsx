@@ -11,6 +11,7 @@ import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getArtistDisplayName, getSongDisplayName } from '@/utils/levelHelpers';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { getLevelReferences } from '@/utils/levelReferences';
+import { LARGE_TEXT_MAX } from '@/utils/textLimits';
 import { getCaretClientRect, navbarOffsetPx } from './textareaCaretCoordinates';
 import { findMentionToken, insertLevelMention } from './levelMentionToken';
 import './levelMentionField.css';
@@ -74,7 +75,7 @@ export function LevelMentionField({
   style,
   id,
   placeholder,
-  maxLength,
+  maxLength = LARGE_TEXT_MAX,
   rows,
   autoFocus,
   autoComplete,

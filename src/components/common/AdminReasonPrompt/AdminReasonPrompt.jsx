@@ -3,9 +3,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
+import { LargeTextarea } from '@/components/common/LargeTextarea';
 import './adminReasonPrompt.css';
 
-const REASON_MAX_LENGTH = 4000;
 const TEXTAREA_MIN_PX = 72;
 
 export default function AdminReasonPrompt({
@@ -91,14 +91,13 @@ export default function AdminReasonPrompt({
                 </select>
               )}
             </div>
-            <textarea
+            <LargeTextarea
               id="admin-reason-prompt-textarea"
               ref={textareaRef}
               className="admin-reason-prompt__textarea"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               placeholder={t('adminReasonPrompt.placeholder')}
-              maxLength={REASON_MAX_LENGTH}
               disabled={submitting}
               rows={3}
             />

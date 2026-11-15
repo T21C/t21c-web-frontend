@@ -43,7 +43,8 @@
     "lPerfect": "Parfait tard",
     "tooearly": "Trop tôt",
     "early": "Tôt",
-    "late": "Tard"
+    "late": "Tard",
+    "fillRemainder": "Remplir le reste ({{count}})"
   },
   "acc": "Précision: ",
   "scoreCalc": "Score: ",

@@ -1161,7 +1161,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 value={formData.notes}
                 onChange={handleInputChange}
                 disabled={!isSuperAdmin}
-                maxLength={4000}
               />
             </div>
 

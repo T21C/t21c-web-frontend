@@ -11,7 +11,7 @@
     "empty": "Brak pasujących filmów",
     "loadOlder": "Pokaż starsze filmy",
     "unlisted": "Niepubliczny",
-    "unlistedNote": "Filmy niepubliczne pozostają ukryte.",
+    "unlistedNote": "Nie można wyświetlić filmów niepublicznych.",
     "allowAccess": "Zezwól na dostęp do kanału",
     "loadFailed": "Nie udało się wczytać filmów z YouTube"
   },

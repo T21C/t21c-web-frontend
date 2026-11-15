@@ -25,7 +25,8 @@
     "loading": "Chargement des références...",
     "errors": {
       "loadFailed": "Echec du chargement des références",
-      "saveFailed": "Echec de l'enregistrement"
+      "saveFailed": "Echec de l'enregistrement",
+      "missingLevels": "Niveau(x) introuvable(s) : {{ids}}"
     },
     "levelCount": {
       "singular": "1 niveau",

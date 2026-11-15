@@ -27,6 +27,7 @@
     "errors": {
       "loadFailed": "参照を読み込めませんでした",
       "saveFailed": "変更の保存に失敗しました",
+      "missingLevels": "レベルIDが見つかりません: {{ids}}",
       "invalidType": "無効な参照型: {{type}}"
     },
     "messages": {
