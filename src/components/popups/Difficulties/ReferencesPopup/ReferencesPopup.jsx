@@ -21,7 +21,7 @@ import showIcons from '@/assets/icons/RITK visible.png'
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getPrimaryVideoLink } from '@/utils/videoLink';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { VideoLinkIcon } from '@/components/common/icons';
+import { BellIcon, VideoLinkIcon } from '@/components/common/icons';
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -241,6 +241,28 @@ const compareTypes = (a, b) => {
   return 0;
 };
 
+const WatchBellButton = ({
+  watched,
+  onClick,
+  disabled,
+  label,
+}) => (
+  <button
+    type="button"
+    className={`watch-bell-btn${watched ? ' watching' : ''}`}
+    onClick={(event) => {
+      event.stopPropagation();
+      onClick();
+    }}
+    disabled={disabled}
+    title={label}
+    aria-label={label}
+    aria-pressed={watched}
+  >
+    <BellIcon size={18} slashed={!watched} />
+  </button>
+);
+
 const parseReferenceString = (str) => {
   const lines = str.split('\n').map(line => line.trim()).filter(Boolean);
   const references = [];
@@ -304,13 +326,42 @@ const ReferencesPopup = ({ onClose }) => {
   const [showHelp, setShowHelp] = useState(false);
   const helpRef = useRef(null);
   const [viewFormat, setViewFormat] = useState('extended'); // 'extended' or 'compact'
+  const [watchedIds, setWatchedIds] = useState(() => new Set());
+  const [watchSaving, setWatchSaving] = useState(false);
+
+  const applyWatchedIds = (ids) => {
+    setWatchedIds(new Set(
+      (Array.isArray(ids) ? ids : [])
+        .map((id) => Number(id))
+        .filter((id) => Number.isInteger(id) && id > 0)
+    ));
+  };
+
+  const groupDifficultyIds = (group) =>
+    references
+      .filter((ref) => String(ref.difficulty?.name || '').startsWith(group))
+      .map((ref) => ref.difficulty.id);
+
+  const isGroupWatched = (group) => {
+    const ids = groupDifficultyIds(group);
+    return ids.length > 0 && ids.every((id) => watchedIds.has(id));
+  };
 
   const fetchReferences = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get(routes.database.references());
+      const [response, watches] = await Promise.all([
+        api.get(routes.database.references()),
+        user
+          ? api.get(routes.database.referenceWatches()).catch((err) => {
+              console.error('Error fetching reference watches:', err);
+              return { data: { difficultyIds: [] } };
+            })
+          : Promise.resolve({ data: { difficultyIds: [] } }),
+      ]);
       setReferences(response.data);
+      applyWatchedIds(watches.data?.difficultyIds);
     } catch (err) {
       console.error('Error fetching references:', err);
       setError(t('difficultyPopup.errors.loadFailed'));
@@ -321,7 +372,61 @@ const ReferencesPopup = ({ onClose }) => {
 
   useEffect(() => {
     fetchReferences();
-  }, []);
+  }, [user?.id]);
+
+  const toggleDifficultyWatch = async (difficultyId, difficultyName) => {
+    if (!user || watchSaving) return;
+    const nextWatched = !watchedIds.has(difficultyId);
+    const previous = watchedIds;
+    setWatchSaving(true);
+    setWatchedIds((current) => {
+      const next = new Set(current);
+      if (nextWatched) next.add(difficultyId);
+      else next.delete(difficultyId);
+      return next;
+    });
+    try {
+      const { data } = await api.put(routes.database.referenceWatch(difficultyId), {
+        watched: nextWatched,
+      });
+      applyWatchedIds(data?.difficultyIds);
+    } catch (err) {
+      console.error('Error updating reference watch:', err);
+      setWatchedIds(previous);
+      toast.error(t('references.popup.watch.saveFailed', { name: difficultyName }));
+    } finally {
+      setWatchSaving(false);
+    }
+  };
+
+  const toggleGroupWatch = async (group) => {
+    if (!user || watchSaving) return;
+    const nextWatched = !isGroupWatched(group);
+    const previous = watchedIds;
+    const groupIds = groupDifficultyIds(group);
+    setWatchSaving(true);
+    setWatchedIds((current) => {
+      const next = new Set(current);
+      groupIds.forEach((id) => {
+        if (nextWatched) next.add(id);
+        else next.delete(id);
+      });
+      return next;
+    });
+    try {
+      const { data } = await api.put(routes.database.referenceWatchGroup(), {
+        group,
+        watched: nextWatched,
+      });
+      applyWatchedIds(data?.difficultyIds);
+    } catch (err) {
+      console.error('Error updating reference watch group:', err);
+      setWatchedIds(previous);
+      toast.error(t('references.popup.watch.saveFailed'));
+    } finally {
+      setWatchSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (references.length > 0) {
@@ -624,6 +729,16 @@ const ReferencesPopup = ({ onClose }) => {
                   </h4>
                 </div>
                 <div className="header-right">
+                  {user && (
+                    <WatchBellButton
+                      watched={watchedIds.has(ref.difficulty.id)}
+                      disabled={watchSaving}
+                      label={watchedIds.has(ref.difficulty.id)
+                        ? t('references.popup.watch.unwatchDifficulty', { name: difficultyInfo.name })
+                        : t('references.popup.watch.watchDifficulty', { name: difficultyInfo.name })}
+                      onClick={() => toggleDifficultyWatch(ref.difficulty.id, difficultyInfo.name)}
+                    />
+                  )}
                   <span className="level-count">
                     {ref.levels.length === 1 
                       ? t('references.popup.levelCount.singular')
@@ -682,6 +797,16 @@ const ReferencesPopup = ({ onClose }) => {
                   className="difficulty-icon"
                 />
                 {difficultyInfo.name}
+                {user && (
+                  <WatchBellButton
+                    watched={watchedIds.has(ref.difficulty.id)}
+                    disabled={watchSaving}
+                    label={watchedIds.has(ref.difficulty.id)
+                      ? t('references.popup.watch.unwatchDifficulty', { name: difficultyInfo.name })
+                      : t('references.popup.watch.watchDifficulty', { name: difficultyInfo.name })}
+                    onClick={() => toggleDifficultyWatch(ref.difficulty.id, difficultyInfo.name)}
+                  />
+                )}
               </div>
               <div className="edit-level-ids">
                 <textarea
@@ -836,6 +961,8 @@ const ReferencesPopup = ({ onClose }) => {
                 </button>
               </>
             )}
+          {user && (
+          <div className="header-buttons-end">
           {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
             <button 
               className="edit-mode-btn"
@@ -844,6 +971,16 @@ const ReferencesPopup = ({ onClose }) => {
             >
               {isEditMode ? t('references.popup.buttons.viewMode') : t('references.popup.buttons.editMode')}
             </button>
+          )}
+            <WatchBellButton
+              watched={isGroupWatched(activeTab)}
+              disabled={watchSaving}
+              label={isGroupWatched(activeTab)
+                ? t('references.popup.watch.unwatchGroup', { group: activeTab })
+                : t('references.popup.watch.watchGroup', { group: activeTab })}
+              onClick={() => toggleGroupWatch(activeTab)}
+            />
+          </div>
           )}
           </div>
 

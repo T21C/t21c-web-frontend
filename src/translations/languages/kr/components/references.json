@@ -18,6 +18,13 @@
       "switchToExtended": "확장 보기로 전환",
       "switchToCompact": "간략 보기로 전환"
     },
+    "watch": {
+      "watchDifficulty": "{{name}} 기준 레벨 알림 받기",
+      "unwatchDifficulty": "{{name}} 기준 레벨 알림 끄기",
+      "watchGroup": "{{group}} 난이도 모두 알림 받기",
+      "unwatchGroup": "{{group}} 난이도 알림 모두 끄기",
+      "saveFailed": "기준 레벨 알림을 저장하지 못했습니다"
+    },
     "loading": "기준 레벨 불러오는 중...",
     "errors": {
       "loadFailed": "기줄 레벨 불러오기 실패",

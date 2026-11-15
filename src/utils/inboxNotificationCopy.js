@@ -43,6 +43,27 @@ export function inboxNotificationCopy(t, notification) {
       href: notification?.href || null,
     };
   }
+  if (type === 'reference.changed') {
+    const kind = typeof payload.kind === 'string' ? payload.kind : '';
+    const filled = {
+      ...vars,
+      difficultyNames: payload.difficultyNames || '',
+      type: payload.type || '',
+      previousType: payload.previousType || '',
+      previousDifficultyName: payload.previousDifficultyName || '',
+    };
+    return {
+      title: t(`notifications.types.reference.changed.${kind}.title`, {
+        ...filled,
+        defaultValue: t('notifications.types.reference.changed.title', filled),
+      }),
+      body: t(`notifications.types.reference.changed.${kind}.body`, {
+        ...filled,
+        defaultValue: t('notifications.types.reference.changed.body', filled),
+      }),
+      href: notification?.href || null,
+    };
+  }
   const reasonText = typeof payload.reason === 'string' ? payload.reason.trim() : '';
   const body = t(`notifications.types.${type}.body`, {
     ...vars,

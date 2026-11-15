@@ -1,7 +1,7 @@
 // tuf-search: #BellIcon #bellIcon #icons
 import React from 'react';
 
-export const BellIcon = ({ color = 'currentColor', size = 24, className = '', ...props }) => {
+export const BellIcon = ({ color = 'currentColor', size = 24, className = '', slashed = false, ...props }) => {
   return (
     <svg
       {...props}
@@ -20,6 +20,17 @@ export const BellIcon = ({ color = 'currentColor', size = 24, className = '', ..
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+      {slashed && (
+        <line
+          x1="4"
+          y1="4"
+          x2="20"
+          y2="20"
+          stroke={color}
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      )}
     </svg>
   );
 };

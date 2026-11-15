@@ -143,6 +143,40 @@
           "body": "{{creatorName}}님이 {{song}} — {{artist}} 를 공개했습니다."
         }
       }
+    },
+    "reference": {
+      "changed": {
+        "title": "기준 레벨이 변경됨",
+        "body": "{{song}} — {{artist}} 이(가) 변경되었습니다. {{difficultyNames}} 기준 레벨입니다.",
+        "added": {
+          "title": "기준 레벨로 추가됨",
+          "body": "{{song}} — {{artist}} 이(가) {{difficultyNames}} 기준 레벨로 추가되었습니다."
+        },
+        "removed": {
+          "title": "기준 레벨에서 제거됨",
+          "body": "{{song}} — {{artist}} 이(가) {{difficultyNames}} 기준 레벨에서 제거되었습니다."
+        },
+        "type": {
+          "title": "기준 유형이 변경됨",
+          "body": "{{song}} — {{artist}} 은(는) 이제 {{difficultyNames}} 의 {{type}} 기준입니다."
+        },
+        "file": {
+          "title": "기준 레벨 파일이 변경됨",
+          "body": "{{song}} — {{artist}} 이(가) 변경되었습니다. {{difficultyNames}} 기준 레벨입니다."
+        },
+        "rerated": {
+          "title": "기준 레벨 난이도가 변경됨",
+          "body": "{{song}} — {{artist}} 의 난이도가 변경되었습니다. {{difficultyNames}} 기준 레벨입니다."
+        },
+        "hidden": {
+          "title": "기준 레벨 공개 상태가 변경됨",
+          "body": "{{song}} — {{artist}} 의 공개 상태가 변경되었습니다. {{difficultyNames}} 기준 레벨입니다."
+        },
+        "deleted": {
+          "title": "기준 레벨이 삭제됨",
+          "body": "{{song}} — {{artist}} 이(가) 삭제되었습니다. {{difficultyNames}} 기준 레벨입니다."
+        }
+      }
     }
   }
 }

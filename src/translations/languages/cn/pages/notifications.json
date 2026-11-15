@@ -201,6 +201,40 @@
           "body": "{{creatorName}} 上传了关卡 {{artist}} - {{song}}。"
         }
       }
+    },
+    "reference": {
+      "changed": {
+        "title": "参考谱面已更新",
+        "body": "{{song}} — {{artist}} 已更新。它是 {{difficultyNames}} 的参考谱面。",
+        "added": {
+          "title": "已加入参考",
+          "body": "{{song}} — {{artist}} 已加入 {{difficultyNames}} 参考。"
+        },
+        "removed": {
+          "title": "已移出参考",
+          "body": "{{song}} — {{artist}} 已从 {{difficultyNames}} 参考中移除。"
+        },
+        "type": {
+          "title": "参考类型已更改",
+          "body": "{{song}} — {{artist}} 现在是 {{difficultyNames}} 的 {{type}} 参考。"
+        },
+        "file": {
+          "title": "参考谱面文件已更改",
+          "body": "{{song}} — {{artist}} 已更新。它是 {{difficultyNames}} 的参考谱面。"
+        },
+        "rerated": {
+          "title": "参考谱面难度已更改",
+          "body": "{{song}} — {{artist}} 的难度已更改。它是 {{difficultyNames}} 的参考谱面。"
+        },
+        "hidden": {
+          "title": "参考谱面可见性已更改",
+          "body": "{{song}} — {{artist}} 的可见性已更改。它是 {{difficultyNames}} 的参考谱面。"
+        },
+        "deleted": {
+          "title": "参考谱面已删除",
+          "body": "{{song}} — {{artist}} 已删除。它是 {{difficultyNames}} 的参考谱面。"
+        }
+      }
     }
   }
 }

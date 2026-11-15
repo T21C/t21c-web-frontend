@@ -60,7 +60,8 @@
       "chart": "차트",
       "clears": "클리어",
       "following": "팔로우",
-      "notices": "알림"
+      "notices": "알림",
+      "references": "기준 레벨"
     }
   },
   "preferences": {

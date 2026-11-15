@@ -201,6 +201,40 @@
           "body": "{{creatorName}} published {{song}} by {{artist}}."
         }
       }
+    },
+    "reference": {
+      "changed": {
+        "title": "Reference chart changed",
+        "body": "{{song}} by {{artist}} changed. It is a reference for {{difficultyNames}}.",
+        "added": {
+          "title": "Added as a reference",
+          "body": "{{song}} by {{artist}} was added as a {{difficultyNames}} reference."
+        },
+        "removed": {
+          "title": "Removed as a reference",
+          "body": "{{song}} by {{artist}} was removed from {{difficultyNames}} references."
+        },
+        "type": {
+          "title": "Reference type changed",
+          "body": "{{song}} by {{artist}} is now a {{type}} reference for {{difficultyNames}}."
+        },
+        "file": {
+          "title": "Reference chart file changed",
+          "body": "{{song}} by {{artist}} changed. It is a reference for {{difficultyNames}}."
+        },
+        "rerated": {
+          "title": "Reference chart rerated",
+          "body": "{{song}} by {{artist}} was rerated. It is a reference for {{difficultyNames}}."
+        },
+        "hidden": {
+          "title": "Reference chart visibility changed",
+          "body": "{{song}} by {{artist}} visibility changed. It is a reference for {{difficultyNames}}."
+        },
+        "deleted": {
+          "title": "Reference chart deleted",
+          "body": "{{song}} by {{artist}} was deleted. It is a reference for {{difficultyNames}}."
+        }
+      }
     }
   }
 }
