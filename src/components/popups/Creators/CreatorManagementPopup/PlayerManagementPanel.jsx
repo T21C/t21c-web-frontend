@@ -13,7 +13,7 @@ import api from '@/utils/api';
 import { CreatorAssignmentPanel } from '@/components/popups/Creators/CreatorAssignmentPopup/CreatorAssignmentPanel';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import { LargeTextarea } from '@/components/common/LargeTextarea';
-import { LARGE_TEXT_MAX } from '@shared/textLimits';
+import { LARGE_TEXT_MAX } from '@/utils/textLimits';
 import AliasListEditor from './AliasListEditor';
 import '@/components/popups/Creators/CreatorAssignmentPopup/creatorAssignmentPopup.css';
 

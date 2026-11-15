@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"],
-      "@shared/textLimits": ["../server/src/misc/utils/textLimits.js"]
+      "@/*": ["./src/*"]
     }
   },
   "exclude": ["node_modules", "dist"]

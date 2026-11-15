@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LARGE_TEXT_MAX } from "@shared/textLimits";
+import { LARGE_TEXT_MAX } from "@/utils/textLimits";
 
 const DANGEROUS_TEXT = /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\/\*|\*\/|<\/|<>/i;
 

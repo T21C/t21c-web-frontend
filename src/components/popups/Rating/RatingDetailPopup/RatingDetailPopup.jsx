@@ -25,7 +25,7 @@ import toast from 'react-hot-toast';
 import { RatingFlowActions, RatingFlowMarks } from '@/components/cards/RatingCard/RatingFlowActions';
 import autoratercato from "@/assets/icons/autorater-v2.png";
 import { Tooltip } from '@/components/common/display/Tooltip';
-import { LARGE_TEXT_MAX } from '@shared/textLimits';
+import { LARGE_TEXT_MAX } from '@/utils/textLimits';
 import { CommentFormatter, LevelMentionField } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import { RatingHeaderMeta } from './RatingHeaderMeta';

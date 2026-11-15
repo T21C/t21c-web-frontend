@@ -9,7 +9,7 @@ import {
   teamFromLevel,
 } from './levelRequestShared';
 import { LargeTextarea } from '@/components/common/LargeTextarea';
-import { LARGE_TEXT_MAX } from '@shared/textLimits';
+import { LARGE_TEXT_MAX } from '@/utils/textLimits';
 import { ARCHIVE_ACCEPT_ATTR } from '@/utils/zipUtils';
 
 const TEXT_KINDS = new Set(['video', 'download', 'description', 'multiple']);

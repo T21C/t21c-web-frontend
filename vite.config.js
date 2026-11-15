@@ -190,7 +190,6 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        '@shared/textLimits': path.resolve(__dirname, '../server/src/misc/utils/textLimits.js'),
       }
     },
     optimizeDeps: {
@@ -243,9 +242,6 @@ export default defineConfig(({ command, mode }) => {
       port: port,
       strictPort: true,
       cors: true,
-      fs: {
-        allow: [path.resolve(__dirname, '..')],
-      },
       hmr: {
         overlay: true,
       },

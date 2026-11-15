@@ -30,8 +30,7 @@ module.exports = {
       },
       alias: {
         map: [
-          ['@', './src'],
-          ['@shared/textLimits', '../server/src/misc/utils/textLimits.js']
+          ['@', './src']
         ],
         extensions: ['.js', '.jsx', '.ts', '.json', '.d.ts']
       }
