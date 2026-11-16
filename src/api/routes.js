@@ -757,6 +757,7 @@ export const routes = {
     pass: {
       root: () => '/v2/form/pass',
       submit: () => '/v2/form/pass/submit',
+      item: (submissionId) => `/v2/form/pass/${enc(submissionId)}`,
     },
     level: {
       root: () => '/v2/form/level',

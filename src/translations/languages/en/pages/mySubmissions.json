@@ -30,6 +30,7 @@
     "type": "Type"
   },
   "row": {
+    "edit": "Edit",
     "openLevel": "Level",
     "openPass": "Pass",
     "watchVideo": "Video",
@@ -53,5 +54,11 @@
   },
   "empty": "No submissions found.",
   "loading": "Loading submissions…",
-  "error": "Couldn't load your submissions. Try again."
+  "error": "Couldn't load your submissions. Try again.",
+  "edit": {
+    "loading": "Loading submission…",
+    "loadFailed": "Couldn't load this submission.",
+    "notPending": "This submission is no longer pending.",
+    "saveFailed": "Couldn't save this submission."
+  }
 }
