@@ -89,12 +89,17 @@ const LoginPage = () => {
     }
   };
 
-  const handleMfaPasskey = async () => {
-    const { completed } = await flow.submitMfaPasskey();
-    if (completed) {
-      redirectAfterLogin();
-    }
-  };
+  const mfaHeading =
+    flow.step !== 'mfa'
+      ? t('login.header.title')
+      : flow.mfaFactor === 'totp'
+        ? t('login.mfa.totpTitle')
+        : flow.mfaFactor === 'recovery'
+          ? t('login.mfa.recoveryTitle')
+          : flow.mfaFactor === 'email'
+            ? t('login.mfa.title')
+            : t('login.mfa.chooseTitle');
+  const showMfaChooser = flow.step === 'mfa' && !flow.mfaFactor && flow.mfaMethods.includes('totp');
 
   return (
     <div className="login-page-wrapper">
@@ -102,9 +107,7 @@ const LoginPage = () => {
 
       <div className="login-page">
         <div className="login-container">
-          <h1>
-            {flow.step === 'mfa' ? t('login.mfa.title') : t('login.header.title')}
-          </h1>
+          <h1>{mfaHeading}</h1>
           {flow.error && (
             <div className="error-message">
               {flow.error}
@@ -216,27 +219,93 @@ const LoginPage = () => {
             </>
           )}
 
-          {flow.step === 'mfa' && (
-            <form onSubmit={handleMfaSubmit} className="login-form login-mfa-form">
-              {flow.mfaMethods.includes('passkey') && flow.passkeysSupported && (
+          {flow.step === 'mfa' && showMfaChooser && (
+            <div className="login-form login-mfa-form">
+              <p className="login-mfa-prompt">{t('login.mfa.choosePrompt')}</p>
+              <div className="login-mfa-choices">
                 <button
                   type="button"
-                  className="login-mfa-passkey btn-fill-glass btn-block"
-                  onClick={handleMfaPasskey}
+                  className="login-mfa-choice btn-fill-secondary btn-block"
+                  onClick={() => flow.selectMfaFactor('totp')}
                   disabled={flow.loading}
                 >
-                  {t('login.mfa.usePasskey')}
+                  {t('login.mfa.useAuthenticator')}
                 </button>
+                {flow.mfaMethods.includes('email') && (
+                  <button
+                    type="button"
+                    className="login-mfa-choice btn-fill-secondary btn-block"
+                    onClick={() => flow.selectMfaFactor('email')}
+                    disabled={flow.loading}
+                  >
+                    {t('login.mfa.useEmail')}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="login-mfa-choice btn-fill-secondary btn-block"
+                  onClick={() => flow.selectMfaFactor('recovery')}
+                  disabled={flow.loading}
+                >
+                  {t('login.mfa.useRecovery')}
+                </button>
+              </div>
+              <div className="login-mfa-actions">
+                <button
+                  type="button"
+                  className="login-mfa-back"
+                  onClick={flow.backToCredentials}
+                  disabled={flow.loading}
+                >
+                  {t('login.mfa.back')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {flow.step === 'mfa' && !showMfaChooser && (
+            <form onSubmit={handleMfaSubmit} className="login-form login-mfa-form">
+              {flow.mfaFactor === 'totp' && (
+                <>
+                  <p className="login-mfa-prompt">{t('login.mfa.totpPrompt')}</p>
+                  <CodeInput
+                    id="login-mfa-totp"
+                    label={t('login.mfa.totpLabel')}
+                    value={flow.mfaCode}
+                    onChange={flow.setMfaCode}
+                    disabled={flow.loading}
+                    length={6}
+                    numeric
+                  />
+                </>
               )}
 
-              {flow.mfaMethods.includes('email') && (
+              {flow.mfaFactor === 'recovery' && (
+                <>
+                  <p className="login-mfa-prompt">{t('login.mfa.recoveryPrompt')}</p>
+                  <label className="login-mfa-recovery-label" htmlFor="login-mfa-recovery">
+                    {t('login.mfa.recoveryLabel')}
+                  </label>
+                  <input
+                    id="login-mfa-recovery"
+                    type="text"
+                    autoComplete="one-time-code"
+                    className="login-input login-mfa-recovery"
+                    value={flow.mfaCode}
+                    onChange={(e) => flow.setMfaCode(e.target.value)}
+                    disabled={flow.loading}
+                    spellCheck={false}
+                  />
+                </>
+              )}
+
+              {flow.mfaFactor === 'email' && (
                 <>
                   <p className="login-mfa-prompt">
                     {t('login.mfa.codePrompt', {
                       email: flow.maskedEmail || t('login.mfa.yourEmail'),
                     })}
                   </p>
-
                   <CodeInput
                     id="login-mfa-code"
                     label={t('login.mfa.codeLabel')}
@@ -257,20 +326,21 @@ const LoginPage = () => {
                 <span>{t('login.mfa.rememberDevice')}</span>
               </label>
 
-              {flow.mfaMethods.includes('email') && (
-                <button
-                  type="submit"
-                  className="login-button btn-fill-primary btn-block"
-                  disabled={flow.loading || flow.mfaCode.length < 8}
-                >
-                  {flow.loading
-                    ? t('login.mfa.verifying')
-                    : t('login.mfa.confirm')}
-                </button>
-              )}
+              <button
+                type="submit"
+                className="login-button btn-fill-primary btn-block"
+                disabled={
+                  flow.loading ||
+                  (flow.mfaFactor === 'totp' && flow.mfaCode.length < 6) ||
+                  (flow.mfaFactor === 'recovery' && !flow.mfaCode.trim()) ||
+                  (flow.mfaFactor === 'email' && flow.mfaCode.length < 8)
+                }
+              >
+                {flow.loading ? t('login.mfa.verifying') : t('login.mfa.confirm')}
+              </button>
 
               <div className="login-mfa-actions">
-                {flow.mfaMethods.includes('email') && (
+                {flow.mfaFactor === 'email' && (
                   <button
                     type="button"
                     className="login-mfa-resend"
@@ -282,14 +352,25 @@ const LoginPage = () => {
                       : t('login.mfa.resend')}
                   </button>
                 )}
-                <button
-                  type="button"
-                  className="login-mfa-back"
-                  onClick={flow.backToCredentials}
-                  disabled={flow.loading}
-                >
-                  {t('login.mfa.back')}
-                </button>
+                {flow.mfaMethods.includes('totp') ? (
+                  <button
+                    type="button"
+                    className="login-mfa-back"
+                    onClick={flow.backToMfaChooser}
+                    disabled={flow.loading}
+                  >
+                    {t('login.mfa.chooseBack')}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="login-mfa-back"
+                    onClick={flow.backToCredentials}
+                    disabled={flow.loading}
+                  >
+                    {t('login.mfa.back')}
+                  </button>
+                )}
               </div>
             </form>
           )}

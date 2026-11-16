@@ -2,7 +2,7 @@ import React from 'react';
 import './codeInput.css';
 
 /**
- * Shared opaque code entry for email verify and password reset.
+ * Shared opaque code entry for email verify, password reset, and TOTP.
  */
 const CodeInput = ({
   id = 'opaque-code',
@@ -11,7 +11,17 @@ const CodeInput = ({
   onChange,
   disabled = false,
   autoComplete = 'one-time-code',
+  length = 8,
+  numeric = false,
 }) => {
+  const handleChange = (e) => {
+    const raw = e.target.value || '';
+    const next = numeric
+      ? raw.replace(/[^0-9]/g, '')
+      : raw.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    onChange(next.slice(0, length));
+  };
+
   return (
     <div className="code-input">
       <label htmlFor={id} className="code-input__label">
@@ -20,13 +30,13 @@ const CodeInput = ({
       <input
         id={id}
         type="text"
-        inputMode="text"
+        inputMode={numeric ? 'numeric' : 'text'}
         autoComplete={autoComplete}
         className="code-input__field"
         value={value}
-        onChange={(e) => onChange(e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 8))}
+        onChange={handleChange}
         disabled={disabled}
-        maxLength={8}
+        maxLength={length}
         spellCheck={false}
       />
     </div>

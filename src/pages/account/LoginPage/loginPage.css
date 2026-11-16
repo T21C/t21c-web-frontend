@@ -198,6 +198,22 @@
   margin-bottom: 0;
 }
 
+.login-page-wrapper .login-mfa-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.login-page-wrapper .login-mfa-recovery-label {
+  color: var(--color-gray-2);
+  font-size: 0.9rem;
+}
+
+.login-page-wrapper .login-mfa-recovery {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.06em;
+}
+
 .login-page-wrapper .login-mfa-prompt {
   margin: 0;
   color: var(--color-gray-2);
