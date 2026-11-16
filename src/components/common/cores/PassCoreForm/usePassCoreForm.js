@@ -367,6 +367,10 @@ export function usePassCoreForm({
   };
 
   const handleInputChange = (e) => {
+    if (e?.patch && typeof e.patch === 'object') {
+      applyFormPatch(e.patch);
+      return;
+    }
     const { name, type, value, checked } = e.target;
     const inputValue = type === "checkbox" ? checked : value;
 

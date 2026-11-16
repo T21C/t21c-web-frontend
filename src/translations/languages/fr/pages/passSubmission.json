@@ -44,7 +44,9 @@
     "tooearly": "Trop tôt",
     "early": "Tôt",
     "late": "Tard",
-    "fillRemainder": "Remplir le reste ({{count}})"
+    "fillRemainder": "Remplir le reste ({{count}})",
+    "purePerfect": "Pure Perfect",
+    "purePerfectTooltip": "Met Parfait à {{count}} et les autres jugements à 0"
   },
   "acc": "Précision: ",
   "scoreCalc": "Score: ",

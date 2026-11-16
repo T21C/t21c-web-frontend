@@ -20,6 +20,8 @@ const DEFAULT_COPY = {
   early: 'passSubmission.judgements.early',
   late: 'passSubmission.judgements.late',
   fillRemainder: 'passSubmission.judgements.fillRemainder',
+  purePerfect: 'passSubmission.judgements.purePerfect',
+  purePerfectTooltip: 'passSubmission.judgements.purePerfectTooltip',
   accPrefix: 'passSubmission.acc',
   scorePrefix: 'passSubmission.scoreCalc',
 };
@@ -47,8 +49,17 @@ const BOTTOM_FIELDS = [
   { name: 'late', color: 'var(--color-late-1, #FF6F4D)' },
 ];
 
+const PURE_PERFECT_ZERO_FIELDS = ['ePerfect', 'perfectMinus', 'perfectPlus', 'lPerfect', 'tooEarly', 'early', 'late'];
+
 function isIntegerInputValue(value) {
   return value === '' || /^\d+$/.test(value);
+}
+
+function normalizePurePerfectCount(value) {
+  if (value == null || value === '') return null;
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return Math.floor(n);
 }
 
 export function JudgementInputs({
@@ -64,12 +75,15 @@ export function JudgementInputs({
   integerOnly = false,
   showXPerfectFields = false,
   achievableCount = null,
+  purePerfectCount: purePerfectCountProp = null,
 }) {
   const copy = copyProp || DEFAULT_COPY;
   const { t } = useTranslation([copy.ns, 'common']);
   const shouldShowScore = showScore ?? score != null;
   const topFields = showXPerfectFields ? XPERFECT_TOP_FIELDS : TOP_FIELDS;
   const fillTooltipId = `judgement-remainder-${useId().replace(/:/g, '')}`;
+  const purePerfectTooltipId = `judgement-pure-perfect-${useId().replace(/:/g, '')}`;
+  const purePerfectCount = normalizePurePerfectCount(purePerfectCountProp);
   const remainderFill = useMemo(
     () => getJudgementRemainderFill(values, achievableCount, { includeXPerfect: showXPerfectFields }),
     [values, achievableCount, showXPerfectFields],
@@ -79,6 +93,17 @@ export function JudgementInputs({
         ns: copy.ns,
         count: remainderFill.value,
         defaultValue: 'Fill remaining {{count}}',
+      })
+    : '';
+  const purePerfectLabel = t(copy.purePerfect || DEFAULT_COPY.purePerfect, {
+    ns: copy.ns,
+    defaultValue: 'Pure Perfect',
+  });
+  const purePerfectTooltip = purePerfectCount
+    ? t(copy.purePerfectTooltip || DEFAULT_COPY.purePerfectTooltip, {
+        ns: copy.ns,
+        count: purePerfectCount,
+        defaultValue: 'Set Perfect to {{count}} and every other judgement to 0',
       })
     : '';
 
@@ -132,6 +157,22 @@ export function JudgementInputs({
               <SparkleIcon size={16} />
             </button>
           )}
+          {name === 'perfect' && purePerfectCount != null && (
+            <button
+              type="button"
+              className="judgement-inputs__pure-perfect"
+              data-tooltip-id={purePerfectTooltipId}
+              data-tooltip-content={purePerfectTooltip}
+              onClick={(event) => {
+                event.preventDefault();
+                const patch = { perfect: String(purePerfectCount) };
+                for (const field of PURE_PERFECT_ZERO_FIELDS) patch[field] = '0';
+                onChange({ patch });
+              }}
+            >
+              {purePerfectLabel}
+            </button>
+          )}
         </div>
       </div>
     );
@@ -168,6 +209,9 @@ export function JudgementInputs({
       ) : null}
       {remainderFill && (
         <Tooltip className="tooltip" id={fillTooltipId} place="top" effect="solid" />
+      )}
+      {purePerfectCount != null && (
+        <Tooltip className="tooltip" id={purePerfectTooltipId} place="top" effect="solid" />
       )}
     </div>
   );

@@ -84,7 +84,12 @@
       "title": "Langue",
       "label": "Langue préférée",
       "description": "Utilisée sur tout le site. Suivre le pays utilise le pays de votre profil joueur.",
-      "followCountry": "Suivre le pays ({{language}})"
+      "followCountry": "Suivre le pays ({{language}})",
+      "font": {
+        "label": "Police du site",
+        "description": "Utilisée sur tout le site. Chaque option s'affiche dans sa propre police.",
+        "system": "Système"
+      }
     },
     "motion": {
       "title": "Mouvement",

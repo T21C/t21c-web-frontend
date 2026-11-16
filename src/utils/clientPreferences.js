@@ -2,6 +2,7 @@
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { readCachedUser } from '@/utils/authUserCache';
+import { getFontPresetStack, installFontPresetStylesheet } from '@/utils/fontPresets';
 
 export const CLIENT_PREF_KEYS = {
   HOME_RESOURCES_CTA_DISMISSED: 'home.resourcesCta.dismissed',
@@ -11,6 +12,7 @@ export const CLIENT_PREF_KEYS = {
   SUBMISSIONS_CDN_TOS_AGREED: 'submissions.cdnTos.agreed',
   SUBMISSIONS_PASS_RULES_READ: 'submissions.passRules.read',
   APP_LANGUAGE: 'appLanguage',
+  APP_FONT: 'appFont',
   NAV_DROPDOWN_CLICK_MODE: 'navigation.dropdownClickMode',
   SUBMISSION_MINIMAL_MOTION: 'submission.minimalMotion',
   SUBMISSION_DISABLE_MASCOTS: 'submission.disableMascots',
@@ -26,6 +28,7 @@ export const GUEST_COOKIE_KEYS = [
   CLIENT_PREF_KEYS.MODS_START_GUIDE_CTA_DISMISSED,
   CLIENT_PREF_KEYS.TUFHELPERLITE_NEVER_SHOW,
   CLIENT_PREF_KEYS.APP_LANGUAGE,
+  CLIENT_PREF_KEYS.APP_FONT,
 ];
 
 export const STICKY_TRUE_KEYS = new Set([
@@ -115,6 +118,9 @@ function trimGuestCookieAfterUpload(source) {
   const guest = {};
   if (typeof source[CLIENT_PREF_KEYS.APP_LANGUAGE] === 'string') {
     guest[CLIENT_PREF_KEYS.APP_LANGUAGE] = source[CLIENT_PREF_KEYS.APP_LANGUAGE];
+  }
+  if (typeof source[CLIENT_PREF_KEYS.APP_FONT] === 'string') {
+    guest[CLIENT_PREF_KEYS.APP_FONT] = source[CLIENT_PREF_KEYS.APP_FONT];
   }
   const parts = [
     `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(guest))}`,
@@ -253,6 +259,14 @@ function syncReduceOptionalAnimationsClass() {
   );
 }
 
+function syncAppFontFamily() {
+  if (typeof document === 'undefined') return;
+  document.documentElement.style.setProperty(
+    '--tuf-font-family',
+    getFontPresetStack(memory[CLIENT_PREF_KEYS.APP_FONT]),
+  );
+}
+
 function watchReducedMotion() {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
   window.matchMedia(REDUCED_MOTION_QUERY).addEventListener('change', syncReduceOptionalAnimationsClass);
@@ -262,6 +276,7 @@ function applyMemory(next, { writeCookie = true, clearLanguage = false } = {}) {
   memory = next;
   cacheHiddenTags(memory[CLIENT_PREF_KEYS.DISPLAY_HIDDEN_LEVEL_CARD_TAG_IDS]);
   syncReduceOptionalAnimationsClass();
+  syncAppFontFamily();
   if (writeCookie) writeGuestCookie(memory);
   mirrorLanguageCache(memory[CLIENT_PREF_KEYS.APP_LANGUAGE], { clear: clearLanguage });
   notify();
@@ -409,3 +424,4 @@ function initMemory() {
 
 initMemory();
 watchReducedMotion();
+installFontPresetStylesheet();

@@ -46,7 +46,9 @@
         "lPerfect": "LPerfect",
         "tooearly": "Too Early",
         "early": "Early",
-        "late": "Late"
+        "late": "Late",
+        "purePerfect": "Pure Perfect",
+        "purePerfectTooltip": "Set Perfect to {{count}} and every other judgement to 0"
       },
       "adofaiVersion": {
         "latest": "3.4.0",

@@ -14,6 +14,11 @@ import {
 import { useClientPreference } from '@/hooks/useClientPreference';
 import { changeAppLanguage } from '@/translations/config';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
+import {
+  DEFAULT_FONT_PRESET_ID,
+  FONT_PRESETS,
+  isFontPresetId,
+} from '@/utils/fontPresets';
 import { isoToEmoji } from '@/utils';
 import {
   DEFAULT_SITE_LANGUAGE_OPTIONS,
@@ -40,6 +45,10 @@ const SettingsPreferencesPage = () => {
   const [disableMascots, setDisableMascots] = useDisableMascotsPreference();
   const [dropdownClickMode, setDropdownClickMode] = useNavDropdownClickModePreference();
   const [savedLanguage, setSavedLanguage] = useClientPreference(CLIENT_PREF_KEYS.APP_LANGUAGE, null);
+  const [savedFont, setSavedFont] = useClientPreference(
+    CLIENT_PREF_KEYS.APP_FONT,
+    DEFAULT_FONT_PRESET_ID,
+  );
   const [languages, setLanguages] = useState(DEFAULT_SITE_LANGUAGE_OPTIONS);
   const [publicFollowsSaving, setPublicFollowsSaving] = useState(false);
 
@@ -94,6 +103,32 @@ const SettingsPreferencesPage = () => {
 
   const selectedLanguageOption = languageOptions.find((option) => option.value === selectedLanguageValue)
     || languageOptions[0];
+
+  const fontOptions = useMemo(
+    () => FONT_PRESETS.map((preset) => ({
+      value: preset.id,
+      label: (
+        <span
+          className="settings-preferences-page__font-option"
+          style={{ fontFamily: preset.stack }}
+        >
+          {preset.id === 'system'
+            ? t('settings.preferences.language.font.system')
+            : preset.name}
+        </span>
+      ),
+    })),
+    [t],
+  );
+
+  const selectedFontValue = isFontPresetId(savedFont) ? savedFont : DEFAULT_FONT_PRESET_ID;
+  const selectedFontOption = fontOptions.find((option) => option.value === selectedFontValue)
+    || fontOptions[0];
+
+  const handleFontChange = useCallback((option) => {
+    if (!option || !isFontPresetId(option.value)) return;
+    setSavedFont(option.value);
+  }, [setSavedFont]);
 
   const handleLanguageChange = useCallback((option) => {
     if (!option) return;
@@ -151,6 +186,16 @@ const SettingsPreferencesPage = () => {
           options={languageOptions}
           value={selectedLanguageOption}
           onChange={handleLanguageChange}
+          width="100%"
+        />
+        <p className="settings-preferences-page__toggle-desc">
+          {t('settings.preferences.language.font.description')}
+        </p>
+        <CustomSelect
+          label={t('settings.preferences.language.font.label')}
+          options={fontOptions}
+          value={selectedFontOption}
+          onChange={handleFontChange}
           width="100%"
         />
       </section>

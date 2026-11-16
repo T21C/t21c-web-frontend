@@ -4388,3 +4388,46 @@
 }
 
 } /* end @layer level-detail-base */
+
+/* Unlayered: this tooltip is portaled, and it has to beat react-tooltip's own rules. */
+.level-detail-bpm-tooltip.react-tooltip {
+  --rt-color-dark: #141416;
+  --rt-opacity: 1;
+  border-radius: 8px;
+}
+
+.level-detail-bpm-tooltip.react-tooltip > div {
+  padding: 6px 12px;
+  border-radius: inherit;
+}
+
+.level-detail-bpm-tooltip .level-detail-bpm-tooltip__list {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+
+.level-detail-bpm-tooltip .level-detail-bpm-tooltip__value {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(249, 250, 251, 0.42);
+}
+
+.level-detail-bpm-tooltip .level-detail-bpm-tooltip__value[data-distance="2"] {
+  font-size: 12px;
+  color: rgba(249, 250, 251, 0.66);
+}
+
+.level-detail-bpm-tooltip .level-detail-bpm-tooltip__value[data-distance="1"] {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(249, 250, 251, 0.88);
+}
+
+.level-detail-bpm-tooltip .level-detail-bpm-tooltip__value[data-distance="0"] {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-white);
+}

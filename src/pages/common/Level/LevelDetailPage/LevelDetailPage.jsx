@@ -70,6 +70,8 @@ import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, f
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
   formatAutoTilecountTooltip,
+  formatBpmMultiple,
+  getBpmDoubleMultiples,
   getSongDisplayName,
   getArtistDisplayName,
   formatDuration,
@@ -3143,14 +3145,44 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       </div>
                     );
                   })()}
-                  {!!res.level?.bpm && (
-                    <div className="metadata-item">
-                      {/* <span className="metadata-icon">ICON</span> */}
-                      {/* <span className="metadata-label">Start BPM</span> */}
-                      <MetronomeIcon size={22} />
-                      <span className="metadata-value">{res.level.bpm}</span>
-                    </div>
-                  )}
+                  {!!res.level?.bpm && (() => {
+                    const bpmLadder = getBpmDoubleMultiples(res.level.bpm);
+                    const bpmTooltipId = `level-detail-bpm-${res.level.id}`;
+                    const showBpmTooltip = bpmLadder.values.length > 1;
+                    return (
+                      <div
+                        className="metadata-item"
+                        {...(showBpmTooltip ? { 'data-tooltip-id': bpmTooltipId } : {})}
+                      >
+                        {/* <span className="metadata-icon">ICON</span> */}
+                        {/* <span className="metadata-label">Start BPM</span> */}
+                        <MetronomeIcon size={22} />
+                        <span className="metadata-value">{res.level.bpm}</span>
+                        {showBpmTooltip && (
+                          <LevelDetailTooltip
+                            id={bpmTooltipId}
+                            place="bottom"
+                            className="level-detail-bpm-tooltip"
+                          >
+                            <span className="level-detail-bpm-tooltip__list">
+                              {bpmLadder.values.map((value, index) => {
+                                const distance = Math.min(Math.abs(index - bpmLadder.sourceIndex), 3);
+                                return (
+                                  <span
+                                    key={index}
+                                    className="level-detail-bpm-tooltip__value"
+                                    data-distance={distance}
+                                  >
+                                    {index === bpmLadder.sourceIndex ? res.level.bpm : formatBpmMultiple(value)}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          </LevelDetailTooltip>
+                        )}
+                      </div>
+                    );
+                  })()}
                   </div>
                 )}
                 

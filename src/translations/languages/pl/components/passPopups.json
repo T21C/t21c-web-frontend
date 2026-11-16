@@ -46,7 +46,9 @@
         "lPerfect": "PPerfekcyjnie",
         "tooearly": "Za wcześnie",
         "early": "Wcześnie",
-        "late": "Późno"
+        "late": "Późno",
+        "purePerfect": "Pure Perfect",
+        "purePerfectTooltip": "Ustaw Perfekcyjnie na {{count}}, a resztę na 0"
       },
       "adofaiVersion": {
         "latest": "3.4.0",

@@ -111,3 +111,10 @@
   font-size: 0.8rem;
   color: var(--color-gray-2);
 }
+
+.settings-preferences-page .settings-preferences-page__font-option,
+.custom-select__menu-portal .settings-preferences-page__font-option {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.4;
+}

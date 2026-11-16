@@ -71,7 +71,12 @@
       "title": "Language",
       "label": "Preferred language",
       "description": "Used across the site. Follow country uses the country on your player profile.",
-      "followCountry": "Follow country ({{language}})"
+      "followCountry": "Follow country ({{language}})",
+      "font": {
+        "label": "Site font",
+        "description": "Used across the site. Each option is shown in its own typeface.",
+        "system": "System"
+      }
     },
     "motion": {
       "title": "Motion",

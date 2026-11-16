@@ -84,7 +84,12 @@
       "title": "Język",
       "label": "Preferowany język",
       "description": "Używany w całej witrynie. Opcja według kraju korzysta z kraju na Twoim profilu gracza.",
-      "followCountry": "Według kraju ({{language}})"
+      "followCountry": "Według kraju ({{language}})",
+      "font": {
+        "label": "Czcionka witryny",
+        "description": "Używana w całej witrynie. Każda opcja jest wyświetlana własną czcionką.",
+        "system": "Systemowa"
+      }
     },
     "motion": {
       "title": "Ruch",
