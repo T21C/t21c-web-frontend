@@ -314,6 +314,53 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const setupTotp = async ({ code } = {}) => {
+    const response = await api.post(
+      routes.auth.totp.setup(),
+      code ? { code } : {},
+    );
+    return response.data;
+  };
+
+  const confirmTotp = async ({ code }) => {
+    const response = await api.post(routes.auth.totp.confirm(), { code });
+    return response.data;
+  };
+
+  const regenerateTotpRecovery = async ({ code }) => {
+    const response = await api.post(routes.auth.totp.regenerateRecovery(), { code });
+    return response.data;
+  };
+
+  const disableTotp = async ({ code }) => {
+    const response = await api.post(routes.auth.totp.disable(), { code });
+    return response.data;
+  };
+
+  const verifyLoginMfaTotp = async ({ code, rememberDevice = true } = {}) => {
+    const response = await api.post(routes.auth.mfa.totpVerify(), {
+      code,
+      rememberDevice: Boolean(rememberDevice),
+    });
+    if (response.data?.user) {
+      acceptSessionUser(response.data.user);
+      await fetchUser(true, { silent: true });
+    }
+    return response.data;
+  };
+
+  const verifyLoginMfaRecovery = async ({ code, rememberDevice = true } = {}) => {
+    const response = await api.post(routes.auth.mfa.recoveryVerify(), {
+      code,
+      rememberDevice: Boolean(rememberDevice),
+    });
+    if (response.data?.user) {
+      acceptSessionUser(response.data.user);
+      await fetchUser(true, { silent: true });
+    }
+    return response.data;
+  };
+
   const registerPasskey = async (name) => {
     const optionsRes = await api.post(routes.auth.passkeys.registerOptions());
     let attestation;
@@ -621,6 +668,12 @@ export const AuthProvider = ({ children }) => {
     verifyLoginMfa,
     loginWithPasskey,
     verifyLoginMfaPasskey,
+    verifyLoginMfaTotp,
+    verifyLoginMfaRecovery,
+    setupTotp,
+    confirmTotp,
+    regenerateTotpRecovery,
+    disableTotp,
     registerPasskey,
     linkProvider,
     unlinkProvider,

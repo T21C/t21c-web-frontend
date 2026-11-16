@@ -12,6 +12,7 @@ import { useElevation } from '@/contexts/ElevationContext';
 import { useTranslation } from 'react-i18next';
 import PasswordStrength from '@/components/auth/PasswordStrength/PasswordStrength';
 import { evaluatePassword, passwordValidationError } from '@/utils/passwordPolicy';
+import AuthenticatorPopup from '@/components/popups/Users/AuthenticatorPopup/AuthenticatorPopup';
 import './settingsSubPage.css';
 import './settingsSecurityPage.css';
 
@@ -61,6 +62,8 @@ const SettingsSecurityPage = () => {
 
   const [isDeletionBusy, setIsDeletionBusy] = useState(false);
   const [deletionIncludeCreator, setDeletionIncludeCreator] = useState(false);
+  const [authenticatorOpen, setAuthenticatorOpen] = useState(false);
+  const totpEnabled = Boolean(user?.totpEnabled);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -482,6 +485,40 @@ const SettingsSecurityPage = () => {
           </form>
         )}
       </div>
+
+      <div className="settings-security-page__section">
+        <h3 className="settings-security-page__section-title">
+          {t('settings.security.authenticator.title')}
+        </h3>
+        <p className="authenticator-subtitle">
+          {t('settings.security.authenticator.description')}
+        </p>
+        <div className="authenticator-status-row">
+          <span className="authenticator-status">
+            {totpEnabled
+              ? t('settings.security.authenticator.statusOn')
+              : t('settings.security.authenticator.statusOff')}
+          </span>
+          <button
+            type="button"
+            className="change-password-button btn-fill-secondary"
+            onClick={() => setAuthenticatorOpen(true)}
+          >
+            {totpEnabled
+              ? t('settings.security.authenticator.manage')
+              : t('settings.security.authenticator.setup')}
+          </button>
+        </div>
+      </div>
+
+      <AuthenticatorPopup
+        isOpen={authenticatorOpen}
+        totpEnabled={totpEnabled}
+        onClose={() => setAuthenticatorOpen(false)}
+        onChanged={() => {
+          void fetchUser(true, { silent: true });
+        }}
+      />
 
       <div className="settings-security-page__section">
         <h3 className="settings-security-page__section-title">

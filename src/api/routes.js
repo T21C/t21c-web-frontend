@@ -30,6 +30,14 @@ export const routes = {
       verify: () => '/v2/auth/mfa/verify',
       passkeyOptions: () => '/v2/auth/mfa/passkey/options',
       passkeyVerify: () => '/v2/auth/mfa/passkey/verify',
+      totpVerify: () => '/v2/auth/mfa/totp/verify',
+      recoveryVerify: () => '/v2/auth/mfa/recovery/verify',
+    },
+    totp: {
+      setup: () => '/v2/auth/totp/setup',
+      confirm: () => '/v2/auth/totp/confirm',
+      regenerateRecovery: () => '/v2/auth/totp/recovery/regenerate',
+      disable: () => '/v2/auth/totp/disable',
     },
     passkeys: {
       list: () => '/v2/auth/passkeys',

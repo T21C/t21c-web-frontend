@@ -23,6 +23,9 @@ export function useLoginFlow() {
   const [mfaCode, setMfaCode] = useState('');
   const [maskedEmail, setMaskedEmail] = useState('');
   const [mfaMethods, setMfaMethods] = useState(/** @type {string[]} */ ([]));
+  const [mfaFactor, setMfaFactor] = useState(
+    /** @type {null | 'email' | 'totp' | 'recovery'} */ (null),
+  );
   const [rememberDevice, setRememberDevice] = useState(true);
   const [resendAvailableAt, setResendAvailableAt] = useState(null);
   const [resendSeconds, setResendSeconds] = useState(0);
@@ -35,7 +38,8 @@ export function useLoginFlow() {
     requestLoginMfaEmail,
     verifyLoginMfa,
     loginWithPasskey,
-    verifyLoginMfaPasskey,
+    verifyLoginMfaTotp,
+    verifyLoginMfaRecovery,
   } = useAuth();
   const { t } = useTranslation('pages');
 
@@ -137,10 +141,10 @@ export function useLoginFlow() {
   }, [requestLoginMfaEmail, t]);
 
   useEffect(() => {
-    if (step === 'mfa' && !mfaCodeRequested && mfaMethods.includes('email')) {
+    if (step === 'mfa' && mfaFactor === 'email' && !mfaCodeRequested) {
       void requestMfaCode();
     }
-  }, [step, mfaCodeRequested, mfaMethods, requestMfaCode]);
+  }, [step, mfaFactor, mfaCodeRequested, requestMfaCode]);
 
   /**
    * @param {React.FormEvent} e
@@ -172,8 +176,9 @@ export function useLoginFlow() {
           : 0;
         const cooldownActive = availableAtMs > Date.now();
         setResendAvailableAt(cooldownActive ? data.emailResendAvailableAt : null);
-        // Skip auto-request when email MFA is unavailable, or cooldown is active.
-        setMfaCodeRequested(cooldownActive || !methods.includes('email'));
+        const hasTotp = methods.includes('totp');
+        setMfaFactor(hasTotp ? null : methods.includes('email') ? 'email' : null);
+        setMfaCodeRequested(cooldownActive);
         setStep('mfa');
         return { completed: false };
       }
@@ -246,13 +251,30 @@ export function useLoginFlow() {
   const submitMfa = async (e) => {
     e.preventDefault();
     setError('');
-    if (!mfaCode || mfaCode.length < 8) {
+
+    const verify =
+      mfaFactor === 'totp'
+        ? verifyLoginMfaTotp
+        : mfaFactor === 'recovery'
+          ? verifyLoginMfaRecovery
+          : verifyLoginMfa;
+
+    if (mfaFactor === 'totp' && (!mfaCode || mfaCode.length < 6)) {
+      setError(t('login.mfa.totpRequired'));
+      return { completed: false };
+    }
+    if (mfaFactor === 'recovery' && !mfaCode.trim()) {
+      setError(t('login.mfa.recoveryRequired'));
+      return { completed: false };
+    }
+    if (mfaFactor !== 'totp' && mfaFactor !== 'recovery' && (!mfaCode || mfaCode.length < 8)) {
       setError(t('login.mfa.codeRequired'));
       return { completed: false };
     }
+
     setLoading(true);
     try {
-      const data = await verifyLoginMfa({
+      const data = await verify({
         code: mfaCode,
         rememberDevice,
       });
@@ -268,47 +290,36 @@ export function useLoginFlow() {
         setError(msg || t('login.mfa.expired'));
         return { completed: false };
       }
-      setError(msg || t('login.mfa.invalidCode'));
+      const invalid =
+        mfaFactor === 'totp'
+          ? t('login.mfa.totpInvalid')
+          : mfaFactor === 'recovery'
+            ? t('login.mfa.recoveryInvalid')
+            : t('login.mfa.invalidCode');
+      setError(msg || invalid);
       return { completed: false };
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * @returns {Promise<{ completed: boolean }>}
-   */
-  const submitMfaPasskey = async () => {
+  const selectMfaFactor = (factor) => {
     setError('');
-    setLoading(true);
-    try {
-      const data = await verifyLoginMfaPasskey({ rememberDevice });
-      if (data?.cancelled) {
-        return { completed: false };
-      }
-      if (data?.user) {
-        return { completed: true };
-      }
-      return { completed: false };
-    } catch (err) {
-      const codeName = err?.response?.data?.code || err?.code;
-      const msg = err?.response?.data?.message || err?.message;
-      if (codeName === 'MFA_PENDING_REQUIRED') {
-        setStep('credentials');
-        setError(msg || t('login.mfa.expired'));
-        return { completed: false };
-      }
-      setError(msg || t('login.mfa.passkeyFailed'));
-      return { completed: false };
-    } finally {
-      setLoading(false);
-    }
+    setMfaCode('');
+    setMfaFactor(factor);
+  };
+
+  const backToMfaChooser = () => {
+    setError('');
+    setMfaCode('');
+    setMfaFactor(null);
   };
 
   const backToCredentials = () => {
     setStep('credentials');
     setMfaCode('');
     setMfaMethods([]);
+    setMfaFactor(null);
     setMfaCodeRequested(false);
     setResendAvailableAt(null);
     setError('');
@@ -355,12 +366,14 @@ export function useLoginFlow() {
     setMfaCode,
     maskedEmail,
     mfaMethods,
+    mfaFactor,
+    selectMfaFactor,
+    backToMfaChooser,
     rememberDevice,
     setRememberDevice,
     resendSeconds,
     requestMfaCode,
     submitMfa,
-    submitMfaPasskey,
     backToCredentials,
   };
 }

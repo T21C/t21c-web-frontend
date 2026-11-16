@@ -115,6 +115,24 @@
   margin-top: 0;
 }
 
+.settings-security-page .authenticator-subtitle {
+  margin: 0.35rem 0 1rem;
+  color: var(--color-gray-2, #a0a0a0);
+  font-size: 0.95rem;
+}
+
+.settings-security-page .authenticator-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.settings-security-page .authenticator-status {
+  color: var(--color-white, #e0e0e0);
+  font-weight: 600;
+}
+
 .settings-security-page .passkeys-subtitle {
   margin: 0.35rem 0 1rem;
   color: var(--color-gray-2, #a0a0a0);
