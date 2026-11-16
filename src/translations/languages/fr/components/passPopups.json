@@ -46,7 +46,9 @@
         "lPerfect": "Parfait-Tard",
         "tooearly": "Trop tôt",
         "early": "Tôt",
-        "late": "Tard"
+        "late": "Tard",
+        "purePerfect": "Pure Perfect",
+        "purePerfectTooltip": "Met Parfait à {{count}} et les autres jugements à 0"
       },
       "adofaiVersion": {
         "latest": "3.4.0",

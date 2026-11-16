@@ -71,7 +71,12 @@
       "title": "언어",
       "label": "선호 언어",
       "description": "사이트 전체에 사용됩니다. 국가 따르기는 플레이어 프로필의 국가를 사용합니다.",
-      "followCountry": "국가 따르기 ({{language}})"
+      "followCountry": "국가 따르기 ({{language}})",
+      "font": {
+        "label": "사이트 글꼴",
+        "description": "사이트 전체에 사용됩니다. 각 옵션은 해당 글꼴로 표시됩니다.",
+        "system": "시스템"
+      }
     },
     "motion": {
       "title": "모션",

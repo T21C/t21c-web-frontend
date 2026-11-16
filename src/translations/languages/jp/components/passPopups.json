@@ -46,7 +46,9 @@
         "lPerfect": "LPerfect",
         "tooearly": "Too Early",
         "early": "Early",
-        "late": "Late"
+        "late": "Late",
+        "purePerfect": "Pure Perfect",
+        "purePerfectTooltip": "Perfectを{{count}}にして、他の判定を0にする"
       },
       "adofaiVersion": {
         "latest": "3.4.0",

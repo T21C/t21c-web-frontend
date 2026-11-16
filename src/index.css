@@ -19,6 +19,7 @@
   /* Set by Navigation.jsx via ResizeObserver; fallback for SSR / before mount */
   --navbar-height: 2rem;
   --text-color: #f9fafb;
+  --tuf-font-family: "Roboto", sans-serif;
   --color-black: #090909;
   --color-white: #f9fafb;
   --color-xperfect: #ffffff;
@@ -206,7 +207,7 @@ html {
     box-sizing: border-box;
     scrollbar-color: #ffffff9b #181818;
     color: inherit;
-    font-family: "Roboto", sans-serif;
+    font-family: var(--tuf-font-family);
   }
   a {
     text-decoration: none;

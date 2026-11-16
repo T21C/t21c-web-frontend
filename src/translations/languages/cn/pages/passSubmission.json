@@ -44,7 +44,9 @@
     "tooearly": "提前",
     "early": "太快",
     "late": "太慢",
-    "fillRemainder": "填入剩余 {{count}}"
+    "fillRemainder": "填入剩余 {{count}}",
+    "purePerfect": "完美无瑕",
+    "purePerfectTooltip": "将完美填为 {{count}}，其余判定填 0"
   },
   "acc": "精准度：",
   "scoreCalc": "分数：",

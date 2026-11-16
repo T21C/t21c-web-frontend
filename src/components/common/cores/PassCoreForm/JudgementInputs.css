@@ -71,6 +71,36 @@
   outline-offset: 1px;
 }
 
+.judgement-inputs .judgement-inputs__pure-perfect {
+  position: absolute;
+  right: 0.15rem;
+  top: 0%;
+  transform: translateY(-100%);
+  z-index: 1;
+  margin: 0;
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.72);
+  color: var(--color-white, #fff);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-shadow: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.judgement-inputs .judgement-inputs__pure-perfect:hover,
+.judgement-inputs .judgement-inputs__pure-perfect:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.judgement-inputs .judgement-inputs__pure-perfect:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 1px;
+}
+
 .judgement-inputs .judgement-inputs__field--has-fill input,
 .pass-core-form .judgement-inputs .judgement-inputs__field--has-fill input {
   padding-right: 1.45rem;

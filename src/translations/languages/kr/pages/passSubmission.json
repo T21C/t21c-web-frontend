@@ -44,7 +44,9 @@
     "tooearly": "너무 빠름",
     "early": "빠름!",
     "late": "느림!",
-    "fillRemainder": "남은 {{count}} 채우기"
+    "fillRemainder": "남은 {{count}} 채우기",
+    "purePerfect": "퓨어 퍼펙트",
+    "purePerfectTooltip": "정확을 {{count}}(으)로 채우고 나머지 판정은 0으로 둡니다"
   },
   "acc": "정확도: ",
   "scoreCalc": "점수: ",

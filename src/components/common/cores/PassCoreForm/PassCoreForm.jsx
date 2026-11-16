@@ -70,6 +70,8 @@ export const PASS_CORE_COPY = {
     early: 'passSubmission.judgements.early',
     late: 'passSubmission.judgements.late',
     fillRemainder: 'passSubmission.judgements.fillRemainder',
+    purePerfect: 'passSubmission.judgements.purePerfect',
+    purePerfectTooltip: 'passSubmission.judgements.purePerfectTooltip',
     accPrefix: 'passSubmission.acc',
     scorePrefix: 'passSubmission.scoreCalc',
     scoreNeedId: 'passSubmission.score.needId',
@@ -120,6 +122,8 @@ export const PASS_CORE_COPY = {
     tooEarly: 'passSubmission.judgements.tooearly',
     early: 'passSubmission.judgements.early',
     late: 'passSubmission.judgements.late',
+    purePerfect: 'passSubmission.judgements.purePerfect',
+    purePerfectTooltip: 'passSubmission.judgements.purePerfectTooltip',
     accPrefix: 'passSubmission.acc',
     scorePrefix: 'passSubmission.scoreCalc',
     scoreNeedId: 'passSubmission.calculator.score.needLevelOrSandbox',
@@ -172,6 +176,8 @@ export const PASS_CORE_COPY = {
     tooEarly: 'passPopups.edit.form.judgements.tooearly',
     early: 'passPopups.edit.form.judgements.early',
     late: 'passPopups.edit.form.judgements.late',
+    purePerfect: 'passPopups.edit.form.judgements.purePerfect',
+    purePerfectTooltip: 'passPopups.edit.form.judgements.purePerfectTooltip',
     accPrefix: 'passPopups.edit.acc',
     scorePrefix: 'passPopups.edit.scoreCalc',
     scoreNeedId: 'passPopups.edit.form.score.needId',
@@ -242,9 +248,8 @@ export function PassCoreForm({
   const adofaiVersion = parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0);
   const showXPerfectToggle = canUseXPerfectMode(adofaiVersion);
   const showXPerfectFields = showXPerfectToggle && !!form.isXPerfectMode;
-  const judgementAutofillCount = mode === 'submit'
-    ? getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount)
-    : null;
+  const purePerfectCount = getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount);
+  const judgementAutofillCount = mode === 'submit' ? purePerfectCount : null;
   const eraOptions = [
     { value: ADOFAI_VERSION.V3_4_0, label: t(copy.adofaiVersionLatest, { ns: copy.ns }) },
     { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
@@ -681,6 +686,7 @@ export function PassCoreForm({
             copy={copy}
             showXPerfectFields={showXPerfectFields}
             achievableCount={judgementAutofillCount}
+            purePerfectCount={purePerfectCount}
           />
           {renderJudgementActions ? (
             <div className="judgement-tool-actions">{renderJudgementActions()}</div>

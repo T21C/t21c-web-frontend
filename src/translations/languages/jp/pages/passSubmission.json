@@ -44,7 +44,9 @@
     "tooearly": "Too Early",
     "early": "Early",
     "late": "Late",
-    "fillRemainder": "残り{{count}}を入力"
+    "fillRemainder": "残り{{count}}を入力",
+    "purePerfect": "Pure Perfect",
+    "purePerfectTooltip": "Perfectを{{count}}にして、他の判定を0にする"
   },
   "acc": "精度：",
   "scoreCalc": "スコア：",

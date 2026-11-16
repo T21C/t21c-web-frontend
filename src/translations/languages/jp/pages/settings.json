@@ -71,7 +71,12 @@
       "title": "言語",
       "label": "優先する言語",
       "description": "サイト全体で使用されます。「国に合わせる」を選ぶと、プレイヤープロフィールに設定された国の言語が使用されます。",
-      "followCountry": "国に合わせる（{{language}}）"
+      "followCountry": "国に合わせる（{{language}}）",
+      "font": {
+        "label": "サイトのフォント",
+        "description": "サイト全体で使用されます。各選択肢はそれぞれの書体で表示されます。",
+        "system": "システム"
+      }
     },
     "motion": {
       "title": "モーション",

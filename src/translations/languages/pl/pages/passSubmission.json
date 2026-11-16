@@ -44,7 +44,9 @@
     "tooearly": "Za wcześnie",
     "early": "Wcześnie",
     "late": "Późno",
-    "fillRemainder": "Uzupełnij resztę ({{count}})"
+    "fillRemainder": "Uzupełnij resztę ({{count}})",
+    "purePerfect": "Pure Perfect",
+    "purePerfectTooltip": "Ustaw Perfekcyjnie na {{count}}, a resztę na 0"
   },
   "acc": "Dokładność: ",
   "scoreCalc": "Wynik: ",

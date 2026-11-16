@@ -105,6 +105,62 @@ export function formatAutoTilecountTooltip(tilecount, autoTileCount, midspinCoun
   return `${manual} (${parts.join(', ')})`;
 }
 
+const BPM_OCTAVE_MIN_LOW = 40;
+const BPM_OCTAVE_MIN_HIGH = 80;
+const BPM_OCTAVE_MAX_LOW = 3000;
+const BPM_OCTAVE_MAX_HIGH = 6000;
+const BPM_OCTAVE_STEP_CAP = 16;
+
+/**
+ * ×2 / ÷2 ladder around a BPM.
+ * The low end stops on the first step inside [40, 80]; the high end stops on the first step inside [3000, 6000].
+ * The source BPM is always included, including when it sits outside those bands.
+ * @param {unknown} bpm
+ * @returns {{ values: number[], sourceIndex: number }}
+ */
+export function getBpmDoubleMultiples(bpm) {
+  const source = Number(bpm);
+  if (!Number.isFinite(source) || source <= 0) {
+    return { values: [], sourceIndex: -1 };
+  }
+
+  let stepsDown = 0;
+  while (stepsDown < BPM_OCTAVE_STEP_CAP) {
+    const current = source / 2 ** stepsDown;
+    if (current <= BPM_OCTAVE_MIN_HIGH) break;
+    const next = source / 2 ** (stepsDown + 1);
+    if (!Number.isFinite(next) || next < BPM_OCTAVE_MIN_LOW) break;
+    stepsDown += 1;
+  }
+
+  let stepsUp = 0;
+  while (stepsUp < BPM_OCTAVE_STEP_CAP) {
+    const current = source * 2 ** stepsUp;
+    if (current >= BPM_OCTAVE_MAX_LOW) break;
+    const next = source * 2 ** (stepsUp + 1);
+    if (!Number.isFinite(next) || next > BPM_OCTAVE_MAX_HIGH) break;
+    stepsUp += 1;
+  }
+
+  const values = [];
+  for (let step = -stepsDown; step <= stepsUp; step += 1) {
+    if (step === 0) {
+      values.push(source);
+      continue;
+    }
+    values.push(step < 0 ? source / 2 ** -step : source * 2 ** step);
+  }
+
+  return { values, sourceIndex: stepsDown };
+}
+
+/** Short decimal for a ladder step, without trailing zeros. */
+export function formatBpmMultiple(value) {
+  if (!Number.isFinite(value)) return '';
+  const rounded = Math.round(value * 10000) / 10000;
+  return String(rounded);
+}
+
 export const formatDuration = (duration) => {
   if (!duration) return '';
   const hours = Math.floor(duration / 3600000);
