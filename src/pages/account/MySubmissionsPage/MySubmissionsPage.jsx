@@ -2,12 +2,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { CustomSelect } from '@/components/common/selectors';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { EditPassPopup } from '@/components/popups/Passes';
+import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
+import { getOwnedPassSubmission, passFromSubmission } from '@/utils/submissions/passSubmission';
 import MySubmissionRow from './MySubmissionRow';
 import LevelRequestBrowser from '@/components/requests/LevelRequestBrowser';
 import '@/components/requests/levelRequests.css';
@@ -33,6 +37,8 @@ const MySubmissionsPage = () => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [listEpoch, setListEpoch] = useState(0);
+  const [editingPass, setEditingPass] = useState(null);
 
   const pageMeta = useMemo(
     () =>
@@ -108,7 +114,36 @@ const MySubmissionsPage = () => {
       });
 
     return () => controller.abort();
-  }, [page, query, type, status, sort, tab]);
+  }, [page, query, type, status, sort, tab, listEpoch]);
+
+  const reloadList = () => setListEpoch((n) => n + 1);
+
+  const handleEditPass = async (id) => {
+    const toastId = toast.loading(t('mySubmissions.edit.loading'));
+    try {
+      const submission = await getOwnedPassSubmission(id);
+      if (submission?.status && submission.status !== 'pending') {
+        toast.error(t('mySubmissions.edit.notPending'), { id: toastId });
+        reloadList();
+        return;
+      }
+      const mapped = passFromSubmission(submission);
+      if (!mapped) {
+        toast.error(t('mySubmissions.edit.loadFailed'), { id: toastId });
+        return;
+      }
+      setEditingPass(mapped);
+      toast.dismiss(toastId);
+    } catch (err) {
+      toast.error(getSubmissionErrorMessage(err, t('mySubmissions.edit.loadFailed')), { id: toastId });
+      if (err.status === 400) reloadList();
+    }
+  };
+
+  const handleEditorDone = () => {
+    setEditingPass(null);
+    reloadList();
+  };
 
   useEffect(() => {
     if (!loading && page > totalPages) setPage(totalPages);
@@ -203,6 +238,7 @@ const MySubmissionsPage = () => {
             <MySubmissionRow
               key={`${submission.kind}-${submission.id}`}
               submission={submission}
+              onEditPass={handleEditPass}
             />
           ))
         )}
@@ -236,6 +272,14 @@ const MySubmissionsPage = () => {
         </div>
       ) : null}
         </>
+      )}
+      {editingPass && (
+        <EditPassPopup
+          pass={editingPass}
+          target="submission"
+          onClose={() => setEditingPass(null)}
+          onUpdate={handleEditorDone}
+        />
       )}
     </div>
   );

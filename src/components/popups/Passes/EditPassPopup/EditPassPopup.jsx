@@ -19,16 +19,18 @@ import { PopupShell } from '@/components/common/PopupShell';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { canUseXPerfectMode } from '@/utils/adofaiVersion';
+import { updateOwnedPassSubmission } from '@/utils/submissions/passSubmission';
 
-export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
+export const EditPassPopup = ({ pass, onClose, onUpdate, target = 'pass' }) => {
   const { t } = useTranslation(['components', 'pages', 'common']);
+  const isSubmissionTarget = target === 'submission';
 
   const initialFormState = {
     levelId: pass.levelId.toString() || '',
     videoLink: pass.videoLink || '',
     speed: pass.speed || '1',
     playerId: pass.playerId || '',
-    leaderboardName: pass.player.name || '',
+    leaderboardName: pass.player?.name || '',
     feelingRating: pass.feelingRating || '',
     expectedRating: pass.expectedRating || '',
     details: pass.details || '',
@@ -89,7 +91,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const bindPlayerId = Number(form.playerId) || pass.playerId || pass.player?.id || null;
   const keyboardBind = usePassKeyboardBind({
     pass,
-    playerId: bindPlayerId,
+    playerId: isSubmissionTarget ? null : bindPlayerId,
     keyCount: form.keyCount,
     vidUploadTime: form.vidUploadTime,
   });
@@ -163,43 +165,57 @@ const handleSubmit = async (e) => {
     };
 
     
-    const response = await api.put(
-      `${routes.database.passes.root()}/${pass.id}`,
-      updateData,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    if (response.data) {
-      let updatedPass = response.data.pass;
-      if (keyboardBind.lanePeriodId !== keyboardBind.initialBindId) {
-        const bindResponse = await api.patch(routes.playersV3.mePassKeyboardSetup(pass.id), {
-          lanePeriodId: keyboardBind.lanePeriodId || null,
-        });
-        if (updatedPass) {
-          updatedPass = {
-            ...updatedPass,
-            keyboardSetup: bindResponse.data?.keyboardSetup ?? null,
-          };
-        }
-      }
+    if (isSubmissionTarget) {
+      const result = await updateOwnedPassSubmission(pass.id, updateData);
       toast.success(t('pass.updated', { ns: 'common' }), { id: toastId });
       setHasUnsavedChanges(false);
       if (onUpdate) {
-        await onUpdate(updatedPass);
+        await onUpdate(result?.submission);
       }
     } else {
-      toast.error(t('pass.errors.updateFailed', { ns: 'common' }), { id: toastId });
+      const response = await api.put(
+        `${routes.database.passes.root()}/${pass.id}`,
+        updateData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data) {
+        let updatedPass = response.data.pass;
+        if (keyboardBind.lanePeriodId !== keyboardBind.initialBindId) {
+          const bindResponse = await api.patch(routes.playersV3.mePassKeyboardSetup(pass.id), {
+            lanePeriodId: keyboardBind.lanePeriodId || null,
+          });
+          if (updatedPass) {
+            updatedPass = {
+              ...updatedPass,
+              keyboardSetup: bindResponse.data?.keyboardSetup ?? null,
+            };
+          }
+        }
+        toast.success(t('pass.updated', { ns: 'common' }), { id: toastId });
+        setHasUnsavedChanges(false);
+        if (onUpdate) {
+          await onUpdate(updatedPass);
+        }
+      } else {
+        toast.error(t('pass.errors.updateFailed', { ns: 'common' }), { id: toastId });
+      }
     }
   } catch (err) {
     console.error("Error updating pass:", err);
-    toast.error(
-      err.response?.data?.error || err.message || err.error || "Unknown error occurred",
-      { id: toastId }
-    );
+    const message =
+      err.response?.data?.error || err.message || err.error || "Unknown error occurred";
+    toast.error(message, { id: toastId });
+    const status = err.status ?? err.response?.status;
+    if (isSubmissionTarget && status === 400 && /pending/i.test(String(message))) {
+      if (onUpdate) {
+        await onUpdate(null);
+      }
+    }
   } finally {
     setSubmission(false);
     setSubmitAttempt(false);
@@ -341,7 +357,7 @@ const handleSubmit = async (e) => {
               }}
             />
           )}
-          renderExtraCheckboxes={() => (
+          renderExtraCheckboxes={isSubmissionTarget ? undefined : () => (
             <div className="announcement-status">
               <label className="checkbox-container">
                 <input type="checkbox" name="isAnnounced" checked={form.isAnnounced} onChange={handleUserInputChange} />
@@ -362,13 +378,15 @@ const handleSubmit = async (e) => {
           )}
           renderSubmitActions={() => (
             <div className="edit-pass-keyboard-bind">
-              <PassKeyboardBindField
-                bind={keyboardBind}
-                onChange={(nextId) => {
-                  setHasUnsavedChanges(true);
-                  keyboardBind.setLanePeriodId(nextId);
-                }}
-              />
+              {!isSubmissionTarget && (
+                <PassKeyboardBindField
+                  bind={keyboardBind}
+                  onChange={(nextId) => {
+                    setHasUnsavedChanges(true);
+                    keyboardBind.setLanePeriodId(nextId);
+                  }}
+                />
+              )}
               <div className="button-group">
               <button disabled={submission} className="save-button btn-fill-primary" onClick={handleSubmit}>
                 {submission
@@ -376,6 +394,7 @@ const handleSubmit = async (e) => {
                   : t('buttons.save', { ns: 'common' })}
               </button>
 
+              {!isSubmissionTarget && (
               <button
                 type="button"
                 className="delete-button btn-fill-danger"
@@ -386,6 +405,7 @@ const handleSubmit = async (e) => {
                   ? t('buttons.restore', { ns: 'common' })
                   : t('buttons.delete', { ns: 'common' })}
               </button>
+              )}
             </div>
             </div>
           )}
@@ -393,6 +413,7 @@ const handleSubmit = async (e) => {
           truncateString={truncateString}
         />
     </PopupShell>
+      {!isSubmissionTarget && (
       <AdminReasonPrompt
         isOpen={showDeletePrompt}
         title={t('passPopups.edit.reasonPrompt.deleteTitle')}
@@ -405,6 +426,7 @@ const handleSubmit = async (e) => {
           void runSoftDelete(reason);
         }}
       />
+      )}
     </>
     );
 }; 

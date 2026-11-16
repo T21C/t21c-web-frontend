@@ -66,9 +66,9 @@ function difficultyIcon(difficulty) {
  *   workshopLink: string | null,
  *   downloadLink: string | null,
  *   extra?: Record<string, unknown>,
- * } }} props
+ * }, onEditPass?: (id: number) => void }} props
  */
-const MySubmissionRow = ({ submission }) => {
+const MySubmissionRow = ({ submission, onEditPass }) => {
   const { t, i18n } = useTranslation('pages');
   const { difficulties } = useDifficultyContext();
   const extra = submission.extra || {};
@@ -147,6 +147,14 @@ const MySubmissionRow = ({ submission }) => {
   }
 
   const links = [];
+  if (submission.kind === 'pass' && submission.status === 'pending' && onEditPass) {
+    links.push({
+      key: 'edit',
+      onClick: () => onEditPass(submission.id),
+      label: t('mySubmissions.row.edit'),
+      primary: true,
+    });
+  }
   if (submission.href) {
     links.push({
       key: 'level',
@@ -275,6 +283,13 @@ const MySubmissionRow = ({ submission }) => {
               <Link key={link.key} className={className} to={link.to}>
                 {link.label}
               </Link>
+            );
+          }
+          if (link.onClick) {
+            return (
+              <button key={link.key} type="button" className={className} onClick={link.onClick}>
+                {link.label}
+              </button>
             );
           }
           return (

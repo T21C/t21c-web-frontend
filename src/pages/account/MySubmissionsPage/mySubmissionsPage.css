@@ -312,6 +312,11 @@
   gap: 0.4rem;
 }
 
+.my-submissions-page__links button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
 .my-submissions-page__row-date {
   grid-area: date;
   justify-self: end;
