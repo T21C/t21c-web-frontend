@@ -127,6 +127,11 @@ const PassPage = () => {
     setForceUpdate(f => !f);
   };
 
+  const handlePassUpdated = useCallback((nextPass) => {
+    if (!nextPass?.id) return;
+    setPassesData((prev) => prev.map((item) => (item.id === nextPass.id ? nextPass : item)));
+  }, [setPassesData]);
+
   useEffect(() => {
     // Pagination (pageNumber > 0) bypasses the debounce so infinite scroll
     // feels instant; filter / query / sort changes flow through the debounced
@@ -336,6 +341,7 @@ const PassPage = () => {
             mode="passcard"
             topScores={[]}
             potentialTopScores={[]}
+            onPassUpdated={handlePassUpdated}
           />
         )}
         computeItemKey={(index, pass) => pass?.id ?? index}

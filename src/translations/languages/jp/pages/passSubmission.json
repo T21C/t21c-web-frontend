@@ -64,7 +64,6 @@
   },
   "midspinWarning": {
     "willApply": "この譜面にはミッドスピンのタイルが{{count}}個あります。提出時にPerfectの数から差し引かれます。",
-    "alreadyApplied": "このクリアではミッドスピン分のPerfectがすでに差し引かれています。",
     "missing": "このレベルにはミッドスピン数が登録されていないため、Perfectの数は調整されません。",
     "perfectLt": "Perfectの数がミッドスピン数より少ないため、Perfectの数は調整されません。"
   },

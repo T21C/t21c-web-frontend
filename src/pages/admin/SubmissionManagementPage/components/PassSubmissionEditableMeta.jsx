@@ -232,9 +232,7 @@ export default function PassSubmissionEditableMeta({
   });
   let midspinWarningText = null;
   if (!derivedPreview.applied) {
-    if (midspinPreview.skippedReason === 'already_applied') {
-      midspinWarningText = t('passSubmissions.midspinWarning.alreadyApplied');
-    } else if (submission.level && midspinPreview.skippedReason === 'midspin_missing') {
+    if (submission.level && midspinPreview.skippedReason === 'midspin_missing') {
       midspinWarningText = t('passSubmissions.midspinWarning.missing');
     } else if (Number.isInteger(activePerfect) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
       midspinWarningText = t('passSubmissions.midspinWarning.perfectLt');

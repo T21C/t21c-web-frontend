@@ -12,8 +12,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
 import PassFlags from "../PassFlags/PassFlags";
-import { VideoLinkIcon } from "@/components/common/icons";
+import { EditIcon, VideoLinkIcon } from "@/components/common/icons";
 import { LikeButton } from "@/components/common/buttons";
+import { EditPassPopup, OwnPassEditPopup } from "@/components/popups/Passes";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { isAutoSubmittedPass } from "@/utils/passSubmissionSource";
 import { UserAvatar } from "@/components/layout";
@@ -24,6 +26,51 @@ import { routes } from "@/api/routes";
 import i18next from "i18next";
 import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
 import { isPureXPerfect } from "@/utils/CalcAcc";
+
+function mergePassUpdate(current, updated) {
+  const source = updated?.pass && typeof updated.pass === 'object' && updated.id == null
+    ? updated.pass
+    : updated;
+  if (!source || typeof source !== 'object') return current;
+  return {
+    ...current,
+    ...source,
+    id: source.id ?? current.id,
+    isLiked: source.isLiked ?? current.isLiked,
+    likes: source.likes ?? current.likes,
+    player: source.player ? { ...current.player, ...source.player } : current.player,
+    level: source.level
+      ? {
+          ...current.level,
+          ...source.level,
+          diffId: source.level.diffId ?? source.level.difficulty?.id ?? current.level?.diffId,
+        }
+      : current.level,
+    judgements: source.judgements
+      ? { ...(current.judgements || {}), ...source.judgements }
+      : current.judgements,
+  };
+}
+
+function passForEditor(pass) {
+  const judgements = pass?.judgements || {};
+  return {
+    ...pass,
+    levelId: pass?.levelId ?? pass?.level?.id ?? '',
+    playerId: pass?.playerId ?? pass?.player?.id ?? '',
+    judgements: {
+      ePerfect: judgements.ePerfect ?? 0,
+      perfectMinus: judgements.perfectMinus ?? 0,
+      perfect: judgements.perfect ?? 0,
+      perfectPlus: judgements.perfectPlus ?? 0,
+      lPerfect: judgements.lPerfect ?? 0,
+      earlyDouble: judgements.earlyDouble ?? 0,
+      earlySingle: judgements.earlySingle ?? 0,
+      lateSingle: judgements.lateSingle ?? 0,
+      lateDouble: judgements.lateDouble ?? 0,
+    },
+  };
+}
 
 const Judgements = ({judgements, showXPerfect}) => {
   return (
@@ -45,12 +92,22 @@ const Judgements = ({judgements, showXPerfect}) => {
 };
 
 // eslint-disable-next-line react/prop-types
-const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 'profile' }) => {
-  const {t} = useTranslation('components');
+const ScoreCard = ({ scoreData: scoreDataProp, topScores = [], potentialTopScores = [], mode = 'profile', onPassUpdated }) => {
+  const {t} = useTranslation(['components', 'pages']);
   const { user } = useAuth();
+  const [scoreData, setScoreData] = useState(scoreDataProp);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+
+  useEffect(() => {
+    setScoreData(scoreDataProp);
+  }, [scoreDataProp]);
+
   const isFeaturedMode = mode === 'featured';
   const isPassCardMode = mode === 'passcard' || isFeaturedMode;
   const showPassLike = mode === 'passcard';
+  const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const isOwnPass = Boolean(user?.playerId) && user.playerId === scoreData.player?.id;
+  const canEditPass = mode === 'passcard' && (isSuperAdmin || isOwnPass);
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const isHiddenPass = scoreData.isHidden || false;
   const showVideo = Boolean(scoreData.videoLink) && !isHiddenLevel && !isAutoSubmittedPass(scoreData);
@@ -69,6 +126,18 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
     });
   }, [scoreData.id, scoreData.isLiked, scoreData.likes]);
 
+  const handlePassUpdate = (updated) => {
+    const next = mergePassUpdate(scoreData, updated);
+    setScoreData(next);
+    onPassUpdated?.(next);
+  };
+
+  const handleEditClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowEditPopup(true);
+  };
+
   const handleLikeRequest = async (action) => {
     const { data } = await api.put(routes.database.passes.like(scoreData.id), { action });
     if (!data?.success) throw new Error('like failed');
@@ -86,7 +155,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       : '';
 
   const cardStyle = {
-    pointerEvents: isHiddenLevel ? 'none' : 'auto',
+    pointerEvents: isHiddenLevel && !canEditPass ? 'none' : 'auto',
     ...(isPassCardMode && !isFeaturedMode && scoreData.isDeleted ? { backgroundColor: '#f0000099' } : {}),
   };
 
@@ -249,6 +318,17 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
               )}
             </div>
           )}
+          {canEditPass && (
+            <button
+              type="button"
+              className="score-card__edit-button"
+              onClick={handleEditClick}
+              title={t('passDetail.buttons.edit', { ns: 'pages' })}
+              aria-label={t('passDetail.buttons.edit', { ns: 'pages' })}
+            >
+              <EditIcon color="#ffffff" size="32px" />
+            </button>
+          )}
         </div>
       )}
     </>
@@ -288,6 +368,27 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       </div>
 
       <span className="score-card__clear-id">#{scoreData.id}</span>
+
+      {showEditPopup && isSuperAdmin && (
+        <EditPassPopup
+          pass={passForEditor(scoreData)}
+          onClose={() => setShowEditPopup(false)}
+          onUpdate={(updated) => {
+            handlePassUpdate(updated);
+            setShowEditPopup(false);
+          }}
+        />
+      )}
+      {showEditPopup && !isSuperAdmin && isOwnPass && (
+        <OwnPassEditPopup
+          pass={passForEditor(scoreData)}
+          onClose={() => setShowEditPopup(false)}
+          onUpdate={(updated) => {
+            handlePassUpdate(updated);
+            setShowEditPopup(false);
+          }}
+        />
+      )}
     </div>
   );
 };

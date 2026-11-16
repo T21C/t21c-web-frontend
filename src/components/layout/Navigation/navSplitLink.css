@@ -1,0 +1,38 @@
+/* tuf-search: #NavSplitLink #layout #navigation */
+
+.nav-split-link {
+  display: flex;
+  align-items: center;
+}
+
+.nav-split-link--desktop {
+  padding-right: 1rem;
+}
+
+.nav-split-link--mobile {
+  padding-right: 0.5rem;
+}
+
+.nav-split-link > .nav-dropdown-item,
+.nav-split-link > .nav-mobile-dropdown-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-split-link--desktop > .nav-dropdown-item {
+  padding-right: 0.45rem;
+}
+
+.nav-split-link--mobile > .nav-mobile-dropdown-item {
+  padding-right: 0.35rem;
+}
+
+.nav-split-link__action {
+  flex-shrink: 0;
+}
+
+.nav-split-link__icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+}

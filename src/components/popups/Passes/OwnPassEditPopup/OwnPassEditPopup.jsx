@@ -84,7 +84,20 @@ export const OwnPassEditPopup = ({ pass, onClose, onUpdate }) => {
       }
       toast.success(t('pass.updated', { ns: 'common' }), { id: toastId });
       setDirty(false);
-      if (onUpdate) await onUpdate();
+      if (onUpdate) {
+        const keyFlags = keyCountState.value == null
+          ? { is12K: false, is16K: false }
+          : keyCountState.value >= 13
+            ? { is12K: false, is16K: true }
+            : { is12K: true, is16K: false };
+        await onUpdate({
+          feelingRating: feelingTrimmed,
+          expectedRating: expectedTrimmed || null,
+          details,
+          keyCount: keyCountState.value,
+          ...keyFlags,
+        });
+      }
     } catch (err) {
       console.error('Error updating own pass:', err);
       toast.error(

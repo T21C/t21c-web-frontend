@@ -66,7 +66,6 @@
     "duplicateGuessHint": "같은 채보의 더 높은 점수 클리어를 기준으로 자동 표시되었습니다. 이 체크박스를 바꾸면 수정이 유지됩니다.",
     "midspinWarning": {
       "willApply": "이 채보에는 미드스핀 타일이 {{count}}개 있습니다. 저장 시 Perfect에서 차감됩니다.",
-      "alreadyApplied": "미드스핀 Perfect는 이미 이 클리어에서 제거되었습니다.",
       "missing": "이 레벨에 미드스핀 수가 없어 Perfect를 조정하지 않습니다.",
       "perfectLt": "Perfect가 미드스핀 수보다 작아 Perfect를 조정하지 않습니다."
     },

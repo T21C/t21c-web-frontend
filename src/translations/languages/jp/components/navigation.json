@@ -49,7 +49,9 @@
       },
       "tools": {
         "scoreCalculator": "スコア計算機",
-        "adofaiModManager": "ADOFAI Mod Manager"
+        "adofaiModManager": "ADOFAI Mod Manager",
+        "tufReplay": "TUFReplay",
+        "tufReplayDownload": "TUFReplayをダウンロード"
       },
       "more": {
         "passes": "クリア",
