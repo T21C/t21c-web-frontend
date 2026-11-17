@@ -36,7 +36,9 @@
       },
       "tools": {
         "scoreCalculator": "Calculateur de score",
-        "adofaiModManager": "ADOFAI Mod Manager"
+        "adofaiModManager": "ADOFAI Mod Manager",
+        "tufReplay": "TUFReplay",
+        "tufReplayDownload": "Télécharger TUFReplay"
       },
       "more": {
         "tufHelperLite": "TUFHelperLite",

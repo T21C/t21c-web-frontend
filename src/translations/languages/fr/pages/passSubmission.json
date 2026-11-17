@@ -63,7 +63,6 @@
   },
   "midspinWarning": {
     "willApply": "Ce niveau a {{count}} tuiles midspin. Elles seront soustraites de Perfect à l'envoi.",
-    "alreadyApplied": "Les Perfect midspin ont déjà été retirés de cette complétion.",
     "missing": "Ce niveau n'a pas encore de nombre de midspin, Perfect ne sera pas ajusté.",
     "perfectLt": "Perfect est inférieur au nombre de midspin, Perfect ne sera pas ajusté."
   },

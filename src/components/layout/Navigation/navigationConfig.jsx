@@ -1,5 +1,5 @@
 // tuf-search: #navigationConfig #layout #navigation
-import { ExternalLinkIcon, TUFHelperLiteIcon } from "@/components/common/icons";
+import { DownloadIcon, ExternalLinkIcon, TUFHelperLiteIcon } from "@/components/common/icons";
 import { ChromeIcon } from "@/components/common/icons/ChromeIcon";
 import { FirefoxIcon } from "@/components/common/icons/FirefoxIcon";
 import { showTufHelperLiteIntegrationBanner } from "@/hooks/useTufHelperLiteIpc";
@@ -276,6 +276,15 @@ export const createNavigationConfig = (context = {}) => {
                 alt=""
               />
             ),
+          },
+          {
+            to: "https://www.tufreplay.com",
+            translationKey: "navigation.main.dropdowns.tools.tufReplay",
+            sideLink: {
+              to: "https://github.com/KGH1113/TUFReplay/releases",
+              ariaTranslationKey: "navigation.main.dropdowns.tools.tufReplayDownload",
+              icon: <DownloadIcon size={16} color="currentColor" />,
+            },
           },
           {
             to: "/levels",

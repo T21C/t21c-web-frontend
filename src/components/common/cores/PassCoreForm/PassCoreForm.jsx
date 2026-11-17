@@ -70,6 +70,7 @@ export const PASS_CORE_COPY = {
     early: 'passSubmission.judgements.early',
     late: 'passSubmission.judgements.late',
     fillRemainder: 'passSubmission.judgements.fillRemainder',
+    fillRemainingZero: 'passSubmission.judgements.fillRemainingZero',
     purePerfect: 'passSubmission.judgements.purePerfect',
     purePerfectTooltip: 'passSubmission.judgements.purePerfectTooltip',
     accPrefix: 'passSubmission.acc',
@@ -122,6 +123,8 @@ export const PASS_CORE_COPY = {
     tooEarly: 'passSubmission.judgements.tooearly',
     early: 'passSubmission.judgements.early',
     late: 'passSubmission.judgements.late',
+    fillRemainder: 'passSubmission.judgements.fillRemainder',
+    fillRemainingZero: 'passSubmission.judgements.fillRemainingZero',
     purePerfect: 'passSubmission.judgements.purePerfect',
     purePerfectTooltip: 'passSubmission.judgements.purePerfectTooltip',
     accPrefix: 'passSubmission.acc',
@@ -176,6 +179,8 @@ export const PASS_CORE_COPY = {
     tooEarly: 'passPopups.edit.form.judgements.tooearly',
     early: 'passPopups.edit.form.judgements.early',
     late: 'passPopups.edit.form.judgements.late',
+    fillRemainder: 'passPopups.edit.form.judgements.fillRemainder',
+    fillRemainingZero: 'passPopups.edit.form.judgements.fillRemainingZero',
     purePerfect: 'passPopups.edit.form.judgements.purePerfect',
     purePerfectTooltip: 'passPopups.edit.form.judgements.purePerfectTooltip',
     accPrefix: 'passPopups.edit.acc',
@@ -249,7 +254,6 @@ export function PassCoreForm({
   const showXPerfectToggle = canUseXPerfectMode(adofaiVersion);
   const showXPerfectFields = showXPerfectToggle && !!form.isXPerfectMode;
   const purePerfectCount = getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount);
-  const judgementAutofillCount = mode === 'submit' ? purePerfectCount : null;
   const eraOptions = [
     { value: ADOFAI_VERSION.V3_4_0, label: t(copy.adofaiVersionLatest, { ns: copy.ns }) },
     { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
@@ -276,9 +280,7 @@ export function PassCoreForm({
   const midspinWarningNs = mode === 'edit' ? 'components' : 'pages';
   let midspinWarningText = null;
   if (!derivedPreview.applied) {
-    if (midspinPreview.skippedReason === 'already_applied') {
-      midspinWarningText = t(`${midspinWarningKey}.alreadyApplied`, { ns: midspinWarningNs });
-    } else if (level && midspinPreview.skippedReason === 'midspin_missing') {
+    if (level && midspinPreview.skippedReason === 'midspin_missing') {
       midspinWarningText = t(`${midspinWarningKey}.missing`, { ns: midspinWarningNs });
     } else if (Number.isInteger(perfectCount) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
       midspinWarningText = t(`${midspinWarningKey}.perfectLt`, { ns: midspinWarningNs });
@@ -685,7 +687,7 @@ export function PassCoreForm({
             score={score}
             copy={copy}
             showXPerfectFields={showXPerfectFields}
-            achievableCount={judgementAutofillCount}
+            achievableCount={purePerfectCount}
             purePerfectCount={purePerfectCount}
           />
           {renderJudgementActions ? (

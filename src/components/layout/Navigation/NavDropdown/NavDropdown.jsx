@@ -9,6 +9,7 @@ import {
   useNavDropdownClickModePreference,
 } from "@/hooks/useNavDropdownClickModePreference";
 import { getSectionCycleTos, isExternalNavPath, isProfilePairItem } from "../navigationConfig";
+import { isSplitLinkItem, NavSplitLink } from "../NavSplitLink";
 import { ProfilePairMenuRow } from "../ProfilePairMenuRow";
 import {
   NAV_DROP_DURATION_MS,
@@ -82,6 +83,18 @@ export function NavMenuItems({ items = [], onItemClick, t, onProfileCycle }) {
         >
           {itemLabel(item, t)}
         </button>
+      );
+    }
+
+    if (isSplitLinkItem(item)) {
+      return (
+        <NavSplitLink
+          key={item.translationKey || item.to || index}
+          item={item}
+          label={itemLabel(item, t)}
+          variant="desktop"
+          onActivate={onItemClick}
+        />
       );
     }
 

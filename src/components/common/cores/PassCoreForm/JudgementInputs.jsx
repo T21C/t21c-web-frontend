@@ -6,7 +6,11 @@ import { SparkleIcon } from '@/components/common/icons';
 import calcAcc from '@/utils/CalcAcc';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { judgementsAreComplete, parseJudgements } from '@/utils/ParseJudgements';
-import { getJudgementRemainderFill } from '@/utils/passJudgementHitCount';
+import {
+  getJudgementRemainderFill,
+  getJudgementZeroRemainderFields,
+  shouldShowPurePerfectAutofill,
+} from '@/utils/passJudgementHitCount';
 import './JudgementInputs.css';
 
 const DEFAULT_COPY = {
@@ -20,6 +24,7 @@ const DEFAULT_COPY = {
   early: 'passSubmission.judgements.early',
   late: 'passSubmission.judgements.late',
   fillRemainder: 'passSubmission.judgements.fillRemainder',
+  fillRemainingZero: 'passSubmission.judgements.fillRemainingZero',
   purePerfect: 'passSubmission.judgements.purePerfect',
   purePerfectTooltip: 'passSubmission.judgements.purePerfectTooltip',
   accPrefix: 'passSubmission.acc',
@@ -88,6 +93,12 @@ export function JudgementInputs({
     () => getJudgementRemainderFill(values, achievableCount, { includeXPerfect: showXPerfectFields }),
     [values, achievableCount, showXPerfectFields],
   );
+  const zeroRemainderFields = useMemo(
+    () => getJudgementZeroRemainderFields(values, achievableCount, { includeXPerfect: showXPerfectFields }),
+    [values, achievableCount, showXPerfectFields],
+  );
+  const showPurePerfect = purePerfectCount != null
+    && shouldShowPurePerfectAutofill(values, { includeXPerfect: showXPerfectFields });
   const fillLabel = remainderFill
     ? t(copy.fillRemainder || DEFAULT_COPY.fillRemainder, {
         ns: copy.ns,
@@ -95,11 +106,15 @@ export function JudgementInputs({
         defaultValue: 'Fill remaining {{count}}',
       })
     : '';
+  const zeroFillLabel = t(copy.fillRemainingZero || DEFAULT_COPY.fillRemainingZero, {
+    ns: copy.ns,
+    defaultValue: 'Set remaining judgements to 0',
+  });
   const purePerfectLabel = t(copy.purePerfect || DEFAULT_COPY.purePerfect, {
     ns: copy.ns,
     defaultValue: 'Pure Perfect',
   });
-  const purePerfectTooltip = purePerfectCount
+  const purePerfectTooltip = showPurePerfect
     ? t(copy.purePerfectTooltip || DEFAULT_COPY.purePerfectTooltip, {
         ns: copy.ns,
         count: purePerfectCount,
@@ -118,7 +133,9 @@ export function JudgementInputs({
     const valid = !isValidDisplay || isValidDisplay[name];
     const fullKey = copy[name];
     const label = fullKey ? t(fullKey, { ns: copy.ns, defaultValue: name }) : name;
-    const showFill = remainderFill?.field === name;
+    const showZeroFill = Boolean(zeroRemainderFields?.includes(name));
+    const showRemainderFill = !showZeroFill && remainderFill?.field === name;
+    const showFill = showZeroFill || showRemainderFill;
     return (
       <div
         className={`judgement-inputs__field judgement-inputs__field--${name}${showFill ? ' judgement-inputs__field--has-fill' : ''}`}
@@ -140,7 +157,24 @@ export function JudgementInputs({
             }}
             style={{ borderColor: valid ? '' : 'red', color }}
           />
-          {showFill && (
+          {showZeroFill && (
+            <button
+              type="button"
+              className="judgement-inputs__fill"
+              aria-label={zeroFillLabel}
+              data-tooltip-id={fillTooltipId}
+              data-tooltip-content={zeroFillLabel}
+              onClick={(event) => {
+                event.preventDefault();
+                const patch = {};
+                for (const field of zeroRemainderFields) patch[field] = '0';
+                onChange({ patch });
+              }}
+            >
+              <SparkleIcon size={16} />
+            </button>
+          )}
+          {showRemainderFill && (
             <button
               type="button"
               className="judgement-inputs__fill"
@@ -157,7 +191,7 @@ export function JudgementInputs({
               <SparkleIcon size={16} />
             </button>
           )}
-          {name === 'perfect' && purePerfectCount != null && (
+          {name === 'perfect' && showPurePerfect && (
             <button
               type="button"
               className="judgement-inputs__pure-perfect"
@@ -207,10 +241,10 @@ export function JudgementInputs({
           ) : null}
         </div>
       ) : null}
-      {remainderFill && (
+      {(remainderFill || zeroRemainderFields) && (
         <Tooltip className="tooltip" id={fillTooltipId} place="top" effect="solid" />
       )}
-      {purePerfectCount != null && (
+      {showPurePerfect && (
         <Tooltip className="tooltip" id={purePerfectTooltipId} place="top" effect="solid" />
       )}
     </div>

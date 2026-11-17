@@ -250,6 +250,37 @@
   flex: 0 0 auto;
 }
 
+.score-card .score-card__edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.score-card .score-card__edit-button svg {
+  height: 100%;
+  width: 100%;
+  padding: 0.15rem;
+  transition: transform 0.2s;
+}
+
+.score-card .score-card__edit-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.score-card .score-card__edit-button:hover svg {
+  transform: scale(1.1);
+}
+
 .score-card .score-card__date {
   position: absolute;
   bottom: 0.2rem;

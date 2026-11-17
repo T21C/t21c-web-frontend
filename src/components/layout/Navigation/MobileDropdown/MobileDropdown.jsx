@@ -8,6 +8,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/common/Collapsible";
 import { getProfilePairCycleGroups, isExternalNavPath, isProfilePairItem } from "../navigationConfig";
+import { isSplitLinkItem, NavSplitLink } from "../NavSplitLink";
 import { ProfilePairMenuRow } from "../ProfilePairMenuRow";
 import { useNavProfileCycles } from "../useNavProfileCycle";
 import "./mobileDropdown.css";
@@ -132,6 +133,18 @@ const MobileDropdown = ({
                   >
                     {itemLabel(item, t)}
                   </button>
+                );
+              }
+
+              if (isSplitLinkItem(item)) {
+                return (
+                  <NavSplitLink
+                    key={item.translationKey || item.to || index}
+                    item={item}
+                    label={itemLabel(item, t)}
+                    variant="mobile"
+                    onActivate={onItemClick}
+                  />
                 );
               }
 

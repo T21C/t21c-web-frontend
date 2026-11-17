@@ -49,7 +49,9 @@
       },
       "tools": {
         "scoreCalculator": "점수 계산기",
-        "adofaiModManager": "ADOFAI Mod Manager"
+        "adofaiModManager": "ADOFAI Mod Manager",
+        "tufReplay": "TUFReplay",
+        "tufReplayDownload": "TUFReplay 다운로드"
       },
       "more": {
         "passes": "클리어",

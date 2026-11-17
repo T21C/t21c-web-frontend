@@ -107,6 +107,8 @@ export function isIncludedMidspinOnLatestVersion({
 /** Inputs that add up to achievable tilecount. `tooEarly` is a miss and is left out. */
 const TILECOUNT_JUDGEMENT_FIELDS = ['ePerfect', 'perfect', 'lPerfect', 'early', 'late'];
 const XPERFECT_TILECOUNT_JUDGEMENT_FIELDS = ['perfectMinus', 'perfect', 'perfectPlus', 'ePerfect', 'lPerfect', 'early', 'late'];
+const OTHER_PURE_PERFECT_FIELDS = ['ePerfect', 'lPerfect', 'tooEarly', 'early', 'late'];
+const XPERFECT_OTHER_PURE_PERFECT_FIELDS = ['perfectMinus', 'perfectPlus', 'ePerfect', 'lPerfect', 'tooEarly', 'early', 'late'];
 
 function parseCountingInput(value) {
   if (value == null) return { state: 'empty' };
@@ -149,4 +151,48 @@ export function getJudgementRemainderFill(values, achievableCount, { includeXPer
   const value = achievable - filledSum;
   if (value < 0) return null;
   return { field: emptyField, value };
+}
+
+/**
+ * Empty counting judgements (not misses) when the filled ones already equal
+ * the achievable tilecount. A click should zero every returned field.
+ *
+ * @returns {string[] | null}
+ */
+export function getJudgementZeroRemainderFields(values, achievableCount, { includeXPerfect = false } = {}) {
+  if (achievableCount == null || achievableCount === '') return null;
+  const target = typeof achievableCount === 'number' ? achievableCount : Number(achievableCount);
+  if (!Number.isFinite(target) || target < 0) return null;
+  const achievable = Math.floor(target);
+  const fields = includeXPerfect ? XPERFECT_TILECOUNT_JUDGEMENT_FIELDS : TILECOUNT_JUDGEMENT_FIELDS;
+
+  const emptyFields = [];
+  let filledSum = 0;
+  for (const field of fields) {
+    const parsed = parseCountingInput(values?.[field]);
+    if (parsed.state === 'invalid') return null;
+    if (parsed.state === 'empty') {
+      emptyFields.push(field);
+      continue;
+    }
+    filledSum += parsed.count;
+  }
+
+  if (emptyFields.length === 0) return null;
+  if (filledSum !== achievable) return null;
+  return emptyFields;
+}
+
+/**
+ * Pure Perfect shortcut is only useful on a blank Perfect with no other hits.
+ * A filled Perfect (including 0) or any other non-zero judgement hides it.
+ */
+export function shouldShowPurePerfectAutofill(values, { includeXPerfect = false } = {}) {
+  if (String(values?.perfect ?? '').trim() !== '') return false;
+  const others = includeXPerfect ? XPERFECT_OTHER_PURE_PERFECT_FIELDS : OTHER_PURE_PERFECT_FIELDS;
+  for (const field of others) {
+    const parsed = parseCountingInput(values?.[field]);
+    if (parsed.state === 'filled' && parsed.count !== 0) return false;
+  }
+  return true;
 }

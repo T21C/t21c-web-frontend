@@ -55,7 +55,6 @@
   },
   "midspinWarning": {
     "willApply": "このチャートには{{count}}個のミッドスピンタイルがあります。保存すると、これらはPerfectのスコアから差し引かれます。",
-    "alreadyApplied": "このクリアからは、すでにミッドスピンPerfectが除外されています。",
     "missing": "このレベルにはまだミッドスピンのカウントがないため、Perfectのレーティングは調整されません。",
     "perfectLt": "Perfectはミッドスピンカウントを下回っているため、Perfectの値は調整されません。"
   },

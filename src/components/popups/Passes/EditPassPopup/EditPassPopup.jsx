@@ -184,7 +184,7 @@ const handleSubmit = async (e) => {
       );
 
       if (response.data) {
-        let updatedPass = response.data.pass;
+        let updatedPass = response.data.pass?.id != null ? response.data.pass : response.data;
         if (keyboardBind.lanePeriodId !== keyboardBind.initialBindId) {
           const bindResponse = await api.patch(routes.playersV3.mePassKeyboardSetup(pass.id), {
             lanePeriodId: keyboardBind.lanePeriodId || null,
@@ -262,7 +262,7 @@ const handleSubmit = async (e) => {
       const response = await api.patch(`${routes.database.passes.root()}/${pass.id}/restore`);
       if (response.data) {
         if (onUpdate) {
-          await onUpdate(response.data);
+          await onUpdate(response.data.pass ?? response.data);
         }
         toast.success(t('pass.restored', { ns: 'common' }), { id: toastId });
         onClose();
