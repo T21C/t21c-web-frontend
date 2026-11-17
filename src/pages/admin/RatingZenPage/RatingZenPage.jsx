@@ -25,7 +25,7 @@ import api from '@/utils/api';
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '@/utils/levelHelpers';
-import { canModerateCuration, hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canModerateCuration, canUseCurationZen, hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/utils/autorater';
@@ -101,10 +101,11 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
   const { t } = useTranslation(['pages', 'components', 'common']);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { difficulties, difficultyDict, curationTypesDict } = useDifficultyContext();
   const isCurationMode = mode === 'curation';
   const listPath = isCurationMode ? '/admin/curations/rating' : '/rating';
+  const zenAllowed = isCurationMode ? canUseCurationZen(user) : Boolean(user?.id);
   const {
     session,
     patchSession,
@@ -923,7 +924,12 @@ const RatingZenPage = ({ mode = 'difficulty' }) => {
     </div>
   );
 
-  if (user === undefined || !sessionHydrated) {
+  useEffect(() => {
+    if (authLoading) return;
+    if (!zenAllowed) navigate(listPath, { replace: true });
+  }, [authLoading, zenAllowed, navigate, listPath]);
+
+  if (authLoading || user === undefined || !sessionHydrated || !zenAllowed) {
     return (
       <div className="rating-zen-page">
         <MetaTags {...pageMeta} />

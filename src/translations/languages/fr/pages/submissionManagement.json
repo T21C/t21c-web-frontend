@@ -17,13 +17,20 @@
     "noMatches": "Aucune soumission correspondante"
   },
   "queue": {
-    "pending": "{{count}} en attente",
-    "drift": "La file a changé pendant que cette liste était ouverte. Continuer à faire défiler suit la liste sans sauter d’entrées. La resynchronisation recharge depuis le haut dans l’ordre actuel, et recharge les vidéos à l’écran.",
-    "resync": "Resynchroniser"
+    "pending": "{{count}} en attente"
   },
   "hideDifficulty": {
     "label": "Masquer la difficulté",
     "hint": "Cochez un sous-type pour masquer ces complétions. Cliquez sur le libellé pour tout sélectionner ou tout effacer."
+  },
+  "sort": {
+    "label": "Trier par",
+    "order": "Sens du tri",
+    "submitted": "Date d'envoi",
+    "difficulty": "Difficulté",
+    "ratio": "Ratio acceptés / refusés",
+    "asc": "Tri croissant",
+    "desc": "Tri décroissant"
   },
   "jobs": {
     "title": "Traitement",

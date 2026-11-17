@@ -13,6 +13,7 @@ import { ScrollButton } from '@/components/common/buttons';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
 import SubmissionJobsDrawer from './components/SubmissionJobsDrawer';
+import SubmissionSortControl, { useStoredSubmissionSort } from './components/SubmissionSortControl';
 import { RefreshIcon } from '@/components/common/icons';
 import { useNotification } from '@/contexts/NotificationContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -57,9 +58,9 @@ function emitJobItem(item) {
   window.dispatchEvent(new CustomEvent('submissionJobItem', { detail: item }));
 }
 
-function emitQueuedJobItem(item) {
+function emitSnapshotJobItem(item) {
   if (!item) return;
-  if (item.status !== 'queued' && item.status !== 'processing') return;
+  if (item.status === 'failed' || item.status === 'skipped') return;
   emitJobItem(item);
 }
 
@@ -81,6 +82,9 @@ const SubmissionManagementPage = () => {
   const [activeTab, setActiveTab] = useState('levels');
   const [searchQuery, setSearchQuery] = useState('');
   const [hiddenSubtypes, setHiddenSubtypes] = useState(readHiddenPassDifficultySubtypes);
+  const levelSort = useStoredSubmissionSort('levels');
+  const passSort = useStoredSubmissionSort('passes');
+  const activeSort = activeTab === 'levels' ? levelSort : passSort;
   const [isAutoAllowing, setIsAutoAllowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [openJobs, setOpenJobs] = useState([]);
@@ -108,7 +112,8 @@ const SubmissionManagementPage = () => {
       setOpenJobs(open);
       setRecentJobs(recent);
       setPanelReady(true);
-      open.forEach(req => (req.items || []).forEach(emitQueuedJobItem));
+      open.forEach(req => (req.items || []).forEach(emitSnapshotJobItem));
+      recent.forEach(req => (req.items || []).forEach(emitSnapshotJobItem));
       if (open.length > 0) setDrawerExpanded(true);
     } catch (err) {
       if (reqId !== snapshotReqIdRef.current) return;
@@ -130,7 +135,7 @@ const SubmissionManagementPage = () => {
     if (type === 'submission.request.created' || type === 'submission.request.merged') {
       if (request) {
         setOpenJobs(prev => upsertRequestTree(prev, { ...request, items: request.items || [] }));
-        (request.items || []).forEach(emitQueuedJobItem);
+        (request.items || []).forEach(emitSnapshotJobItem);
         setDrawerExpanded(true);
       }
       return;
@@ -269,6 +274,13 @@ const SubmissionManagementPage = () => {
               placeholder={t('submissionManagement.search.placeholder')}
               aria-label={t('submissionManagement.search.placeholder')}
             />
+            <SubmissionSortControl
+              kind={activeTab}
+              sort={activeSort.sort}
+              dir={activeSort.dir}
+              onSort={activeSort.setSort}
+              onDir={activeSort.setDir}
+            />
             {activeTab === 'passes' && (
               <div
                 className="pass-diff-hide"
@@ -312,12 +324,18 @@ const SubmissionManagementPage = () => {
           </div>
 
           {activeTab === 'levels' ? (
-            <LevelSubmissions searchQuery={searchQuery} />
+            <LevelSubmissions
+              searchQuery={searchQuery}
+              sort={levelSort.sort}
+              dir={levelSort.dir}
+            />
           ) : (
             <PassSubmissions
               setIsAutoAllowing={setIsAutoAllowing}
               searchQuery={searchQuery}
               hiddenSubtypes={hiddenSubtypes}
+              sort={passSort.sort}
+              dir={passSort.dir}
             />
           )}
         </div>

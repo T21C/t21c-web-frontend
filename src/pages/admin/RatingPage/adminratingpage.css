@@ -368,8 +368,20 @@
   .admin-rating-page .rating-flow-tabs {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
+  }
+
+  .admin-rating-page .rating-flow-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .admin-rating-page .rating-flow-announce {
+    margin-left: auto;
   }
 
   .admin-rating-page .rating-flow-tab--active {

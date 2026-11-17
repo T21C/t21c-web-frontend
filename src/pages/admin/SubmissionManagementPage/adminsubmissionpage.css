@@ -1182,7 +1182,7 @@
   .submission-admin-page .submission-search {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-end;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
     position: relative;
@@ -1268,6 +1268,49 @@
     color: var(--color-white-t50);
   }
 
+  .submission-admin-page .submission-sort {
+    display: flex;
+    align-items: flex-end;
+    flex: 0 0 auto;
+    gap: 0.5rem;
+  }
+
+  .submission-admin-page .submission-sort .custom-select-label {
+    margin-bottom: 0.35rem;
+    color: var(--color-gray-1);
+    font-size: 0.85rem;
+  }
+
+  .submission-admin-page .submission-sort__order {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .submission-admin-page .submission-sort__dir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0.2rem;
+    border: none;
+    border-radius: 4px;
+    background: var(--color-white-t10);
+    color: var(--color-white);
+    cursor: pointer;
+  }
+
+  .submission-admin-page .submission-sort__dir svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .submission-admin-page .submission-sort__dir.is-active,
+  .submission-admin-page .submission-sort__dir:hover {
+    background: rgba(255, 255, 255, 0.32);
+  }
+
   .submission-admin-page .tab-button {
     padding: 0.75rem 1.5rem;
     background: transparent;
@@ -1304,57 +1347,11 @@
     margin: 0.75rem 0 1rem;
   }
 
-  .submission-admin-page .submission-queue-sync {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.7rem 0.9rem;
-    border-radius: var(--btn-radius);
-    background: var(--btn-warning-tint);
-    color: var(--text-color);
-  }
-
-  .submission-admin-page .submission-queue-sync p {
-    margin: 0;
-    flex: 1 1 16rem;
-  }
-
   .submission-admin-page .submission-queue-pager {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
-  }
-
-  .submission-admin-page .submission-queue-bar button {
-    background: var(--btn-neutral);
-    color: var(--color-white);
-    border: none;
-    border-radius: var(--btn-radius);
-    padding: var(--btn-sm-pad-y) var(--btn-pad-x);
-    font-size: var(--btn-sm-font-size);
-    font-weight: var(--btn-font-weight);
-    line-height: var(--btn-line-height);
-    cursor: pointer;
-  }
-
-  .submission-admin-page .submission-queue-bar button:hover:not(:disabled) {
-    background: var(--btn-neutral-dark-hover);
-  }
-
-  .submission-admin-page .submission-queue-bar button:disabled {
-    background: var(--btn-disabled-fill);
-    cursor: not-allowed;
-  }
-
-  .submission-admin-page .submission-queue-sync button {
-    background: var(--btn-warning);
-  }
-
-  .submission-admin-page .submission-queue-sync button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--btn-warning) 78%, #000);
   }
 
   .submission-admin-page .pass-submission-card .judgements-details {

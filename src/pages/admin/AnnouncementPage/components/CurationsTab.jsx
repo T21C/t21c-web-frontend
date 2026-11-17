@@ -27,6 +27,7 @@ const CurationsTab = ({
   onRemove,
   onEdit,
   kind = 'NEW',
+  allowEdit = true,
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const { curationTypesDict } = useDifficultyContext();
@@ -98,6 +99,7 @@ const CurationsTab = ({
                   </div>
                 </label>
                 <div className="button-group">
+                  {allowEdit && (
                   <button
                     className="edit-button"
                     onClick={() => onEdit(level)}
@@ -106,6 +108,7 @@ const CurationsTab = ({
                   >
                     <EditIcon color="#fff" size="24px" />
                   </button>
+                  )}
                   <button
                     className="trash-button"
                     onClick={() => handleSilentRemove(entry)}

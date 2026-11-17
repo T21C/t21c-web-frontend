@@ -129,6 +129,72 @@ export function markCardsQueued(setCardPhases, setDisabledButtons, ids) {
   });
 }
 
+export function applyEnqueueResponse({
+  data,
+  kind,
+  submissionId,
+  fallbackAction,
+  setCardPhases,
+  setDisabledButtons,
+  setSubmissions,
+  applyCompletedStats,
+}) {
+  const items = Array.isArray(data?.items) ? data.items : [];
+  if (items.length > 0) {
+    items.forEach((item) => {
+      applySubmissionJobItem({
+        item,
+        kind,
+        setCardPhases,
+        setDisabledButtons,
+        setSubmissions,
+        applyCompletedStats,
+      });
+    });
+    if (items.some((item) => Number(item?.itemId) === Number(submissionId))) return;
+  }
+  const completedIds = new Set((data?.alreadyCompletedIds || []).map(Number));
+  const inflightIds = new Set((data?.alreadyInFlightIds || []).map(Number));
+  const addedIds = new Set((data?.addedItemIds || []).map(Number));
+  if (completedIds.has(Number(submissionId))) {
+    applySubmissionJobItem({
+      item: { kind, itemId: submissionId, status: 'completed', action: fallbackAction },
+      kind,
+      setCardPhases,
+      setDisabledButtons,
+      setSubmissions,
+      applyCompletedStats,
+    });
+    return;
+  }
+  if (inflightIds.has(Number(submissionId)) || addedIds.has(Number(submissionId))) {
+    applySubmissionJobItem({
+      item: { kind, itemId: submissionId, status: inflightIds.has(Number(submissionId)) ? 'processing' : 'queued' },
+      kind,
+      setCardPhases,
+      setDisabledButtons,
+      setSubmissions,
+    });
+  }
+}
+
+export function applyAlreadyHandledSubmission({
+  kind,
+  submissionId,
+  action,
+  setCardPhases,
+  setDisabledButtons,
+  setSubmissions,
+}) {
+  applySubmissionJobItem({
+    item: { kind, itemId: submissionId, status: 'completed', action },
+    kind,
+    setCardPhases,
+    setDisabledButtons,
+    setSubmissions,
+  });
+}
+
 /**
  * Apply SSE/job status onto a card in-place (no collapse / layout shift).
  */

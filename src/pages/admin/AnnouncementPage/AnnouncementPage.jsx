@@ -17,7 +17,7 @@ import { RefreshIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canAnnounceCurations, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { toastError, toastSuccess } from '@/utils/toastMessage';
 import { useAnnouncementEvents } from '@/hooks/useAnnouncementEvents';
 
@@ -42,6 +42,9 @@ const QUEUE_WEBHOOK = {
   curations: () => routes.webhook.curations(),
   curationRerates: () => routes.webhook.curationRerates(),
 };
+
+const ALL_TABS = ['newLevels', 'rerates', 'curations', 'curationRerates', 'passes'];
+const CURATION_TABS = ['curations', 'curationRerates'];
 
 function upsertRequestTree(list, request, fallbackItems) {
   if (!request?.requestId) return list;
@@ -89,6 +92,14 @@ const AnnouncementPage = () => {
   );
 
   const [activeTab, setActiveTab] = useState('newLevels');
+  const flagsReady = user?.permissionFlags !== undefined;
+  const isSuperAdmin = flagsReady && hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const curationAnnouncer = flagsReady && canAnnounceCurations(user);
+  const curationOnly = curationAnnouncer && !isSuperAdmin;
+  const visibleTabs = curationOnly ? CURATION_TABS : ALL_TABS;
+  const tab = curationOnly && !CURATION_TABS.includes(activeTab) ? 'curations' : activeTab;
+  const activeTabRef = useRef(tab);
+  activeTabRef.current = tab;
   const [newLevelEntries, setNewLevelEntries] = useState([]);
   const [rerateEntries, setRerateEntries] = useState([]);
   const [curationEntries, setCurationEntries] = useState([]);
@@ -108,15 +119,8 @@ const AnnouncementPage = () => {
   const [panelReady, setPanelReady] = useState(false);
   const [discardingRequestId, setDiscardingRequestId] = useState(null);
 
-  const kind = TAB_TO_KIND[activeTab];
-  const canUsePanel =
-    !!user?.id &&
-    user.permissionFlags !== undefined &&
-    hasFlag(user, permissionFlags.SUPER_ADMIN);
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  const kind = TAB_TO_KIND[tab];
+  const canUsePanel = curationAnnouncer;
 
   const snapshotReqIdRef = useRef(0);
 
@@ -265,54 +269,84 @@ const AnnouncementPage = () => {
     }
   }, [discardingRequestId, t, fetchSnapshot, kind]);
 
-  const fetchItems = async () => {
+  const applyQueues = useCallback((data) => {
+    setNewLevelEntries(data.newLevels);
+    setRerateEntries(data.rerates);
+    setCurationEntries(data.curations);
+    setCurationRerateEntries(data.curationRerates);
+    setPasses(data.passes);
+
+    const tabRows = {
+      newLevels: data.newLevels,
+      rerates: data.rerates,
+      curations: data.curations,
+      curationRerates: data.curationRerates,
+    };
+    setSelectedQueueRowIds(prev =>
+      prev.filter(id => {
+        const rows = tabRows[activeTabRef.current];
+        return Array.isArray(rows) && rows.some(entry => entry.queueRowId === id);
+      }),
+    );
+    setSelectedPasses(prev =>
+      prev.filter(id => data.passes.some(pass => pass.id === id)),
+    );
+  }, []);
+
+  const loadQueues = useCallback(async () => {
+    if (curationOnly) {
+      const [curationsResponse, curationReratesResponse] = await Promise.all([
+        api.get(routes.database.levels.unannouncedCurations()),
+        api.get(routes.database.levels.unannouncedCurationRerates()),
+      ]);
+      return {
+        newLevels: [],
+        rerates: [],
+        curations: curationsResponse.data,
+        curationRerates: curationReratesResponse.data,
+        passes: [],
+      };
+    }
+
+    const [
+      newLevelsResponse,
+      reratesResponse,
+      curationsResponse,
+      curationReratesResponse,
+      passesResponse,
+    ] = await Promise.all([
+      api.get(routes.database.levels.unannouncedNew()),
+      api.get(routes.database.levels.unannouncedRerates()),
+      api.get(routes.database.levels.unannouncedCurations()),
+      api.get(routes.database.levels.unannouncedCurationRerates()),
+      api.get(`${routes.database.passes.root()}/unannounced/new`),
+    ]);
+    return {
+      newLevels: newLevelsResponse.data,
+      rerates: reratesResponse.data,
+      curations: curationsResponse.data,
+      curationRerates: curationReratesResponse.data,
+      passes: passesResponse.data,
+    };
+  }, [curationOnly]);
+
+  const fetchItems = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [
-        newLevelsResponse,
-        reratesResponse,
-        curationsResponse,
-        curationReratesResponse,
-        passesResponse,
-      ] = await Promise.all([
-        api.get(routes.database.levels.unannouncedNew()),
-        api.get(routes.database.levels.unannouncedRerates()),
-        api.get(routes.database.levels.unannouncedCurations()),
-        api.get(routes.database.levels.unannouncedCurationRerates()),
-        api.get(`${routes.database.passes.root()}/unannounced/new`)
-      ]);
-
-      setNewLevelEntries(newLevelsResponse.data);
-      setRerateEntries(reratesResponse.data);
-      setCurationEntries(curationsResponse.data);
-      setCurationRerateEntries(curationReratesResponse.data);
-      setPasses(passesResponse.data);
-
-      const tabRows = {
-        newLevels: newLevelsResponse.data,
-        rerates: reratesResponse.data,
-        curations: curationsResponse.data,
-        curationRerates: curationReratesResponse.data,
-      };
-
-      setSelectedQueueRowIds(prev =>
-        prev.filter(id => {
-          const rows = tabRows[activeTab];
-          return Array.isArray(rows) && rows.some(e => e.queueRowId === id);
-        }),
-      );
-
-      setSelectedPasses(prev =>
-        prev.filter(id => passesResponse.data.some(pass => pass.id === id)),
-      );
+      applyQueues(await loadQueues());
     } catch (err) {
       toastError(t('announcement.errors.fetchFailed'));
       console.error('Error fetching items:', err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [applyQueues, loadQueues, t]);
+
+  useEffect(() => {
+    if (!flagsReady || !curationAnnouncer) return;
+    fetchItems();
+  }, [flagsReady, curationAnnouncer, fetchItems]);
 
   const handleQueueRowCheckboxChange = (queueRowId) => {
     setSelectedQueueRowIds(prev => {
@@ -363,12 +397,14 @@ const AnnouncementPage = () => {
       return;
     }
 
+    if (curationOnly && !CURATION_TABS.includes(tab)) return;
+
     setIsAnnouncing(true);
     try {
       let requestId = null;
 
       if (validQueueRowIds.length > 0) {
-        const webhookUrl = QUEUE_WEBHOOK[activeTab]?.();
+        const webhookUrl = QUEUE_WEBHOOK[tab]?.();
         if (!webhookUrl) {
           toastError(t('announcement.errors.announceFailed'));
           return;
@@ -379,7 +415,7 @@ const AnnouncementPage = () => {
         requestId = data?.requestId || requestId;
       }
 
-      if (validPassIds.length > 0) {
+      if (!curationOnly && validPassIds.length > 0) {
         const { data } = await api.post(`${routes.webhook.root()}/passes`, {
           passIds: validPassIds,
         });
@@ -428,28 +464,7 @@ const AnnouncementPage = () => {
 
   const handleLevelUpdate = async (updatedData) => {
     try {
-      const [newLevelsResponse, reratesResponse, curationsResponse, curationReratesResponse] = await Promise.all([
-        api.get(routes.database.levels.unannouncedNew()),
-        api.get(routes.database.levels.unannouncedRerates()),
-        api.get(routes.database.levels.unannouncedCurations()),
-        api.get(routes.database.levels.unannouncedCurationRerates()),
-      ]);
-
-      setNewLevelEntries(newLevelsResponse.data);
-      setRerateEntries(reratesResponse.data);
-      setCurationEntries(curationsResponse.data);
-      setCurationRerateEntries(curationReratesResponse.data);
-
-      const tabIds = {
-        newLevels: new Set(newLevelsResponse.data.map(e => e.queueRowId)),
-        rerates: new Set(reratesResponse.data.map(e => e.queueRowId)),
-        curations: new Set(curationsResponse.data.map(e => e.queueRowId)),
-        curationRerates: new Set(curationReratesResponse.data.map(e => e.queueRowId)),
-      };
-
-      setSelectedQueueRowIds(prev =>
-        prev.filter(id => tabIds[activeTab]?.has(id)),
-      );
+      applyQueues(await loadQueues());
     } catch (err) {
       console.error('Error refreshing data:', err);
     }
@@ -463,17 +478,17 @@ const AnnouncementPage = () => {
   };
 
   const handleSelectAll = () => {
-    if (activeTab === 'passes') {
+    if (tab === 'passes') {
       const allPassIds = passes.map(pass => pass.id);
       const shouldSelectAll = selectedPasses.length !== passes.length;
       setSelectedPasses(shouldSelectAll ? allPassIds : []);
     } else {
       const currentEntries =
-        activeTab === 'newLevels'
+        tab === 'newLevels'
           ? newLevelEntries
-          : activeTab === 'rerates'
+          : tab === 'rerates'
             ? rerateEntries
-            : activeTab === 'curations'
+            : tab === 'curations'
               ? curationEntries
               : curationRerateEntries;
       const allIds = currentEntries.map(e => e.queueRowId);
@@ -482,7 +497,7 @@ const AnnouncementPage = () => {
     }
   };
 
-  if (user.permissionFlags === undefined) {
+  if (!flagsReady) {
     return (
       <>
         <MetaTags {...pageMeta} />
@@ -498,7 +513,7 @@ const AnnouncementPage = () => {
     );
   }
 
-  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+  if (!curationAnnouncer) {
     return (
       <AccessDenied
         metaTitle={t('announcement.meta.title')}
@@ -525,17 +540,17 @@ const AnnouncementPage = () => {
     );
   }
 
-  const visibleEntries = activeTab === 'passes'
+  const visibleEntries = tab === 'passes'
     ? passes
-    : activeTab === 'newLevels'
+    : tab === 'newLevels'
       ? newLevelEntries
-      : activeTab === 'rerates'
+      : tab === 'rerates'
         ? rerateEntries
-        : activeTab === 'curations'
+        : tab === 'curations'
           ? curationEntries
           : curationRerateEntries;
   const listCount = visibleEntries.length;
-  const selectedCount = activeTab === 'passes'
+  const selectedCount = tab === 'passes'
     ? selectedPasses.length
     : selectedQueueRowIds.length;
   const allSelected = listCount > 0 && selectedCount === listCount;
@@ -564,61 +579,20 @@ const AnnouncementPage = () => {
 
           <div className="tab-header">
             <div className="submission-tabs">
-              <button
-                className={`tab-button ${activeTab === 'newLevels' ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveTab('newLevels');
-                  setSelectedQueueRowIds([]);
-                  setSelectedPasses([]);
-                  setFocusedRequestId(null);
-                }}
-              >
-                {t('announcement.tabs.newLevels')}
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveTab('rerates');
-                  setSelectedQueueRowIds([]);
-                  setSelectedPasses([]);
-                  setFocusedRequestId(null);
-                }}
-              >
-                {t('announcement.tabs.rerates')}
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'curations' ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveTab('curations');
-                  setSelectedQueueRowIds([]);
-                  setSelectedPasses([]);
-                  setFocusedRequestId(null);
-                }}
-              >
-                {t('announcement.tabs.curations')}
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'curationRerates' ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveTab('curationRerates');
-                  setSelectedQueueRowIds([]);
-                  setSelectedPasses([]);
-                  setFocusedRequestId(null);
-                }}
-              >
-                {t('announcement.tabs.curationRerates')}
-              </button>
-              <button
-                className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveTab('passes');
-                  setSelectedQueueRowIds([]);
-                  setSelectedPasses([]);
-                  setFocusedRequestId(null);
-                }}
-              >
-                {t('announcement.tabs.passes')}
-              </button>
+              {visibleTabs.map((tabId) => (
+                <button
+                  key={tabId}
+                  className={`tab-button ${tab === tabId ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveTab(tabId);
+                    setSelectedQueueRowIds([]);
+                    setSelectedPasses([]);
+                    setFocusedRequestId(null);
+                  }}
+                >
+                  {t(`announcement.tabs.${tabId}`)}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -642,7 +616,7 @@ const AnnouncementPage = () => {
                     isLoading ||
                     isAnnouncing ||
                     gate?.blocked ||
-                    (activeTab === 'passes'
+                    (tab === 'passes'
                       ? selectedPasses.length === 0
                       : selectedQueueRowIds.length === 0)
                   }
@@ -668,7 +642,7 @@ const AnnouncementPage = () => {
                 </span>
               </div>
 
-              {activeTab === 'newLevels' && (
+              {tab === 'newLevels' && (
                 <NewLevelsTab
                   entries={newLevelEntries}
                   selectedQueueRowIds={selectedQueueRowIds}
@@ -679,7 +653,7 @@ const AnnouncementPage = () => {
                 />
               )}
 
-              {activeTab === 'rerates' && (
+              {tab === 'rerates' && (
                 <ReratesTab
                   entries={rerateEntries}
                   selectedQueueRowIds={selectedQueueRowIds}
@@ -690,7 +664,7 @@ const AnnouncementPage = () => {
                 />
               )}
 
-              {activeTab === 'curations' && (
+              {tab === 'curations' && (
                 <CurationsTab
                   entries={curationEntries}
                   selectedQueueRowIds={selectedQueueRowIds}
@@ -699,10 +673,11 @@ const AnnouncementPage = () => {
                   onEdit={handleEditLevel}
                   isLoading={isLoading}
                   kind="NEW"
+                  allowEdit={isSuperAdmin}
                 />
               )}
 
-              {activeTab === 'curationRerates' && (
+              {tab === 'curationRerates' && (
                 <CurationsTab
                   entries={curationRerateEntries}
                   selectedQueueRowIds={selectedQueueRowIds}
@@ -711,10 +686,11 @@ const AnnouncementPage = () => {
                   onEdit={handleEditLevel}
                   isLoading={isLoading}
                   kind="RERATE"
+                  allowEdit={isSuperAdmin}
                 />
               )}
 
-              {activeTab === 'passes' && (
+              {tab === 'passes' && (
                 <PassesTab
                   passes={passes}
                   selectedPasses={selectedPasses}
@@ -737,7 +713,7 @@ const AnnouncementPage = () => {
           </div>
         </div>
 
-        {editingLevel && (
+        {editingLevel && isSuperAdmin && (
           <EditLevelPopup
             level={editingLevel}
             onClose={() => setEditingLevel(null)}

@@ -25,7 +25,10 @@ import { Tooltip } from '@/components/common/display/Tooltip';
 import i18next from "i18next";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import {
+  applyAlreadyHandledSubmission,
+  applyEnqueueResponse,
   applySubmissionJobItem,
+  clearCardPhase,
   dismissSettledCards,
   getSubmissionCardClassName,
   hasVisibleSubmissions,
@@ -80,7 +83,7 @@ function isUploadManageDisabled(phase) {
 }
 
 
-const LevelSubmissions = ({ searchQuery = '' }) => {
+const LevelSubmissions = ({ searchQuery = '', sort = 'submitted', dir = 'desc' }) => {
   const { t } = useTranslation(['components', 'common', 'pages']);
   
   const {
@@ -90,18 +93,17 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
     isPaging,
     total,
     hasNext,
-    queueDrift,
     loadEpoch,
     loadMore,
-    reload,
     reloadByIds,
     noteLocalLock,
     releaseSeenId,
-    markQueueDrift,
   } = usePendingSubmissionPages({
     url: routes.admin.submissions.levelsPending(),
     kind: 'level',
     searchQuery,
+    sort,
+    dir,
   });
   const [managingUploadId, setManagingUploadId] = useState(null);
   const [videoEmbeds, setVideoEmbeds] = useState({});
@@ -253,6 +255,20 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
       );
 
       if (response.status === 202) {
+        applyEnqueueResponse({
+          data: response.data,
+          kind: 'level',
+          submissionId,
+          fallbackAction: action,
+          setCardPhases,
+          setDisabledButtons,
+          setSubmissions,
+          applyCompletedStats: (prev, id, resolvedAction) => {
+            const row = prev.find((s) => s.id === id);
+            const field = resolvedAction === 'decline' ? 'declined' : 'accepted';
+            return incrementSubmitterRecord(prev, row?.levelSubmitter?.id, field, 'levelSubmitter');
+          },
+        });
         return;
       }
       if (response.status === 200) {
@@ -272,6 +288,31 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
         });
       }
     } catch (error) {
+      const status = error.response?.status;
+      if (status === 404) {
+        applyAlreadyHandledSubmission({
+          kind: 'level',
+          submissionId,
+          action,
+          setCardPhases,
+          setDisabledButtons,
+          setSubmissions,
+        });
+        return;
+      }
+      if (status === 409) {
+        clearCardPhase(setCardPhases, submissionId);
+        setDisabledButtons((prev) => {
+          const next = { ...prev };
+          delete next[submissionId];
+          return next;
+        });
+        setSubmissions((prev) => prev.map((row) => (
+          row.id === submissionId ? { ...row, isLocked: true } : row
+        )));
+        toast.error(t('submissionManagement.lock.lockedHint', { ns: 'pages' }));
+        return;
+      }
       console.error(`Error ${action}ing submission:`, error);
       toast.error(error.response?.data?.error || t('levelSubmissions.errors.processing'));
       applySubmissionJobItem({
@@ -811,12 +852,7 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
 
   return (
     <>
-      <SubmissionQueueBar
-        total={total}
-        isPaging={isPaging}
-        queueDrift={queueDrift}
-        onResync={reload}
-      />
+      <SubmissionQueueBar total={total} />
       <div className="submissions-list">  
         {isLoading && submissions.length === 0 ? (  
           <div className="loader-shell loader-shell--submission">
@@ -1508,14 +1544,33 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
                     submission,
                     setSubmissions,
                     parkOffPage: hasNext,
+                    dir,
+                    onAlreadyHandled: (data) => applyEnqueueResponse({
+                      data,
+                      kind: 'level',
+                      submissionId: submission.id,
+                      fallbackAction: 'approve',
+                      setCardPhases,
+                      setDisabledButtons,
+                      setSubmissions,
+                    }),
                   }).then((nextLocked) => {
+                    if (nextLocked == null) return;
                     noteLocalLock(submission.id);
-                    if (!nextLocked) {
-                      markQueueDrift();
-                      return;
-                    }
+                    if (!nextLocked) return;
                     if (hasNext) releaseSeenId(submission.id);
                   }).catch((error) => {
+                    if (error.response?.status === 404) {
+                      applyAlreadyHandledSubmission({
+                        kind: 'level',
+                        submissionId: submission.id,
+                        action: 'approve',
+                        setCardPhases,
+                        setDisabledButtons,
+                        setSubmissions,
+                      });
+                      return;
+                    }
                     console.error('Error updating submission lock:', error);
                     toast.error(
                       error.response?.data?.error

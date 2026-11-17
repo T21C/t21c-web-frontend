@@ -283,7 +283,7 @@ export const createNavigationConfig = (context = {}) => {
             sideLink: {
               to: "https://github.com/KGH1113/TUFReplay/releases",
               ariaTranslationKey: "navigation.main.dropdowns.tools.tufReplayDownload",
-              icon: <DownloadIcon size={16} color="currentColor" />,
+              icon: <DownloadIcon size={"20px"} color="currentColor" />,
             },
           },
           {

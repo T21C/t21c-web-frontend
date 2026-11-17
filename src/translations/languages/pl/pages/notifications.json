@@ -58,6 +58,12 @@
       "restored": {
         "title": "Pass przywrócony",
         "body": "Twój pass {{song}} — {{artist}} został przywrócony."
+      },
+      "level": {
+        "rerated": {
+          "title": "Ukończony chart ponownie oceniony",
+          "body": "{{song}} — {{artist}}, chart który ukończyłeś, został ponownie oceniony z {{previousDifficultyName}} na {{difficultyName}}."
+        }
       }
     },
     "chart": {
@@ -100,6 +106,10 @@
       "rated": {
         "title": "Chart oceniony",
         "body": "{{song}} — {{artist}} został oceniony {{difficultyName}}."
+      },
+      "rerated": {
+        "title": "Chart ponownie oceniony",
+        "body": "{{song}} — {{artist}} został ponownie oceniony z {{previousDifficultyName}} na {{difficultyName}}."
       },
       "curated": {
         "title": "Chart wyróżniony",

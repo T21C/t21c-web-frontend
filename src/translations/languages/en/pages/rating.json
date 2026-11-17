@@ -40,7 +40,8 @@
     "help": "Rating Guide",
     "topRaters": "Top Raters",
     "zenMode": "Zen Mode",
-    "resumeZenMode": "Resume Zen Mode"
+    "resumeZenMode": "Resume Zen Mode",
+    "announcements": "Announcements"
   },
   "toggles": {
     "detailedView": {

@@ -25,6 +25,7 @@
   gap: 0.3rem;
   max-width: 100%;
   vertical-align: middle;
+  white-space: normal;
 }
 
 .formatted-comment .level-ref:hover {

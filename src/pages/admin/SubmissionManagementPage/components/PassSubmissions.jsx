@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissions #passSubmissions #admin #submissionManagement — Submission Management
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
@@ -20,7 +20,10 @@ import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import {
+  applyAlreadyHandledSubmission,
+  applyEnqueueResponse,
   applySubmissionJobItem,
+  clearCardPhase,
   dismissSettledCards,
   getSubmissionCardClassName,
   hasVisibleSubmissions,
@@ -34,7 +37,6 @@ import { togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
-import { passDifficultySubtype } from './passDifficultySubtype';
 import { usePendingSubmissionPages } from './usePendingSubmissionPages';
 import SubmissionQueueBar from './SubmissionQueueBar';
 import { CommentFormatter } from '@/components/misc';
@@ -82,18 +84,9 @@ const PASS_DECLINE_REASON_PRESETS = [
   }
 ];
 
-const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [] }) => {
+const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [], sort = 'submitted', dir = 'desc' }) => {
   const { t } = useTranslation(['components', 'pages']);
   const { difficultyDict } = useDifficultyContext();
-
-  const hiddenKey = hiddenSubtypes.join('|');
-  const acceptPass = useCallback((submission) => {
-    if (!hiddenSubtypes.length) return true;
-    const hidden = new Set(hiddenSubtypes);
-    const diffId = submission.level?.diffId;
-    const name = difficultyDict?.[diffId]?.name ?? submission.level?.difficulty?.name;
-    return !hidden.has(passDifficultySubtype(name));
-  }, [hiddenSubtypes, difficultyDict]);
 
   const {
     submissions,
@@ -102,19 +95,17 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
     isPaging,
     total,
     hasNext,
-    queueDrift,
     loadEpoch,
     loadMore,
-    reload,
     noteLocalLock,
     releaseSeenId,
-    markQueueDrift,
   } = usePendingSubmissionPages({
     url: routes.admin.submissions.passesPending(),
     kind: 'pass',
     searchQuery,
-    filterKey: hiddenKey,
-    acceptItem: acceptPass,
+    hide: hiddenSubtypes,
+    sort,
+    dir,
   });
   const [videoEmbeds, setVideoEmbeds] = useState({});
   const [cardPhases, setCardPhases] = useState({});
@@ -259,6 +250,20 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
       );
 
       if (response.status === 202) {
+        applyEnqueueResponse({
+          data: response.data,
+          kind: 'pass',
+          submissionId,
+          fallbackAction: action,
+          setCardPhases,
+          setDisabledButtons,
+          setSubmissions,
+          applyCompletedStats: (prev, id, resolvedAction) => {
+            const row = prev.find((s) => s.id === id);
+            const field = resolvedAction === 'decline' ? 'declined' : 'accepted';
+            return incrementSubmitterRecord(prev, row?.passSubmitter?.id, field, 'passSubmitter');
+          },
+        });
         return;
       }
       if (response.status === 200) {
@@ -278,6 +283,31 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
         });
       }
     } catch (error) {
+      const status = error.response?.status;
+      if (status === 404) {
+        applyAlreadyHandledSubmission({
+          kind: 'pass',
+          submissionId,
+          action,
+          setCardPhases,
+          setDisabledButtons,
+          setSubmissions,
+        });
+        return;
+      }
+      if (status === 409) {
+        clearCardPhase(setCardPhases, submissionId);
+        setDisabledButtons((prev) => {
+          const next = { ...prev };
+          delete next[submissionId];
+          return next;
+        });
+        setSubmissions((prev) => prev.map((row) => (
+          row.id === submissionId ? { ...row, isLocked: true } : row
+        )));
+        toast.error(t('submissionManagement.lock.lockedHint', { ns: 'pages' }));
+        return;
+      }
       console.error('Error processing submission:', error);
       toast.error(t('passSubmissions.errors.processing'));
       applySubmissionJobItem({
@@ -387,12 +417,7 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
 
   return (
     <>
-      <SubmissionQueueBar
-        total={total}
-        isPaging={isPaging}
-        queueDrift={queueDrift}
-        onResync={reload}
-      />
+      <SubmissionQueueBar total={total} />
       <div className="submissions-list">
         {isLoading && submissions.length === 0 ? (
           <div className="loader-shell loader-shell--submission">
@@ -657,14 +682,33 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
                     submission,
                     setSubmissions,
                     parkOffPage: hasNext,
+                    dir,
+                    onAlreadyHandled: (data) => applyEnqueueResponse({
+                      data,
+                      kind: 'pass',
+                      submissionId: submission.id,
+                      fallbackAction: 'approve',
+                      setCardPhases,
+                      setDisabledButtons,
+                      setSubmissions,
+                    }),
                   }).then((nextLocked) => {
+                    if (nextLocked == null) return;
                     noteLocalLock(submission.id);
-                    if (!nextLocked) {
-                      markQueueDrift();
-                      return;
-                    }
+                    if (!nextLocked) return;
                     if (hasNext) releaseSeenId(submission.id);
                   }).catch((error) => {
+                    if (error.response?.status === 404) {
+                      applyAlreadyHandledSubmission({
+                        kind: 'pass',
+                        submissionId: submission.id,
+                        action: 'approve',
+                        setCardPhases,
+                        setDisabledButtons,
+                        setSubmissions,
+                      });
+                      return;
+                    }
                     console.error('Error updating submission lock:', error);
                     toast.error(
                       error.response?.data?.error

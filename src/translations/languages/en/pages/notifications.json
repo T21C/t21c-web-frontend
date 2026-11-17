@@ -58,6 +58,12 @@
       "restored": {
         "title": "Pass restored",
         "body": "Your pass of {{song}} by {{artist}} was restored."
+      },
+      "level": {
+        "rerated": {
+          "title": "Cleared chart rerated",
+          "body": "{{song}} by {{artist}}, a chart you cleared, was rerated from {{previousDifficultyName}} to {{difficultyName}}."
+        }
       }
     },
     "chart": {
@@ -100,6 +106,10 @@
       "rated": {
         "title": "Chart rated",
         "body": "{{song}} by {{artist}} was rated {{difficultyName}}."
+      },
+      "rerated": {
+        "title": "Chart rerated",
+        "body": "{{song}} by {{artist}} was rerated from {{previousDifficultyName}} to {{difficultyName}}."
       },
       "curated": {
         "title": "Chart curated",

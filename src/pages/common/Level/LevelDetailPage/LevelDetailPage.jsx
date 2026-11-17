@@ -578,7 +578,9 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
 const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
   const { t } = useTranslation(['pages', 'common']);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { hasUnfinishedDeck } = useZenMode();
+  const zenAllowed = Boolean(user?.id);
 
   useEffect(() => {
     if (!show) return;
@@ -635,7 +637,7 @@ const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
           <p className="to-rate-pending-empty">{t('levelDetail.toRatePending.noDetails')}</p>
         )}
         {level.id && (
-          hasUnfinishedDeck ? (
+          hasUnfinishedDeck && zenAllowed ? (
             <button
               type="button"
               className="btn-fill-primary btn-block to-rate-pending-open"

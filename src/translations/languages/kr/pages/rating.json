@@ -37,7 +37,8 @@
   "buttons": {
     "references": "참고 레벨",
     "manageRaters": "평가자 관리",
-    "help": "난이도 책정 가이드"
+    "help": "난이도 책정 가이드",
+    "announcements": "공지사항"
   },
   "toggles": {
     "detailedView": {

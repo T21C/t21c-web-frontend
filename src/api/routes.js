@@ -219,8 +219,6 @@ export const routes = {
       discord: (discordId) => `/v2/admin/users/discord/${enc(discordId)}`,
       ratingBan: (userId) => `/v2/admin/users/${enc(userId)}/rating-ban`,
       tagVoteBan: (userId) => `/v2/admin/users/${enc(userId)}/tag-vote-ban`,
-      scheduleAccountDeletion: (userId) =>
-        `/v2/admin/users/${enc(userId)}/schedule-account-deletion`,
       notice: (userId) => `/v2/admin/users/${enc(userId)}/notice`,
     },
     submissions: {
