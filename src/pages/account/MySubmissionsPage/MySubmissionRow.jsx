@@ -1,7 +1,14 @@
 // tuf-search: #MySubmissionRow #mySubmissions
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChartIcon, PassIcon } from '@/components/common/icons';
+import {
+  ChartIcon,
+  DownloadIcon,
+  EditIcon,
+  PassIcon,
+  SteamIcon,
+  VideoLinkIcon,
+} from '@/components/common/icons';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio, formatFloat } from '@/utils/statFormatters';
 import { ICON_SIZE, formatDate, formatTimeAgo, selectIconSize } from '@/utils/Utility';
@@ -50,6 +57,19 @@ function firstRequestedRange(raw) {
 function difficultyIcon(difficulty) {
   if (!difficulty?.icon) return null;
   return selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM);
+}
+
+const LINK_ICON_SIZE = '18px';
+
+function SubmissionActionIcon({ action, href }) {
+  const color = 'currentColor';
+  if (action === 'edit') return <EditIcon size={LINK_ICON_SIZE} color={color} />;
+  if (action === 'level') return <ChartIcon size={LINK_ICON_SIZE} color={color} />;
+  if (action === 'pass') return <PassIcon size={LINK_ICON_SIZE} color={color} />;
+  if (action === 'video') return <VideoLinkIcon url={href} size={LINK_ICON_SIZE} color={color} />;
+  if (action === 'workshop') return <SteamIcon size={LINK_ICON_SIZE} color={color} />;
+  if (action === 'download') return <DownloadIcon size={LINK_ICON_SIZE} color={color} />;
+  return null;
 }
 
 /**
@@ -185,7 +205,7 @@ const MySubmissionRow = ({ submission, onEditPass }) => {
       label: t('mySubmissions.row.workshop'),
     });
   }
-  if (submission.downloadLink) {
+  if (submission.downloadLink && !(submission.kind === 'level' && submission.status === 'declined')) {
     links.push({
       key: 'download',
       href: submission.downloadLink,
@@ -276,19 +296,37 @@ const MySubmissionRow = ({ submission, onEditPass }) => {
       <div className="my-submissions-page__links">
         {links.map((link) => {
           const className = link.primary
-            ? 'btn-fill-accent btn-sm'
-            : 'btn-fill-glass btn-sm';
+            ? 'btn-fill-accent btn-sm btn-icon'
+            : 'btn-fill-glass btn-sm btn-icon';
+          const icon = (
+            <span className="my-submissions-page__link-icon" aria-hidden="true">
+              <SubmissionActionIcon action={link.key} href={link.href} />
+            </span>
+          );
           if (link.to) {
             return (
-              <Link key={link.key} className={className} to={link.to}>
-                {link.label}
+              <Link
+                key={link.key}
+                className={className}
+                to={link.to}
+                title={link.label}
+                aria-label={link.label}
+              >
+                {icon}
               </Link>
             );
           }
           if (link.onClick) {
             return (
-              <button key={link.key} type="button" className={className} onClick={link.onClick}>
-                {link.label}
+              <button
+                key={link.key}
+                type="button"
+                className={className}
+                onClick={link.onClick}
+                title={link.label}
+                aria-label={link.label}
+              >
+                {icon}
               </button>
             );
           }
@@ -299,8 +337,10 @@ const MySubmissionRow = ({ submission, onEditPass }) => {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
+              title={link.label}
+              aria-label={link.label}
             >
-              {link.label}
+              {icon}
             </a>
           );
         })}

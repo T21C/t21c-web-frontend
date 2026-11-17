@@ -58,6 +58,12 @@
       "restored": {
         "title": "通关记录已恢复",
         "body": "你的通关记录 {{artist}} - {{song}} 已恢复。"
+      },
+      "level": {
+        "rerated": {
+          "title": "你通过的关卡已重评",
+          "body": "你通过的关卡 {{artist}} - {{song}} 已从 {{previousDifficultyName}} 重评为 {{difficultyName}}。"
+        }
       }
     },
     "chart": {
@@ -100,6 +106,10 @@
       "rated": {
         "title": "关卡已评级",
         "body": "你的关卡 {{artist}} - {{song}} 已被评级为{{difficultyName}}。"
+      },
+      "rerated": {
+        "title": "关卡已重评",
+        "body": "你的关卡 {{artist}} - {{song}} 已从 {{previousDifficultyName}} 重评为 {{difficultyName}}。"
       },
       "curated": {
         "title": "关卡被精选",

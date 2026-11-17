@@ -10,6 +10,8 @@ import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { PassKeyboardBindField, usePassKeyboardBind } from '@/components/common/cores/PassKeyboardBindField/PassKeyboardBindField';
+import { useVideoLinkResolver } from '@/components/common/cores/VideoLinkResolver';
+import { getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 import '@/components/common/cores/PassCoreForm/PassCoreForm.css';
 import './ownpasseditpopup.css';
 
@@ -36,6 +38,12 @@ export const OwnPassEditPopup = ({ pass, onClose, onUpdate }) => {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [submitAttempt, setSubmitAttempt] = useState(false);
+  const [videoDetail, setVideoDetail] = useState(null);
+
+  useVideoLinkResolver({
+    value: pass.videoLink || '',
+    onVideoDetail: (next) => setVideoDetail(next || null),
+  });
 
   const keyboardBind = usePassKeyboardBind({
     pass,
@@ -168,7 +176,23 @@ export const OwnPassEditPopup = ({ pass, onClose, onUpdate }) => {
         disabled={saving}
         aria-label={t('buttons.close', { ns: 'common' })}
       />
-      <div className="pass-core-form">
+      <div className={`pass-core-form ${videoDetail ? 'shadow' : ''}`}>
+        {videoDetail?.embed && (
+          <div
+            className={`thumbnail-container ${getVideoEmbedModifierClass(pass.videoLink)}`.trim()}
+            style={{ filter: 'drop-shadow(0 0 1rem black)' }}
+          >
+            <iframe
+              src={videoDetail.embed}
+              title="Video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy={getVideoIframeReferrerPolicy(pass.videoLink)}
+              scrolling={getVideoIframeScrolling(pass.videoLink)}
+              allowFullScreen
+            />
+          </div>
+        )}
         <div className="info">
           <h1 id="own-pass-edit-title">{t('passDetail.ownEdit.title')}</h1>
           <div className="info-input info-input-grid">

@@ -64,7 +64,7 @@
 .my-submissions-page__row {
   position: relative;
   display: grid;
-  grid-template-columns: 3rem minmax(12rem, 1.35fr) minmax(10rem, 1fr) minmax(8rem, max-content) auto;
+  grid-template-columns: 3rem minmax(12rem, 1.35fr) minmax(10rem, 1fr) max-content auto;
   grid-template-areas: "icon identity facts links date";
   align-items: center;
   column-gap: 1rem;
@@ -312,9 +312,22 @@
   gap: 0.4rem;
 }
 
-.my-submissions-page__links button {
+.my-submissions-page .my-submissions-page__links button {
   font-family: inherit;
   cursor: pointer;
+}
+
+.my-submissions-page .my-submissions-page__link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.my-submissions-page .my-submissions-page__link-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
 }
 
 .my-submissions-page__row-date {

@@ -58,6 +58,12 @@
       "restored": {
         "title": "クリアが復元されました",
         "body": "{{artist}}の{{song}}のクリアが復元されました。"
+      },
+      "level": {
+        "rerated": {
+          "title": "クリアしたチャートがレート変更されました",
+          "body": "クリアした{{artist}}の{{song}}は{{previousDifficultyName}}から{{difficultyName}}にレート変更されました。"
+        }
       }
     },
     "chart": {
@@ -100,6 +106,10 @@
       "rated": {
         "title": "チャートがレートされました",
         "body": "{{artist}}の{{song}}は、{{difficultyName}}とレートされました"
+      },
+      "rerated": {
+        "title": "チャートがレート変更されました",
+        "body": "{{artist}}の{{song}}は{{previousDifficultyName}}から{{difficultyName}}にレート変更されました。"
       },
       "curated": {
         "title": "チャートがキュレーションされました",
