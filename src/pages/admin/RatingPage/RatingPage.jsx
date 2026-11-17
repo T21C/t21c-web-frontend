@@ -27,7 +27,7 @@ import { apiUrl } from '@/config/urls';
 import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { RatingHelpPopup } from "@/components/popups/Rating";
-import { canModerateCuration, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { canAnnounceCurations, canModerateCuration, canUseCurationZen, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import { REQUEST_BANDS, autoraterHideBand } from '@/utils/ratingRequestBand';
 import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
@@ -127,6 +127,8 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   const selectedLevelIdRef = useRef(null);
   const sseHandlersRef = useRef({});
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const zenAllowed = isCurationMode ? canUseCurationZen(user) : Boolean(user?.id);
+  const showCurationAnnouncements = isCurationMode && canAnnounceCurations(user);
   const canModerateQueue = isCurationMode ? canModerateCuration(user) : isSuperAdmin;
   const canReviewRerates = hasFlag(user, permissionFlags.RATER) || isSuperAdmin;
   const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewRerates);
@@ -584,15 +586,15 @@ const RatingPage = ({ mode = 'difficulty' }) => {
   }, [reloadFromStart, showHelpPopup]);
 
   useEffect(() => {
-    if (!sessionHydrated || !hasUnfinishedDeck) return;
+    if (!zenAllowed || !sessionHydrated || !hasUnfinishedDeck) return;
     if (!zenLockToastRef.current) {
       zenLockToastRef.current = true;
       toast.error(t(isCurationMode ? 'rating.curationRating.zenLocked' : 'rating.zen.errors.normalRatingLocked'));
     }
     navigate(zenPath, { replace: true });
-  }, [hasUnfinishedDeck, navigate, sessionHydrated, t, isCurationMode, zenPath]);
+  }, [zenAllowed, hasUnfinishedDeck, navigate, sessionHydrated, t, isCurationMode, zenPath]);
 
-  if (user === undefined || !sessionHydrated || hasUnfinishedDeck) {
+  if (user === undefined || !sessionHydrated || (zenAllowed && hasUnfinishedDeck)) {
     return (
       <div className="admin-rating-page">
         <MetaTags {...pageMeta} />
@@ -622,6 +624,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
         <ScrollButton />
         {!isCurationMode && <ReferencesButton />}
         <div className="admin-buttons">
+            {zenAllowed && (
             <Link
               to={zenPath}
               className="admin-button"
@@ -630,6 +633,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
                 ? t('rating.buttons.resumeZenMode', { defaultValue: 'Resume Zen Mode' })
                 : t('rating.buttons.zenMode', { defaultValue: 'Zen Mode' })}
             </Link>
+            )}
             {!isCurationMode && (
               <>
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -662,7 +666,8 @@ const RatingPage = ({ mode = 'difficulty' }) => {
               </>
             )}
           </div>
-        <div className="rating-flow-tabs" role="tablist">
+        <div className="rating-flow-tabs">
+          <div className="rating-flow-tablist" role="tablist">
           {(isCurationMode ? ['recent', 'rerate', 'bulk'] : [1, 2, 3]).map((flow) => (
             <button
               key={flow}
@@ -675,6 +680,15 @@ const RatingPage = ({ mode = 'difficulty' }) => {
               {t(isCurationMode ? `rating.curationRating.flows.${flow}` : `rating.flows.flow${flow}`)}
             </button>
           ))}
+          </div>
+          {showCurationAnnouncements && (
+            <Link
+              to="/admin/announcements"
+              className="admin-button rating-flow-announce"
+            >
+              {t('rating.buttons.announcements')}
+            </Link>
+          )}
         </div>
         <div className="view-controls">
           

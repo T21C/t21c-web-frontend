@@ -46,6 +46,21 @@ export const hasAnyFlag = (user, permissions) => {
 export const canModerateCuration = (user) =>
   hasAnyFlag(user, [permissionFlags.HEAD_CURATOR, permissionFlags.SUPER_ADMIN]);
 
+/** Curation announcements: head curator and super admin. */
+export const canAnnounceCurations = (user) =>
+  hasAnyFlag(user, [
+    permissionFlags.HEAD_CURATOR,
+    permissionFlags.SUPER_ADMIN,
+  ]);
+
+/** Curation Zen Mode only. Difficulty Zen stays open to any signed-in rater. */
+export const canUseCurationZen = (user) =>
+  hasAnyFlag(user, [
+    permissionFlags.CURATOR,
+    permissionFlags.HEAD_CURATOR,
+    permissionFlags.SUPER_ADMIN,
+  ]);
+
 export const setUserPermission = (user, permission, value) => {
   if (!user) return user;
   const current = toPermissionFlags(user);

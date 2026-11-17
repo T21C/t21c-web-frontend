@@ -40,7 +40,8 @@
     "help": "レーティングガイド",
     "topRaters": "上位レーティング担当者",
     "zenMode": "Zenモード",
-    "resumeZenMode": "Zenモードを再開"
+    "resumeZenMode": "Zenモードを再開",
+    "announcements": "アナウンス"
   },
   "toggles": {
     "detailedView": {

@@ -84,6 +84,8 @@ export const RatingCard = ({
       : rating.level.rerateReason;
     const songTitle = trimString(getSongDisplayName(rating.level), 50);
     const fullTitle = `${getSongDisplayName(rating.level)} - ${rating.level.creator}`;
+    const hasRerate = Boolean(rerateValue || rerateReason);
+    const curationSharesRow = isCurationMode && hasRerate;
     
     const handleReasonClick = () => {
       setIsReasonExpanded(!isReasonExpanded);
@@ -209,33 +211,43 @@ export const RatingCard = ({
               </div>
             )}
 
-            {/* Bottom row - Rerate info */}
-            {(rerateValue || rerateReason) && (
-              <div className={`rating-info-grid ${!rerateReason ? 'full-width' : 'bottom-row'}`}>
-                {rerateValue && (
-                  <div 
-                    className="rating-info-item" 
-                    data-label={t(`rating.ratingCard.labels.${(isCurationMode ? rating.level.curationRerateNum : rating.level.rerateNum) ? 'rerateNumber' : 'requestedRating'}`)}
-                  >
-                    <div className="content">{rerateValue}</div>
-                  </div>
+            {/* Bottom row - Rerate info. On curation cards the message shares
+                the row with the requested type marks instead of leaving a gap. */}
+            {hasRerate && (
+              <div className={curationSharesRow ? 'rating-card-curation-row has-rerate' : undefined}>
+                {curationSharesRow && (
+                  <RequestedCurationChanges requests={rating.curationRequests} compact />
                 )}
-                {rerateReason && (
-                  <div 
-                    className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''} ${!rerateValue ? 'full-width' : ''}`}
-                    data-label={t('rating.ratingCard.labels.rerateMessage')}
-                    onClick={handleReasonClick}
-                    title={t('rating.ratingCard.tooltips.expandReason')}
-                  > 
-                    <div className="reason-content">
-                      <CommentFormatter>{rerateReason}</CommentFormatter>
-                    </div>  
-                    <div className="expand-indicator"></div>
-                  </div>
-                )}
+                <div className={`rating-info-grid ${
+                  rerateValue && rerateReason
+                    ? 'bottom-row'
+                    : (isCurationMode ? 'single' : (!rerateReason ? 'full-width' : 'bottom-row'))
+                }`}>
+                  {rerateValue && (
+                    <div 
+                      className="rating-info-item" 
+                      data-label={t(`rating.ratingCard.labels.${(isCurationMode ? rating.level.curationRerateNum : rating.level.rerateNum) ? 'rerateNumber' : 'requestedRating'}`)}
+                    >
+                      <div className="content">{rerateValue}</div>
+                    </div>
+                  )}
+                  {rerateReason && (
+                    <div 
+                      className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''} ${!rerateValue && !isCurationMode ? 'full-width' : ''}`}
+                      data-label={t('rating.ratingCard.labels.rerateMessage')}
+                      onClick={handleReasonClick}
+                      title={t('rating.ratingCard.tooltips.expandReason')}
+                    > 
+                      <div className="reason-content">
+                        <CommentFormatter>{rerateReason}</CommentFormatter>
+                      </div>  
+                      <div className="expand-indicator"></div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
-            {isCurationMode && (
+            {isCurationMode && !curationSharesRow && (
               <RequestedCurationChanges requests={rating.curationRequests} compact />
             )}
           </div>

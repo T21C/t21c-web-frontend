@@ -40,7 +40,8 @@
     "help": "评级指南",
     "topRaters": "评级员排行榜",
     "zenMode": "沉浸模式",
-    "resumeZenMode": "继续沉浸模式"
+    "resumeZenMode": "继续沉浸模式",
+    "announcements": "公告"
   },
   "toggles": {
     "detailedView": {

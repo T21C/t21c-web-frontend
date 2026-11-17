@@ -251,7 +251,34 @@
 /* Bottom row - 2 columns */
 .rating-info-grid.bottom-row {
   margin-top: 0.25rem;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 3fr;
+}
+
+.rating-card .rating-info-grid.single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.rating-card .rating-card-curation-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.rating-card .rating-card-curation-row > .rating-info-grid {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.rating-card .rating-card-curation-row.has-rerate > .requested-curation-changes {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: auto;
+  max-width: min(50%, 28rem);
+  min-height: 3.5rem;
+  justify-content: flex-start;
 }
 
 
@@ -313,6 +340,20 @@
 
   .rating-card .rating-card-actions__end {
     margin-left: auto;
+  }
+
+  .rating-card .rating-card-curation-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rating-card .rating-card-curation-row > .rating-info-grid {
+    flex: 1 1 auto;
+  }
+
+  .rating-card .rating-card-curation-row.has-rerate > .requested-curation-changes {
+    width: 100%;
+    max-width: none;
   }
 }
 
@@ -393,11 +434,21 @@
 
 .rating-card .rerate-reason .reason-content .formatted-comment {
   display: contents;
+  white-space: nowrap;
+}
+
+.rating-card .rerate-reason:not(.expanded) .formatted-comment .level-link {
+  filter: grayscale(0.25);
+  opacity: 0.7;
+  pointer-events: none;
 }
 
 .rating-card .rerate-reason.expanded .reason-content .formatted-comment {
   display: block;
-  white-space: pre-wrap;
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

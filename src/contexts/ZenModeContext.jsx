@@ -11,6 +11,7 @@ import React, {
 import { routes } from '@/api/routes';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/utils/api';
+import { canUseCurationZen } from '@/utils/UserPermissions';
 
 const STORAGE_KEY_PREFIX = 'tuf.ratingZen:';
 const LEGACY_STORAGE_KEY = 'tuf.ratingZen';
@@ -278,9 +279,11 @@ function clearStoredSession(userId, prefix = STORAGE_KEY_PREFIX, legacyKey = LEG
 
 const ZenModeContext = createContext(null);
 
-function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
+function useZenSessionController({ sessionRoute, storagePrefix, legacyKey, allowed }) {
   const { isAuthenticated, loading: authLoading, user } = useAuth();
   const userId = user?.id ?? null;
+  const zenAllowedRef = useRef(allowed);
+  zenAllowedRef.current = allowed;
   const [session, setSession] = useState(createDefaultZenSession);
   const [sessionHydrated, setSessionHydrated] = useState(false);
 
@@ -296,7 +299,7 @@ function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
 
   const persistNow = useCallback(async (snapshot) => {
     const uid = userIdRef.current;
-    if (!uid) return;
+    if (!uid || !zenAllowedRef.current) return;
     const next = snapshot || sessionRef.current;
     writeStoredSession(uid, next, storagePrefix);
     if (saveTimerRef.current) {
@@ -440,10 +443,11 @@ function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
       return undefined;
     }
 
-    if (!isAuthenticated || !userId) {
+    if (!isAuthenticated || !userId || !allowed) {
       applySession(createDefaultZenSession(), { persist: false });
       serverHasSessionRef.current = false;
       dirtyRef.current = false;
+      if (userId) clearStoredSession(userId, storagePrefix, legacyKey);
       setSessionHydrated(true);
       skipPersistRef.current = false;
       return undefined;
@@ -481,7 +485,7 @@ function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
     return () => {
       cancelled = true;
     };
-  }, [authLoading, isAuthenticated, userId, applySession]);
+  }, [authLoading, isAuthenticated, userId, allowed, applySession, storagePrefix, legacyKey]);
 
   useEffect(() => {
     const onHide = () => {
@@ -550,15 +554,18 @@ function useZenSessionController({ sessionRoute, storagePrefix, legacyKey }) {
 }
 
 export function ZenModeProvider({ children }) {
+  const { user } = useAuth();
   const difficulty = useZenSessionController({
     sessionRoute: routes.admin.ratingZenSession,
     storagePrefix: STORAGE_KEY_PREFIX,
     legacyKey: LEGACY_STORAGE_KEY,
+    allowed: Boolean(user?.id),
   });
   const curation = useZenSessionController({
     sessionRoute: routes.admin.curationRatingZenSession,
     storagePrefix: 'tuf.curationZen:',
     legacyKey: null,
+    allowed: canUseCurationZen(user),
   });
   const value = useMemo(
     () => ({ difficulty, curation }),

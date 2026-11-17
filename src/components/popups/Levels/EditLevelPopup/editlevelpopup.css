@@ -481,6 +481,10 @@
 }
 
 .edit-level-popup-overlay .song-selector-field .selector-badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(-100%);
   font-size: 0.75rem;
   padding: 2px 8px;
   background-color: var(--btn-success-tint-strong);

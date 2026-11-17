@@ -36,7 +36,8 @@
   },
   "buttons": {
     "references": "Niveaux références",
-    "manageRaters": "Gérer les évaluateurs"
+    "manageRaters": "Gérer les évaluateurs",
+    "announcements": "Annonces"
   },
   "toggles": {
     "detailedView": {

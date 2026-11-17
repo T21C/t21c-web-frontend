@@ -40,9 +40,7 @@ const isOnlyHeadCurator = (user) => {
 const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, roleConfig, currentUser }) => {
   const { t } = useTranslation('components');
 
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [scheduleIncludeCreator, setScheduleIncludeCreator] = useState(false);
   // Find the highest role the user has
   const getHighestRole = () => {
     for (let i = roleConfig.roles.length - 1; i >= 0; i--) {
@@ -240,68 +238,15 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
     }
   };
 
-  const handleScheduleAccountDeletionAdmin = async () => {
-    if (!hasFlag(currentUser, permissionFlags.SUPER_ADMIN)) return;
-    if (!superAdminPassword) {
-      onError(t('userManagement.errors.passwordRequired'));
-      return;
-    }
-    if (user.id === currentUser.id) {
-      if (!window.confirm(t('userManagement.errors.scheduleOwnConfirm'))) return;
-    }
-    const confirmKey =
-      scheduleIncludeCreator && user.creatorId
-        ? 'userManagement.errors.scheduleWithCreatorConfirm'
-        : 'userManagement.errors.scheduleAccountConfirm';
-    if (!window.confirm(t(confirmKey))) return;
-
-    try {
-      setIsLoading(true);
-      await api.post(
-        routes.admin.users.scheduleAccountDeletion(user.id),
-        {
-          deletionIncludeCreator: Boolean(scheduleIncludeCreator && user.creatorId),
-        },
-        {
-          headers: {
-            'X-Super-Admin-Password': superAdminPassword,
-          },
-        },
-      );
-      onUpdate();
-      setScheduleIncludeCreator(false);
-    } catch (error) {
-      console.error('Schedule account deletion (admin):', error);
-      const data = error.response?.data;
-      if (toastIfRateLimited(error)) {
-        onError(getRateLimitMessage(error));
-      } else if (data?.message === 'Invalid super admin password') {
-        onError(t('userManagement.errors.invalidPassword'));
-      } else {
-        onError(data?.error || data?.message || t('userManagement.errors.scheduleDeletionFailed'));
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const currentRole = getHighestRole();
   const nextRole = getNextRole();
   const previousRole = getPreviousRole();
   const atTopRole = isAtTopRole();
   const atBottomRole = isAtBottomRole();
 
-  const isSuperAdminViewer = hasFlag(currentUser, permissionFlags.SUPER_ADMIN);
-  const hasPendingDeletion = Boolean(user.deletionExecuteAt && user.deletionScheduledAt);
-
   return (
     <div className="user-entry">
-      <div
-        className={`user-header${isSuperAdminViewer ? ' user-header--expandable' : ''}`}
-        onClick={() => {
-          if (isSuperAdminViewer) setIsExpanded(!isExpanded);
-        }}
-      >
+      <div className="user-header">
         <div className="user-info">
           <UserAvatar 
             {...userAvatarUrls(user)}
@@ -319,11 +264,6 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
             <span className="internal-username">@{user.username}</span>
           </div>
         </div>
-        {isSuperAdminViewer && (
-          <span className="user-header__expand-hint" aria-hidden>
-            {isExpanded ? '▲' : '▼'}
-          </span>
-        )}
         <div className="user-actions">
           {/* Show Protected status for head curators when current user is head curator */}
           {shouldShowProtected() && (
@@ -380,53 +320,6 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
           )}
         </div>
       </div>
-
-      {isSuperAdminViewer && isExpanded && (
-        <div
-          className="user-entry__admin-deletion"
-          onClick={(e) => e.stopPropagation()}
-          role="region"
-          aria-label={t('userManagement.adminDeletion.regionLabel')}
-        >
-          {hasPendingDeletion ? (
-            <div className="user-entry__admin-deletion-pending">
-              <p>{t('userManagement.adminDeletion.pendingTitle')}</p>
-              <ul>
-                <li>
-                  {t('userManagement.adminDeletion.executesAt', {
-                    date: new Date(user.deletionExecuteAt).toLocaleString(),
-                  })}
-                </li>
-                {user.deletionIncludeCreator ? (
-                  <li>{t('userManagement.adminDeletion.includesCreator')}</li>
-                ) : null}
-              </ul>
-            </div>
-          ) : (
-            <div className="user-entry__admin-deletion-actions">
-              {user.creatorId ? (
-                <label className="user-entry__admin-deletion-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={scheduleIncludeCreator}
-                    onChange={(e) => setScheduleIncludeCreator(e.target.checked)}
-                    disabled={isLoading}
-                  />
-                  <span>{t('userManagement.adminDeletion.includeCreator')}</span>
-                </label>
-              ) : null}
-              <button
-                type="button"
-                className="user-entry__schedule-deletion-btn"
-                onClick={handleScheduleAccountDeletionAdmin}
-                disabled={isLoading || (hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword)}
-              >
-                {t('userManagement.adminDeletion.scheduleButton')}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };

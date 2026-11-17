@@ -37,7 +37,8 @@
   "buttons": {
     "references": "Odniesienia",
     "manageRaters": "Zarządzaj rater'ami",
-    "help": "Poradnik systemu oceniania"
+    "help": "Poradnik systemu oceniania",
+    "announcements": "Ogłoszenia"
   },
   "toggles": {
     "detailedView": {

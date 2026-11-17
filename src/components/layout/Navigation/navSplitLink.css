@@ -6,7 +6,7 @@
 }
 
 .nav-split-link--desktop {
-  padding-right: 1rem;
+  padding-right: 0.8rem;
 }
 
 .nav-split-link--mobile {
@@ -20,7 +20,7 @@
 }
 
 .nav-split-link--desktop > .nav-dropdown-item {
-  padding-right: 0.45rem;
+  padding-right: 0rem;
 }
 
 .nav-split-link--mobile > .nav-mobile-dropdown-item {
@@ -33,6 +33,4 @@
 
 .nav-split-link__icon {
   display: flex;
-  width: 16px;
-  height: 16px;
 }
