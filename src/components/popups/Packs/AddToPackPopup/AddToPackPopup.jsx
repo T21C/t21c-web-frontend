@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
+import { SearchField } from '@/components/common/SearchField';
 import { CrossIcon, PlusIcon, SearchIcon } from '@/components/common/icons';
 import CreatePackPopup from './CreatePackPopup';
 import './AddToPackPopup.css';
@@ -327,7 +328,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
               <div className="add-to-pack-popup__search">
                 <div className="add-to-pack-popup__search-input-group">
                   <SearchIcon className="add-to-pack-popup__search-icon" />
-                  <input
+                  <SearchField
                     type="text"
                     className="add-to-pack-popup__search-input"
                     placeholder={t('packPopups.addToPack.searchPlaceholder')}

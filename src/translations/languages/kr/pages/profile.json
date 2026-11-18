@@ -374,6 +374,11 @@
     "bindField": "키보드 레이아웃",
     "clickLayout": "키를 눌러 전환합니다. Shift를 누른 채 드래그하면 사각형 안의 모든 키가 반대 상태로 바뀝니다.",
     "clickSelect": "키를 눌러 전환합니다. Shift를 누른 채 드래그하면 사각형 안의 모든 키가 반대 상태로 바뀝니다.",
+    "legend": {
+      "toggle": "키 전환",
+      "multiple": "여러 개 선택",
+      "ghost": "고스트 키 전환"
+    },
     "selectAll": "모두 선택",
     "deselectAll": "모두 해제",
     "selectKeys": "편집할 키를 선택하세요.",

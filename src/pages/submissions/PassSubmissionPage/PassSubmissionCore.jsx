@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import placeholder from '@/assets/placeholder/3.png';
+import { SearchField } from '@/components/common/SearchField';
 import { FetchIcon } from '@/components/common/icons';
 import { PlayerInput } from '@/components/common/selectors';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
@@ -182,7 +183,7 @@ export function PassSubmissionCore({
       renderLevelIdInput={() => (
         <>
           <div className="search-container" ref={searchContainerRef}>
-            <input
+            <SearchField
               type="text"
               autoComplete="off"
               placeholder={t('passSubmission.submInfo.levelId')}

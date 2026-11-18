@@ -2,7 +2,10 @@
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { formatScore } from "@/utils/Utility";
-import { nearestCurvePointForTooltip } from "@/utils/scoreV2Curve";
+import {
+  interpolateCurveScoreAtAccuracy,
+  nearestCurvePointForTooltip,
+} from "@/utils/scoreV2Curve";
 
 const JUDGEMENT_COLUMNS = [
   { key: "miss", labelKey: "levelDetail.scoreGraph.judgementMiss", className: "miss" },
@@ -22,6 +25,7 @@ export const ScoreV2GraphTooltip = ({
   hoverAccuracyPct,
   curveData,
   axisTooltip,
+  defaultCurveData,
 }) => {
   const { t } = useTranslation("pages");
   if (!active) return null;
@@ -42,14 +46,31 @@ export const ScoreV2GraphTooltip = ({
   if (!row?.judgementCounts) return null;
 
   const counts = row.judgementCounts;
+  const defaultScore = defaultCurveData?.length
+    ? interpolateCurveScoreAtAccuracy(defaultCurveData, row.accuracyPct)
+    : null;
+  const showDefaultScore = Number.isFinite(defaultScore);
 
   return (
     <div className="scorev2-graph-tooltip">
-      <div className="scorev2-graph-tooltip__summary">
+      <div
+        className={`scorev2-graph-tooltip__summary${
+          showDefaultScore ? " scorev2-graph-tooltip__summary--compare" : ""
+        }`}
+      >
         <span className="scorev2-graph-tooltip__accuracy">
           {row.accuracyPct.toFixed(2)}%
         </span>
-        <span className="scorev2-graph-tooltip__score">{formatScore(row.score)}</span>
+        {showDefaultScore ? (
+          <span className="scorev2-graph-tooltip__scores">
+            <span className="scorev2-graph-tooltip__score">{formatScore(row.score)}</span>
+            <span className="scorev2-graph-tooltip__score scorev2-graph-tooltip__score--default">
+              {formatScore(defaultScore)}
+            </span>
+          </span>
+        ) : (
+          <span className="scorev2-graph-tooltip__score">{formatScore(row.score)}</span>
+        )}
       </div>
       <div className="scorev2-graph-tooltip__judgements" role="group" aria-label={t("levelDetail.scoreGraph.judgementsAria", { defaultValue: "Judgement breakdown" })}>
         {JUDGEMENT_COLUMNS.map((col) => (
@@ -78,4 +99,5 @@ ScoreV2GraphTooltip.propTypes = {
   hoverAccuracyPct: PropTypes.number,
   curveData: PropTypes.array,
   axisTooltip: PropTypes.bool,
+  defaultCurveData: PropTypes.array,
 };

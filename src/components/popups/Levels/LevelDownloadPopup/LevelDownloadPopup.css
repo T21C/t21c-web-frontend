@@ -25,13 +25,18 @@
     text-align: center;
 }
 
-.level-download-popup .level-download-popup__oversized-notice {
+.level-download-popup .level-download-popup__oversized-notice,
+.level-download-popup .level-download-popup__missing-song-notice {
     margin: 12px 0 0;
     padding: 10px 12px;
     background: rgba(255, 180, 0, 0.12);
     border-radius: 6px;
     font-size: 0.9rem;
     color: #e6b84d;
+}
+
+.level-download-popup .transform-step .level-download-popup__missing-song-notice {
+    margin: 0;
 }
 
 .download-buttons {

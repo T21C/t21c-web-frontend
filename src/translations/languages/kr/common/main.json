@@ -71,7 +71,8 @@
     "create": "만들기",
     "createNew": "새로 만들기",
     "yes": "예",
-    "no": "아니요"
+    "no": "아니요",
+    "clearSearch": "검색어 지우기"
   },
   "like": {
     "like": "좋아요",

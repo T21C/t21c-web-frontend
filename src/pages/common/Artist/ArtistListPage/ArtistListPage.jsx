@@ -11,6 +11,7 @@ import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { normalizeArtistSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
@@ -151,7 +152,7 @@ const ArtistListPage = () => {
 
         <div className="artist-list-controls">
           <div className="search-container">
-            <input
+            <SearchField
               type="text"
               autoComplete='off'
               className="search-input"

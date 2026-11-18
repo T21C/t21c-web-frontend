@@ -40,7 +40,8 @@
     "accuracy": "Accuracy",
     "speed": "Speed",
     "speedValue": "{{value}}×",
-    "difficulty": "Difficulty",
+    "feelingRating": "Feeling",
+    "expectedRating": "Expected",
     "charter": "Charter",
     "requestedDiff": "Requested",
     "rated": "Rated"

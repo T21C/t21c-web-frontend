@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { SearchField } from '@/components/common/SearchField';
 import AccessDenied from '@/components/common/display/AccessDenied/AccessDenied';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
@@ -135,7 +136,7 @@ const AdminOAuthClientsPage = () => {
       >
         <label className="admin-oauth-clients-page__search-field">
           <span className="admin-oauth-clients-page__sr-only">{t('admin.oauthClients.searchLabel')}</span>
-          <input
+          <SearchField
             type="search"
             value={qInput}
             onChange={(e) => setQInput(e.target.value)}

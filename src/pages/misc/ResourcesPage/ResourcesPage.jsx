@@ -9,6 +9,7 @@ import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { ExternalLink } from '@/components/common/LinkConfirm';
+import { SearchField } from '@/components/common/SearchField';
 import { ExternalLinkIcon } from '@/components/common/icons';
 import { normalizeLanguage } from '@/translations/config';
 import {
@@ -262,7 +263,7 @@ const ResourcesPage = () => {
           </div>
 
           <div className="resources-page__search">
-            <input
+            <SearchField
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}

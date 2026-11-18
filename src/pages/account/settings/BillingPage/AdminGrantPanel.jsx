@@ -7,6 +7,7 @@ import { routes } from "@/api/routes";
 import { API_BASE } from "@/config/env";
 import api from "@/utils/api";
 import { toastIfRateLimited, getRateLimitMessage } from "@/utils/rateLimitError";
+import { SearchField } from "@/components/common/SearchField";
 import { CustomSelect, ProfileSelector } from "@/components/common/selectors";
 import { BillingGiftRecipientPreview } from "./BillingGiftRecipientPreview";
 import { formatDate } from "./billingUtils";
@@ -392,7 +393,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
 
       <div className="billing-page__admin-grant-log">
         <div className="billing-page__admin-grant-log-toolbar">
-          <input
+          <SearchField
             type="search"
             className="billing-page__recipient-input billing-page__admin-grant-log-search"
             value={searchInput}

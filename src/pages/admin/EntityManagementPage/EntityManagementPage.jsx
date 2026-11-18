@@ -6,6 +6,7 @@ import { useArtistContext } from '@/contexts/ArtistContext';
 import { useSongContext } from '@/contexts/SongContext';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import { PopupShell } from '@/components/common/PopupShell';
@@ -291,7 +292,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
         <div className="controls">
           <div className="search-container">
-            <input
+            <SearchField
               type="text"
               className="search-input"
               placeholder={tEntity('search.placeholder')}

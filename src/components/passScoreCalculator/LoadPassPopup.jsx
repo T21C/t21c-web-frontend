@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
+import { SearchField } from '@/components/common/SearchField';
 import { UserAvatar } from '@/components/layout';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
@@ -229,7 +230,7 @@ export function LoadPassPopup({ difficultyDict, onClose, onImport }) {
         <div className="pass-score-calculator__field">
           <label>{t('passSubmission.calculator.loadPass.placeholder')}</label>
           <div className="pass-score-calculator__pass-search" ref={searchContainerRef}>
-            <input
+            <SearchField
               type="text"
               autoComplete="off"
               placeholder={t('passSubmission.calculator.loadPass.placeholder')}

@@ -1,5 +1,6 @@
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { ChevronIcon, SortAscIcon, SortDescIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { SearchField } from "@/components/common/SearchField";
 import { CustomSelect } from "@/components/common/selectors";
 import { VirtualList } from "@/components/common/VirtualList";
 import { ScoreCard } from "@/components/cards";
@@ -80,7 +81,7 @@ export default function PlayerScoresModule({
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input
+                <SearchField
                   type="text"
                   className="search-input"
                   placeholder={t("profile.search.placeholder")}

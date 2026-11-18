@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { Tooltip } from '@/components/common/display/Tooltip';
+import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
@@ -159,7 +160,7 @@ export default function CommunityTagVotePopup({
               aria-label={t('buttons.close', { ns: 'common' })}
             />
           </div>
-          <input
+          <SearchField
             type="search"
             className="community-tag-vote-popup__search"
             placeholder={t('facetQueryBuilder.searchPlaceholder', { ns: 'components' })}

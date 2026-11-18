@@ -1,5 +1,6 @@
 // tuf-search: #LevelCreditsEditPopup #levelCreditsEditPopup #popups #creators #creditManagement
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { SearchField } from '@/components/common/SearchField';
 import { useTranslation } from 'react-i18next';
 import {
   DndContext,
@@ -497,7 +498,7 @@ const CreditRoleZone = ({
       </div>
       <div className="level-credits-edit-popup__zone-search">
         <SearchIcon className="level-credits-edit-popup__zone-search-icon" size="16px" />
-        <input
+        <SearchField
           type="search"
           className="level-credits-edit-popup__zone-search-input"
           placeholder={searchPlaceholder}

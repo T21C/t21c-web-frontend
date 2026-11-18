@@ -11,6 +11,7 @@ import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import "./auditlogpage.css";
 import "@/pages/common/sort.css";
 import { AuditLogCard } from "@/components/cards";
+import { SearchField } from "@/components/common/SearchField";
 import { CustomSelect } from "@/components/common/selectors";
 import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
 
@@ -284,7 +285,7 @@ const AuditLogPage = () => {
                 </button>
               ) : null}
               <div className="auditlog-heavy-lid-row">
-                <input
+                <SearchField
                   aria-label="Heavy search in payload or result"
                   value={heavyDraft}
                   onChange={(e) => setHeavyDraft(e.target.value)}

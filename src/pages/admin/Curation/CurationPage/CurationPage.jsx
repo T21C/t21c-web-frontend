@@ -7,6 +7,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { SearchField } from '@/components/common/SearchField';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import { toastIfRateLimited } from '@/utils/rateLimitError';
@@ -600,7 +601,7 @@ const CurationPage = () => {
           <div className="curation-filter-group">
             <label>{t('curation.filters.search')}</label>
             <div className="curation-filter-group-content">
-            <input
+            <SearchField
               name='curation-search'
               className="input-search"
               autoComplete='off'

@@ -162,8 +162,14 @@
   align-items: center;
 }
 
-.pass-core-form .info .id-input .search-container input {
+.pass-core-form .info .id-input .search-container .search-field {
   flex: 1;
+  min-width: 0;
+}
+
+.pass-core-form .info .id-input .search-container input {
+  width: 100%;
+  min-width: 0;
 }
 
 .pass-core-form .info .id-input .expand-button {

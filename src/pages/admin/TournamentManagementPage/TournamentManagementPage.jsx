@@ -11,6 +11,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { AccessDenied, MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from "@/utils/meta";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { SearchField } from "@/components/common/SearchField";
 import { ProfileSelector } from "@/components/common/selectors";
 import {
   TournamentFormPopup,
@@ -475,7 +476,7 @@ const TournamentManagementPage = () => {
       {globalTab === "events" && (
         <>
           <div className="tournament-mgmt-page__toolbar">
-            <input
+            <SearchField
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("tournamentManagement.searchPlaceholder")}

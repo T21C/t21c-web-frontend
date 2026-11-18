@@ -59,6 +59,11 @@ function difficultyIcon(difficulty) {
   return selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM);
 }
 
+function ratingText(value) {
+  if (typeof value !== 'string') return '';
+  return value.trim();
+}
+
 const LINK_ICON_SIZE = '18px';
 
 function SubmissionActionIcon({ action, href }) {
@@ -137,12 +142,6 @@ const MySubmissionRow = ({ submission, onEditPass }) => {
         value: t('mySubmissions.row.speedValue', { value: formatFloat(extra.speed, 2) }),
       });
     }
-    const difficulty = difficultyFact(
-      'difficulty',
-      t('mySubmissions.row.difficulty'),
-      extra.difficulty,
-    );
-    if (difficulty) facts.push(difficulty);
   } else {
     if (extra.charter) {
       facts.push({
@@ -158,12 +157,39 @@ const MySubmissionRow = ({ submission, onEditPass }) => {
         value: extra.requestedDiff,
       });
     }
-    const rated = difficultyFact(
-      'rated',
-      t('mySubmissions.row.rated'),
-      extra.publishedDifficulty,
+    const published = extra.publishedDifficulty;
+    const iconIsPublished = Boolean(
+      published?.name
+      && !hasRangeIcons
+      && sideIcon
+      && sideDifficulty?.name === published.name,
     );
+    const rated = iconIsPublished
+      ? null
+      : difficultyFact('rated', t('mySubmissions.row.rated'), published);
     if (rated) facts.push(rated);
+  }
+
+  const feelingRating = submission.kind === 'pass' ? ratingText(extra.feelingRating) : '';
+  const expectedRating = submission.kind === 'pass' ? ratingText(extra.expectedRating) : '';
+  const pairedRatings = feelingRating && expectedRating
+    ? [
+        { key: 'feeling', label: t('mySubmissions.row.feelingRating'), value: feelingRating },
+        { key: 'expected', label: t('mySubmissions.row.expectedRating'), value: expectedRating },
+      ]
+    : [];
+  if (feelingRating && !expectedRating) {
+    facts.push({
+      key: 'feeling',
+      label: t('mySubmissions.row.feelingRating'),
+      value: feelingRating,
+    });
+  } else if (expectedRating && !feelingRating) {
+    facts.push({
+      key: 'expected',
+      label: t('mySubmissions.row.expectedRating'),
+      value: expectedRating,
+    });
   }
 
   const links = [];
@@ -291,6 +317,18 @@ const MySubmissionRow = ({ submission, onEditPass }) => {
             </dd>
           </div>
         ))}
+        {pairedRatings.length > 0 && (
+          <div className="my-submissions-page__fact my-submissions-page__fact--ratings">
+            {pairedRatings.map((rating) => (
+              <div key={rating.key} className="my-submissions-page__rating">
+                <span className="my-submissions-page__rating-label">{rating.label}</span>
+                <span className="my-submissions-page__rating-value" title={rating.value}>
+                  {rating.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </dl>
 
       <div className="my-submissions-page__links">

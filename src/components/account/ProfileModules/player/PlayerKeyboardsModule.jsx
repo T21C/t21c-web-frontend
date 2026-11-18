@@ -399,6 +399,7 @@ export default function PlayerKeyboardsModule({
                   <KeyboardBoard
                     keys={geometry.keys}
                     activeKeys={viewMode === "layout" ? activeKeys : undefined}
+                    ghostKeys={viewMode === "layout" ? lanePeriod?.ghostKeys : undefined}
                     emptySockets={emptySocketSet(viewBoard)}
                     paintByCode={paintByCode}
                     keepFillOnHover

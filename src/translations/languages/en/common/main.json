@@ -71,7 +71,8 @@
     "create": "Create",
     "createNew": "Create New",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "clearSearch": "Clear search"
   },
   "like": {
     "like": "Like",

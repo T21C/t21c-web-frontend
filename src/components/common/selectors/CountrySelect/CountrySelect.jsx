@@ -1,5 +1,6 @@
 // tuf-search: #CountrySelect #countrySelect #selectors
 import { useState, useEffect, useMemo } from 'react';
+import { SearchField } from '@/components/common/SearchField';
 import { isoToEmoji } from '@/utils';
 import "./countryselect.css";
 import { COUNTRY_CODES } from "@/utils/countryCodes";
@@ -84,7 +85,7 @@ export const CountrySelect = ({ value, onChange, includeContinents = false }) =>
       
       {showDropdown && (
         <div className="select-country-dropdown">
-          <input
+          <SearchField
             type="text"
             autoComplete='off'
             className="select-country-search"

@@ -1,0 +1,117 @@
+/* tuf-search: #SearchField #searchField #searchClear */
+
+.search-field {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  color: inherit;
+}
+
+.search-field > input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.search-field > input[type="search"]::-webkit-search-cancel-button,
+.search-field > input[type="search"]::-webkit-search-decoration,
+.search-field > input[type="search"]::-webkit-search-results-button,
+.search-field > input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.search-field__clear {
+  position: absolute;
+  top: 50%;
+  right: 0.28rem;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  opacity: 0.72;
+  text-shadow: none;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.search-field__clear:hover,
+.search-field__clear:focus-visible {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.16);
+  outline: none;
+}
+
+.search-field .search-field__clear svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border-radius: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* Rows where the input itself used to be the flex child. */
+.search-row > .search-field,
+.search-container > .search-field,
+.search-input-wrapper > .search-field,
+.search-box > .search-field,
+.mods-page__search > .search-field,
+.resources-page__search > .search-field,
+.assets-page__filter-row > .search-field,
+.my-submissions-page__controls > .search-field,
+.submission-search > .search-field,
+.tournament-mgmt-page__toolbar > .search-field,
+.auditlog-heavy-lid-row > .search-field,
+.billing-page__admin-grant-log-toolbar > .search-field,
+.pass-score-calculator__pass-search > .search-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+}
+
+.my-submissions-page__controls > .search-field,
+.submission-search > .search-field {
+  flex: 1 1 16rem;
+  min-width: 12rem;
+}
+
+.mods-page__search > .search-field,
+.resources-page__search > .search-field,
+.assets-page__filter-row > .search-field {
+  flex: 1 1 auto;
+  min-width: 12rem;
+}
+
+.assets-page__filter-row > .search-field {
+  max-width: 28rem;
+}
+
+.tournament-mgmt-page__toolbar > .search-field,
+.billing-page__admin-grant-log-toolbar > .search-field {
+  flex: 1 1 12rem;
+  min-width: 10rem;
+}
+
+.song-selector-popup .search-input-wrapper > .search-field {
+  flex: 1 1 12rem;
+}

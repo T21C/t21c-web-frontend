@@ -39,7 +39,8 @@
     "accuracy": "精度",
     "speed": "速度",
     "speedValue": "{{value}}×",
-    "difficulty": "難易度",
+    "feelingRating": "体感",
+    "expectedRating": "予想",
     "charter": "チャーター",
     "requestedDiff": "リクエスト済み",
     "rated": "レート済み"

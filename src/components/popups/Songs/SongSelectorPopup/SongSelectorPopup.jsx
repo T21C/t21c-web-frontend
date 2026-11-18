@@ -8,6 +8,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { getVerificationClass } from '@/utils/Utility';
 import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { songVerificationSelectOptions } from '@/utils/verificationStates';
 
@@ -430,7 +431,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                   })()}
 
                   <div className="search-input-wrapper">
-                    <input
+                    <SearchField
                       type="text"
                       className="search-input"
                       value={searchQuery}

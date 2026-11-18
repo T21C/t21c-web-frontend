@@ -30,6 +30,7 @@ import {
 } from "./keyboardSetupDraft";
 import {
   canonicalizeKeys,
+  splitKeyUsage,
   currentPeriod,
   findPeriodAt,
   formatKeybind,
@@ -103,13 +104,47 @@ function commitCurrentSetup(prev) {
   };
 }
 
+const LAYOUT_LEGEND = [
+  ["[LMB]", "profile.keyboards.legend.toggle"],
+  ["[Shift]", "profile.keyboards.legend.multiple"],
+  ["[Alt]", "profile.keyboards.legend.ghost"],
+];
+
+function sameGhost(keys, left, right) {
+  const a = splitKeyUsage(keys, left).ghostKeys.join("\u001f");
+  const b = splitKeyUsage(keys, right).ghostKeys.join("\u001f");
+  return a === b;
+}
+
+function ghostField(keys, ghostKeys) {
+  const ghost = splitKeyUsage(keys, ghostKeys).ghostKeys;
+  return ghost.length ? { ghostKeys: ghost } : {};
+}
+
+function applyUsage(keys, ghostKeys, codes, usage) {
+  const split = splitKeyUsage(keys, ghostKeys);
+  const nextKeys = new Set(split.keys);
+  const nextGhost = new Set(split.ghostKeys);
+  for (const code of codes) {
+    const current = nextGhost.has(code) ? "ghost" : nextKeys.has(code) ? "normal" : "off";
+    const next = current === usage ? "off" : usage;
+    nextKeys.delete(code);
+    nextGhost.delete(code);
+    if (next === "ghost") nextGhost.add(code);
+    else if (next === "normal") nextKeys.add(code);
+  }
+  return { keys: [...nextKeys], ghostKeys: [...nextGhost] };
+}
+
 function laneView(prev, row) {
-  const keys = canonicalizeKeys(row.keys || []);
+  const usage = splitKeyUsage(row.keys || [], row.ghostKeys);
+  const keyCount = usage.keys.length;
   return {
     laneKey: laneClientKey(row),
-    name: row.name,
-    keyCount: row.keyCount,
-    keys,
+    name: nameTracksCount(row.name) ? `${keyCount}K` : row.name,
+    keyCount,
+    keys: usage.keys,
+    ghostKeys: usage.ghostKeys,
     periodId: row.periodId ?? null,
     sinceDate: row.sinceDate || null,
     untilDate: row.untilDate || "",
@@ -175,16 +210,19 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
   const lanes = rigLanes.map((row) => {
     const selectedLane = Boolean(laneId) && row.id === laneId;
     const period = periodForLane(row, rigLanes, sinceDate, selectedLane);
-    const keys = canonicalizeKeys(period?.keys || []);
-    const keyCount = keys.length || row.keyCount || 0;
+    const usage = splitKeyUsage(period?.keys || [], period?.ghostKeys);
+    const keys = usage.keys;
+    const keyCount = period?.keys ? keys.length : (row.keyCount || 0);
+    const storedName = row.name || `${keyCount}K`;
     const range = rangeFrom(period);
     return {
       id: row.id,
       tmpId: null,
       periodId: period?.id ?? null,
       keyCount,
-      name: row.name || `${keyCount}K`,
+      name: nameTracksCount(storedName) ? `${keyCount}K` : storedName,
       keys,
+      ghostKeys: usage.ghostKeys,
       sinceDate: period?.sinceDate ?? (selectedLane ? sinceDate || null : null),
       untilDate: range.untilDate,
       untilAuto: range.untilAuto,
@@ -199,6 +237,7 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
       keyCount: 0,
       name: "0K",
       keys: [],
+      ghostKeys: [],
       sinceDate: sinceDate || utcToday(),
       untilDate: "",
       untilAuto: true,
@@ -230,6 +269,7 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
     name: selected.name,
     keyCount: selected.keyCount,
     keys: selected.keys,
+    ghostKeys: selected.ghostKeys || [],
     lanes,
   };
 }
@@ -246,6 +286,7 @@ function laneMatchesSaved(row, rig, board) {
   if (!period || !sameDate(period.sinceDate, row.sinceDate)) return false;
   const savedKeys = canonicalizeKeys(period.keys || []);
   if (savedKeys.join("\u001f") !== keys.join("\u001f")) return false;
+  if (!sameGhost(keys, period.ghostKeys, row.ghostKeys)) return false;
   if (savedLayoutName(saved.name, savedKeys.length) !== savedLayoutName(row.name, keys.length)) return false;
   const savedRange = rangeFrom(period);
   const rowAuto = row.untilAuto !== false;
@@ -363,6 +404,10 @@ function persistedSnapshot(rig) {
         untilDate: period.untilAuto === false ? period.untilDate ?? null : null,
         untilAuto: period.untilAuto !== false,
         keys: period.isGap || period.keys == null ? null : canonicalizeKeys(period.keys),
+        ...ghostField(
+          period.isGap || period.keys == null ? [] : period.keys,
+          period.ghostKeys,
+        ),
         setup: period.isGap || period.keys == null ? null : (period.setup ?? null),
       })),
     })),
@@ -415,6 +460,10 @@ function buildSnapshot(rig, draft, sensing, includeDraft) {
         untilDate: period.untilAuto === false ? period.untilDate ?? null : null,
         untilAuto: period.untilAuto !== false,
         keys: period.isGap || period.keys == null ? null : canonicalizeKeys(period.keys),
+        ...ghostField(
+          period.isGap || period.keys == null ? [] : period.keys,
+          period.ghostKeys,
+        ),
         setup: period.isGap || period.keys == null ? null : (period.setup ?? null),
       }));
     if (keys.length) {
@@ -423,6 +472,7 @@ function buildSnapshot(rig, draft, sensing, includeDraft) {
         untilDate: row.untilAuto !== false ? null : row.untilDate || null,
         untilAuto: row.untilAuto !== false,
         keys,
+        ...ghostField(keys, row.ghostKeys),
         setup: row.setup ?? null,
       });
     }
@@ -540,7 +590,8 @@ export default function KeyboardSetupPopup({
     [draftGeometry],
   );
   const selectedCodeSet = editorMode === "layout" ? new Set(draft.keys) : paintSelection;
-  const anyKeysSelected = bindableKeys.some((key) => selectedCodeSet.has(key.code));
+  const ghostCodeSet = editorMode === "layout" ? new Set(draft.ghostKeys || []) : new Set();
+  const anyKeysSelected = bindableKeys.some((key) => selectedCodeSet.has(key.code) || ghostCodeSet.has(key.code));
   const allKeysSelected = bindableKeys.length > 0 && bindableKeys.every((key) => selectedCodeSet.has(key.code));
   const maxSwitches = Math.min(MAX_BOARD_SWITCHES, Math.max(bindableKeys.length, 1));
   const openSwitch = (draft.switches || []).find((row) => switchClientKey(row) === openSwitchKey) || null;
@@ -590,14 +641,19 @@ export default function KeyboardSetupPopup({
     setPaste(formatKeybind(keys));
   }
 
-  function applyKeySelection(keys) {
-    const nextKeys = canonicalizeKeys(keys);
-    const keyCount = nextKeys.length;
+  function applyKeySelection(keys, ghostKeys = []) {
+    const usage = splitKeyUsage(keys, ghostKeys);
+    const keyCount = usage.keys.length;
     setDraft((prev) => {
       const name = nameTracksCount(prev.name) ? `${keyCount}K` : prev.name;
-      return withCurrentLane(prev, { keys: nextKeys, keyCount, name });
+      return withCurrentLane(prev, {
+        keys: usage.keys,
+        ghostKeys: usage.ghostKeys,
+        keyCount,
+        name,
+      });
     });
-    setPaste(formatKeybind(nextKeys));
+    setPaste(formatKeybind(usage.keys));
   }
 
   function addLayout() {
@@ -614,6 +670,7 @@ export default function KeyboardSetupPopup({
         keyCount: 0,
         name: "0K",
         keys: [],
+        ghostKeys: [],
         sinceDate: utcToday(),
         untilDate: "",
         untilAuto: true,
@@ -655,6 +712,7 @@ export default function KeyboardSetupPopup({
           name: "",
           keyCount: 0,
           keys: [],
+          ghostKeys: [],
           periodId: null,
           sinceDate: null,
           untilDate: "",
@@ -703,9 +761,9 @@ export default function KeyboardSetupPopup({
       else next.delete(code);
     };
     if (editorMode === "layout") {
-      const next = new Set(draft.keys);
-      for (const code of codes) applyCode(next, code);
-      applyKeySelection([...next]);
+      const usage = kind === "ghost" ? "ghost" : "normal";
+      const next = applyUsage(draft.keys, draft.ghostKeys, codes, usage);
+      applyKeySelection(next.keys, next.ghostKeys);
       return;
     }
     setPaintSelection((prev) => {
@@ -924,7 +982,9 @@ export default function KeyboardSetupPopup({
 
   function applyPaste() {
     const parsed = parseKeybindText(paste);
-    applyKeySelection(parsed.keys);
+    const pasted = new Set(parsed.keys);
+    const ghosts = (draft.ghostKeys || []).filter((code) => !pasted.has(code));
+    applyKeySelection(parsed.keys, ghosts);
     if (parsed.unknownTokens.length) {
       toast.error(t("profile.keyboards.unknownKeys", { keys: parsed.unknownTokens.join(", ") }));
     }
@@ -941,7 +1001,9 @@ export default function KeyboardSetupPopup({
     const saved = current.id ? (rig?.lanes || []).find((lane) => lane.id === current.id) : null;
     const exact = keyedPeriods(saved?.periods).find((period) => sameDate(period.sinceDate, nextDate));
     if (exact) {
-      const keys = canonicalizeKeys(exact.keys || []);
+      const usage = splitKeyUsage(exact.keys || [], exact.ghostKeys);
+      const keys = usage.keys;
+      const ghostKeys = usage.ghostKeys;
       const probe = { ...current, setup: layoutSetupFromDraft(draft) };
       if (!laneMatchesSaved(probe, rig, savedBoard)) {
         if (!window.confirm(t("confirmations.unsavedChanges", { ns: "common" }))) return;
@@ -959,6 +1021,7 @@ export default function KeyboardSetupPopup({
           untilDate: range.untilDate,
           untilAuto: range.untilAuto,
           keys,
+          ghostKeys,
           keyCount,
           name,
           setup,
@@ -1003,6 +1066,7 @@ export default function KeyboardSetupPopup({
           name: savedLayoutName(row.name, keys.length),
           keyCount: keys.length,
           keys,
+          ghostKeys: splitKeyUsage(keys, row.ghostKeys).ghostKeys,
           sinceDate: row.sinceDate || null,
           untilDate: untilAuto ? null : row.untilDate || null,
           untilAuto,
@@ -1276,13 +1340,35 @@ export default function KeyboardSetupPopup({
 
           <div className="keyboard-setup__editor-columns">
             <section className="keyboard-setup__editor-board">
-              <h3 className="keyboard-setup__section-title">{t("profile.keyboards.bindField")}</h3>
+              <div className="keyboard-setup__board-head">
+                <h3 className="keyboard-setup__section-title">{t("profile.keyboards.bindField")}</h3>
+                <div className="keyboard-setup__select-actions">
+                  <button
+                    type="button"
+                    className="btn-fill-secondary btn-sm"
+                    onClick={selectAllKeys}
+                    disabled={!draftGeometry || allKeysSelected}
+                  >
+                    {t("profile.keyboards.selectAll")}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-fill-secondary btn-sm"
+                    onClick={deselectAllKeys}
+                    disabled={!anyKeysSelected}
+                  >
+                    {t("profile.keyboards.deselectAll")}
+                  </button>
+                </div>
+              </div>
               {draftGeometry ? (
                 <KeyboardBoard
                   keys={draftGeometry.keys}
                   activeKeys={editorMode === "layout" ? new Set(draft.keys) : undefined}
+                  ghostKeys={editorMode === "layout" ? draft.ghostKeys : undefined}
                   selectedKeys={editorMode === "layout" ? undefined : paintSelection}
                   selectMode={editorMode !== "layout"}
+                  allowGhost={editorMode === "layout"}
                   paintByCode={paintByCode}
                   keepFillOnHover={editorMode !== "layout"}
                   onPaintKeys={handleBoardPaint}
@@ -1292,27 +1378,19 @@ export default function KeyboardSetupPopup({
               ) : (
                 <p className="keyboard-setup__intro">{t("profile.keyboards.noLayouts")}</p>
               )}
-              <div className="keyboard-setup__select-actions">
-                <button
-                  type="button"
-                  className="btn-fill-secondary btn-sm"
-                  onClick={selectAllKeys}
-                  disabled={!draftGeometry || allKeysSelected}
-                >
-                  {t("profile.keyboards.selectAll")}
-                </button>
-                <button
-                  type="button"
-                  className="btn-fill-secondary btn-sm"
-                  onClick={deselectAllKeys}
-                  disabled={!anyKeysSelected}
-                >
-                  {t("profile.keyboards.deselectAll")}
-                </button>
-              </div>
-              <p className="keyboard-setup__intro">
-                {editorMode === "layout" ? t("profile.keyboards.clickLayout") : t("profile.keyboards.clickSelect")}
-              </p>
+              {editorMode === "layout" ? (
+                <ul className="keyboard-setup__legend">
+                  {LAYOUT_LEGEND.map(([token, key]) => (
+                    <li key={token}>
+                      <kbd>{token}</kbd>
+                      <span>-</span>
+                      <span>{t(key)}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="keyboard-setup__intro">{t("profile.keyboards.clickSelect")}</p>
+              )}
               <div className="keyboard-setup__board-grid">
                 <CustomSelect
                   options={geometryOptions}

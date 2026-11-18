@@ -15,6 +15,7 @@ import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { useLeaderboardLocate } from '@/hooks/useLeaderboardLocate';
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { useTranslation } from "react-i18next";
+import { SearchField } from '@/components/common/SearchField';
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildLeaderboardMeta } from '@/utils/meta';
@@ -677,7 +678,7 @@ const LeaderboardPage = () => {
         
         <div className="leaderboard-input-option">
           <div className="search-container">
-            <input
+            <SearchField
               value={activeQuery}
               autoComplete='off'
               type="text"

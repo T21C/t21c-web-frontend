@@ -7,6 +7,7 @@ import './levelselectionpopup.css';
 import toast from 'react-hot-toast';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
+import { SearchField } from '@/components/common/SearchField';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -253,7 +254,7 @@ const LevelSelectionPopup = ({
         <div className="level-selection-modal__filters">
           <div className="level-selection-modal__filter-group">
             <label htmlFor="search">{t('levelSelectionPopup.filters.search')}</label>
-            <input
+            <SearchField
               id="search"
               type="text"
               autoComplete="off"

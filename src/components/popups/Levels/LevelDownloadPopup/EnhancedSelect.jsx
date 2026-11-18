@@ -1,5 +1,6 @@
 // tuf-search: #EnhancedSelect #enhancedSelect #popups #levels #levelDownload
 import React, { useState, useRef, useEffect } from 'react';
+import { SearchField } from '@/components/common/SearchField';
 import { Portal } from '@/components/common/Portal';
 import { usePopoverRoot } from '@/utils/portalRoot';
 import './EnhancedSelect.css';
@@ -244,7 +245,7 @@ const EnhancedSelect = ({
                 >
                     <div className="enhanced-select-content">
                         {currentPosition === "bottom" && (
-                            <input
+                            <SearchField
                                 type="text"
                                 className="enhanced-select-search"
                                 placeholder={`Search ${searchField}...`}
@@ -274,7 +275,7 @@ const EnhancedSelect = ({
                             ))}
                         </div>
                         {currentPosition === "top" && (
-                            <input
+                            <SearchField
                                 type="text"
                                 className="enhanced-select-search"
                                 placeholder={`Search ${searchField}...`}

@@ -39,7 +39,8 @@
     "accuracy": "Celność",
     "speed": "Prędkość",
     "speedValue": "{{value}}×",
-    "difficulty": "Trudność",
+    "feelingRating": "Odczucie",
+    "expectedRating": "Oczekiw.",
     "charter": "Charter",
     "requestedDiff": "Proszona",
     "rated": "Ocena"

@@ -2,6 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #SubmissionCreatorPopup #submissionCreatorPopup #popups #levels #submissionCreator
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CustomSelect } from '@/components/common/selectors';
 import { CreatorStatusBadge } from '@/components/common/display';
@@ -416,7 +417,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
               {!showCreateForm ? (
                 <>
                   <div className="search-input-wrapper">
-                    <input
+                    <SearchField
                       type="text"
                       className="search-input"
                       value={searchQuery}

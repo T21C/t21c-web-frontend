@@ -200,6 +200,11 @@
     "bindField": "Disposition du clavier",
     "clickLayout": "Cliquez sur une touche pour la basculer. Maintenez Maj et glissez pour inverser chaque touche dans le rectangle.",
     "clickSelect": "Cliquez sur une touche pour la basculer. Maintenez Maj et glissez pour inverser chaque touche dans le rectangle.",
+    "legend": {
+      "toggle": "Basculer la touche",
+      "multiple": "Sélection multiple",
+      "ghost": "Basculer la touche fantôme"
+    },
     "selectAll": "Tout sélectionner",
     "deselectAll": "Tout désélectionner",
     "selectKeys": "Sélectionnez des touches à modifier.",

@@ -39,7 +39,8 @@
     "accuracy": "Précision",
     "speed": "Vitesse",
     "speedValue": "{{value}}×",
-    "difficulty": "Difficulté",
+    "feelingRating": "Ressenti",
+    "expectedRating": "Attendu",
     "charter": "Charter",
     "requestedDiff": "Demandée",
     "rated": "Notée"

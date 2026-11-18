@@ -8,6 +8,7 @@ import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { groupPublicTournamentsBySeries } from '@/utils/tournamentPlacements';
@@ -80,7 +81,7 @@ const TournamentListPage = () => {
 
         <div className="tournament-list-page__controls">
           <div className="tournament-list-page__search">
-            <input
+            <SearchField
               type="text"
               autoComplete="off"
               className="tournament-list-page__search-input"

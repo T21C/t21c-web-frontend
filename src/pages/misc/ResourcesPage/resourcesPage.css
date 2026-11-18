@@ -137,8 +137,8 @@
 }
 
 .resources-page__search input[type="search"] {
-  flex: 1;
-  min-width: 12rem;
+  width: 100%;
+  min-width: 0;
   padding: 0.55rem 0.75rem;
   border: 1px solid var(--color-white-t20);
   border-radius: 4px;

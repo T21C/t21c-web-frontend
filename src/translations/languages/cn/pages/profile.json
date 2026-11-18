@@ -375,6 +375,11 @@
     "bindField": "键盘布局",
     "clickLayout": "点击按键以切换。按住 Shift 拖动可翻转框内的每个按键。",
     "clickSelect": "点击按键以切换。按住 Shift 拖动可翻转框内的每个按键。",
+    "legend": {
+      "toggle": "切换按键",
+      "multiple": "多选",
+      "ghost": "切换幽灵键"
+    },
     "selectAll": "全选",
     "deselectAll": "取消全选",
     "selectKeys": "请选择要编辑的按键。",

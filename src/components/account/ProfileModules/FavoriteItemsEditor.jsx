@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { SearchField } from "@/components/common/SearchField";
 import { CustomSelect, ProfileSelector } from "@/components/common/selectors";
 import { DragHandleIcon, TrashIcon } from "@/components/common/icons";
 import { Portal } from "@/components/common/Portal";
@@ -562,7 +563,7 @@ export default function FavoriteItemsEditor({
         ) : (
           <div className="profile-modules-editor__favorite-search" ref={searchWrapRef}>
             <div ref={anchorRef}>
-              <input
+              <SearchField
                 type="search"
                 className="profile-modules-editor__favorite-input"
                 value={query}

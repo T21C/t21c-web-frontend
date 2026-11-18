@@ -30,8 +30,8 @@
 }
 
 .my-submissions-page__search {
-  flex: 1 1 16rem;
-  min-width: 12rem;
+  width: 100%;
+  min-width: 0;
   padding: 0.55rem 0.85rem;
   background: var(--color-white-t10);
   border: 1px solid var(--color-white-t20);
@@ -47,8 +47,9 @@
 }
 
 .my-submissions-page__list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 3rem minmax(9rem, 1.35fr) minmax(8rem, 1fr) max-content max-content;
+  column-gap: 1rem;
   border: 1px solid var(--color-white-t10);
   border-radius: 0.4rem;
   overflow: hidden;
@@ -56,6 +57,7 @@
 }
 
 .my-submissions-page__empty {
+  grid-column: 1 / -1;
   margin: 0;
   padding: 1.5rem 1rem;
   color: var(--color-gray-2);
@@ -64,10 +66,10 @@
 .my-submissions-page__row {
   position: relative;
   display: grid;
-  grid-template-columns: 3rem minmax(12rem, 1.35fr) minmax(10rem, 1fr) max-content auto;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   grid-template-areas: "icon identity facts links date";
   align-items: center;
-  column-gap: 1rem;
   row-gap: 0.65rem;
   padding: 0.75rem 1rem 0.75rem 0.5rem;
   border-bottom: 1px solid var(--color-white-t10);
@@ -303,13 +305,46 @@
   white-space: nowrap;
 }
 
+.my-submissions-page .my-submissions-page__fact--ratings {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 0.4rem;
+  row-gap: 0.12rem;
+  max-width: 11rem;
+}
+
+.my-submissions-page .my-submissions-page__rating {
+  display: contents;
+}
+
+.my-submissions-page .my-submissions-page__rating-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--color-white-t70);
+}
+
+.my-submissions-page .my-submissions-page__rating-value {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .my-submissions-page__links {
   grid-area: links;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .my-submissions-page .my-submissions-page__links button {
@@ -333,9 +368,11 @@
 .my-submissions-page__row-date {
   grid-area: date;
   justify-self: end;
+  min-width: 6.5rem;
   font-size: 0.75rem;
   color: var(--color-white-t70);
   white-space: nowrap;
+  text-align: right;
 }
 
 .my-submissions-page__pagination {
@@ -380,8 +417,11 @@
 }
 
 @media (max-width: 900px) {
+  .my-submissions-page__list {
+    grid-template-columns: 3rem minmax(0, 1fr) max-content;
+  }
+
   .my-submissions-page__row {
-    grid-template-columns: 3rem minmax(0, 1fr) auto;
     grid-template-areas:
       "icon identity date"
       "icon facts facts"
@@ -391,5 +431,10 @@
 
   .my-submissions-page__links {
     justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .my-submissions-page__row-date {
+    min-width: 0;
   }
 }

@@ -70,7 +70,7 @@ const PASS_DECLINE_REASON_PRESETS = [
   {
     id: 'keyviewer',
     label: 'No keyviewer/mic',
-    text: 'No keyviewer / microphone. The submission does have a visible keyviewer/handcam or audible keyboard sounds to verify the clear.',
+    text: 'No keyviewer / microphone. The submission does not have a visible keyviewer/handcam or audible keyboard sounds to verify the clear.',
   },
   {
     id: 'privateVideo',

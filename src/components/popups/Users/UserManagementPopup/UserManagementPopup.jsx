@@ -9,6 +9,7 @@ import { UserAvatar } from '@/components/layout';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { hasFlag } from '@/utils/UserPermissions';
+import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { toastIfRateLimited, getRateLimitMessage } from '@/utils/rateLimitError';
@@ -473,7 +474,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
         </div>
 
         <div className="search-section">
-          <input
+          <SearchField
             type="text"
             name="user-management-search"
             value={searchQuery}

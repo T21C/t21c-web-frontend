@@ -162,6 +162,8 @@
     "tooltipEPerfect": "빠름/느림",
     "tooltipEarly": "빠름!/느림!",
     "disablePP": "완플 비활성화",
+    "legendThisLevel": "이 레벨",
+    "legendDefault": "기본",
     "judgementsAria": "Judgement breakdown",
     "judgementMiss": "너무 빠름",
     "judgementEarly": "빠름!",

@@ -71,7 +71,8 @@
     "create": "作成",
     "createNew": "新規作成",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "clearSearch": "検索をクリア"
   },
   "like": {
     "like": "いいね",

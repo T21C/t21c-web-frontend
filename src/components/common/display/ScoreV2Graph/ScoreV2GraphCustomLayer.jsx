@@ -8,6 +8,9 @@ const PIN_SLICE_STROKE = {
   pin2: "var(--warning-color, var(--btn-primary))",
 };
 
+/** Same stroke as the solid level curve; dash pattern is the legend distinction. */
+const DEFAULT_BASE_STROKE = "var(--btn-primary)";
+
 function getAxis(map) {
   if (!map || typeof map !== "object") {
     return null;
@@ -33,7 +36,7 @@ function mapPointsToPixels(points, xAxis, yAxis) {
 }
 
 /**
- * Non-interactive decorations: miss-slice curves, axis cursor, zero-miss hover dot.
+ * Non-interactive decorations: difficulty-default base curve, miss-slice curves, axis cursor, zero-miss hover dot.
  */
 export function ScoreV2GraphCustomLayer({
   xAxisMap,
@@ -43,6 +46,7 @@ export function ScoreV2GraphCustomLayer({
   overlays,
   hoverAccuracyPct,
   zeroMissCurveData,
+  comparisonCurve,
 }) {
   if (layoutRef) {
     layoutRef.current = offset;
@@ -76,8 +80,26 @@ export function ScoreV2GraphCustomLayer({
   const plotTop = offset?.top ?? 0;
   const plotHeight = offset?.height ?? 0;
 
+  const comparisonPixels = mapPointsToPixels(comparisonCurve, xAxis, yAxis);
+
   return (
     <g className="scorev2-graph__custom-layer" pointerEvents="none">
+      {comparisonPixels.length >= 2 ? (
+        <Curve
+          points={comparisonPixels}
+          type="monotone"
+          layout="horizontal"
+          connectNulls
+          stroke={DEFAULT_BASE_STROKE}
+          strokeWidth={2}
+          strokeDasharray="1.5 4.5"
+          strokeLinecap="round"
+          strokeOpacity={0.9}
+          fill="none"
+          pointerEvents="none"
+          isAnimationActive={false}
+        />
+      ) : null}
       {overlays?.length
         ? overlays.map((overlay) => {
             const pixelPoints = mapPointsToPixels(
@@ -147,4 +169,5 @@ ScoreV2GraphCustomLayer.propTypes = {
   overlays: PropTypes.array,
   hoverAccuracyPct: PropTypes.number,
   zeroMissCurveData: PropTypes.array,
+  comparisonCurve: PropTypes.array,
 };
