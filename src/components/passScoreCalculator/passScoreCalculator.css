@@ -130,7 +130,8 @@
 }
 
 .psc-tool-popup .pass-score-calculator__pass-search input {
-  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
 }
 
 .psc-tool-popup .pass-score-calculator__expand-btn {

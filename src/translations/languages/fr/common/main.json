@@ -17,6 +17,7 @@
   },
   "buttons": {
     "undo": "Annuler",
-    "redo": "Rétablir"
+    "redo": "Rétablir",
+    "clearSearch": "Effacer la recherche"
   }
 }

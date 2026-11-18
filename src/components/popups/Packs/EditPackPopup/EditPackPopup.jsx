@@ -1,5 +1,6 @@
 // tuf-search: #EditPackPopup #editPackPopup #popups #packs #editPack
 import { useState, useEffect, useRef } from 'react';
+import { SearchField } from '@/components/common/SearchField';
 import { Portal } from '@/components/common/Portal';
 import { PopupShell } from '@/components/common/PopupShell';
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from '@/hooks/usePortaledPanelAnchor';
@@ -61,7 +62,7 @@ function PackTransferOwnerPicker({
   return (
     <div className="edit-pack-popup__transfer-ownership">
       <div className="edit-pack-popup__transfer-search" ref={searchRef}>
-        <input
+        <SearchField
           type="text"
           className="edit-pack-popup__input"
           placeholder={t('packPopups.editPack.transferOwnership.placeholder')}

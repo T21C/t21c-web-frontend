@@ -8,6 +8,7 @@ import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { useSongContext } from '@/contexts/SongContext';
 import { getVerificationClass } from '@/utils/Utility';
@@ -172,7 +173,7 @@ const SongListPage = () => {
 
         <div className="song-list-controls">
           <div className="search-container">
-            <input
+            <SearchField
               type="text"
               autoComplete='off'
               className="search-input"

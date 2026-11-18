@@ -9,6 +9,7 @@
 
 .assets-page .assets-page__container {
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: 2.5rem;
   flex: 1;
@@ -127,9 +128,9 @@
 }
 
 .assets-page .assets-page__filter-input {
-  flex: 1;
-  min-width: 12rem;
-  max-width: 28rem;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   border: 1px solid var(--btn-neutral-dark);

@@ -60,6 +60,10 @@
   height: 2rem;
 }
 
+.search-row > .search-field {
+  height: 100%;
+}
+
 /* Buttons Row - Contains action buttons */
 .buttons-row {
   display: flex;

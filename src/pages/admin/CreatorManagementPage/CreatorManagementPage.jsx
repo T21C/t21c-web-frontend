@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import './creatorManagement.css';
 import api from '@/utils/api';
@@ -432,7 +433,7 @@ const CreatorManagementPage = () => {
                 
                 <div className="levels-controls">
                   <div className="search-box">
-                    <input
+                    <SearchField
                       type="text"
                       placeholder="Search levels by song, artist, or creator..."
                       value={searchQuery}
@@ -578,7 +579,7 @@ const CreatorManagementPage = () => {
 
               <div className="creators-controls">
                 <div className="search-box">
-                  <input
+                  <SearchField
                     type="text"
                     placeholder={t('creatorManagement.filters.searchPlaceholder')}
                     value={creatorListSearchQuery}
@@ -679,7 +680,7 @@ const CreatorManagementPage = () => {
               
               <div className="teams-controls">
                 <div className="search-box">
-                  <input
+                  <SearchField
                     type="text"
                     placeholder="Search teams by name or alias..."
                     value={teamSearchQuery}

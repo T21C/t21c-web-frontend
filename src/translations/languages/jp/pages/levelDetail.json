@@ -162,6 +162,8 @@
     "tooltipEPerfect": "E/L Perfect",
     "tooltipEarly": "Early／Late",
     "disablePP": "PPを無効にする",
+    "legendThisLevel": "このレベル",
+    "legendDefault": "デフォルト",
     "judgementsAria": "判定の内訳",
     "judgementMiss": "Too Early",
     "judgementEarly": "Early",

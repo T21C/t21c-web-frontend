@@ -1,6 +1,7 @@
 // tuf-search: #LevelMentionField #levelMention
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SearchField } from '@/components/common/SearchField';
 import { Portal } from '@/components/common/Portal';
 import { PORTALED_PANEL_CLASS } from '@/hooks/usePortaledPanelAnchor';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -546,7 +547,7 @@ export function LevelMentionField({
         >
           {showSearch && (
             <div className="level-mention-popup__search">
-              <input
+              <SearchField
                 ref={searchInputRef}
                 id={`${listDomId}-search`}
                 className="level-mention-popup__search-input"

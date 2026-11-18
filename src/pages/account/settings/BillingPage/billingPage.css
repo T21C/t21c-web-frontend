@@ -1761,8 +1761,8 @@
 }
 
 .billing-page .billing-page__admin-grant-log-search {
-  flex: 1 1 12rem;
-  min-width: 10rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .billing-page .billing-page__admin-grant-log-count {

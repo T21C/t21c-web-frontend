@@ -2,6 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissionEditableMeta #passSubmissionEditableMeta #admin #submissionManagement — Submission Management
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { SearchField } from '@/components/common/SearchField';
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
@@ -555,7 +556,7 @@ export default function PassSubmissionEditableMeta({
             <div className="pass-submission-level-edit">
               <div className="id-input">
                 <div className="search-container" ref={levelSearchContainerRef}>
-                  <input
+                  <SearchField
                     type="text"
                     autoComplete="off"
                     placeholder={t('passSubmissions.edit.levelPlaceholder')}

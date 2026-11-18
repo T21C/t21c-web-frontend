@@ -115,6 +115,7 @@
     }
   },
   "download": {
+    "missingSong": "이 레벨에는 곡이 없습니다!",
     "step2": {
       "downloadV2": "v2 다운로드"
     }

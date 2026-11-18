@@ -206,6 +206,11 @@
     "bindField": "Układ klawiatury",
     "clickLayout": "Kliknij klawisz, aby go przełączyć. Przytrzymaj Shift i przeciągnij, aby odwrócić każdy klawisz w prostokącie.",
     "clickSelect": "Kliknij klawisz, aby go przełączyć. Przytrzymaj Shift i przeciągnij, aby odwrócić każdy klawisz w prostokącie.",
+    "legend": {
+      "toggle": "Przełącz klawisz",
+      "multiple": "Zaznacz wiele",
+      "ghost": "Przełącz klawisz widmo"
+    },
     "selectAll": "Zaznacz wszystkie",
     "deselectAll": "Odznacz wszystkie",
     "selectKeys": "Zaznacz klawisze do edycji.",

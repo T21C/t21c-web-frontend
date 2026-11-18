@@ -91,7 +91,9 @@ export default function KeyboardBoard({
   onKeyToggle,
   onPaintKeys,
   selectedKeys,
+  ghostKeys,
   selectMode = false,
+  allowGhost = false,
   paintByCode,
   keepFillOnHover = false,
   maxUnit = 42,
@@ -159,8 +161,13 @@ export default function KeyboardBoard({
   const active = activeKeys instanceof Set ? activeKeys : new Set(activeKeys || []);
   const empty = emptySockets instanceof Set ? emptySockets : new Set(emptySockets || []);
   const selected = selectedKeys instanceof Set ? selectedKeys : new Set(selectedKeys || []);
+  const ghost = ghostKeys instanceof Set ? ghostKeys : new Set(ghostKeys || []);
   const interactive = typeof onKeyToggle === "function" || typeof onPaintKeys === "function";
   const membership = selectMode ? selected : active;
+
+  function paintKind(event) {
+    return allowGhost && event.altKey ? "ghost" : "toggle";
+  }
 
   function hitBox(point) {
     for (let i = boxes.length - 1; i >= 0; i -= 1) {
@@ -227,13 +234,13 @@ export default function KeyboardBoard({
     const hit = hitBox(point);
     if (!drag.moved) {
       if (!hit || !hit.bindable || empty.has(hit.code)) return;
-      emitPaint([hit.code], !membership.has(hit.code), "toggle");
+      emitPaint([hit.code], !membership.has(hit.code), paintKind(event));
       return;
     }
     if (!event.shiftKey) return;
     const codes = wouldFlip(previewRect(drag, point));
     if (!codes.length) return;
-    emitPaint(codes, false, "toggle");
+    emitPaint(codes, false, paintKind(event));
   }
 
   function startGesture(event) {
@@ -297,10 +304,17 @@ export default function KeyboardBoard({
         onPointerMove={interactive ? moveGesture : undefined}
         onPointerUp={interactive ? (event) => finishGesture(event, true) : undefined}
         onPointerCancel={interactive ? (event) => finishGesture(event, false) : undefined}
+        onKeyDown={allowGhost ? (event) => {
+          if (event.key === "Alt") event.preventDefault();
+        } : undefined}
+        onKeyUp={allowGhost ? (event) => {
+          if (event.key === "Alt") event.preventDefault();
+        } : undefined}
       >
         {keys.map((key, index) => {
           const bindable = key.bindable !== false;
-          const isActive = !selectMode && active.has(key.code);
+          const isGhost = !selectMode && ghost.has(key.code);
+          const isActive = !selectMode && !isGhost && active.has(key.code);
           const isEmpty = empty.has(key.code);
           const isOutlined = selectMode && selected.has(key.code);
           const isPending = pendingCodes.has(key.code);
@@ -309,6 +323,7 @@ export default function KeyboardBoard({
           const className = [
             "keyboard-setup__key",
             isActive ? "is-active" : "",
+            isGhost ? "is-ghost" : "",
             isOutlined ? "is-outlined" : "",
             isPending ? "is-pending" : "",
             paint?.fill ? "is-painted" : "",
@@ -390,7 +405,7 @@ export default function KeyboardBoard({
                 type="button"
                 className={className}
                 style={style}
-                aria-pressed={selectMode ? isOutlined : isActive}
+                aria-pressed={selectMode ? isOutlined : isActive || isGhost}
                 aria-label={ariaLabel}
                 onClick={(event) => event.preventDefault()}
               >

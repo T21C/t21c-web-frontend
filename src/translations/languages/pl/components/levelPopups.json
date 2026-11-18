@@ -113,6 +113,7 @@
     }
   },
   "download": {
+    "missingSong": "Ten poziom nie ma utworu!",
     "step2": {
       "downloadV2": "Pobierz v2"
     }

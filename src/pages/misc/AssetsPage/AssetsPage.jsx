@@ -14,6 +14,7 @@ import {
 } from "@/components/common/icons/iconGalleryModules";
 import { getStaticAssetGalleryEntries } from "@/utils/staticAssetGalleryModules";
 import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
+import { SearchField } from "@/components/common/SearchField";
 import { StateDisplay } from "@/components/common/selectors";
 import { CopyIcon, DownloadIcon, ExternalLinkIcon } from "@/components/common/icons";
 import "./assetsPage.css";
@@ -432,7 +433,7 @@ export default function AssetsPage() {
               <SectionDownloadAll entries={tagDownloadEntries} zipFilename="tuf-level-tags.zip" />
             </div>
             <div className="assets-page__filter-row">
-              <input
+              <SearchField
                 id="assets-tags-filter"
                 type="search"
                 className="assets-page__filter-input"
@@ -509,7 +510,7 @@ export default function AssetsPage() {
               />
             </div>
             <div className="assets-page__filter-row">
-              <input
+              <SearchField
                 id="assets-diff-name-filter"
                 type="search"
                 className="assets-page__filter-input"
@@ -635,7 +636,7 @@ export default function AssetsPage() {
               />
             </p>
             <div className="assets-page__filter-row">
-              <input
+              <SearchField
                 id="assets-jsx-filter"
                 type="search"
                 className="assets-page__filter-input"
@@ -671,7 +672,7 @@ export default function AssetsPage() {
             </div>
             <p className="assets-page__section-hint">{t("assets.sections.staticAssets.hint")}</p>
             <div className="assets-page__filter-row">
-              <input
+              <SearchField
                 id="assets-static-filter"
                 type="search"
                 className="assets-page__filter-input"

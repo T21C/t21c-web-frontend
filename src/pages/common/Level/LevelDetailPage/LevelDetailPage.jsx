@@ -6,6 +6,7 @@ import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { SearchField } from "@/components/common/SearchField";
 import { Portal } from "@/components/common/Portal";
 import { PopupShell } from "@/components/common/PopupShell";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
@@ -2901,7 +2902,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               <div className="header-body">
 
               <div className="level-detail-header-mobile-bar">
-                <div className="level-id mobile">#{effectiveId}</div>
+                <div className="level-id mobile">ID #{effectiveId}</div>
                 {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate || publicPackAppearances.length > 0 || publicTournamentAppearances.length > 0) && (
                   <div className="level-detail-header-corner-icons">
                     {res?.level?.curationSchedules?.length > 0 && (
@@ -3098,7 +3099,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 <div className="pp-display">
                   {formatBaseScore(res.level.baseScore || difficulty?.baseScore || 0)}PP
                 </div>
-                <div className="level-id">#{effectiveId}</div>
+                <div className="level-id">ID #{effectiveId}</div>
               </div>
               </div>
               <div className="title-container">
@@ -3823,7 +3824,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             {!infoLoading && (
               <div className="leaderboard-filters">
                 <div className="leaderboard-search">
-                  <input
+                  <SearchField
                     type="text"
                     className="leaderboard-search-input"
                     placeholder={t('levelDetail.leaderboard.search.placeholder')}

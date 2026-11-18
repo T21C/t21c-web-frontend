@@ -217,6 +217,7 @@
     "close": "Close",
     "closePopup": "Close popup",
     "oversizedNotice": "This level file is too large to support conversion. Only the original zip is available for download.",
+    "missingSong": "This level does not have a song!",
     "step1": {
       "prompt": "Choose download format:",
       "downloadOriginal": "Download Original",

@@ -3,6 +3,7 @@ import { routes } from '@/api/routes';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import './artistSelectorPopup.css';
 import { CloseButton } from '@/components/common/buttons';
@@ -259,7 +260,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null, a
               {!showCreateForm ? (
                 <>
                   <div className="search-input-wrapper">
-                    <input
+                    <SearchField
                       type="text"
                       autoComplete='off'
                       className="search-input"

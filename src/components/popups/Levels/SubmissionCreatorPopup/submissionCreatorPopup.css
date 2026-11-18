@@ -411,7 +411,8 @@
 }
 
 .submission-creator-popup  .search-input {
-  flex: 1;
+  width: 100%;
+  min-width: 0;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;

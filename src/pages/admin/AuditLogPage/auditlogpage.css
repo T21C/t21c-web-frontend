@@ -161,7 +161,7 @@
 }
 
 .auditlog-page .auditlog-filters .auditlog-heavy-lid-row input {
-  flex: 1;
+  width: 100%;
   min-width: 0;
 }
 

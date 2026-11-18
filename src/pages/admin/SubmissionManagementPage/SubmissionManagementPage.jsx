@@ -9,6 +9,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 
+import { SearchField } from '@/components/common/SearchField';
 import { ScrollButton } from '@/components/common/buttons';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
@@ -266,7 +267,7 @@ const SubmissionManagementPage = () => {
           </div>
 
           <div className="submission-search">
-            <input
+            <SearchField
               type="text"
               className="submission-search-input"
               value={searchQuery}

@@ -216,6 +216,7 @@
     "close": "关闭",
     "closePopup": "关闭窗口",
     "oversizedNotice": "此关卡文件过大，无法进行转换。仅提供原始压缩文件下载。",
+    "missingSong": "此关卡没有歌曲！",
     "step1": {
       "prompt": "选择下载方式：",
       "downloadOriginal": "下载原始文件",

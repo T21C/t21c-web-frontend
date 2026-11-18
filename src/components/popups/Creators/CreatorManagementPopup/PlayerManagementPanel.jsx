@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CountrySelect } from '@/components/common/selectors';
@@ -959,7 +960,7 @@ const PlayerManagementPanel = ({
                   <>
                     <div className="form-group">
                       <label>{tt('player.merge.search.label')}</label>
-                      <input
+                      <SearchField
                         type="text"
                         autoComplete="off"
                         value={mergeSearch}

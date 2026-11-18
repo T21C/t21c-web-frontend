@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { LinkIcon } from '@/components/common/icons/LinkIcon';
 import { ChevronIcon } from '@/components/common/icons';
@@ -152,7 +153,7 @@ function YoutubeVideoPickerPanel({ channels, onSelectUrl, children }) {
               width="100%"
             />
           )}
-          <input
+          <SearchField
             type="search"
             className="youtube-video-picker__search"
             placeholder={t('youtubePicker.searchPlaceholder')}

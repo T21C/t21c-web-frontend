@@ -1,6 +1,7 @@
 // tuf-search: #ItemPickManager #itemPickManager #selectors
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
+import { SearchField } from '@/components/common/SearchField';
 import { TrashIcon } from '@/components/common/icons';
 import './itemPickManager.css';
 
@@ -262,7 +263,7 @@ const ItemPickManager = ({
         {labels.sectionAdd && (
           <h3 className="item-pick-manager__heading">{labels.sectionAdd}</h3>
         )}
-        <input
+        <SearchField
           type="search"
           className="item-pick-manager__search"
           placeholder={labels.searchPlaceholder}

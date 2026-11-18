@@ -195,6 +195,11 @@ const LevelDownloadPopup = ({
                                 {t('levelPopups.download.oversizedNotice')}
                             </p>
                         )}
+                        {metadata?.missingSong && (
+                            <p className="level-download-popup__missing-song-notice">
+                                {t('levelPopups.download.missingSong')}
+                            </p>
+                        )}
                         <div className="download-buttons">
                             <button onClick={() => handleDownload('original')}>
                                 {t('levelPopups.download.step1.downloadOriginal')} ({formatFileSize(metadata?.originalZip?.size)})
@@ -208,6 +213,11 @@ const LevelDownloadPopup = ({
                     </div>
                 ) : (
                     <div className="transform-step">
+                        {metadata?.missingSong && (
+                            <p className="level-download-popup__missing-song-notice">
+                                {t('levelPopups.download.missingSong')}
+                            </p>
+                        )}
                         {availableOptions && (
                             <div className="transform-options">
                                 <div className="selection-mode-toggle">

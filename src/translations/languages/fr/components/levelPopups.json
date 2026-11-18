@@ -112,6 +112,7 @@
     }
   },
   "download": {
+    "missingSong": "Ce niveau n'a pas de musique !",
     "step2": {
       "downloadV2": "Télécharger v2"
     }

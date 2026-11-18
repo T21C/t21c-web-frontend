@@ -3,6 +3,7 @@ import { routes } from '@/api/routes';
 
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
+import { SearchField } from "@/components/common/SearchField";
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
@@ -797,7 +798,7 @@ const RatingPage = ({ mode = 'difficulty' }) => {
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input
+                <SearchField
                   className="search-input"
                   type="text"
                   placeholder={t('rating.search.placeholder')}

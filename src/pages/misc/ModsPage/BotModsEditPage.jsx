@@ -12,6 +12,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { apiError, applyMods, toastBotModLinked } from './modEditForm';
@@ -271,7 +272,7 @@ const BotModsEditPage = () => {
           <div className="bot-mods-page__controls">
             <label className="bot-mods-page__search">
               <span className="bot-mods-page__control-label">{t('mods.botMods.searchPlaceholder')}</span>
-              <input
+              <SearchField
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}

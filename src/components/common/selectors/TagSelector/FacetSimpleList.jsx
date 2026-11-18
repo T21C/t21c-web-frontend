@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useTranslation } from 'react-i18next';
+import { SearchField } from '@/components/common/SearchField';
 import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetquerybuilder.css';
 
@@ -70,7 +71,7 @@ const FacetSimpleList = ({
         isHideMode ? ' facet-query-builder__simple--hide' : ''
       }`}
     >
-      <input
+      <SearchField
         type="search"
         className="facet-query-builder__search"
         placeholder={t('facetQueryBuilder.searchPlaceholder')}

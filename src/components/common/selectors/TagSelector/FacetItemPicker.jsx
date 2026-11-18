@@ -1,6 +1,7 @@
 // tuf-search: #FacetItemPicker #facetItemPicker #selectors #tagSelector
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
+import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { useTranslation } from 'react-i18next';
 import { compareSerializedTagOrder } from '@/utils/communityTags';
@@ -88,7 +89,7 @@ const FacetItemPicker = ({
             ×
           </button>
         </div>
-        <input
+        <SearchField
           type="search"
           className="facet-item-picker__search"
           placeholder={t('facetQueryBuilder.searchPlaceholder')}

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { DEFAULT_MOD_SORT, MOD_SORT_OPTIONS } from './modListSort';
 
@@ -18,7 +19,7 @@ const ModsListControls = ({ query, onQueryChange, sort, onSortChange, t, childre
 
   return (
     <div className="mods-page__search">
-      <input
+      <SearchField
         type="search"
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}

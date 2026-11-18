@@ -1,6 +1,7 @@
 // tuf-search: #AdvancedSearch #AdvancedSearchBar #searchHelp
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { SearchField } from '@/components/common/SearchField';
 import { SearchHelpPopup } from '@/components/common/SearchHelpPopup';
 import { SEARCH_PROFILES } from './searchProfiles';
 
@@ -42,7 +43,7 @@ export const AdvancedSearchBar = ({
             <span>{helpLabel}</span>
           </button>
         )}
-        <input
+        <SearchField
           value={value ?? ''}
           autoComplete={autoComplete}
           type="text"

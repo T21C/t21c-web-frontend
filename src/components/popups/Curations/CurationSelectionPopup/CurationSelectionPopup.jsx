@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import './curationselectionpopup.css';
+import { SearchField } from '@/components/common/SearchField';
 import { CloseButton } from '@/components/common/buttons';
 import toast from 'react-hot-toast';
 import { FacetQueryBuilder } from '@/components/common/selectors';
@@ -170,7 +171,7 @@ const CurationSelectionPopup = ({
           <div className="curation-selection-modal__filters">
             <div className="curation-selection-modal__filter-group curation-selection-modal__filter-group--full">
               <label>{t('curationSelectionPopup.filters.search')}</label>
-              <input
+              <SearchField
                 type="text"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}

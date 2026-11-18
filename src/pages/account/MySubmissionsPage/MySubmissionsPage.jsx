@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { SearchField } from '@/components/common/SearchField';
 import { CustomSelect } from '@/components/common/selectors';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { buildStaticPageMeta } from '@/utils/meta';
@@ -195,7 +196,7 @@ const MySubmissionsPage = () => {
       {tab === 'submissions' && (
         <>
       <div className="my-submissions-page__controls">
-        <input
+        <SearchField
           type="text"
           autoComplete="off"
           className="my-submissions-page__search"

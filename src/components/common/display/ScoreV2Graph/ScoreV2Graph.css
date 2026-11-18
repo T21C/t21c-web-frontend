@@ -41,6 +41,33 @@
   font-size: 0.9em;
 }
 
+.scorev2-graph__legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--secondary-text);
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.scorev2-graph__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scorev2-graph__legend-swatch {
+  width: 1.6rem;
+  height: 0;
+  border-top: 2px solid var(--btn-primary);
+}
+
+.scorev2-graph__legend-swatch--default {
+  border-top-style: dotted;
+  border-top-width: 3px;
+}
+
 .scorev2-graph__chart-wrap {
   width: 100%;
   height: 240px;
@@ -85,6 +112,21 @@
   border-bottom: 1px solid var(--glass-border);
 }
 
+.scorev2-graph-tooltip__summary--compare {
+  align-items: flex-start;
+}
+
+.scorev2-graph-tooltip__scores {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.scorev2-graph-tooltip__summary--compare .scorev2-graph-tooltip__scores {
+  margin-top: -0.35rem;
+}
+
 .scorev2-graph-tooltip__accuracy {
   font-size: 1.05rem;
   font-weight: 700;
@@ -94,7 +136,16 @@
 .scorev2-graph-tooltip__score {
   font-size: 0.95rem;
   font-weight: 600;
+  line-height: 1.1;
   color: var(--btn-primary);
+}
+
+.scorev2-graph-tooltip__score--default {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-white);
+  opacity: 0.75;
 }
 
 .scorev2-graph-tooltip__judgements {

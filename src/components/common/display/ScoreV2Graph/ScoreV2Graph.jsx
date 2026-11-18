@@ -49,6 +49,18 @@ const PIN_MARKER_STYLE = {
 /** Recharts series name for the primary (zero-miss) curve — only this line drives tooltips. */
 const ZERO_MISS_CURVE_NAME = "zeroMiss";
 
+function finiteBaseScore(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Difficulty default used when the level does not override base score. `0` is a real base, not “unset”. */
+function difficultyDefaultBaseScore(levelData, difficultyDict) {
+  const fromLevel = finiteBaseScore(levelData?.difficulty?.baseScore);
+  if (fromLevel != null) return fromLevel;
+  return finiteBaseScore(difficultyDict?.[levelData?.diffId]?.baseScore);
+}
+
 export const ScoreV2Graph = ({
   tilecount,
   levelData,
@@ -139,6 +151,56 @@ export const ScoreV2Graph = ({
     [chartData, filterCurveForDisplay],
   );
 
+  const levelBaseOverride = finiteBaseScore(effectiveLevelData?.baseScore);
+  const difficultyDefaultBase = difficultyDefaultBaseScore(
+    effectiveLevelData,
+    difficultyDict,
+  );
+  const compareDefaultBase =
+    !adminXaccEditor &&
+    levelBaseOverride != null &&
+    levelBaseOverride > 0 &&
+    difficultyDefaultBase != null &&
+    difficultyDefaultBase > 0 &&
+    Math.abs(levelBaseOverride - difficultyDefaultBase) > 1e-6;
+
+  const defaultBaseLevelData = useMemo(() => {
+    if (!compareDefaultBase) return null;
+    return {
+      ...effectiveLevelData,
+      baseScore: null,
+      ppBaseScore: null,
+      difficulty: {
+        ...(effectiveLevelData?.difficulty ?? {}),
+        baseScore: difficultyDefaultBase,
+      },
+    };
+  }, [compareDefaultBase, effectiveLevelData, difficultyDefaultBase]);
+
+  const defaultBaseCurve = useMemo(() => {
+    if (!defaultBaseLevelData) return [];
+    return enumerateScoreV2CurvePoints({
+      tilecount,
+      misses: chartMisses,
+      levelData: defaultBaseLevelData,
+      difficultyDict,
+      speed,
+      isNoHoldTap,
+    });
+  }, [
+    defaultBaseLevelData,
+    chartMisses,
+    tilecount,
+    difficultyDict,
+    speed,
+    isNoHoldTap,
+  ]);
+
+  const defaultBaseDisplayData = useMemo(
+    () => filterCurveForDisplay(defaultBaseCurve),
+    [defaultBaseCurve, filterCurveForDisplay],
+  );
+
   const overlayCurveData = useMemo(() => {
     if (!missSliceOverlays?.length) return [];
     return missSliceOverlays.map((overlay) => {
@@ -207,9 +269,12 @@ export const ScoreV2Graph = ({
           ),
         )
       : 0;
+    const maxFromDefault = defaultBaseDisplayData.length
+      ? Math.max(...defaultBaseDisplayData.map((p) => p.score))
+      : 0;
     const maxScore =
-      Math.max(maxFromCurve, maxFromPins, maxFromOverlays) > 0
-        ? Math.max(maxFromCurve, maxFromPins, maxFromOverlays)
+      Math.max(maxFromCurve, maxFromPins, maxFromOverlays, maxFromDefault) > 0
+        ? Math.max(maxFromCurve, maxFromPins, maxFromOverlays, maxFromDefault)
         : getScoreV2CurveYMax({
             tilecount,
             levelData: effectiveLevelData,
@@ -226,6 +291,7 @@ export const ScoreV2Graph = ({
     displayData,
     resolvedPinMarkers,
     overlayCurveData,
+    defaultBaseDisplayData,
     tilecount,
     effectiveLevelData,
     difficultyDict,
@@ -256,8 +322,11 @@ export const ScoreV2Graph = ({
     if (resolvedPinMarkers.length) {
       pcts.push(...resolvedPinMarkers.map((p) => p.accuracyPct));
     }
+    if (defaultBaseDisplayData.length) {
+      pcts.push(...defaultBaseDisplayData.map((d) => d.accuracyPct));
+    }
     return scoreV2GraphXAxisDomain(pcts);
-  }, [adminXaccEditor, displayData, resolvedPinMarkers]);
+  }, [adminXaccEditor, displayData, resolvedPinMarkers, defaultBaseDisplayData]);
 
   const handleChartMouseMove = useCallback(
     (state) => {
@@ -293,10 +362,14 @@ export const ScoreV2Graph = ({
         overlays={overlayCurveData}
         hoverAccuracyPct={hoverAccuracyPct}
         zeroMissCurveData={zeroMissDisplayData}
+        comparisonCurve={defaultBaseDisplayData}
       />
     ),
-    [overlayCurveData, hoverAccuracyPct, zeroMissDisplayData],
+    [overlayCurveData, hoverAccuracyPct, zeroMissDisplayData, defaultBaseDisplayData],
   );
+
+  const showCustomLayer =
+    useAxisHover || defaultBaseDisplayData.length > 0;
 
   const handleSliderChange = (e) => {
     setMisses(Math.max(0, parseInt(e.target.value, 10) || 0));
@@ -352,6 +425,26 @@ export const ScoreV2Graph = ({
           </div>
         </div>
       ) : null}
+      {defaultBaseDisplayData.length > 0 ? (
+        <div className="scorev2-graph__legend">
+          <span className="scorev2-graph__legend-item">
+            <span className="scorev2-graph__legend-swatch scorev2-graph__legend-swatch--level" />
+            <span>
+              {t("levelDetail.scoreGraph.legendThisLevel", {
+                defaultValue: "this level",
+              })}
+            </span>
+          </span>
+          <span className="scorev2-graph__legend-item">
+            <span className="scorev2-graph__legend-swatch scorev2-graph__legend-swatch--default" />
+            <span>
+              {t("levelDetail.scoreGraph.legendDefault", {
+                defaultValue: "default",
+              })}
+            </span>
+          </span>
+        </div>
+      ) : null}
       {displayData.length === 0 ? (
         <p className="scorev2-graph__empty">
           {t("levelDetail.scoreGraph.emptyCurve", { defaultValue: "No score curve data for this level." })}
@@ -399,6 +492,7 @@ export const ScoreV2Graph = ({
                       active={hoverAccuracyPct != null}
                       hoverAccuracyPct={hoverAccuracyPct}
                       curveData={tooltipCurveData}
+                      defaultCurveData={defaultBaseDisplayData}
                       axisTooltip
                     />
                   )}
@@ -408,7 +502,10 @@ export const ScoreV2Graph = ({
                   isAnimationActive={false}
                   animationDuration={0}
                   content={(tooltipProps) => (
-                    <ScoreV2GraphTooltip {...tooltipProps} />
+                    <ScoreV2GraphTooltip
+                      {...tooltipProps}
+                      defaultCurveData={defaultBaseDisplayData}
+                    />
                   )}
                 />
               )}
@@ -427,7 +524,7 @@ export const ScoreV2Graph = ({
                 connectNulls
                 isAnimationActive={false}
               />
-              {useAxisHover ? (
+              {showCustomLayer ? (
                 <Customized component={renderCustomLayer} />
               ) : null}
               {resolvedPinMarkers.map((pin) => {

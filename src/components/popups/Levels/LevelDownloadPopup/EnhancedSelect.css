@@ -91,11 +91,13 @@
     font-size: 14px;
 }
 
+.enhanced-select-content:has(> .search-field:first-child) .enhanced-select-search,
 .enhanced-select-content:has(.enhanced-select-search:first-child) .enhanced-select-search {
     border-bottom: 1px solid var(--btn-neutral-disabled-fill);
     border-top: none;
 }
 
+.enhanced-select-content:has(> .search-field:last-child) .enhanced-select-search,
 .enhanced-select-content:has(.enhanced-select-search:last-child) .enhanced-select-search {
     border-top: 1px solid var(--btn-neutral-disabled-fill);
     border-bottom: none;

@@ -3,6 +3,7 @@ import { routes } from '@/api/routes';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
@@ -777,7 +778,7 @@ export const CreatorManagementPopup = ({
                   <>
                     <div className="form-group">
                       <label>{tt('user.search.label')}</label>
-                      <input
+                      <SearchField
                         type="text"
                         autoComplete="off"
                         value={playerSearch}
@@ -1003,7 +1004,7 @@ export const CreatorManagementPopup = ({
                   <>
                     <div className="form-group">
                       <label>{tt('merge.search.label')}</label>
-                      <input
+                      <SearchField
                         type="text"
                         autoComplete="off"
                         value={mergeTargetSearch}
