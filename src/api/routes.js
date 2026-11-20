@@ -135,7 +135,6 @@ export const routes = {
       backfill: () => '/v2/admin/badges/backfill',
       packs: () => '/v2/admin/badges/packs',
       formula: () => '/v2/admin/badges/formula',
-      catalog: () => '/v2/admin/badges/catalog',
       import: () => '/v2/admin/badges/import',
     },
     statistics: () => '/v2/admin/statistics',

@@ -67,32 +67,92 @@
   align-items: flex-start;
   min-width: 140px;
   padding: 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .badge-section__card {
-  width: 14rem;
+  position: relative;
+  width: 17.5rem;
+  gap: 10px;
 }
 
-.badge-section__slot--purple,
-.badge-section__card--purple {
-  outline: 1px solid #a78bfa;
+.badge-section__card--review .badge-section__copy {
+  padding-right: 1.1rem;
+}
+
+.badge-section__review {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: flex;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: help;
+}
+
+.badge-section__review:hover,
+.badge-section__review:focus-visible {
+  color: var(--color-white);
+  outline: none;
+}
+
+.badge-section__review::after {
+  content: attr(data-hint);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 14rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(12, 12, 16, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-white);
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.badge-section__review:hover::after,
+.badge-section__review:focus-visible::after {
+  opacity: 1;
 }
 
 .badge-section__card--earned {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+}
+
+.badge-section__card--purple {
+  border-color: rgba(167, 139, 250, 0.7);
+}
+
+.badge-section__card--legendary {
+  border-color: rgba(245, 193, 108, 0.7);
+}
+
+.badge-section__card--purple.badge-section__card--legendary {
+  border-color: rgba(196, 181, 253, 0.85);
+}
+
+.badge-section__slot--purple {
+  border-color: rgba(167, 139, 250, 0.7);
 }
 
 .badge-section__card--slotted {
-  outline: 1px solid var(--color-white);
+  border-color: rgba(255, 255, 255, 0.85);
 }
 
 .badge-section__card-main {
   align-items: flex-start;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   padding: 0;
+  gap: 10px;
   color: inherit;
   background: transparent;
   border: 0;
@@ -104,35 +164,114 @@
   cursor: default;
 }
 
+.badge-section__plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.badge-section__card--earned .badge-section__plate {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.badge-section__card--purple .badge-section__plate {
+  background: rgba(167, 139, 250, 0.22);
+}
+
+.badge-section__card--legendary .badge-section__plate {
+  background: rgba(245, 193, 108, 0.16);
+}
+
+.badge-section__card:not(.badge-section__card--earned) .badge-section__plate {
+  opacity: 0.55;
+}
+
+.badge-section__copy,
+.badge-section__headline {
+  display: flex;
+  min-width: 0;
+}
+
+.badge-section__copy {
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-section__headline {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
 .badge-section__glyph,
 .badge-section__icon {
-  width: 36px;
-  height: 36px;
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .badge-section__icon {
   object-fit: contain;
 }
 
+.badge-section__tier,
 .badge-section__label {
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-size: 10px;
+  line-height: 1.2;
+  padding: 2px 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.badge-section__label {
+  color: #f5c16c;
+  background: rgba(245, 193, 108, 0.14);
+}
+
+.badge-section__desc {
+  color: var(--color-gray-2, rgba(255, 255, 255, 0.62));
   font-size: 12px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badge-section__meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
 }
 
 .badge-section__bar {
-  width: 100%;
+  flex: 1;
   height: 6px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   overflow: hidden;
 }
 
 .badge-section__bar span {
   display: block;
   height: 100%;
-  background: var(--color-white);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.badge-section__card--legendary .badge-section__bar span {
+  background: #f5c16c;
+}
+
+.badge-section__card--purple .badge-section__bar span {
+  background: #c4b5fd;
 }
 
 .badge-section__save,
@@ -147,20 +286,23 @@
 
 .badge-section__name {
   font-weight: 600;
+  line-height: 1.25;
   overflow-wrap: anywhere;
 }
 
 .badge-section__credit {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.78);
   overflow-wrap: anywhere;
 }
 
 .badge-section__confirms {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.4rem;
   width: 100%;
-  max-height: 7.5rem;
+  max-height: 18rem;
   overflow: auto;
-  color: var(--color-gray-2);
-  font-size: 12px;
 }

@@ -323,6 +323,17 @@
   gap: 0.75rem;
 }
 
+.badge-editor-popup .badge-editor-popup__script-bar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.badge-editor-popup .badge-editor-popup__script-bar button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .badge-editor-popup .badge-editor-popup__header,
 .badge-editor-popup .badge-editor-popup__footer {
   align-items: center;

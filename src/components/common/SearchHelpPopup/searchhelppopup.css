@@ -175,6 +175,16 @@
   line-height: 1.35;
 }
 
+.search-help-popup .search-help-popup__field-example {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-white, #fff);
+}
+
+.search-help-popup .search-help-popup__field-example code {
+  white-space: normal;
+}
+
 .search-help-popup .search-help-popup__examples {
   display: flex;
   flex-direction: column;

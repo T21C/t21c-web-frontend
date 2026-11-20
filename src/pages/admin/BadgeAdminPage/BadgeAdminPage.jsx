@@ -50,6 +50,7 @@ const emptyForm = () => ({
   color: '',
   stat: 'barThenNumber',
   purple: false,
+  description: '',
   confirm: 'none',
   round: 'none',
   direction: 'up',
@@ -132,6 +133,7 @@ function formFromRow(row) {
     color: display.color || '',
     stat: display.stat || 'barThenNumber',
     purple: Boolean(display.purple),
+    description: display.description || '',
     confirm: row.confirmMode || 'none',
     round: curve.round || 'none',
     direction: curve.direction || 'up',
@@ -183,6 +185,7 @@ function BadgeEditorPopup({
 }) {
   const { t } = useTranslation(['pages', 'common']);
   const [tab, setTab] = useState('condition');
+  const [scriptHelp, setScriptHelp] = useState(false);
   const tabs = editorTabs(t);
   const setField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
 
@@ -191,6 +194,7 @@ function BadgeEditorPopup({
   }, [tab, tabs]);
 
   return (
+    <>
     <PopupShell
       onClose={onClose}
       overlayClassName="badge-editor-popup"
@@ -232,9 +236,12 @@ function BadgeEditorPopup({
         )}
         {tab === 'condition' && (
           <div className="badge-editor-popup__fields">
-            <p className="badge-editor-popup__hint">
-              {t('badges.admin.valueHint', { defaultValue: 'This expression returns the tier. clears, levels, and mine are the rows. curve(count, start, step) and curveDown turn a count into tiers. result(tier, credit, from, to) sets the bar yourself. Placeholder judgement sheets keep accuracy and judgement fields empty.' })}
-            </p>
+            <div className="badge-editor-popup__script-bar">
+              <button type="button" className="btn-fill-secondary" onClick={() => setScriptHelp(true)}>
+                <QuestionmarkCircleIcon size={18} />
+                {t('badges.admin.scriptHelp', { defaultValue: 'Script reference' })}
+              </button>
+            </div>
             <div className={`badge-editor-popup__formula${formulaState.ok ? '' : ' is-bad'}`}>
               <textarea value={form.expression} rows={8} spellCheck={false} onChange={(event) => setField('expression', event.target.value)} />
             </div>
@@ -265,6 +272,10 @@ function BadgeEditorPopup({
           <div className="badge-editor-popup__fields">
             <CustomSelect label={t('badges.admin.stat')} options={asOptions(STATS)} value={selected(asOptions(STATS), form.stat)} onChange={(option) => setField('stat', option.value)} width="16rem" />
             <CustomSelect label={t('badges.admin.confirm')} options={asOptions(CONFIRMS)} value={selected(asOptions(CONFIRMS), form.confirm)} onChange={(option) => setField('confirm', option.value)} width="16rem" />
+            <label>
+              {t('badges.admin.description', { defaultValue: 'Description' })}
+              <textarea value={form.description} rows={3} maxLength={180} onChange={(event) => setField('description', event.target.value)} />
+            </label>
             <label>{t('badges.admin.icon')}<input value={form.icon} onChange={(event) => setField('icon', event.target.value)} /></label>
             <label>{t('badges.admin.color')}<input value={form.color} onChange={(event) => setField('color', event.target.value)} /></label>
             <StateDisplay label={t('badges.admin.purple')} states={['off', 'on']} currentState={form.purple ? 'on' : 'off'} onChange={(next) => setField('purple', next === 'on')} />
@@ -303,6 +314,8 @@ function BadgeEditorPopup({
         <button type="button" className="btn-fill-primary" onClick={onSave}>{t('badges.admin.save')}</button>
       </div>
     </PopupShell>
+    {scriptHelp && <BadgeHelpPopup onClose={() => setScriptHelp(false)} defaultOpenSection="lists" />}
+    </>
   );
 }
 
@@ -310,16 +323,6 @@ const BadgeImportPopup = ({ onClose, onImported }) => {
   const { t } = useTranslation(['pages', 'common']);
   const [code, setCode] = useState('');
   const [replace, setReplace] = useState(false);
-
-  const loadRequested = async () => {
-    try {
-      const res = await api.get(routes.admin.badges.catalog());
-      setCode(typeof res.data?.code === 'string' ? res.data.code : '');
-      toast.success(t('badges.admin.requestedLoaded'));
-    } catch (error) {
-      toast.error(error?.response?.data?.error || t('badges.admin.importFailed'));
-    }
-  };
 
   const submit = async () => {
     if (!code.trim()) {
@@ -364,7 +367,6 @@ const BadgeImportPopup = ({ onClose, onImported }) => {
         />
       </div>
       <div className="badge-import-popup__footer">
-        <button type="button" className="btn-fill-secondary" onClick={loadRequested}>{t('badges.admin.loadRequested')}</button>
         <button type="button" className="btn-fill-secondary" onClick={onClose}>{t('buttons.cancel', { ns: 'common' })}</button>
         <button type="button" className="btn-fill-primary" onClick={submit}>{t('badges.admin.importAction')}</button>
       </div>
@@ -547,7 +549,7 @@ const BadgeAdminPage = () => {
   const filteredDefinitions = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return definitions.filter((row) => {
-      if (needle && !`${row.name || ''} ${row.slug || ''} ${row.params?.expression || ''}`.toLowerCase().includes(needle)) return false;
+      if (needle && !`${row.name || ''} ${row.slug || ''} ${row.params?.expression || ''} ${row.display?.description || ''}`.toLowerCase().includes(needle)) return false;
       if (audienceFilter !== 'all' && row.audience !== audienceFilter) return false;
       if (reducerFilter !== 'all' && row.reducer !== reducerFilter) return false;
       if (secretFilter === 'secret' && !row.secret) return false;
@@ -693,6 +695,7 @@ const BadgeAdminPage = () => {
         color: form.color || null,
         stat: form.stat,
         purple: form.purple,
+        description: form.description.trim() || null,
       },
       params: {
         expression: form.expression.trim(),

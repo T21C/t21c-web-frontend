@@ -1,7 +1,7 @@
 import SearchHelpPopup from '@/components/common/SearchHelpPopup';
 import { BADGE_HELP_SECTIONS } from './badgeHelpSections';
 
-const BadgeHelpPopup = ({ onClose }) => (
+const BadgeHelpPopup = ({ onClose, defaultOpenSection = 'lists' }) => (
   <SearchHelpPopup
     onClose={onClose}
     titleKey="badges.help.title"
@@ -9,7 +9,7 @@ const BadgeHelpPopup = ({ onClose }) => (
     closeButtonKey="badges.help.close"
     examplesTitleKey="badges.help.examplesTitle"
     sections={BADGE_HELP_SECTIONS}
-    defaultOpenSection="expressions"
+    defaultOpenSection={defaultOpenSection}
     translationNs="pages"
   />
 );

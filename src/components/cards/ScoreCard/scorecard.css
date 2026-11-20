@@ -277,6 +277,86 @@
   background-color: var(--color-primary-dark);
 }
 
+.score-card.score-card--compact {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 0;
+  padding: 0.4rem 0.45rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  color: inherit;
+  text-decoration: none;
+}
+
+.score-card.score-card--compact:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.score-card.score-card--compact .score-card__row--primary {
+  flex: none;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.score-card.score-card--compact .img-wrapper {
+  width: 1.6rem;
+  flex: 0 0 auto;
+}
+
+.score-card.score-card--compact .name-wrapper {
+  min-width: 0;
+  padding-right: 0.35rem;
+}
+
+.score-card.score-card--compact .score-desc-song {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.score-card.score-card--compact .score-exp-artist {
+  font-size: 0.7rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.score-card.score-card--compact .acc-wrapper {
+  flex: 0 0 auto;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.05rem;
+}
+
+.score-card.score-card--compact .acc-wrapper .score-desc {
+  font-size: 0.85rem;
+}
+
+.score-card.score-card--compact .score-card__compact-speed {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.score-card.score-card--compact .judgements-container {
+  position: static;
+  opacity: 1;
+  transform: none;
+  align-self: flex-end;
+  background: transparent;
+  padding: 0;
+}
+
+.score-card.score-card--compact:hover .acc-wrapper-inner,
+.score-card.score-card--compact:hover .judgements-container {
+  transform: none;
+}
+
+.score-card.score-card--compact .score-card__clear-id {
+  display: none;
+}
+
 .score-card .score-card__edit-button:hover svg {
   transform: scale(1.1);
 }

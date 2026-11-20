@@ -13,6 +13,7 @@
   "creditUnit": "{{credit}} {{unit}}",
   "creditNextUnit": "{{credit}} / {{next}} {{unit}}",
   "creditChart": "Chart {{credit}}",
+  "reviewHint": "A reviewer awards this badge. The clear video needs to show a webcam.",
   "units": {
     "day": "day",
     "days": "days",
@@ -42,47 +43,13 @@
   "noMatches": "No badges match these filters.",
   "help": {
     "title": "Badge engine",
-    "subtitle": "Expressions decide the tier. Secret text stays off public profiles until the badge is earned.",
+    "subtitle": "Every list, field, and structure a grant script can use.",
     "close": "Close",
     "examplesTitle": "Examples",
     "sections": {
-      "expressions": {
-        "title": "Expressions",
-        "intro": "The grant script returns the tier. It uses JavaScript shape: comparisons, &&, ||, !, ternaries, arrows, and list methods. It does not run arbitrary JavaScript.",
-        "fields": {
-          "eq": {
-            "title": "Equal",
-            "desc": "Use <code>==</code>, <code>===</code>, or a single <code>=</code>. Text comparisons are case-sensitive."
-          },
-          "neq": {
-            "title": "Not equal",
-            "desc": "Use <code>!=</code> or <code>!==</code>."
-          },
-          "and": {
-            "title": "Combine",
-            "desc": "<code>&&</code> requires both sides. <code>||</code> needs either. <code>!</code> flips a condition."
-          },
-          "ternary": {
-            "title": "Choose",
-            "desc": "<code>condition ? whenTrue : whenFalse</code> picks one result."
-          },
-          "filter": {
-            "title": "Keep rows",
-            "desc": "<code>.filter(item =&gt; ...)</code> keeps the rows that match. <code>.some</code>, <code>.every</code>, <code>.find</code>, and <code>.map</code> work the same way."
-          },
-          "count": {
-            "title": "How many",
-            "desc": "<code>count(list)</code> and <code>.length</code> both return the size. <code>min</code>, <code>max</code>, <code>sum</code>, <code>floor</code>, <code>round</code>, <code>ceil</code>, and <code>abs</code> read numbers."
-          }
-        },
-        "examples": {
-          "filter": "<b><code>count(clears.filter(clear =&gt; clear.difficulty == \"G10\"))</code></b> counts this player's G10 clears.",
-          "curve": "<b><code>curve(count(clears), 10, 20)</code></b> turns that count into tiers."
-        }
-      },
-      "rows": {
-        "title": "Rows",
-        "intro": "Three lists are always in scope. Each item is a row of named fields.",
+      "lists": {
+        "title": "Lists",
+        "intro": "These names are always in scope. Each item is a row of fields. A placeholder 5/40/5 sheet keeps its chart fields, but its accuracy and judgement fields are empty.",
         "fields": {
           "clears": {
             "title": "Player clears",
@@ -93,118 +60,543 @@
             "desc": "Public charts."
           },
           "mine": {
-            "title": "Credited or cleared",
-            "desc": "Charts this creator is credited on, or charts this player has cleared."
+            "title": "Credited or cleared charts",
+            "desc": "Charts this creator is credited on, or charts this player has cleared. Same fields as levels."
+          },
+          "ratings": {
+            "title": "Ratings",
+            "desc": "Rows of <code>levelId</code> and <code>week</code> for ratings by this user."
+          }
+        }
+      },
+      "clearFields": {
+        "title": "Clear fields",
+        "intro": "Read these from a row in clears. Names are case-sensitive.",
+        "fields": {
+          "passId": {
+            "title": "Clear id",
+            "desc": "Number. The pass id."
+          },
+          "levelId": {
+            "title": "Chart id",
+            "desc": "Number. The chart this clear is on."
+          },
+          "identity": {
+            "title": "Identity key",
+            "desc": "Text. Charts collapsed by the badge identity share one key."
+          },
+          "speed": {
+            "title": "Speed",
+            "desc": "Number, such as 1 or 2. Null when the clear has no speed."
+          },
+          "keyCount": {
+            "title": "Key count",
+            "desc": "Number of keys, or null."
           },
           "difficulty": {
-            "title": "Difficulty name",
-            "desc": "<code>difficulty</code> is the current name. <code>difficultyAt</code> is the name at upload time."
+            "title": "Current difficulty",
+            "desc": "Text. The chart's difficulty name now, such as G10."
+          },
+          "difficultyAt": {
+            "title": "Difficulty at upload",
+            "desc": "Text. The difficulty name when the clear was uploaded."
           },
           "family": {
-            "title": "Difficulty family",
-            "desc": "<code>family</code> is the current family, such as G or U. <code>familyAt</code> is the family at upload time."
+            "title": "Current family",
+            "desc": "Text. The family of the current difficulty, such as G, U, GQ, UQ, or QQ."
           },
-          "worldsFirst": {
-            "title": "World first",
-            "desc": "<code>worldsFirst</code> is true only when speed is exactly 1 and the live flag is set. <code>isWorldsFirst</code> is the raw flag at any speed."
+          "familyAt": {
+            "title": "Family at upload",
+            "desc": "Text. The family of difficultyAt."
+          },
+          "song": {
+            "title": "Song title",
+            "desc": "Text. Empty when the chart has no song title."
+          },
+          "songId": {
+            "title": "Song id",
+            "desc": "Number, or null."
+          },
+          "durationMs": {
+            "title": "Length",
+            "desc": "Chart length in milliseconds, or null."
           },
           "accuracy": {
-            "title": "Accuracy",
-            "desc": "<code>accuracy</code> is the ratio. <code>accuracyText</code> is the displayed string, such as 99.995. Placeholder sheets leave both empty."
+            "title": "Accuracy ratio",
+            "desc": "Number from 0 to 1. Null on a placeholder sheet."
           },
-          "judgements": {
-            "title": "Judgement buckets",
-            "desc": "<code>misses</code>, <code>earlies</code>, <code>lates</code>, <code>ePerfect</code>, <code>lPerfect</code>, <code>perfect</code>, and <code>perfects</code>. A missing bucket is 0. Placeholder and all-zero sheets leave these empty."
-          }
-        }
-      },
-      "functions": {
-        "title": "Functions",
-        "intro": "Call these from the expression. They read this player, this creator, or other players.",
-        "fields": {
-          "difficulty": {
-            "title": "One difficulty",
-            "desc": "<code>difficulty(\"G10\")</code> returns <code>total</code>, <code>cleared</code>, and <code>ratio</code>."
+          "accuracyText": {
+            "title": "Displayed accuracy",
+            "desc": "Text such as 99.995, using the same formatter as the site. Empty on a placeholder sheet."
           },
-          "sequence": {
-            "title": "Ordered clears",
-            "desc": "<code>sequence([ids])</code> walks clears in upload order and returns how many steps matched."
+          "score": {
+            "title": "Score",
+            "desc": "Score v2 as a number. Null on a placeholder sheet."
           },
-          "consecutive": {
-            "title": "Ordered with a test",
-            "desc": "<code>consecutive([ids], item =&gt; item.ppMinusOne)</code> does the same walk, and each step must pass the test."
+          "scoreText": {
+            "title": "Displayed score",
+            "desc": "Score fixed to 3 decimals, such as 100.000."
           },
-          "blocks": {
-            "title": "Id blocks",
-            "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> returns how many id blocks are complete."
+          "worldsFirst": {
+            "title": "1.0× world first",
+            "desc": "True only when speed is exactly 1 and the live world-first flag is set."
           },
-          "prefix": {
-            "title": "Leading set",
-            "desc": "<code>prefix(set)</code> counts a leading difficulty set and stops at the first gap."
+          "isWorldsFirst": {
+            "title": "World-first flag",
+            "desc": "The raw flag at any speed. It does not require speed 1."
           },
-          "gap": {
-            "title": "Longest gap",
-            "desc": "<code>gap()</code> is the longest gap between clears of the same chart, in days."
+          "worldsFirstPP": {
+            "title": "PP world first",
+            "desc": "True when this clear holds the world-first pure perfect."
           },
-          "pack": {
-            "title": "Pack charts",
-            "desc": "<code>pack()</code> is the chart ids in this badge's pack. A chart listed twice counts once."
+          "ancient": {
+            "title": "Placeholder sheet",
+            "desc": "True for the 5/40/5 placeholder. Accuracy and judgement fields are then empty."
           },
-          "complete": {
-            "title": "Charted set",
-            "desc": "<code>complete(set)</code> is 1 when this creator has charted every difficulty in the set."
+          "xPerfect": {
+            "title": "X-perfect mode",
+            "desc": "True when the clear was played in X-perfect mode."
           },
-          "nth": {
-            "title": "Nth clear",
-            "desc": "<code>nth(100)</code> checks whether this player was the 100th clearer."
+          "reference": {
+            "title": "Reference chart",
+            "desc": "True when the chart is a reference chart."
           },
-          "lead": {
-            "title": "Current lead",
-            "desc": "<code>lead(level, \"accuracy\")</code> is true when this player leads that chart. The metric can be accuracy, score, or speed."
+          "curation": {
+            "title": "Curation names",
+            "desc": "List of text, such as C3 or V3. Use <code>.includes</code>."
           },
-          "first": {
-            "title": "Any-speed world first",
-            "desc": "<code>first(level)</code> is true when this player has the raw world-first flag on that chart."
+          "charterCount": {
+            "title": "Charter count",
+            "desc": "How many charters are credited on the chart."
           },
-          "shared": {
-            "title": "Shared accuracy",
-            "desc": "<code>shared()</code> counts accuracies this player shares with someone else."
-          }
-        }
-      },
-      "curves": {
-        "title": "Curves and labels",
-        "intro": "A curve turns a count into tiers and sets the progress bar. A plain result sets both yourself.",
-        "fields": {
-          "curve": {
-            "title": "Climbing tiers",
-            "desc": "<code>curve(credit, start, step)</code> earns a tier at start, then start plus step, and so on."
+          "vfxerCount": {
+            "title": "VFXer count",
+            "desc": "How many VFXers are credited on the chart."
           },
-          "curveDown": {
-            "title": "Descending tiers",
-            "desc": "<code>curveDown(credit, start, step)</code> earns a tier at start, then start minus step. Start 4 and step 1 produces 4, then 3, then 2, then 1."
+          "ownerIsCharter": {
+            "title": "Owner is charter",
+            "desc": "True when this creator, or the player as a creator, is a charter of the chart."
           },
-          "result": {
-            "title": "Set the bar",
-            "desc": "<code>result(tier, credit, from, to)</code> sets the tier and the bar directly, so a partial count does not earn a tier by itself."
+          "ownerIsVfxer": {
+            "title": "Owner is VFXer",
+            "desc": "True when this creator is a VFXer of the chart."
           },
-          "number": {
-            "title": "Plain number",
-            "desc": "A number of 1 or more is itself the tier. Anything smaller is tier 0."
+          "noPriorClear": {
+            "title": "First clear of the identity",
+            "desc": "True on the earliest clear of that identity with a known upload time."
           },
-          "label": {
-            "title": "Tier name",
-            "desc": "Labels are <code>{ minTier, label }</code> pairs. The shown label is the one with the greatest minTier that is still at or below the earned tier. common and legendary are examples, not a fixed list. An empty list shows no name."
+          "month": {
+            "title": "Upload month",
+            "desc": "UTC month, 1 through 12. Null when the upload time is unknown."
           },
-          "half": {
-            "title": "Half credit",
-            "desc": "Shared creator credit is written in the expression, usually 0.5 when more than one person holds the role. Half a credit does not reach a start of 1."
+          "day": {
+            "title": "Upload day",
+            "desc": "UTC day of the month. Null when the upload time is unknown."
+          },
+          "uploadMs": {
+            "title": "Upload time",
+            "desc": "Upload time in milliseconds, or null when it is unknown."
           }
         },
         "examples": {
-          "up": "<b><code>curve(count(clears), 1, 1)</code></b> earns tier 1 at one clear, tier 2 at two, and so on.",
+          "worldsFirst": "<b><code>clear.worldsFirst == true</code></b> is a 1.0× world first. <b><code>clear.isWorldsFirst</code></b> is the flag at any speed.",
+          "accuracyText": "<b><code>clear.accuracyText.endsWith(\"31\")</code></b> matches the displayed accuracy, not the raw ratio."
+        }
+      },
+      "judgements": {
+        "title": "Judgement fields",
+        "intro": "These are empty on a placeholder or all-zero sheet. A missing bucket counts as 0. Too-late is not a field here.",
+        "fields": {
+          "misses": {
+            "title": "Misses",
+            "desc": "Too-early count. The earlyDouble bucket."
+          },
+          "earlies": {
+            "title": "Early singles",
+            "desc": "Early single count."
+          },
+          "lates": {
+            "title": "Late singles",
+            "desc": "Late single count."
+          },
+          "ePerfect": {
+            "title": "Early perfects",
+            "desc": "Early perfect count."
+          },
+          "lPerfect": {
+            "title": "Late perfects",
+            "desc": "Late perfect count."
+          },
+          "perfect": {
+            "title": "Center perfects",
+            "desc": "Perfects in the center bucket."
+          },
+          "perfects": {
+            "title": "Perfect total",
+            "desc": "Center perfects, plus perfect-minus and perfect-plus in X-perfect mode."
+          },
+          "perfectMinus": {
+            "title": "Perfect minus",
+            "desc": "X-perfect bucket. 0 outside that mode."
+          },
+          "perfectPlus": {
+            "title": "Perfect plus",
+            "desc": "X-perfect bucket. 0 outside that mode."
+          },
+          "purePerfect": {
+            "title": "Pure perfect",
+            "desc": "True when accuracy is exactly 100%."
+          },
+          "ppMinusOne": {
+            "title": "One off pure",
+            "desc": "True when exactly one judgement is outside the perfect band and there are no misses."
+          },
+          "noMisses": {
+            "title": "No misses",
+            "desc": "True when misses are 0 and the sheet is not empty."
+          },
+          "symmetry": {
+            "title": "Symmetric spread",
+            "desc": "True when early singles equal late singles and early perfects equal late perfects, and the clear is not a pure perfect."
+          },
+          "technicallyPure": {
+            "title": "Technically pure",
+            "desc": "True when there are no early or late perfects, and both an early single and a late single."
+          },
+          "noPerfects": {
+            "title": "No perfects",
+            "desc": "True when the perfect total is 0 and the sheet is not empty."
+          },
+          "asymmetry": {
+            "title": "Asymmetric spread",
+            "desc": "True when some non-perfect bucket is larger than the perfect total."
+          }
+        },
+        "examples": {
+          "symmetry": "<b><code>clear.symmetry == true && (clear.familyAt == \"G\" || clear.familyAt == \"U\")</code></b> keeps symmetric G or U clears.",
+          "ppMinusOne": "<b><code>clear.ppMinusOne == true</code></b> is one judgement outside the perfect band and zero misses."
+        }
+      },
+      "levelFields": {
+        "title": "Chart fields",
+        "intro": "Read these from a row in levels or mine.",
+        "fields": {
+          "levelId": {
+            "title": "Chart id",
+            "desc": "Number."
+          },
+          "identity": {
+            "title": "Identity key",
+            "desc": "Text. Same collapse rules as a clear."
+          },
+          "difficulty": {
+            "title": "Difficulty name",
+            "desc": "Current difficulty name."
+          },
+          "family": {
+            "title": "Family",
+            "desc": "Family of the current difficulty."
+          },
+          "song": {
+            "title": "Song title",
+            "desc": "Text."
+          },
+          "songId": {
+            "title": "Song id",
+            "desc": "Number, or null."
+          },
+          "durationMs": {
+            "title": "Length",
+            "desc": "Milliseconds, or null."
+          },
+          "clears": {
+            "title": "Clear count",
+            "desc": "How many public clears the chart has."
+          },
+          "reference": {
+            "title": "Reference chart",
+            "desc": "True when the chart is a reference chart."
+          },
+          "curation": {
+            "title": "Curation names",
+            "desc": "List of text. Use <code>.includes</code>."
+          },
+          "charterCount": {
+            "title": "Charter count",
+            "desc": "How many charters are credited."
+          },
+          "vfxerCount": {
+            "title": "VFXer count",
+            "desc": "How many VFXers are credited."
+          },
+          "ownerIsCharter": {
+            "title": "Owner is charter",
+            "desc": "True when this creator chartered the chart."
+          },
+          "ownerIsVfxer": {
+            "title": "Owner is VFXer",
+            "desc": "True when this creator is a VFXer."
+          },
+          "artistIds": {
+            "title": "Artist ids",
+            "desc": "List of artist ids on the song."
+          },
+          "rivals": {
+            "title": "Other players",
+            "desc": "How many other players have a non-placeholder clear."
+          }
+        }
+      },
+      "structures": {
+        "title": "Structures",
+        "intro": "The script uses JavaScript shape. It does not run arbitrary JavaScript. <code>//</code> line comments and <code>/* */</code> block comments are skipped.",
+        "fields": {
+          "eq": {
+            "title": "Equal",
+            "desc": "<code>==</code> and a single <code>=</code> compare loosely. <code>===</code> compares strictly. Text is case-sensitive."
+          },
+          "compare": {
+            "title": "Order",
+            "desc": "<code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, and <code>&lt;=</code> compare numbers."
+          },
+          "and": {
+            "title": "Combine",
+            "desc": "<code>&amp;&amp;</code> requires both sides. <code>||</code> needs either."
+          },
+          "not": {
+            "title": "Not",
+            "desc": "<code>!</code> flips a condition. <code>!=</code> and <code>!==</code> are the negated comparisons."
+          },
+          "ternary": {
+            "title": "Choose",
+            "desc": "<code>condition ? whenTrue : whenFalse</code> picks one result."
+          },
+          "arrow": {
+            "title": "Function",
+            "desc": "<code>item =&gt; item.speed &gt;= 2</code> is a function. <code>{ return ... }</code> is also allowed."
+          },
+          "array": {
+            "title": "List literal",
+            "desc": "<code>[1, 2, 3]</code> builds a list. Index with <code>[0]</code>."
+          },
+          "filter": {
+            "title": "Keep rows",
+            "desc": "<code>.filter(item =&gt; ...)</code> returns the rows that match.",
+            "example": "<code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code> keeps only the G10 clears."
+          },
+          "map": {
+            "title": "Transform rows",
+            "desc": "<code>.map(item =&gt; item.levelId)</code> builds a new list.",
+            "example": "<code>clears.map(clear =&gt; clear.levelId)</code> is the list of chart ids, one per clear."
+          },
+          "some": {
+            "title": "Any match",
+            "desc": "<code>.some(item =&gt; ...)</code> is true when one row matches.",
+            "example": "<code>clears.some(clear =&gt; clear.misses &gt; 75)</code> is true when any clear has more than 75 misses."
+          },
+          "every": {
+            "title": "All match",
+            "desc": "<code>.every(item =&gt; ...)</code> is true when every row matches. An empty list is true.",
+            "example": "<code>[\"C1\", \"C2\"].every(name =&gt; mine.some(level =&gt; level.curation.includes(name)))</code> is true only when both curations are present."
+          },
+          "find": {
+            "title": "First match",
+            "desc": "<code>.find(item =&gt; ...)</code> returns the first matching row, or null.",
+            "example": "<code>clears.find(clear =&gt; clear.levelId == 1)</code> is the first clear of chart 1, or null."
+          },
+          "includes": {
+            "title": "Contains",
+            "desc": "On a list, <code>.includes(value)</code>. On text, <code>.includes</code>, <code>.startsWith</code>, and <code>.endsWith</code>.",
+            "example": "<code>clear.curation.includes(\"V3\")</code> is true when that chart has a V3 curation."
+          },
+          "length": {
+            "title": "Size",
+            "desc": "<code>.length</code> on a list or on text. <code>count(list)</code> is the same size for a list.",
+            "example": "<code>clears.length</code> is how many clears there are. <code>\"G10\".length</code> is 3."
+          },
+          "text": {
+            "title": "Text case",
+            "desc": "<code>.toLowerCase()</code> and <code>.toUpperCase()</code>.",
+            "example": "<code>\"WYSI\".toLowerCase()</code> is wysi. <code>clear.accuracyText.endsWith(\"31\")</code> checks the displayed accuracy."
+          },
+          "optional": {
+            "title": "Missing field",
+            "desc": "<code>row?.field</code> is null when the row is null, instead of failing."
+          }
+        },
+        "examples": {
+          "filter": "<b><code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code></b> keeps G10 clears.",
+          "text": "<b><code>clear.song.toLowerCase().includes(\"wysi\")</code></b> matches the song title without case."
+        }
+      },
+      "numbers": {
+        "title": "Number functions",
+        "intro": "These turn rows or numbers into one number. A missing number counts as 0 inside arithmetic.",
+        "fields": {
+          "count": {
+            "title": "How many",
+            "desc": "<code>count(list)</code> is the number of rows. The rows it counts are the clears shown on the badge.",
+            "example": "<code>count(clears.filter(clear =&gt; clear.speed &gt;= 2))</code> is 4 when four clears are at 2.0× or faster."
+          },
+          "distinct": {
+            "title": "One per key",
+            "desc": "<code>distinct(list, item =&gt; item.identity)</code> keeps the first row of each key.",
+            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> keeps one row when the same chart was cleared twice."
+          },
+          "sum": {
+            "title": "Add",
+            "desc": "<code>sum(list)</code> adds the numbers. <code>sum(list, item =&gt; item.speed)</code> adds a field.",
+            "example": "<code>sum([1, 0.5, 0.5])</code> is 2. <code>sum(clears, clear =&gt; clear.speed)</code> adds every speed."
+          },
+          "min": {
+            "title": "Smallest",
+            "desc": "<code>min(list)</code> or <code>min(list, item =&gt; item.keyCount)</code>. <code>min(a, b)</code> compares two numbers.",
+            "example": "<code>min(4, 1)</code> is 1. <code>min(clears.map(clear =&gt; clear.keyCount))</code> is the lowest key count."
+          },
+          "max": {
+            "title": "Largest",
+            "desc": "<code>max(list)</code> or <code>max(a, b)</code>.",
+            "example": "<code>max(3, 9)</code> is 9. <code>max(mine.map(level =&gt; level.clears))</code> is the busiest chart."
+          },
+          "abs": {
+            "title": "Absolute value",
+            "desc": "<code>abs(n)</code>.",
+            "example": "<code>abs(-2)</code> is 2."
+          },
+          "floor": {
+            "title": "Round down",
+            "desc": "<code>floor(n)</code>.",
+            "example": "<code>floor(1.9)</code> is 1."
+          },
+          "round": {
+            "title": "Nearest integer",
+            "desc": "<code>round(n)</code>.",
+            "example": "<code>round(1.5)</code> is 2. <code>round(1.4)</code> is 1."
+          },
+          "ceil": {
+            "title": "Round up",
+            "desc": "<code>ceil(n)</code>.",
+            "example": "<code>ceil(1.1)</code> is 2."
+          },
+          "threshold": {
+            "title": "Reached a cutoff",
+            "desc": "<code>threshold(n, 10)</code> is 1 when n is at least 10, otherwise 0.",
+            "example": "<code>threshold(9, 10)</code> is 0. <code>threshold(10, 10)</code> is 1."
+          }
+        },
+        "examples": {
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> counts charts cleared at 2.0× or faster, once each."
+        }
+      },
+      "curves": {
+        "title": "Curves and results",
+        "intro": "The script should return a tier. A curve turns a count into tiers and sets the progress bar.",
+        "fields": {
+          "curve": {
+            "title": "Climbing tiers",
+            "desc": "<code>curve(credit, start, step)</code> earns a tier at start, then start plus step, and so on.",
+            "example": "<code>curve(30, 10, 20)</code> is tier 2: 10 earns tier 1 and 30 earns tier 2."
+          },
+          "curveDown": {
+            "title": "Descending tiers",
+            "desc": "<code>curveDown(credit, start, step)</code> earns a tier at start, then start minus step.",
+            "example": "<code>curveDown(2, 4, 1)</code> is tier 3, stepping from 4 down through 3 to 2."
+          },
+          "result": {
+            "title": "Set the tier and the bar",
+            "desc": "<code>result(tier, credit, from, to)</code> sets them directly, so a partial count does not earn a tier by itself.",
+            "example": "<code>result(0, 6, 0, 8)</code> stays at tier 0 while the bar shows 6 of 8."
+          },
+          "number": {
+            "title": "Plain number",
+            "desc": "A number of 1 or more is itself the tier. Anything smaller is tier 0.",
+            "example": "<code>2</code> is tier 2. <code>0.5</code> is tier 0."
+          }
+        },
+        "examples": {
+          "up": "<b><code>curve(count(clears), 10, 20)</code></b> earns tier 1 at 10 clears, then every 20.",
           "down": "<b><code>curveDown(min(clears.map(clear =&gt; clear.keyCount)), 4, 1)</code></b> starts at 4 keys and steps down.",
-          "result": "<b><code>result(ratio &gt;= 0.75 ? 1 : 0, cleared, 0, total)</code></b> shows the count without awarding a tier early."
+          "result": "<b><code>result(ratio &gt;= 0.75 ? 1 : 0, cleared, 0, total)</code></b> shows the count and awards the tier only at 75%."
+        }
+      },
+      "functions": {
+        "title": "Host functions",
+        "intro": "These read this player, this creator, or other players.",
+        "fields": {
+          "difficulty": {
+            "title": "One difficulty",
+            "desc": "<code>difficulty(\"G10\")</code> returns a row with <code>total</code>, <code>cleared</code>, and <code>ratio</code>.",
+            "example": "<code>difficulty(\"G10\").cleared</code> is 6 when six G10 charts are cleared. <code>.ratio</code> is cleared divided by total."
+          },
+          "sequence": {
+            "title": "Ordered chart ids",
+            "desc": "<code>sequence([id, id])</code> walks clears in upload order and returns how many ids matched in order.",
+            "example": "<code>sequence([5017, 52])</code> is 2 when chart 52 is cleared after 5017. It is 1 when only 5017 has been cleared."
+          },
+          "consecutive": {
+            "title": "Order with no gap",
+            "desc": "<code>consecutive([id, id], item =&gt; item.ppMinusOne)</code> is the same walk, each step must pass the test, and the clears must be consecutive.",
+            "example": "<code>consecutive([5017, 52], clear =&gt; clear.ppMinusOne)</code> is 2 only when those PP-1 clears follow each other with nothing uploaded between them."
+          },
+          "blocks": {
+            "title": "Id blocks",
+            "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> returns how many complete id blocks of that size exist, skipping those difficulties.",
+            "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> is 1 when every other chart in ids 1–10 is cleared. It stops at the first unfinished block."
+          },
+          "prefix": {
+            "title": "Leading set",
+            "desc": "<code>prefix(\"planetary\")</code> counts how far a named difficulty set is cleared from the start, using difficulty at upload.",
+            "example": "<code>prefix(\"planetary\")</code> is 3 when P1, P2, and P3 were the difficulties at upload, and P4 was not cleared."
+          },
+          "gap": {
+            "title": "Longest gap",
+            "desc": "<code>gap()</code> is the longest gap in days between clears of the same identity.",
+            "example": "<code>gap()</code> is 730 when the longest gap between two clears of the same chart is 730 days."
+          },
+          "pack": {
+            "title": "Pack chart ids",
+            "desc": "<code>pack()</code> is the chart ids in this badge's pack. A chart listed twice counts once.",
+            "example": "<code>count(pack())</code> is 12 when the pack lists 12 charts. A chart listed twice still counts once."
+          },
+          "complete": {
+            "title": "Charted set",
+            "desc": "<code>complete(\"end-to-end\")</code> is 1 when this creator has charted every difficulty in the named set.",
+            "example": "<code>complete(\"end-to-end\")</code> is 1 only when this creator has charted every difficulty in that set. Otherwise it is 0."
+          },
+          "nth": {
+            "title": "Nth clearer",
+            "desc": "<code>nth(100)</code> counts charts where this player was the 100th distinct clearer.",
+            "example": "<code>nth(100)</code> is 2 when this player was the 100th distinct clearer on two charts."
+          },
+          "lead": {
+            "title": "Current lead",
+            "desc": "<code>lead(level, \"accuracy\")</code> is true when this player leads that chart. The metric is accuracy, score, or speed.",
+            "example": "<code>lead(level, \"score\")</code> is true when this player's score on that chart is the highest."
+          },
+          "first": {
+            "title": "Any-speed world first",
+            "desc": "<code>first(level)</code> is true when this player has the raw world-first flag on that chart.",
+            "example": "<code>first(level)</code> is true when this player holds the world-first flag on that chart, even at a speed other than 1.0×."
+          },
+          "shared": {
+            "title": "Shared accuracy",
+            "desc": "<code>shared()</code> counts galactic or universal charts where this player's displayed accuracy also appears on another chart.",
+            "example": "<code>shared()</code> is 1 when this player's displayed accuracy on a G or U chart also appears on a different chart."
+          },
+          "inSet": {
+            "title": "Named set",
+            "desc": "<code>inSet(clear.difficultyAt, \"planetary\")</code> is true when the value is in that named set.",
+            "example": "<code>inSet(\"P3\", \"planetary\")</code> is true. <code>inSet(\"G3\", \"planetary\")</code> is false."
+          },
+          "maxGroup": {
+            "title": "Largest group",
+            "desc": "<code>maxGroup(rows, \"artistIds\", \"songId\")</code> is the most distinct values grouped by the first field.",
+            "example": "<code>maxGroup(mine, \"artistIds\", \"songId\")</code> is 20 when one artist has 20 songs charted by this creator."
+          }
+        },
+        "examples": {
+          "sequence": "<b><code>sequence([5017, 52]) == 2</code></b> means those two charts were cleared in that upload order.",
+          "lead": "<b><code>count(levels.filter(level =&gt; level.family == \"G\" &amp;&amp; lead(level, \"accuracy\")))</code></b> counts galactic charts where this player leads accuracy."
         }
       },
       "clears": {
