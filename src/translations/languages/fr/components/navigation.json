@@ -48,7 +48,8 @@
       },
       "admin": {
         "keyboards": "Claviers",
-        "resources": "Ressources"
+        "resources": "Ressources",
+        "badges": "Badges"
       }
     },
     "notifications": {

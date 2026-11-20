@@ -59,6 +59,15 @@ function SearchHelpSectionBody({
                     components={TRANS_COMPONENTS}
                   />
                 </div>
+                {f.exampleKey && (
+                  <div className="search-help-popup__field-example">
+                    <Trans
+                      ns={translationNs}
+                      i18nKey={f.exampleKey}
+                      components={TRANS_COMPONENTS}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -197,6 +206,7 @@ SearchHelpPopup.propTypes = {
           token: PropTypes.string.isRequired,
           titleKey: PropTypes.string.isRequired,
           descKey: PropTypes.string.isRequired,
+          exampleKey: PropTypes.string,
         }),
       ),
       examples: PropTypes.arrayOf(PropTypes.string),

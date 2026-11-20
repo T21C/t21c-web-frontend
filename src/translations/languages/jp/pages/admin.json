@@ -32,7 +32,9 @@
     "keyboards": "キーボード",
     "keyboardsDesc": "ボードの形状、製品、スイッチに関するスタッフ用カタログ",
     "resources": "リソース",
-    "resourcesDesc": "Notionやドキュメントの役立つリンクを追加、編集、並び替えする"
+    "resourcesDesc": "Notionやドキュメントの役立つリンクを追加、編集、並び替えする",
+    "badges": "バッジ",
+    "badgesDesc": "収集できるプレイヤーとクリエイターのバッジを定義する"
   },
   "oauthClients": {
     "meta": {

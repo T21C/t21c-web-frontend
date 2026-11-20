@@ -32,7 +32,9 @@
     "keyboards": "Klawiatury",
     "keyboardsDesc": "Kształty, produkty i switche w katalogu staff",
     "resources": "Materiały",
-    "resourcesDesc": "Dodawaj, edytuj i zmieniaj kolejność przydatnych linków Notion i dokumentacji"
+    "resourcesDesc": "Dodawaj, edytuj i zmieniaj kolejność przydatnych linków Notion i dokumentacji",
+    "badges": "Odznaki",
+    "badgesDesc": "Definiuj zbierane odznaki graczy i twórców"
   },
   "oauthClients": {
     "meta": {
@@ -130,4 +132,3 @@
     "reorderError": "Nie udało się zmienić kolejności formatów"
   }
 }
- 

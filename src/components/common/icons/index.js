@@ -23,6 +23,7 @@ import { SteamIcon } from './SteamIcon';
 import { TrashIcon } from './TrashIcon';
 import { UnlinkIcon } from './UnlinkIcon';
 import VideoIcon from './VideoIcon';
+import { CameraIcon } from './CameraIcon';
 import { CheckmarkIcon } from './CheckmarkIcon';
 import { PencilIcon } from './PencilIcon';
 import { QuestionmarkCircleIcon } from './QuestionmarkCircleIcon';
@@ -110,6 +111,7 @@ export {
     TrashIcon,
     UnlinkIcon,
     VideoIcon,
+    CameraIcon,
     CheckmarkIcon,
     PencilIcon,
     QuestionmarkCircleIcon,

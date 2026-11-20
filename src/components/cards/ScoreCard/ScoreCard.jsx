@@ -103,6 +103,7 @@ const ScoreCard = ({ scoreData: scoreDataProp, topScores = [], potentialTopScore
   }, [scoreDataProp]);
 
   const isFeaturedMode = mode === 'featured';
+  const isCompactMode = mode === 'compact';
   const isPassCardMode = mode === 'passcard' || isFeaturedMode;
   const showPassLike = mode === 'passcard';
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
@@ -163,11 +164,15 @@ const ScoreCard = ({ scoreData: scoreDataProp, topScores = [], potentialTopScore
     'score-card',
     isPassCardMode ? 'score-card--passcard' : '',
     isFeaturedMode ? 'score-card--featured' : '',
+    isCompactMode ? 'score-card--compact' : '',
     isHiddenPass ? 'hidden-pass' : '',
   ].filter(Boolean).join(' ');
 
-  const difficultyIcon = !isHiddenLevel ? (
-    <img src={selectIconSize(difficultyDict[scoreData.level.diffId]?.icon, ICON_SIZE.MEDIUM)} referrerPolicy="no-referrer" alt="" />
+  const difficultyIconSrc = scoreData.level?.diffId != null
+    ? difficultyDict[scoreData.level.diffId]?.icon
+    : null;
+  const difficultyIcon = !isHiddenLevel && difficultyIconSrc ? (
+    <img src={selectIconSize(difficultyIconSrc, ICON_SIZE.MEDIUM)} referrerPolicy="no-referrer" alt="" />
   ) : (
     <div className="hidden-level-icon">🔒</div>
   );
@@ -333,6 +338,32 @@ const ScoreCard = ({ scoreData: scoreDataProp, topScores = [], potentialTopScore
       )}
     </>
   );
+
+  if (isCompactMode) {
+    const song = scoreData.level?.song || 'Clear';
+    const artist = scoreData.level?.artist || '';
+    return (
+      <Link to={passDetailTo} className={cardClassName} style={cardStyle}>
+        <div className="score-card__row score-card__row--primary">
+          <div className="img-wrapper">{difficultyIcon}</div>
+          <div className="name-wrapper">
+            <p className="score-desc score-desc-song">{song}</p>
+            {artist && <p className="score-exp score-exp-artist">{artist}</p>}
+          </div>
+          <div className="acc-wrapper">
+            <div className={`score-desc ${accuracyClass}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
+            {scoreData.speed != null && <div className="score-desc score-card__compact-speed">{clampFloat(scoreData.speed, 2)}×</div>}
+          </div>
+        </div>
+        {scoreData.judgements && (
+          <Judgements
+            judgements={scoreData.judgements}
+            showXPerfect={shouldShowXPerfectJudgements(scoreData)}
+          />
+        )}
+      </Link>
+    );
+  }
 
   if (isFeaturedMode) {
     return (
