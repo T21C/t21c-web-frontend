@@ -917,7 +917,6 @@ const CurationPage = () => {
           <UserManagementPopup 
             onClose={() => setShowCuratorManagementPopup(false)}
             currentUser={user}
-            managementType="curator"
           />
         )}
 

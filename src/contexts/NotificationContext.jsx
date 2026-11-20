@@ -4,7 +4,7 @@ import { apiUrl } from '@/config/urls';
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';
-import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canReviewSubmissions } from '@/utils/UserPermissions';
 
 const NotificationContext = createContext({
   pendingSubmissions: 0,
@@ -47,7 +47,7 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const fetchNotificationCounts = async (force = false) => {
-    if (!force && !hasAnyFlag(user, [permissionFlags.SUPER_ADMIN])) {
+    if (!force && !canReviewSubmissions(user)) {
       resetCounts();
       return;
     }
@@ -101,7 +101,7 @@ export const NotificationProvider = ({ children }) => {
       return;
     }
 
-    if (!force && !hasAnyFlag(user, [permissionFlags.SUPER_ADMIN])) {
+    if (!force && !canReviewSubmissions(user)) {
       console.debug('SSE: User not authorized for notifications');
       return;
     }
@@ -167,7 +167,7 @@ export const NotificationProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN])) {
+    if (canReviewSubmissions(user)) {
       setupEventSource();
       fetchNotificationCounts();
     } else {
