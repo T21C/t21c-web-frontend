@@ -122,6 +122,22 @@ export const routes = {
   },
 
   admin: {
+    badges: {
+      definitions: () => '/v2/admin/badges/definitions',
+      definition: (id) => `/v2/admin/badges/definitions/${enc(id)}`,
+      recompute: (id) => `/v2/admin/badges/definitions/${enc(id)}/recompute`,
+      sets: () => '/v2/admin/badges/sets',
+      reviews: () => '/v2/admin/badges/reviews',
+      review: (id) => `/v2/admin/badges/reviews/${enc(id)}/decision`,
+      jobs: () => '/v2/admin/badges/jobs',
+      cancel: (id) => `/v2/admin/badges/jobs/${enc(id)}/cancel`,
+      timings: (id) => `/v2/admin/badges/jobs/${enc(id)}/timings.csv`,
+      backfill: () => '/v2/admin/badges/backfill',
+      packs: () => '/v2/admin/badges/packs',
+      formula: () => '/v2/admin/badges/formula',
+      catalog: () => '/v2/admin/badges/catalog',
+      import: () => '/v2/admin/badges/import',
+    },
     statistics: () => '/v2/admin/statistics',
     statisticsRatingsPerUser: () => '/v2/admin/statistics/ratings-per-user',
     statisticsRatingAccuracy: () => '/v2/admin/statistics/rating-accuracy',
@@ -544,6 +560,13 @@ export const routes = {
       directives: (id) => `/v2/database/difficulties/${enc(id)}/directives`,
       levelTags: (levelId) => `/v2/database/difficulties/levels/${enc(levelId)}/tags`,
     },
+  },
+
+  badgesV3: {
+    player: (playerId) => `/v3/badges/players/${enc(playerId)}`,
+    equipPlayer: (playerId) => `/v3/badges/players/${enc(playerId)}/equip`,
+    creator: (creatorId) => `/v3/badges/creators/${enc(creatorId)}`,
+    equipCreator: (creatorId) => `/v3/badges/creators/${enc(creatorId)}/equip`,
   },
 
   playersV3: {

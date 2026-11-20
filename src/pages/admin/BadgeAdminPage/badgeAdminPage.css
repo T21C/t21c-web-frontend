@@ -1,0 +1,519 @@
+.badge-admin-page {
+  color: var(--color-white);
+  padding: 1.5rem 1rem 3rem;
+}
+
+.badge-admin-page .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.badge-admin-page .header-container h1 {
+  margin: 0;
+}
+
+.badge-admin-page .badge-admin-page__header-actions,
+.badge-admin-page .badge-admin-page__actions,
+.badge-admin-page .badge-admin-page__filters,
+.badge-admin-page .badge-admin-page__search,
+.badge-admin-page .tab-navigation,
+.badge-admin-page .badge-admin-page__grid,
+.badge-admin-page .badge-admin-page__review,
+.badge-admin-page .badge-admin-page__stack,
+.badge-admin-page .badge-admin-page__backfill,
+.badge-admin-page .badge-admin-page__card-progress {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.badge-admin-page .badge-admin-page__actions {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.badge-admin-page .badge-admin-page__actions-main,
+.badge-admin-page .badge-admin-page__actions-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.badge-admin-page .badge-admin-page__actions-side {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.badge-admin-page .badge-admin-page__backfill-bars,
+.badge-admin-page .badge-admin-page__backfill-row,
+.badge-admin-page .badge-admin-page__backfill-stats,
+.badge-admin-page .badge-admin-page__backfill-stat {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.badge-admin-page .badge-admin-page__backfill-bars,
+.badge-admin-page .badge-admin-page__backfill-row,
+.badge-admin-page .badge-admin-page__backfill-stats {
+  flex-direction: column;
+  width: 16rem;
+}
+
+.badge-admin-page .badge-admin-page__backfill-stat {
+  align-items: center;
+  color: var(--color-gray-2);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge-admin-page .badge-admin-page__backfill-stat.is-idle {
+  opacity: 0.35;
+}
+
+.badge-admin-page .badge-admin-page__backfill-name,
+.badge-admin-page .badge-admin-page__backfill-eta {
+  width: 16rem;
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.badge-admin-page .badge-admin-page__backfill-name {
+  color: var(--color-white);
+}
+
+.badge-admin-page .badge-admin-page__backfill-eta {
+  color: var(--color-gray-2);
+}
+
+.badge-admin-page .badge-admin-page__start,
+.badge-admin-page .badge-admin-page__report {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-gray-2);
+  font-size: 0.85rem;
+}
+
+.badge-admin-page .badge-admin-page__start input {
+  width: 5.5rem;
+}
+
+.badge-admin-page .badge-admin-page__pulse {
+  position: relative;
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+}
+
+.badge-admin-page .badge-admin-page__pulse::before,
+.badge-admin-page .badge-admin-page__pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgb(70, 255, 70);
+}
+
+.badge-admin-page .badge-admin-page__pulse::after {
+  animation: badge-admin-page_pulse 0.7s ease-out 1;
+}
+
+@keyframes badge-admin-page_pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.25);
+    opacity: 0;
+  }
+}
+
+.badge-admin-page .badge-admin-page__backfill-bar {
+  flex: none;
+  width: 100%;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--color-white-t10);
+  overflow: hidden;
+}
+
+.badge-admin-page .badge-admin-page__backfill-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--color-purple-1);
+}
+
+.badge-admin-page .badge-admin-page__card-progress {
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  color: var(--color-gray-2);
+  font-size: 0.75rem;
+}
+
+.badge-admin-page .badge-admin-page__card-progress .badge-admin-page__backfill-bar {
+  flex: none;
+  width: 100%;
+}
+
+.badge-admin-page .badge-admin-page__filters {
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 0.75rem 0 1rem;
+}
+
+.badge-admin-page .badge-admin-page__search {
+  flex: 1 1 16rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 14rem;
+}
+
+.badge-admin-page .badge-admin-page__search span,
+.badge-admin-page .badge-admin-page__count {
+  margin: 0;
+}
+
+.badge-admin-page .badge-admin-page__search input {
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.badge-admin-page .badge-admin-page__count {
+  color: var(--color-gray-2);
+  padding-bottom: 0.45rem;
+}
+
+.badge-admin-page .tab-navigation {
+  flex-wrap: wrap;
+  margin: 1.25rem 0;
+  border-bottom: 1px solid var(--color-white-t10);
+}
+
+.badge-admin-page .tab-button {
+  padding: 0.55rem 0.9rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-gray-2);
+  cursor: pointer;
+}
+
+.badge-admin-page .tab-button.active,
+.badge-admin-page .tab-button:hover {
+  color: var(--color-white);
+  border-bottom-color: var(--color-purple-1);
+}
+
+.badge-admin-page .badge-admin-page__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.badge-admin-page .badge-admin-page__grid {
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.badge-admin-page .badge-admin-page__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  min-width: 180px;
+  padding: 1rem;
+  border: 1px solid var(--color-white-t10);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.badge-admin-page .badge-admin-page__card:hover {
+  border-color: var(--color-purple-1);
+}
+
+.badge-admin-page .badge-admin-page__card-title {
+  font-weight: 600;
+}
+
+.badge-admin-page .badge-admin-page__card-meta,
+.badge-admin-page .badge-admin-page__card-flag,
+.badge-admin-page .badge-admin-page__card-script,
+.badge-admin-page .badge-admin-page__empty,
+.badge-admin-page .badge-admin-page__job {
+  margin: 0;
+  color: var(--color-gray-2);
+}
+
+.badge-admin-page .badge-admin-page__card-script {
+  display: -webkit-box;
+  width: 100%;
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  white-space: normal;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.badge-admin-page .badge-admin-page__stack,
+.badge-admin-page .badge-admin-page__job {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.badge-admin-page .badge-admin-page__review {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.badge-admin-page input {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.badge-editor-popup .badge-editor-popup__panel {
+  width: min(760px, 100%);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-white-t15);
+  border-radius: 0.75rem;
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.badge-editor-popup .badge-editor-popup__header,
+.badge-editor-popup .badge-editor-popup__footer,
+.badge-editor-popup .badge-editor-popup__tabs,
+.badge-editor-popup .badge-editor-popup__fields,
+.badge-editor-popup .badge-editor-popup__toggles,
+.badge-editor-popup .badge-editor-popup__numbers,
+.badge-editor-popup .badge-editor-popup__chips,
+.badge-editor-popup .badge-editor-popup__packs,
+.badge-editor-popup .badge-editor-popup__label-row,
+.badge-editor-popup .badge-editor-popup__labels {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.badge-editor-popup .badge-editor-popup__header,
+.badge-editor-popup .badge-editor-popup__footer {
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.25rem;
+}
+
+.badge-editor-popup .badge-editor-popup__header {
+  border-bottom: 1px solid var(--color-white-t10);
+}
+
+.badge-editor-popup .badge-editor-popup__header h2,
+.badge-editor-popup .badge-editor-popup__hint,
+.badge-editor-popup .badge-editor-popup__ok,
+.badge-editor-popup .badge-editor-popup__err {
+  margin: 0;
+}
+
+.badge-editor-popup .badge-editor-popup__tabs {
+  flex-wrap: wrap;
+  padding: 0.65rem 1.25rem 0;
+  border-bottom: 1px solid var(--color-white-t10);
+}
+
+.badge-editor-popup .badge-editor-popup__tab {
+  padding: 0.55rem 0.85rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-gray-2);
+  cursor: pointer;
+}
+
+.badge-editor-popup .badge-editor-popup__tab:hover,
+.badge-editor-popup .badge-editor-popup__tab.is-active {
+  color: var(--color-white);
+  border-bottom-color: var(--color-purple-1);
+}
+
+.badge-editor-popup .badge-editor-popup__body {
+  flex: 1;
+  min-height: 280px;
+  padding: 1rem 1.25rem;
+  overflow: auto;
+}
+
+.badge-editor-popup .badge-editor-popup__fields,
+.badge-editor-popup .badge-editor-popup__labels,
+.badge-editor-popup .badge-editor-popup__packs {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.badge-editor-popup .badge-editor-popup__toggles,
+.badge-editor-popup .badge-editor-popup__numbers,
+.badge-editor-popup .badge-editor-popup__chips,
+.badge-editor-popup .badge-editor-popup__label-row,
+.badge-editor-popup .badge-editor-popup__footer {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.badge-editor-popup label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.badge-editor-popup input,
+.badge-editor-popup textarea {
+  width: 100%;
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.badge-editor-popup .badge-editor-popup__formula {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.badge-editor-popup .badge-editor-popup__formula span,
+.badge-editor-popup .badge-editor-popup__formula textarea {
+  font-family: ui-monospace, monospace;
+}
+
+.badge-editor-popup .badge-editor-popup__formula span {
+  font-size: 1.15rem;
+}
+
+.badge-editor-popup .badge-editor-popup__formula textarea {
+  min-height: 5rem;
+  padding: 0;
+  background: transparent;
+}
+
+.badge-editor-popup .badge-editor-popup__formula.is-bad {
+  outline: 1px solid #f87171;
+}
+
+.badge-editor-popup .badge-editor-popup__ok {
+  color: #86efac;
+}
+
+.badge-editor-popup .badge-editor-popup__err {
+  color: #fca5a5;
+}
+
+.badge-editor-popup .badge-editor-popup__chips button,
+.badge-editor-popup .badge-editor-popup__packs button {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+}
+
+.badge-editor-popup .badge-editor-popup__packs button.is-active {
+  outline: 1px solid var(--color-white);
+}
+
+.badge-editor-popup .badge-editor-popup__footer {
+  border-top: 1px solid var(--color-white-t10);
+  background: var(--color-black);
+}
+
+.badge-import-popup .badge-import-popup__panel {
+  width: min(760px, 100%);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-white-t15);
+  border-radius: 0.75rem;
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.badge-import-popup .badge-import-popup__header,
+.badge-import-popup .badge-import-popup__footer,
+.badge-import-popup .badge-import-popup__body {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.badge-import-popup .badge-import-popup__header,
+.badge-import-popup .badge-import-popup__footer {
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+}
+
+.badge-import-popup .badge-import-popup__header h2,
+.badge-import-popup .badge-import-popup__hint {
+  margin: 0;
+}
+
+.badge-import-popup .badge-import-popup__body {
+  flex-direction: column;
+  min-height: 0;
+  padding: 0 1rem 1rem;
+  overflow: auto;
+}
+
+.badge-import-popup .badge-import-popup__hint {
+  color: var(--color-gray-2);
+}
+
+.badge-import-popup textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 18rem;
+  resize: vertical;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-white);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.badge-import-popup .badge-import-popup__footer {
+  border-top: 1px solid var(--color-white-t10);
+  background: var(--color-black);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}

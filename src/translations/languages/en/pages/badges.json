@@ -1,0 +1,421 @@
+{
+  "meta": {
+    "title": "Badges",
+    "description": "Collectable player and creator badges"
+  },
+  "open": "Badges",
+  "title": "Badges",
+  "empty": "No badges to show yet.",
+  "locked": "Locked",
+  "earned": "Earned",
+  "tier": "Tier {{tier}}",
+  "credit": "{{credit}} / {{next}}",
+  "creditUnit": "{{credit}} {{unit}}",
+  "creditNextUnit": "{{credit}} / {{next}} {{unit}}",
+  "creditChart": "Chart {{credit}}",
+  "units": {
+    "day": "day",
+    "days": "days",
+    "key": "key",
+    "keys": "keys",
+    "perfect": "perfect",
+    "perfects": "perfects"
+  },
+  "saveEquip": "Save slots",
+  "saved": "Badge slots saved",
+  "saveFailed": "Could not save badge slots",
+  "loadFailed": "Could not load badges",
+  "confirmAccuracy": "Accuracy {{value}}",
+  "confirmJudgements": "Judgements {{value}}",
+  "search": "Search",
+  "searchPlaceholder": "Badge name",
+  "status": "Status",
+  "statusAll": "All",
+  "statusEarned": "Earned",
+  "statusLocked": "Locked",
+  "statusEquipped": "Equipped",
+  "tone": "Mark",
+  "toneAll": "All marks",
+  "tonePurple": "Purple",
+  "tonePlain": "Standard",
+  "showing": "Showing {{count}} of {{total}}",
+  "noMatches": "No badges match these filters.",
+  "help": {
+    "title": "Badge engine",
+    "subtitle": "Expressions decide the tier. Secret text stays off public profiles until the badge is earned.",
+    "close": "Close",
+    "examplesTitle": "Examples",
+    "sections": {
+      "expressions": {
+        "title": "Expressions",
+        "intro": "The grant script returns the tier. It uses JavaScript shape: comparisons, &&, ||, !, ternaries, arrows, and list methods. It does not run arbitrary JavaScript.",
+        "fields": {
+          "eq": {
+            "title": "Equal",
+            "desc": "Use <code>==</code>, <code>===</code>, or a single <code>=</code>. Text comparisons are case-sensitive."
+          },
+          "neq": {
+            "title": "Not equal",
+            "desc": "Use <code>!=</code> or <code>!==</code>."
+          },
+          "and": {
+            "title": "Combine",
+            "desc": "<code>&&</code> requires both sides. <code>||</code> needs either. <code>!</code> flips a condition."
+          },
+          "ternary": {
+            "title": "Choose",
+            "desc": "<code>condition ? whenTrue : whenFalse</code> picks one result."
+          },
+          "filter": {
+            "title": "Keep rows",
+            "desc": "<code>.filter(item =&gt; ...)</code> keeps the rows that match. <code>.some</code>, <code>.every</code>, <code>.find</code>, and <code>.map</code> work the same way."
+          },
+          "count": {
+            "title": "How many",
+            "desc": "<code>count(list)</code> and <code>.length</code> both return the size. <code>min</code>, <code>max</code>, <code>sum</code>, <code>floor</code>, <code>round</code>, <code>ceil</code>, and <code>abs</code> read numbers."
+          }
+        },
+        "examples": {
+          "filter": "<b><code>count(clears.filter(clear =&gt; clear.difficulty == \"G10\"))</code></b> counts this player's G10 clears.",
+          "curve": "<b><code>curve(count(clears), 10, 20)</code></b> turns that count into tiers."
+        }
+      },
+      "rows": {
+        "title": "Rows",
+        "intro": "Three lists are always in scope. Each item is a row of named fields.",
+        "fields": {
+          "clears": {
+            "title": "Player clears",
+            "desc": "Public clears by this player."
+          },
+          "levels": {
+            "title": "Charts",
+            "desc": "Public charts."
+          },
+          "mine": {
+            "title": "Credited or cleared",
+            "desc": "Charts this creator is credited on, or charts this player has cleared."
+          },
+          "difficulty": {
+            "title": "Difficulty name",
+            "desc": "<code>difficulty</code> is the current name. <code>difficultyAt</code> is the name at upload time."
+          },
+          "family": {
+            "title": "Difficulty family",
+            "desc": "<code>family</code> is the current family, such as G or U. <code>familyAt</code> is the family at upload time."
+          },
+          "worldsFirst": {
+            "title": "World first",
+            "desc": "<code>worldsFirst</code> is true only when speed is exactly 1 and the live flag is set. <code>isWorldsFirst</code> is the raw flag at any speed."
+          },
+          "accuracy": {
+            "title": "Accuracy",
+            "desc": "<code>accuracy</code> is the ratio. <code>accuracyText</code> is the displayed string, such as 99.995. Placeholder sheets leave both empty."
+          },
+          "judgements": {
+            "title": "Judgement buckets",
+            "desc": "<code>misses</code>, <code>earlies</code>, <code>lates</code>, <code>ePerfect</code>, <code>lPerfect</code>, <code>perfect</code>, and <code>perfects</code>. A missing bucket is 0. Placeholder and all-zero sheets leave these empty."
+          }
+        }
+      },
+      "functions": {
+        "title": "Functions",
+        "intro": "Call these from the expression. They read this player, this creator, or other players.",
+        "fields": {
+          "difficulty": {
+            "title": "One difficulty",
+            "desc": "<code>difficulty(\"G10\")</code> returns <code>total</code>, <code>cleared</code>, and <code>ratio</code>."
+          },
+          "sequence": {
+            "title": "Ordered clears",
+            "desc": "<code>sequence([ids])</code> walks clears in upload order and returns how many steps matched."
+          },
+          "consecutive": {
+            "title": "Ordered with a test",
+            "desc": "<code>consecutive([ids], item =&gt; item.ppMinusOne)</code> does the same walk, and each step must pass the test."
+          },
+          "blocks": {
+            "title": "Id blocks",
+            "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> returns how many id blocks are complete."
+          },
+          "prefix": {
+            "title": "Leading set",
+            "desc": "<code>prefix(set)</code> counts a leading difficulty set and stops at the first gap."
+          },
+          "gap": {
+            "title": "Longest gap",
+            "desc": "<code>gap()</code> is the longest gap between clears of the same chart, in days."
+          },
+          "pack": {
+            "title": "Pack charts",
+            "desc": "<code>pack()</code> is the chart ids in this badge's pack. A chart listed twice counts once."
+          },
+          "complete": {
+            "title": "Charted set",
+            "desc": "<code>complete(set)</code> is 1 when this creator has charted every difficulty in the set."
+          },
+          "nth": {
+            "title": "Nth clear",
+            "desc": "<code>nth(100)</code> checks whether this player was the 100th clearer."
+          },
+          "lead": {
+            "title": "Current lead",
+            "desc": "<code>lead(level, \"accuracy\")</code> is true when this player leads that chart. The metric can be accuracy, score, or speed."
+          },
+          "first": {
+            "title": "Any-speed world first",
+            "desc": "<code>first(level)</code> is true when this player has the raw world-first flag on that chart."
+          },
+          "shared": {
+            "title": "Shared accuracy",
+            "desc": "<code>shared()</code> counts accuracies this player shares with someone else."
+          }
+        }
+      },
+      "curves": {
+        "title": "Curves and labels",
+        "intro": "A curve turns a count into tiers and sets the progress bar. A plain result sets both yourself.",
+        "fields": {
+          "curve": {
+            "title": "Climbing tiers",
+            "desc": "<code>curve(credit, start, step)</code> earns a tier at start, then start plus step, and so on."
+          },
+          "curveDown": {
+            "title": "Descending tiers",
+            "desc": "<code>curveDown(credit, start, step)</code> earns a tier at start, then start minus step. Start 4 and step 1 produces 4, then 3, then 2, then 1."
+          },
+          "result": {
+            "title": "Set the bar",
+            "desc": "<code>result(tier, credit, from, to)</code> sets the tier and the bar directly, so a partial count does not earn a tier by itself."
+          },
+          "number": {
+            "title": "Plain number",
+            "desc": "A number of 1 or more is itself the tier. Anything smaller is tier 0."
+          },
+          "label": {
+            "title": "Tier name",
+            "desc": "Labels are <code>{ minTier, label }</code> pairs. The shown label is the one with the greatest minTier that is still at or below the earned tier. common and legendary are examples, not a fixed list. An empty list shows no name."
+          },
+          "half": {
+            "title": "Half credit",
+            "desc": "Shared creator credit is written in the expression, usually 0.5 when more than one person holds the role. Half a credit does not reach a start of 1."
+          }
+        },
+        "examples": {
+          "up": "<b><code>curve(count(clears), 1, 1)</code></b> earns tier 1 at one clear, tier 2 at two, and so on.",
+          "down": "<b><code>curveDown(min(clears.map(clear =&gt; clear.keyCount)), 4, 1)</code></b> starts at 4 keys and steps down.",
+          "result": "<b><code>result(ratio &gt;= 0.75 ? 1 : 0, cleared, 0, total)</code></b> shows the count without awarding a tier early."
+        }
+      },
+      "clears": {
+        "title": "Public clears",
+        "intro": "The engine only sees passes and charts that are public.",
+        "bullets": {
+          "visible": "Hidden and deleted passes and charts are skipped. Wrong-judgement passes stay.",
+          "buckets": "A missing judgement bucket counts as 0.",
+          "worldsFirst": "A world-first check also requires speed exactly 1, then follows the live flag. The flag moves when an earlier 1.0x upload is accepted.",
+          "placeholder": "The 5/40/5 placeholder sheet is skipped by anything that reads judgements, accuracy, or score. An all-zero sheet is ignored the same way.",
+          "unknownTime": "Upload times 2023-01-01 07:27:27 and 2023-07-27 07:27:27 are unknown. gap, sequence, nth, and earned-time ordering skip them."
+        }
+      },
+      "identity": {
+        "title": "Chart identity",
+        "intro": "Identity decides whether linked charts count as one chart or many.",
+        "fields": {
+          "level": {
+            "title": "Chart id",
+            "desc": "Each chart id is its own chart."
+          },
+          "chartSubgroup": {
+            "title": "Charter subgroup",
+            "desc": "Linked charts that share a charter subgroup collapse into one."
+          },
+          "vfxSubgroup": {
+            "title": "VFX subgroup",
+            "desc": "Linked charts that share a VFX subgroup collapse into one."
+          },
+          "group": {
+            "title": "Link group",
+            "desc": "The whole link group collapses into one."
+          }
+        },
+        "bullets": {
+          "ownChart": "A clear only contributes its own chart's key count, difficulty, and curation. Clearing the unlimited sibling does not inherit the 10-key chart's key count.",
+          "reclear": "For a collapsed identity, the sibling clear is a reclear, not a second chart."
+        }
+      },
+      "history": {
+        "title": "Difficulty at the time",
+        "intro": "difficultyAt uses the chart's difficulty when the pass was uploaded.",
+        "bullets": {
+          "walk": "The engine walks rerate history against the upload time. Before the first recorded change, the difficulty is that row's previous difficulty.",
+          "fallback": "With no history, the clear-time snapshot is used, then the chart's current difficulty.",
+          "snapshot": "A snapshot is written when a pass is accepted or a world-first flag is refreshed. It stores difficulty, base score, PP base score, curation type ids, and charter and VFXer ids.",
+          "older": "Older passes stay on the current difficulty until something rewrites them."
+        }
+      },
+      "grants": {
+        "title": "Grant modes",
+        "intro": "The grant mode decides whether a tier can be lost.",
+        "fields": {
+          "live": {
+            "title": "Recompute",
+            "desc": "The tier is recalculated and can be lost."
+          },
+          "persistTier": {
+            "title": "Keep the best tier",
+            "desc": "The highest tier reached is kept."
+          },
+          "persistSnapshot": {
+            "title": "Freeze the set",
+            "desc": "The chart set that satisfied a percent badge stays frozen, so later charts do not raise the denominator."
+          },
+          "resetOnGrowth": {
+            "title": "Live target",
+            "desc": "The pack default. A chart added to the pack removes completion until it is cleared."
+          },
+          "manualLock": {
+            "title": "Needs a review",
+            "desc": "Stays off until a reviewer approves a video."
+          },
+          "chase": {
+            "title": "Store a number",
+            "desc": "Keeps the current number, such as the lowest uncleared chart id."
+          }
+        },
+        "bullets": {
+          "replace": "Saving a definition keeps persistTier and persistSnapshot results unless Replace earned tiers is on."
+        }
+      },
+      "backfill": {
+        "title": "Backfill",
+        "intro": "Backfill decides which existing clears are eligible when the badge is published. Adding a badge later uses the same job.",
+        "fields": {
+          "now": {
+            "title": "All current clears",
+            "desc": "Evaluates every current public clear."
+          },
+          "forward": {
+            "title": "New clears only",
+            "desc": "Ignores passes created before publication."
+          },
+          "queue": {
+            "title": "Reviews only",
+            "desc": "Creates review rows and does not grant, except a manualLock badge, which grants after approval."
+          }
+        },
+        "bullets": {
+          "skips": "The job records how many passes it skipped for a placeholder sheet, an unknown upload time, or a missing difficulty history.",
+          "unreconstructed": "Facts that were never stored, such as curation at the moment of an old clear, cannot be reconstructed."
+        }
+      },
+      "reviews": {
+        "title": "Reviews and secrecy",
+        "intro": "Reviews gate manual badges. Secrecy controls what a locked badge shows.",
+        "bullets": {
+          "video": "Approving a review requires a video URL and records the reviewer.",
+          "secret": "Unearned secret badges are omitted from profiles.",
+          "locked": "Other unearned badges show a name, icon, and progress bar, including the next number, but not the requirement text or the expression.",
+          "earned": "After a badge is earned, its tier label and proving passes are shown.",
+          "confirm": "accuracyFull and judgementsFull add server-rendered confirm text on that badge only. Public score cards keep the normal accuracy formatter."
+        }
+      }
+    }
+  },
+  "admin": {
+    "metaTitle": "Badge editor",
+    "metaDescription": "Create and recompute collectable badges",
+    "title": "Badges",
+    "help": "Engine help",
+    "new": "New badge",
+    "list": "Definitions",
+    "reviews": "Reviews",
+    "jobs": "Jobs",
+    "save": "Save",
+    "saved": "Badge saved",
+    "saveFailed": "Could not save the badge",
+    "recompute": "Recompute",
+    "recomputed": "Recompute queued",
+    "replace": "Replace earned tiers",
+    "enabled": "Enabled",
+    "secret": "Secret",
+    "slug": "Slug",
+    "name": "Name",
+    "audience": "Audience",
+    "reducer": "Reducer",
+    "grant": "Grant",
+    "identity": "Identity",
+    "backfill": "Backfill",
+    "round": "Round",
+    "direction": "Direction",
+    "start": "Start",
+    "step": "Step",
+    "weight": "Weight",
+    "icon": "Icon",
+    "color": "Color",
+    "stat": "Stat",
+    "purple": "Purple",
+    "confirm": "Confirm",
+    "labels": "Tier labels",
+    "addLabel": "Add label",
+    "minTier": "From tier",
+    "label": "Label",
+    "params": "Params",
+    "packSearch": "Find a pack",
+    "approve": "Approve",
+    "reject": "Reject",
+    "video": "Video URL",
+    "reviewSaved": "Review saved",
+    "reviewFailed": "Could not save the review",
+    "videoRequired": "Add the video URL before approving",
+    "loadFailed": "Could not load badges",
+    "importCode": "Import code",
+    "importTitle": "Import badges",
+    "importHint": "Paste a configuration. Sets match by name and badges match by slug. Packs must already exist.",
+    "loadRequested": "Load requested set",
+    "requestedLoaded": "Requested set loaded",
+    "importAction": "Import",
+    "imported": "Imported {{count}} badges",
+    "importFailed": "Could not import badges",
+    "replaceImport": "Replace earned tiers",
+    "search": "Search",
+    "searchPlaceholder": "Name or slug",
+    "filterAll": "All",
+    "filterPlayer": "Player",
+    "filterCreator": "Creator",
+    "filterSecretOnly": "Secret",
+    "filterPublic": "Public",
+    "filterEnabledOnly": "Enabled",
+    "filterDisabled": "Disabled",
+    "showing": "Showing {{count}} of {{total}}",
+    "noMatches": "No badges match these filters.",
+    "refreshBackfill": "Refresh backfill",
+    "backfillStarting": "Starting backfill",
+    "backfillStarted": "Replacement backfill started",
+    "backfillAlready": "A replacement backfill is already running",
+    "backfillFailed": "Could not start the backfill",
+    "backfillWaiting": "Waiting to count owners",
+    "backfillLoading": "Loading every public clear and chart. Owners are not counted yet.",
+    "backfillPending": "Queued. The worker has not picked it up yet.",
+    "backfillOwners": "Owners {{done}} / {{total}}",
+    "backfillBadgesPlayer": "Badges for {{name}} {{done}} / {{total}}",
+    "backfillBadgesCreator": "Badges for {{name}} {{done}} / {{total}}",
+    "startFrom": "Start from #:",
+    "backfillReport": "Slowest badges",
+    "backfillReportDownload": "Download CSV",
+    "backfillReportFailed": "Could not download the timing report",
+    "backfillEta": "About {{eta}} left",
+    "backfillPlayersFinished": "{{done}} / {{total}} players finished",
+    "backfillCreatorsFinished": "{{done}} / {{total}} creators finished",
+    "backfillHeartbeat": "Checked in {{seconds}}s ago",
+    "cancelBackfill": "Cancel backfill",
+    "backfillCancelConfirm": "Cancel the running backfill?",
+    "backfillCancelled": "Backfill cancelled",
+    "backfillCancelFailed": "Could not cancel the backfill",
+    "backfillQueued": "Replacement is waiting behind this run",
+    "backfillCursor": "{{status}} · owner {{current}} / {{total}} · badge {{badge}} / {{badgeTotal}} · {{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
+    "backfillProgress": "{{processed}} / {{total}} · {{players}} / {{playerTotal}} players · {{creators}} / {{creatorTotal}} creators",
+    "backfillPlayers": "{{processed}} / {{total}} players",
+    "backfillCreators": "{{processed}} / {{total}} creators"
+  }
+}

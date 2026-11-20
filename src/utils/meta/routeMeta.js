@@ -74,6 +74,9 @@ const ROUTE_DOCUMENT_META = [
   { path: '/admin/curations/rating/:levelId', titleKey: 'rating.curationRating.meta.title', descriptionKey: 'rating.curationRating.meta.description', noindex: true },
   { path: '/admin/curations/rating', titleKey: 'rating.curationRating.meta.title', descriptionKey: 'rating.curationRating.meta.description', noindex: true },
   { path: '/admin/curations', titleKey: 'curation.meta.title', descriptionKey: 'curation.meta.description', noindex: true },
+  { path: '/admin/badges', titleKey: 'badges.admin.metaTitle', descriptionKey: 'badges.admin.metaDescription', noindex: true },
+  { path: '/profile/:playerId/badges', titleKey: 'badges.meta.title', descriptionKey: 'badges.meta.description', noindex: true },
+  { path: '/creator/:creatorId/badges', titleKey: 'badges.meta.title', descriptionKey: 'badges.meta.description', noindex: true },
   { path: '/admin', titleKey: 'admin.meta.title', descriptionKey: 'admin.meta.description', noindex: true },
 ];
 

@@ -116,6 +116,13 @@ const AdminPage = () => {
       icon: "⌨️"
     },
     {
+      id: 'badges',
+      path: '/admin/badges',
+      title: t("admin.links.badges"),
+      description: t("admin.links.badgesDesc"),
+      icon: "🏅"
+    },
+    {
       id: 'resources',
       path: '/resources',
       title: t("admin.links.resources"),

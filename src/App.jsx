@@ -157,6 +157,7 @@ function App() {
             <Route path="mods" element={<Pages.DevelopersModsPage />} />
             <Route path="mods/:id" element={<Pages.DevelopersModEditPage />} />
           </Route>
+          <Route path="profile/:playerId/badges" element={<Pages.BadgeSectionPage audience="player" />} />
           <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
           <Route path="profile" element={<Pages.ProfilePage />} />
           <Route path="notifications" element={<PrivateRoute><Pages.NotificationsPage /></PrivateRoute>} />
@@ -174,10 +175,12 @@ function App() {
           <Route path='songs/:id' element={<Pages.SongDetailPage />} />
           <Route path='creators' element={<Pages.CreatorsListPage />} />
           <Route path='creator' element={<Pages.CreatorProfilePage />} />
+          <Route path='creator/:creatorId/badges' element={<Pages.BadgeSectionPage audience="creator" />} />
           <Route path='creator/:creatorId' element={<Pages.CreatorProfilePage />} />
 
           {/* Admin Routes - Protected */}
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />
+          <Route path='admin/badges' element={<PrivateRoute><Pages.BadgeAdminPage /></PrivateRoute>} />
           <Route path='admin/submissions' element={<PrivateRoute><Pages.SubmissionManagementPage /></PrivateRoute>} />
           <Route path='rating/zen' element={<Pages.RatingZenPage />} />
           {/* Single route so opening /rating/:levelId does not remount and reset Virtuoso scroll */}

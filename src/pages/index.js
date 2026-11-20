@@ -58,6 +58,8 @@ const KeyboardCatalogPage = lazy(() => import('./admin/KeyboardCatalogPage/Keybo
 
 // Admin pages
 const AdminPage = lazy(() => import('./admin/AdminPage/AdminPage'));
+const BadgeAdminPage = lazy(() => import('./admin/BadgeAdminPage/BadgeAdminPage'));
+const BadgeSectionPage = lazy(() => import('./account/BadgeSectionPage/BadgeSectionPage'));
 const AnnouncementPage = lazy(() => import('./admin/AnnouncementPage/AnnouncementPage'));
 const BackupPage = lazy(() => import('./admin/BackupPage/BackupPage'));
 const DifficultyPage = lazy(() => import('./admin/DifficultyPage/DifficultyPage'));
@@ -150,6 +152,8 @@ export {
     
     // Admin pages
     AdminPage,
+    BadgeAdminPage,
+    BadgeSectionPage,
     AnnouncementPage,
     BackupPage,
     DifficultyPage,

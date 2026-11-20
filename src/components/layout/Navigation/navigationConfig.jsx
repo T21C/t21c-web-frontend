@@ -334,6 +334,7 @@ export const createNavigationConfig = (context = {}) => {
           { to: "/admin/tournaments", translationKey: "navigation.main.dropdowns.admin.tournaments" },
           { divider: true },
           { to: "/admin/difficulties", translationKey: "navigation.main.dropdowns.admin.difficulties" },
+          { to: "/admin/badges", translationKey: "navigation.main.dropdowns.admin.badges" },
           { to: "/admin/backups", translationKey: "navigation.main.dropdowns.admin.backups" },
           { to: "/admin/audit-log", translationKey: "navigation.main.dropdowns.admin.auditLog" },
         ],

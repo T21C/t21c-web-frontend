@@ -1,0 +1,166 @@
+.badge-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  color: var(--color-white);
+}
+
+.badge-section h1,
+.badge-section p {
+  margin: 0;
+}
+
+.badge-section__slots,
+.badge-section__grid,
+.badge-section__filters,
+.badge-section__search,
+.badge-section__slot,
+.badge-section__card,
+.badge-section__card-main,
+.badge-section__slot-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.badge-section__filters {
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.badge-section__search {
+  flex: 1 1 16rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 14rem;
+}
+
+.badge-section__search span,
+.badge-section__count {
+  margin: 0;
+}
+
+.badge-section__search input {
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.badge-section__count {
+  color: var(--color-gray-2);
+  padding-bottom: 0.45rem;
+}
+
+.badge-section__slots,
+.badge-section__grid {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.badge-section__slot,
+.badge-section__card {
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 140px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.badge-section__card {
+  width: 14rem;
+}
+
+.badge-section__slot--purple,
+.badge-section__card--purple {
+  outline: 1px solid #a78bfa;
+}
+
+.badge-section__card--earned {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.badge-section__card--slotted {
+  outline: 1px solid var(--color-white);
+}
+
+.badge-section__card-main {
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.badge-section__card-main:disabled {
+  cursor: default;
+}
+
+.badge-section__glyph,
+.badge-section__icon {
+  width: 36px;
+  height: 36px;
+  font-size: 28px;
+}
+
+.badge-section__icon {
+  object-fit: contain;
+}
+
+.badge-section__label {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+
+.badge-section__bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.badge-section__bar span {
+  display: block;
+  height: 100%;
+  background: var(--color-white);
+}
+
+.badge-section__save,
+.badge-section__slot button {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.1);
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.badge-section__name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.badge-section__credit {
+  overflow-wrap: anywhere;
+}
+
+.badge-section__confirms {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  max-height: 7.5rem;
+  overflow: auto;
+  color: var(--color-gray-2);
+  font-size: 12px;
+}

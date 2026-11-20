@@ -23,7 +23,7 @@ import {
 } from "@/components/account/ProfileModules";
 
 import { ScrollButton } from "@/components/common/buttons";
-import { AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
+import { AdofaiIcon, CrownIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import { useScrollParent } from "@/components/common/VirtualList";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -319,6 +319,16 @@ const CreatorProfilePage = () => {
                   }}
                 />
               ) : null}
+              {creatorId && (
+                <Link
+                  className="profile-header__action-btn"
+                  to={`/creator/${creatorId}/badges`}
+                  title={t("badges.open")}
+                  aria-label={t("badges.open")}
+                >
+                  <CrownIcon color="var(--color-white)" size={28} />
+                </Link>
+              )}
               {isOwnCreatorProfile ? (
                 <Link
                   className="profile-header__action-btn"
