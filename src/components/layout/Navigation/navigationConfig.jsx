@@ -3,7 +3,7 @@ import { DownloadIcon, ExternalLinkIcon, TUFHelperLiteIcon } from "@/components/
 import { ChromeIcon } from "@/components/common/icons/ChromeIcon";
 import { FirefoxIcon } from "@/components/common/icons/FirefoxIcon";
 import { showTufHelperLiteIntegrationBanner } from "@/hooks/useTufHelperLiteIpc";
-import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { canReviewSubmissions, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import ADOFAIModManagerIcon from "@/assets/icons/AMM.png";
 /**
  * Navigation configuration
@@ -155,6 +155,7 @@ export const createUserMenuItems = (user) => {
   if (!user) return null;
 
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const canOpenSubmissions = canReviewSubmissions(user);
   const playerTo = profileEntityPath("/profile", user.playerId) ?? "/profile";
   const creatorTo = profileEntityPath("/creator", user.creatorId);
   const profileTargets = [
@@ -201,7 +202,15 @@ export const createUserMenuItems = (user) => {
           },
           { divider: true },
         ]
-      : []),
+      : canOpenSubmissions
+        ? [
+            {
+              to: "/admin/submissions",
+              translationKey: "navigation.main.dropdowns.admin.submissions",
+            },
+            { divider: true },
+          ]
+        : []),
   ];
 };
 
@@ -213,6 +222,29 @@ export const createUserMenuItems = (user) => {
 export const createNavigationConfig = (context = {}) => {
   const { user, loading } = context;
   const tufExtension = getTufExtensionVer();
+  const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const showAdminNav = isSuperAdmin || canReviewSubmissions(user);
+  const adminItems = [
+    { to: "/admin/submissions", translationKey: "navigation.main.dropdowns.admin.submissions" },
+    ...(isSuperAdmin
+      ? [
+          { to: "/admin/announcements", translationKey: "navigation.main.dropdowns.admin.announcements" },
+          { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
+          { to: "/admin/requests", translationKey: "navigation.main.dropdowns.admin.requests" },
+          { divider: true },
+          { to: "/admin/songs", translationKey: "navigation.main.dropdowns.admin.songs" },
+          { to: "/admin/artists", translationKey: "navigation.main.dropdowns.admin.artists" },
+          { to: "/admin/keyboards", translationKey: "navigation.main.dropdowns.admin.keyboards" },
+          { to: "/admin/creators", translationKey: "navigation.main.dropdowns.admin.creators" },
+          { to: "/admin/tournaments", translationKey: "navigation.main.dropdowns.admin.tournaments" },
+          { divider: true },
+          { to: "/admin/difficulties", translationKey: "navigation.main.dropdowns.admin.difficulties" },
+          { to: "/admin/badges", translationKey: "navigation.main.dropdowns.admin.badges" },
+          { to: "/admin/backups", translationKey: "navigation.main.dropdowns.admin.backups" },
+          { to: "/admin/audit-log", translationKey: "navigation.main.dropdowns.admin.auditLog" },
+        ]
+      : []),
+  ];
 
   return {
     logo: {
@@ -321,24 +353,8 @@ export const createNavigationConfig = (context = {}) => {
         id: "admin",
         label: "navigation.main.links.admin.admin",
         menuAlign: "left",
-        items: [
-          { to: "/admin/submissions", translationKey: "navigation.main.dropdowns.admin.submissions" },
-          { to: "/admin/announcements", translationKey: "navigation.main.dropdowns.admin.announcements" },
-          { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
-          { to: "/admin/requests", translationKey: "navigation.main.dropdowns.admin.requests" },
-          { divider: true },
-          { to: "/admin/songs", translationKey: "navigation.main.dropdowns.admin.songs" },
-          { to: "/admin/artists", translationKey: "navigation.main.dropdowns.admin.artists" },
-          { to: "/admin/keyboards", translationKey: "navigation.main.dropdowns.admin.keyboards" },
-          { to: "/admin/creators", translationKey: "navigation.main.dropdowns.admin.creators" },
-          { to: "/admin/tournaments", translationKey: "navigation.main.dropdowns.admin.tournaments" },
-          { divider: true },
-          { to: "/admin/difficulties", translationKey: "navigation.main.dropdowns.admin.difficulties" },
-          { to: "/admin/badges", translationKey: "navigation.main.dropdowns.admin.badges" },
-          { to: "/admin/backups", translationKey: "navigation.main.dropdowns.admin.backups" },
-          { to: "/admin/audit-log", translationKey: "navigation.main.dropdowns.admin.auditLog" },
-        ],
-        condition: () => hasFlag(user, permissionFlags.SUPER_ADMIN),
+        items: adminItems,
+        condition: () => showAdminNav,
       }),
       {
         type: "component",

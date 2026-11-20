@@ -1,432 +1,317 @@
 // tuf-search: #UserManagementPopup #userManagementPopup #popups #users #userManagement
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './usermanagementpopup.css';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
 import { UserAvatar } from '@/components/layout';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
-import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
-import { hasFlag } from '@/utils/UserPermissions';
+import { hasAnyFlag, hasFlag, permissionFlags, setUserPermission } from '@/utils/UserPermissions';
 import { SearchField } from '@/components/common/SearchField';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
+import { CustomSelect, ProfileSelector, StateDisplay } from '@/components/common/selectors';
 import { toastIfRateLimited, getRateLimitMessage } from '@/utils/rateLimitError';
 
-// Role configuration for different management types
-const ROLE_CONFIGS = {
-  rater: {
-    title: 'Raters',
-    endpoint: routes.admin.users.root(),
-    roles: [
-      { flag: permissionFlags.RATER, name: 'rater', label: 'userManagement.roles.rater' },
-      { flag: permissionFlags.SUPER_ADMIN, name: 'superadmin', label: 'userManagement.roles.superadmin' }
-    ]
+const STAFF_ROLES = [
+  {
+    name: 'rater',
+    flag: permissionFlags.RATER,
+    labelKey: 'userManagement.roles.rater',
+    requires: 'superAdmin',
   },
-  curator: {
-    title: 'Curators',
-    endpoint: routes.admin.users.curators(),
-    roles: [
-      { flag: permissionFlags.CURATOR, name: 'curator', label: 'userManagement.roles.curator' },
-      { flag: permissionFlags.HEAD_CURATOR, name: 'headcurator', label: 'userManagement.roles.headCurator' }
-    ]
-  }
-};
+  {
+    name: 'superadmin',
+    flag: permissionFlags.SUPER_ADMIN,
+    labelKey: 'userManagement.roles.superadmin',
+    requires: 'superAdminPassword',
+  },
+  {
+    name: 'curator',
+    flag: permissionFlags.CURATOR,
+    labelKey: 'userManagement.roles.curator',
+    requires: 'headCurator',
+  },
+  {
+    name: 'headcurator',
+    flag: permissionFlags.HEAD_CURATOR,
+    labelKey: 'userManagement.roles.headCurator',
+    requires: 'superAdmin',
+  },
+  {
+    name: 'submissionmanager',
+    flag: permissionFlags.SUBMISSION_MANAGER,
+    labelKey: 'userManagement.roles.submissionManager',
+    requires: 'superAdmin',
+  },
+];
 
 const isOnlyHeadCurator = (user) => {
   return hasFlag(user, permissionFlags.HEAD_CURATOR) && !hasFlag(user, permissionFlags.SUPER_ADMIN);
 };
 
-const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, roleConfig, currentUser }) => {
+const isSameUser = (a, b) => Boolean(a?.id && b?.id && String(a.id) === String(b.id));
+
+const isSelfLockoutRevoke = (actor, target, roleName) => {
+  if (!isSameUser(actor, target)) return false;
+  if (roleName === 'superadmin') return true;
+  if (roleName === 'headcurator' && !hasFlag(actor, permissionFlags.SUPER_ADMIN)) return true;
+  return false;
+};
+
+const viewerCanGrantRole = (viewer, role) => {
+  if (role.requires === 'headCurator') {
+    return hasAnyFlag(viewer, [permissionFlags.HEAD_CURATOR, permissionFlags.SUPER_ADMIN]);
+  }
+  if (role.requires === 'superAdmin' || role.requires === 'superAdminPassword') {
+    return hasFlag(viewer, permissionFlags.SUPER_ADMIN);
+  }
+  return false;
+};
+
+const roleRequestHeaders = (roleName, currentUser, superAdminPassword) => {
+  if (roleName === 'superadmin' && hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && superAdminPassword) {
+    return { 'X-Super-Admin-Password': superAdminPassword };
+  }
+  return {};
+};
+
+const reportRoleError = (error, t, fallbackKey) => {
+  if (toastIfRateLimited(error)) {
+    toast.error(getRateLimitMessage(error));
+    return;
+  }
+  const message =
+    error.response?.data?.error ||
+    error.response?.data?.message ||
+    t(fallbackKey);
+  toast.error(message);
+};
+
+const UserEntry = ({
+  user,
+  onRoleChanged,
+  superAdminPassword,
+  currentUser,
+  visibleRoles,
+}) => {
   const { t } = useTranslation('components');
-
   const [isLoading, setIsLoading] = useState(false);
-  // Find the highest role the user has
-  const getHighestRole = () => {
-    for (let i = roleConfig.roles.length - 1; i >= 0; i--) {
-      if (hasFlag(user, roleConfig.roles[i].flag)) {
-        return roleConfig.roles[i];
-      }
-    }
-    return null;
-  };
+  const protectedRow = isOnlyHeadCurator(currentUser) && hasFlag(user, permissionFlags.HEAD_CURATOR);
 
-  // Find the next role to promote to (step-by-step progression)
-  const getNextRole = () => {
-    const currentRole = getHighestRole();
-    if (!currentRole) {
-      return roleConfig.roles[0]; // First role (rater/curator)
-    }
-    const currentIndex = roleConfig.roles.findIndex(r => r.flag === currentRole.flag);
-    if (currentIndex < roleConfig.roles.length - 1) {
-      return roleConfig.roles[currentIndex + 1]; // Next role in sequence
-    }
-    return null; // Already at highest role
-  };
+  const handleToggle = async (role, enable) => {
+    const currentlyOn = hasFlag(user, role.flag);
+    if (enable === currentlyOn) return;
 
-  // Find the previous role to demote to (step-by-step demotion)
-  const getPreviousRole = () => {
-    const currentRole = getHighestRole();
-    if (!currentRole) {
-      return null; // No current role
+    if (!enable && isSelfLockoutRevoke(currentUser, user, role.name)) {
+      toast.error(t('userManagement.errors.cannotRemoveOwnRole'));
+      return;
     }
-    const currentIndex = roleConfig.roles.findIndex(r => r.flag === currentRole.flag);
-    if (currentIndex > 0) {
-      return roleConfig.roles[currentIndex - 1]; // Previous role in sequence
-    }
-    return null; // Already at lowest role
-  };
 
-  // Check if user is at the top role
-  const isAtTopRole = () => {
-    const currentRole = getHighestRole();
-    if (!currentRole) return false;
-    const currentIndex = roleConfig.roles.findIndex(r => r.flag === currentRole.flag);
-    return currentIndex === roleConfig.roles.length - 1;
-  };
-
-  // Check if user is at the bottom role
-  const isAtBottomRole = () => {
-    const currentRole = getHighestRole();
-    if (!currentRole) return true; // No role = at bottom
-    const currentIndex = roleConfig.roles.findIndex(r => r.flag === currentRole.flag);
-    return currentIndex === 0;
-  };
-
-  // Check if user can be completely removed (only if not at bottom role)
-  const canBeRemoved = () => {
-    return isAtBottomRole();
-  };
-
-  // Check if current user can manage this user
-  const canManageUser = () => {
-    // Super admins can manage everyone
-    if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN)) {
-      return true;
-    }
-    
-    // Head curators can only manage regular curators (not other head curators)
-    if (hasAnyFlag(currentUser, [permissionFlags.HEAD_CURATOR, permissionFlags.SUPER_ADMIN])) {
-      const userHighestRole = getHighestRole();
-      if (!userHighestRole) return false;
-      
-      // Head curators can only manage users with curator role (not head curator)
-      return userHighestRole.flag === permissionFlags.CURATOR;
-    }
-    
-    return false;
-  };
-
-  // Check if user should show as protected (head curators when current user is head curator)
-  const shouldShowProtected = () => {
-    if (isOnlyHeadCurator(currentUser)) {
-      const userHighestRole = getHighestRole();
-      return userHighestRole && userHighestRole.flag === permissionFlags.HEAD_CURATOR;
-    }
-    return false;
-  };
-
-  const handleRoleChange = async (promote = true) => {
-    // Only require password for super admins
-    if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) {
-      onError(t('userManagement.errors.passwordRequired'));
+    if (role.requires === 'superAdminPassword' && !superAdminPassword) {
+      toast.error(t('userManagement.errors.passwordRequired'));
       return;
     }
 
     try {
       setIsLoading(true);
-      
-      if (promote) {
-        // Promoting: Grant the next role
-        const targetRole = getNextRole();
-        if (!targetRole) {
-          onError(t('userManagement.errors.alreadyHighestRole'));
-          return;
-        }
-
-        const payload = {
-          username: user.username,
-          role: targetRole.name
-        };
-
-        await api.post(routes.admin.users.grantRole(), payload, {
-          headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
-            'X-Super-Admin-Password': superAdminPassword
-          } : {}
-        });
+      const headers = roleRequestHeaders(role.name, currentUser, superAdminPassword);
+      if (enable) {
+        await api.post(
+          routes.admin.users.grantRole(),
+          { username: user.username, role: role.name },
+          { headers },
+        );
       } else {
-        // Demoting: Revoke the current role
-        const currentRole = getHighestRole();
-        if (!currentRole) {
-          onError(t('userManagement.errors.alreadyLowestRole'));
-          return;
-        }
-
-        const payload = {
-          userId: user.id,
-          role: currentRole.name
-        };
-
-        await api.post(routes.admin.users.revokeRole(), payload, {
-          headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
-            'X-Super-Admin-Password': superAdminPassword
-          } : {}
-        });
+        await api.post(
+          routes.admin.users.revokeRole(),
+          { userId: user.id, role: role.name },
+          { headers },
+        );
       }
-      
-      onUpdate();
+      onRoleChanged(user.id, role.flag, enable);
     } catch (error) {
       console.error('Error updating role:', error);
-      if (toastIfRateLimited(error)) {
-        onError(getRateLimitMessage(error));
-      } else if (error.response?.data?.message === 'Invalid super admin password') {
-        onError(t('userManagement.errors.invalidPassword'));
-      } else {
-        onError(error.response?.data?.error || t('userManagement.errors.updateRoleFailed'));
-      }
+      reportRoleError(error, t, 'userManagement.errors.updateRoleFailed');
     } finally {
       setIsLoading(false);
     }
   };
-
-  const handleDelete = async () => {
-    // Check if user can be removed (not at bottom role)
-    if (!canBeRemoved()) {
-      onError(t('userManagement.errors.cannotRemoveBottomRole'));
-      return;
-    }
-
-    if (!window.confirm(t('userManagement.errors.deleteConfirm'))) {
-      return;
-    }
-
-    // Only require password for super admins
-    if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) {
-      onError(t('userManagement.errors.passwordRequired'));
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const currentRole = getHighestRole();
-      if (!currentRole) {
-        onError(t('userManagement.errors.noRoleToRemove'));
-        return;
-      }
-
-      const payload = { 
-        userId: user.id,
-        role: currentRole.name
-      };
-      await api.post(routes.admin.users.revokeRole(), payload, {
-        headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
-          'X-Super-Admin-Password': superAdminPassword
-        } : {}
-      });
-      onDelete();
-    } catch (error) {
-      console.error('Error removing user:', error);
-      if (toastIfRateLimited(error)) {
-        onError(getRateLimitMessage(error));
-      } else if (error.response?.data?.error === 'Invalid super admin password' || error.response?.data?.message === 'Invalid super admin password') {
-        onError(t('userManagement.errors.invalidPassword'));
-      } else {
-        onError(error.response?.data?.error || t('userManagement.errors.deleteFailed'));
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const currentRole = getHighestRole();
-  const nextRole = getNextRole();
-  const previousRole = getPreviousRole();
-  const atTopRole = isAtTopRole();
-  const atBottomRole = isAtBottomRole();
 
   return (
     <div className="user-entry">
       <div className="user-header">
         <div className="user-info">
-          <UserAvatar 
+          <UserAvatar
             {...userAvatarUrls(user)}
           />
           <div className="user-text">
             <span className="user-name">
               {user.nickname || t('userManagement.userEntry.unknown')}
-              {currentRole && (
-                <span className={`role-badge ${atTopRole ? 'top-role' : ''}`} title={t(currentRole.label)}>
-                  {t(currentRole.label)}
-                  {atTopRole && <span className="top-role-indicator">★</span>}
-                </span>
+              {protectedRow && (
+                <span className="protected-status">{t('userManagement.userEntry.protected')}</span>
               )}
             </span>
             <span className="internal-username">@{user.username}</span>
           </div>
         </div>
-        <div className="user-actions">
-          {/* Show Protected status for head curators when current user is head curator */}
-          {shouldShowProtected() && (
-            <span className="protected-status">Protected</span>
-          )}
-          
-          {/* Only show actions if current user can manage this user */}
-          {canManageUser() && (
-            <>
-                             {/* Promote button - only for bottom role users */}
-               {atBottomRole && nextRole && hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && (
-                 <button 
-                   className="promote-button"
-                   onClick={(e) => {
-                     e.stopPropagation();
-                     handleRoleChange(true);
-                   }}
-                   disabled={(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) || isLoading}
-                   title={t('userManagement.buttons.promoteTo', { role: t(nextRole.label) })}
-                 >
-                   {t('userManagement.buttons.promote')}
-                 </button>
-               )}
-               
-               {/* Demote button - only for top role users */}
-               {atTopRole && previousRole && (
-                 <button 
-                   className="demote-button"
-                   onClick={(e) => {
-                     e.stopPropagation();
-                     handleRoleChange(false);
-                   }}
-                   disabled={(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) || isLoading}
-                   title={t('userManagement.buttons.demoteTo', { role: t(previousRole.label) })}
-                 >
-                   {t('userManagement.buttons.demote')}
-                 </button>
-               )}
-
-               {/* Delete button - only for users who can be removed (not at bottom role) */}
-               {currentRole && canBeRemoved() && (
-                 <button 
-                   className="delete-user-button"
-                   onClick={(e) => {
-                     e.stopPropagation();
-                     handleDelete();
-                   }}
-                   disabled={(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) || isLoading}
-                 >
-                   {t('userManagement.userEntry.buttons.remove')}
-                 </button>
-               )}
-            </>
-          )}
-        </div>
+      </div>
+      <div className="user-roles">
+        {visibleRoles.map((role) => {
+          const isOn = hasFlag(user, role.flag);
+          const needsPassword = role.requires === 'superAdminPassword' && !superAdminPassword;
+          const selfLocked = isOn && isSelfLockoutRevoke(currentUser, user, role.name);
+          const canToggle = !protectedRow && !isLoading && !needsPassword && !selfLocked;
+          return (
+            <div
+              key={role.name}
+              className={`user-role-toggle${canToggle ? '' : ' is-disabled'}`}
+            >
+              <StateDisplay
+                label={t(role.labelKey)}
+                currentState={isOn ? 'on' : 'off'}
+                states={['off', 'on']}
+                activeStates={['on']}
+                showValue={false}
+                width={56}
+                height={24}
+                padding={3}
+                onChange={(next) => {
+                  if (!canToggle) return;
+                  handleToggle(role, next === 'on');
+                }}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) => {
+const UserManagementPopup = ({ onClose, currentUser }) => {
   const { t } = useTranslation(['components', 'common']);
-  
-  // Determine initial mode based on user permissions
-  const getInitialMode = () => {
-    if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN)) {
-      return initialMode;
-    }
-    // If user is head curator, force curator mode
-    if (hasFlag(currentUser, permissionFlags.HEAD_CURATOR)) {
-      return 'curator';
-    }
-    return initialMode;
-  };
-  
-  const [managementMode, setManagementMode] = useState(getInitialMode());
-  const roleConfig = ROLE_CONFIGS[managementMode];
+  const headCuratorOnly = isOnlyHeadCurator(currentUser);
+  const visibleRoles = useMemo(
+    () => STAFF_ROLES.filter((role) => viewerCanGrantRole(currentUser, role)),
+    [currentUser],
+  );
+  const addRoleOptions = useMemo(
+    () => visibleRoles.map((role) => ({
+      value: role.name,
+      label: t(role.labelKey),
+    })),
+    [visibleRoles, t],
+  );
 
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [newUserUsername, setNewUserUsername] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [addRole, setAddRole] = useState(visibleRoles[0]?.name || 'curator');
   const [searchQuery, setSearchQuery] = useState('');
   const [superAdminPassword, setSuperAdminPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+
+  useEffect(() => {
+    if (!visibleRoles.some((role) => role.name === addRole)) {
+      setAddRole(visibleRoles[0]?.name || 'curator');
+    }
+  }, [visibleRoles, addRole]);
 
   const fetchUsers = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await api.get(roleConfig.endpoint);
+      const endpoint = headCuratorOnly
+        ? routes.admin.users.curators()
+        : routes.admin.users.root();
+      const response = await api.get(endpoint);
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
-      setErrorMessage(t('userManagement.errors.loadFailed'));
+      reportRoleError(error, t, 'userManagement.errors.loadFailed');
     } finally {
       setIsLoading(false);
     }
-  }, [roleConfig.endpoint, t]);
+  }, [headCuratorOnly, t]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleModeChange = (newMode) => {
-    // Head curators can only stay in curator mode
-    if (isOnlyHeadCurator(currentUser) &&
-    newMode !== 'curator') {
-      return;
-    }
-    
-    setManagementMode(newMode);
-    setUsers([]);
-    setNewUserUsername('');
-    setSearchQuery('');
-    setErrorMessage('');
-  };
+  const patchUserRole = useCallback((userId, flag, enable) => {
+    setUsers((prev) => prev.map((entry) => (
+      String(entry.id) === String(userId)
+        ? setUserPermission(entry, flag, enable)
+        : entry
+    )));
+  }, []);
 
   const handleAddUser = async () => {
-    if (!newUserUsername.trim()) return;
+    if (!selectedUser?.id && !selectedUser?.username) {
+      toast.error(t('userManagement.errors.selectUser'));
+      return;
+    }
+    const role = STAFF_ROLES.find((entry) => entry.name === addRole);
+    if (!role) return;
 
-    // Only require password for super admins
-    if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) {
-      setErrorMessage(t('userManagement.errors.passwordRequired'));
+    if (role.requires === 'superAdminPassword' && !superAdminPassword) {
+      toast.error(t('userManagement.errors.passwordRequired'));
       return;
     }
 
     try {
-      const payload = { 
-        username: newUserUsername,
-        role: roleConfig.roles[0].name // Start with the lowest role
-      };
-      await api.post(routes.admin.users.grantRole(), payload, {
-        headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
-          'X-Super-Admin-Password': superAdminPassword
-        } : {}
+      setIsAdding(true);
+      const { data } = await api.post(
+        routes.admin.users.grantRole(),
+        {
+          userId: selectedUser.id,
+          username: selectedUser.username,
+          role: role.name,
+        },
+        {
+          headers: roleRequestHeaders(role.name, currentUser, superAdminPassword),
+        },
+      );
+      const granted = data?.user;
+      setUsers((prev) => {
+        const existing = prev.find((entry) => String(entry.id) === String(selectedUser.id || granted?.id));
+        if (existing) {
+          return prev.map((entry) => (
+            String(entry.id) === String(existing.id)
+              ? setUserPermission(entry, role.flag, true)
+              : entry
+          ));
+        }
+        const nextUser = setUserPermission({
+          ...granted,
+          id: granted?.id || selectedUser.id,
+          username: granted?.username || selectedUser.username,
+          nickname: granted?.nickname || selectedUser.nickname,
+          avatarUrl: granted?.avatarUrl || selectedUser.avatarUrl,
+          playerId: granted?.playerId ?? selectedUser.playerId,
+          permissionFlags: granted?.permissionFlags,
+        }, role.flag, true);
+        return [nextUser, ...prev];
       });
-      await fetchUsers();
-      setNewUserUsername('');
+      setSelectedUser(null);
     } catch (error) {
       console.error('Error adding user:', error);
-      if (toastIfRateLimited(error)) {
-        setErrorMessage(getRateLimitMessage(error));
-      } else {
-        setErrorMessage(error.response?.data?.error || error.response?.data?.message || t('userManagement.errors.addFailed'));
-      }
+      reportRoleError(error, t, 'userManagement.errors.addFailed');
+    } finally {
+      setIsAdding(false);
     }
   };
 
-  const handleUpdateUser = useCallback(() => fetchUsers(), [fetchUsers]);
-
-  const handleDeleteUser = useCallback(() => fetchUsers(), [fetchUsers]);
-
-  const handleError = (message) => {
-    setErrorMessage(message);
-  };
-
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = users.filter((user) => {
     const searchLower = searchQuery.toLowerCase();
     return (
       user.username?.toLowerCase().includes(searchLower) ||
       user.nickname?.toLowerCase().includes(searchLower)
     );
   });
+
+  const selectedAddRole = addRoleOptions.find((option) => option.value === addRole) || addRoleOptions[0] || null;
 
   return (
     <PopupShell
@@ -435,24 +320,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
       panelClassName="user-management-popup"
     >
         <div className="popup-header">
-          {/* Only show mode toggle if user is not a head curator */}
-          {!isOnlyHeadCurator(currentUser) && (
-            <div className="mode-toggle">
-              <button
-                className={`mode-button ${managementMode === 'rater' ? 'active' : ''}`}
-                onClick={() => handleModeChange('rater')}
-              >
-                {t('userManagement.modeToggle.rater')}
-              </button>
-              <button
-                className={`mode-button ${managementMode === 'curator' ? 'active' : ''}`}
-                onClick={() => handleModeChange('curator')}
-              >
-                {t('userManagement.modeToggle.curator')}
-              </button>
-            </div>
-          )}
-                     {/* Only show password input for super admins */}
+          <h2>{t('userManagement.title')}</h2>
            {hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && (
              <div className="header-password-input">
               <input type="hidden" name="superadmin-verification-password" />
@@ -491,41 +359,48 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
           {isLoading ? (
             <div className="loading">{t('userManagement.loading')}</div>
           ) : (
-            filteredUsers.map(user => (
+            filteredUsers.map((user) => (
               <UserEntry
                 key={user.id}
                 user={user}
-                onUpdate={handleUpdateUser}
-                onDelete={handleDeleteUser}
+                onRoleChanged={patchUserRole}
                 superAdminPassword={superAdminPassword}
-                onError={handleError}
-                roleConfig={roleConfig}
                 currentUser={currentUser}
+                visibleRoles={visibleRoles}
               />
             ))
           )}
         </div>
 
-        {/* Only show add user section if user can add users (super admin or head curator) */}
-        {(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) || hasFlag(currentUser, permissionFlags.HEAD_CURATOR)) && (
+        {visibleRoles.length > 0 && (
           <div className="add-user-section">
-            <input
-              type="text"
-              autoComplete='new-user-username'
-              value={newUserUsername}
-              onChange={(e) => setNewUserUsername(e.target.value)}
+            <ProfileSelector
+              type="user"
+              className="user-add-picker"
+              value={selectedUser}
+              onChange={setSelectedUser}
               placeholder={t('userManagement.addUser.placeholder')}
+              userSearchIncludeSelf
+              portalDropdown
+              allowRequestNew={false}
+              disabled={isAdding}
             />
-            <button onClick={handleAddUser}>{t('userManagement.addUser.button')}</button>
+            <CustomSelect
+              options={addRoleOptions}
+              value={selectedAddRole}
+              onChange={(option) => {
+                if (option?.value) setAddRole(option.value);
+              }}
+              width="14rem"
+              placeholder={t('userManagement.addUser.rolePlaceholder')}
+              aria-label={t('userManagement.addUser.rolePlaceholder')}
+              isDisabled={isAdding}
+            />
+            <button type="button" onClick={handleAddUser} disabled={isAdding}>
+              {t('userManagement.addUser.button')}
+            </button>
           </div>
         )}
-
-      {errorMessage && (
-        <div className="error-message-container">
-          <p className="error-text">{errorMessage}</p>
-          <button className="close-error" onClick={() => setErrorMessage('')}>×</button>
-        </div>
-      )}
     </PopupShell>
   );
 };
