@@ -1,9 +1,5 @@
 {
   "title": "ユーザーの管理",
-  "modeToggle": {
-    "rater": "レーター",
-    "curator": "キュレーター"
-  },
   "loading": "ユーザーを読み込んでいます...",
   "search": {
     "placeholder": "ユーザー名またはIDで検索..."
@@ -14,39 +10,30 @@
     }
   },
   "addUser": {
-    "placeholder": "ユーザー名を入力してください",
-    "button": "ユーザーの追加"
+    "placeholder": "ユーザーを検索...",
+    "button": "ユーザーの追加",
+    "rolePlaceholder": "ロール",
+    "change": "変更"
   },
   "userEntry": {
     "unknown": "不明",
-    "buttons": {
-      "remove": "削除"
-    }
+    "protected": "保護済み"
   },
   "roles": {
     "rater": "レーター",
     "superadmin": "スーパー管理者",
     "curator": "キュレーター",
-    "headCurator": "主任キュレーター"
-  },
-  "buttons": {
-    "promote": "昇格",
-    "demote": "降格",
-    "promoteTo": "{{role}} に昇格する",
-    "demoteTo": "{{role}} に降格する"
+    "headCurator": "主任キュレーター",
+    "submissionManager": "投稿マネージャー"
   },
   "errors": {
     "passwordRequired": "パスワードが必要です",
     "invalidPassword": "スーパー管理者のパスワードが無効です",
-    "deleteConfirm": "このユーザーを削除してもよろしいですか？",
     "updateRoleFailed": "ロールの更新に失敗しました",
-    "deleteFailed": "ユーザーの削除に失敗しました",
     "loadFailed": "ユーザーの読み込みに失敗しました",
     "addFailed": "ユーザーの追加に失敗しました",
-    "userNotFound": "ユーザーが見つかりません",
-    "alreadyHighestRole": "そのユーザーはすでに最上位のロールを持っています",
-    "alreadyLowestRole": "そのユーザーはすでに最も低いロールを持っています",
-    "noRoleToRemove": "ユーザーには削除権限がありません",
-    "cannotRemoveBottomRole": "基本ロールからユーザーを削除することはできません。降格のみ可能です。"
+    "selectUser": "先にユーザーを選択してください",
+    "cannotRemoveOwnRole": "自分の管理ロールは削除できません",
+    "userNotFound": "ユーザーが見つかりません"
   }
 }

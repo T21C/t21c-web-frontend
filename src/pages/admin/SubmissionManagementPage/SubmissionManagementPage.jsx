@@ -17,7 +17,7 @@ import SubmissionJobsDrawer from './components/SubmissionJobsDrawer';
 import SubmissionSortControl, { useStoredSubmissionSort } from './components/SubmissionSortControl';
 import { RefreshIcon } from '@/components/common/icons';
 import { useNotification } from '@/contexts/NotificationContext';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canReviewSubmissions } from '@/utils/UserPermissions';
 import { useSubmissionEvents } from '@/hooks/useSubmissionEvents';
 import {
   PASS_DIFFICULTY_SUBTYPES,
@@ -94,7 +94,7 @@ const SubmissionManagementPage = () => {
   const [drawerExpanded, setDrawerExpanded] = useState(false);
   const snapshotReqIdRef = useRef(0);
   const { pendingLevelSubmissions, pendingPassSubmissions } = useNotification();
-  const canUsePanel = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const canUsePanel = canReviewSubmissions(user);
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -203,7 +203,7 @@ const SubmissionManagementPage = () => {
     );
   }
 
-  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+  if (!canReviewSubmissions(user)) {
     return (
       <AccessDenied
         metaTitle={t('submissionManagement.meta.title')}

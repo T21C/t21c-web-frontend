@@ -6,10 +6,13 @@ import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useMemo } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
+import { canReviewSubmissions, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const AdminPage = () => {
   const {t} = useTranslation('pages')
   const location = useLocation();
+  const { user } = useAuth();
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
@@ -124,6 +127,12 @@ const AdminPage = () => {
     }
   ];
 
+  const visibleLinks = hasFlag(user, permissionFlags.SUPER_ADMIN)
+    ? adminLinks
+    : canReviewSubmissions(user)
+      ? adminLinks.filter((link) => link.id === 'submissions')
+      : adminLinks;
+
   return (
     <div className="admin-page">
       <MetaTags {...pageMeta} />
@@ -132,7 +141,7 @@ const AdminPage = () => {
       <div className="admin-container">
         <h1 className="admin-title">{t("admin.title")}</h1>
         <div className="admin-grid">
-          {adminLinks.map((link) => (
+          {visibleLinks.map((link) => (
             <Link 
               key={link.id} 
               className="admin-card"

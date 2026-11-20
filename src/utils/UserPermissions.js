@@ -7,7 +7,8 @@ export const permissionFlags = {
   RATING_BANNED: 1n << 58n,
   TAG_VOTE_BANNED: 1n << 57n,
   RERATE_REQUEST_BANNED: 1n << 56n, 
-  HEAD_CURATOR: 1n << 32n,       
+  HEAD_CURATOR: 1n << 32n,
+  SUBMISSION_MANAGER: 1n << 33n,
   CURATOR: 1n << 31n,
   EMAIL_VERIFIED: 1n << 0n,
 };
@@ -58,6 +59,13 @@ export const canUseCurationZen = (user) =>
   hasAnyFlag(user, [
     permissionFlags.CURATOR,
     permissionFlags.HEAD_CURATOR,
+    permissionFlags.SUPER_ADMIN,
+  ]);
+
+/** Review the level/pass submission queue. Super admin is a superset. */
+export const canReviewSubmissions = (user) =>
+  hasAnyFlag(user, [
+    permissionFlags.SUBMISSION_MANAGER,
     permissionFlags.SUPER_ADMIN,
   ]);
 
