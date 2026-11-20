@@ -13,7 +13,7 @@ import { buildPlayerMeta } from '@/utils/meta';
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
-import { ShieldIcon, EditIcon, PackIcon } from "@/components/common/icons";
+import { ShieldIcon, EditIcon, PackIcon, CrownIcon } from "@/components/common/icons";
 import caseOpen from "@/assets/icons/case.png";
 import { CaseOpenSelector } from "@/components/common/selectors";
 import { useScrollParent } from "@/components/common/VirtualList";
@@ -896,6 +896,20 @@ const ProfilePage = () => {
                             >
                               <ShieldIcon color="var(--color-white)" size={32} />
                             </button>
+                          );
+                        }
+                        const badgePlayerId = playerData?.id ?? playerId;
+                        if (badgePlayerId) {
+                          elements.push(
+                            <Link
+                              key="badges"
+                              className="profile-header__action-btn"
+                              to={`/profile/${badgePlayerId}/badges`}
+                              title={t("badges.open")}
+                              aria-label={t("badges.open")}
+                            >
+                              <CrownIcon color="var(--color-white)" size={28} />
+                            </Link>
                           );
                         }
                         if (playerData?.user?.username) {

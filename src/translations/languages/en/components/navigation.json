@@ -91,7 +91,8 @@
         "songs": "Songs",
         "artists": "Artists",
         "keyboards": "Keyboards",
-        "resources": "Resources"
+        "resources": "Resources",
+        "badges": "Badges"
       }
     },
     "badges": {

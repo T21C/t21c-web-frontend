@@ -32,7 +32,9 @@
     "keyboards": "Claviers",
     "keyboardsDesc": "Formes, produits et switches du catalogue staff",
     "resources": "Ressources",
-    "resourcesDesc": "Ajouter, modifier et réordonner les liens Notion et la documentation utiles"
+    "resourcesDesc": "Ajouter, modifier et réordonner les liens Notion et la documentation utiles",
+    "badges": "Badges",
+    "badgesDesc": "Définir les badges collectionnables des joueurs et des créateurs"
   },
   "oauthClients": {
     "meta": {
@@ -130,4 +132,3 @@
     "reorderError": "Impossible de réordonner les formats"
   }
 }
- 
