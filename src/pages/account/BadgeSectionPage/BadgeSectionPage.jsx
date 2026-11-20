@@ -9,6 +9,7 @@ import { MetaTags } from '@/components/common/display';
 import { CameraIcon } from '@/components/common/icons';
 import { CustomSelect } from '@/components/common/selectors';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import './badgeSectionPage.css';
 
 const SLOT_COUNT = 5;
@@ -96,7 +97,7 @@ function badgeCreditText(badge, t) {
 
 function BadgeMark({ badge }) {
   if (badge?.icon && /^https?:\/\//.test(badge.icon)) {
-    return <img className="badge-section__icon" src={badge.icon} alt="" />;
+    return <img className="badge-section__icon" src={selectIconSize(badge.icon, ICON_SIZE.MEDIUM)} alt="" />;
   }
   return <span className="badge-section__glyph">{badge?.icon || '🏅'}</span>;
 }
