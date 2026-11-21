@@ -587,9 +587,15 @@ const BadgeAdminPage = () => {
 
   useEffect(() => { load(); }, [load]);
 
-  const trackedJob = useMemo(() => (
-    jobs.find((job) => job.status === 'running') || jobs.find((job) => job.status === 'pending') || null
-  ), [jobs]);
+  const trackedJob = useMemo(() => {
+    const running = jobs.find((job) => job.status === 'running');
+    if (running) return running;
+    return jobs.reduce((oldest, job) => {
+      if (job.status !== 'pending') return oldest;
+      if (!oldest || job.id < oldest.id) return job;
+      return oldest;
+    }, null);
+  }, [jobs]);
 
   useEffect(() => {
     if (!trackedJob) return undefined;
@@ -607,9 +613,17 @@ const BadgeAdminPage = () => {
     const toastId = toast.loading(t('badges.admin.backfillCancelling', { defaultValue: 'Cancelling backfill' }));
     try {
       await api.post(routes.admin.badges.cancel(jobId));
-      toast.success(t('badges.admin.backfillCancelled', { defaultValue: 'Backfill cancelled' }), { id: toastId });
       const jobRes = await api.get(routes.admin.badges.jobs());
-      setJobs(jobRes.data?.jobs ?? []);
+      const nextJobs = jobRes.data?.jobs ?? [];
+      setJobs(nextJobs);
+      const stillActive = nextJobs.some((job) => (
+        job.id === jobId && (job.status === 'running' || job.status === 'pending')
+      ));
+      if (stillActive) {
+        toast.error(t('badges.admin.backfillCancelFailed', { defaultValue: 'Could not cancel the backfill' }), { id: toastId });
+        return;
+      }
+      toast.success(t('badges.admin.backfillCancelled', { defaultValue: 'Backfill cancelled' }), { id: toastId });
     } catch (error) {
       toast.error(error?.response?.data?.error || t('badges.admin.backfillCancelFailed', { defaultValue: 'Could not cancel the backfill' }), { id: toastId });
     }
@@ -925,7 +939,9 @@ const BadgeAdminPage = () => {
             {jobs.map((job) => (
               <div key={job.id} className="badge-admin-page__job">
                 <span>#{job.id} {job.scope} {job.status}{job.phase ? ` · ${job.phase}` : ''}</span>
-                {(job.status === 'running' || job.status === 'pending') && <BackfillBars job={job} definitions={definitions} t={t} />}
+                {job.id === trackedJob?.id && (job.status === 'running' || job.status === 'pending') && (
+                  <BackfillBars job={job} definitions={definitions} t={t} />
+                )}
                 {job.summary && <span>{job.summary}</span>}
               </div>
             ))}
