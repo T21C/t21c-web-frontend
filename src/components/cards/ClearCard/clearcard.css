@@ -399,6 +399,7 @@
   white-space: nowrap;
   font-size: 0.85rem;
   margin-left: auto;
+  align-self: flex-end;
 }
 
 @container (max-width: 420px) {
