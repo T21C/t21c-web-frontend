@@ -1,169 +1,872 @@
 {
   "meta": {
-    "title": "Badges",
-    "description": "Collectable player and creator badges"
+    "title": "徽章",
+    "description": "玩家与谱师可收集的徽章"
   },
-  "open": "Badges",
-  "title": "Badges",
-  "empty": "No badges to show yet.",
-  "locked": "Locked",
-  "earned": "Earned",
-  "tier": "Tier {{tier}}",
+  "open": "徽章",
+  "title": "徽章",
+  "empty": "暂时没有可显示的徽章。",
+  "ungrouped": "未分组",
+  "locked": "未获得",
+  "earned": "已获得",
+  "tier": "等级 {{tier}}",
   "credit": "{{credit}} / {{next}}",
-  "saveEquip": "Save slots",
-  "saved": "Badge slots saved",
-  "saveFailed": "Could not save badge slots",
-  "loadFailed": "Could not load badges",
-  "confirmAccuracy": "Accuracy {{value}}",
-  "confirmJudgements": "Judgements {{value}}",
-  "help": {
-    "title": "Badge engine",
-    "intro": "This page documents the engine. Secret badge rows stay in the database and are not part of this help text. A formula never reaches the public site until that badge is earned.",
-    "close": "Close",
-    "formulaTitle": "Excel-style conditions",
-    "formulaBody": "Where a badge filters clears or charts, the condition is a formula like Excel. Start with =. Compare fields with =, <>, >, >=, <, and <=. Combine them with AND, OR, NOT, and IF. ISBLANK checks a missing value, EXACT compares text with case, and HAS looks for a curation name. Example: =AND(speed>=2, OR(family=\"G\", family=\"U\")). An empty formula counts every row. The formula box only appears for badge types that filter rows.",
-    "filterTitle": "Public clears",
-    "filterBody": "Only passes and charts that are not hidden and not deleted are visible. Wrong-judgement passes stay. A missing judgement bucket counts as 0. World-first checks also require speed exactly 1 and then follow the live world-first flag, which moves when an earlier 1.0x upload is accepted. The 5/40/5 placeholder sheet is skipped only by reducers that read judgements, accuracy, or score, and those reducers also ignore an all-zero sheet. Upload times 2023-01-01 07:27:27 and 2023-07-27 07:27:27 are unknown and are skipped by gap, sequence, nth-clearer, and earned-time ordering.",
-    "identityTitle": "Chart identity",
-    "identityBody": "level uses the chart id. chartSubgroup and vfxSubgroup collapse linked charts that share that subgroup. group collapses the whole link group. A clear only contributes its own chart's key count, difficulty, and curation. Clearing the unlimited sibling does not inherit the 10-key chart's key count. For a collapsed identity, the sibling clear is a reclear, not a second chart.",
-    "historyTitle": "Difficulty at the time",
-    "historyBody": "difficultyAt walks level rerate history against the upload time. Before the first recorded change, the difficulty is that row's previous difficulty. With no history, the clear-time snapshot is used, then the chart's current difficulty. Snapshots are written when a pass is accepted or a world-first flag is refreshed. They store difficulty, base score, PP base score, curation type ids, and charter and VFXer ids. Older passes stay on current difficulty until something rewrites them.",
-    "curveTitle": "Curve, bars, and tier names",
-    "curveBody": "curve(credit, start, step) earns a tier when credit reaches start, then start plus step, and so on. curveDown(credit, start, step) is the descending form: start 4 and step 1 produces tiers at 4, then 3, then 2, then 1. result(tier, credit, from, to) sets the tier and the bar directly, which is how an all-or-nothing badge keeps a partial count from earning a tier. A plain number of 1 or more is itself the tier. Tier labels are { minTier, label } pairs. The label shown is the one with the greatest minTier that is still at or below the earned tier. common and legendary are examples, not a fixed list. An empty list shows no label. Shared creator credit is written in the expression, usually 0.5 when more than one person holds the role. Half a credit does not reach a start of 1.",
-    "grantTitle": "Grant modes",
-    "grantBody": "live recomputes and can be lost. persistTier keeps the highest tier reached. persistSnapshot freezes the chart set that satisfied a percent badge, so later charts do not raise the denominator. resetOnGrowth uses the live target, which is the pack default: a chart added to the pack removes completion until it is cleared. manualLock stays off until a reviewer approves a video. chase stores the current number, such as the lowest uncleared chart id. Saving a definition keeps persistTier and persistSnapshot results unless Replace earned tiers is on.",
-    "backfillTitle": "Backfill",
-    "backfillBody": "now evaluates every current public clear when the badge is published. forward ignores passes created before publication. queue only creates review rows and does not grant, except a manualLock badge which grants after approval. The job records how many passes it skipped for a placeholder sheet, an unknown upload time, or a missing difficulty history. Adding a badge later is the same job. Facts that were never stored, such as curation at the moment of an old clear, cannot be reconstructed.",
-    "reducersTitle": "Reducers",
-    "reducersBody": "threshold counts filtered clears or creator charts. aggregate is count, countDistinct, maxPerIdentity, maxPerSong, maxChartClears, maxSongsPerArtist, or ratingWeek. Filters include minSpeed, speedEquals, worldsFirst, worldsFirstPP, purePerfect, families, difficultyNames, difficultySet, key counts, minDurationMs, useDifficultyAt, requireNoPriorClear, curationTypes, role, and sole. coverage fills bins from a named set, every reference chart, one curation type, or a list of curation types. prefix stops at the first gap. percentOf needs fraction and minCharts. record uses metric accuracy, score, or speed, with optional world-first and highest score or speed. creditFrom otherClears uses the largest crowd on a chart the player still leads. pattern matches one pass: accuracyIncludes, ppMinusOne, minMisses, noMisses, symmetry, technicallyPure, noPerfects, asymmetry, gamma, bucketEquals, judgementPattern (7 integers: too-early, early, ePerfect, perfect, lPerfect, late, too-late), month, day, levelIds, families, minSpeed, minDurationMs, scoreEndsWith, or sharedAccuracy. sequence uses order, blocks, or rangeSize, with excludeDifficultyNames, perStep, and consecutive. gap uses minDays and stores the largest gap. nthClearer uses n. chase uses excludeDifficultyNames and shows the lowest uncleared id. best uses metric keyCount, perfectCount, difficultyNumber, misses, speed, or accuracy. manual wraps a pattern or sequence and waits for a review. pack takes packId. Folders and notes are ignored, a chart listed twice counts once, and the tier is earned only when every public chart in the pack is cleared. Official levels are whichever pack you select.",
-    "reviewTitle": "Reviews and secrecy",
-    "reviewBody": "Approving a review requires a video URL and records the reviewer. Unearned secret badges are omitted from profiles. Other unearned badges show a name, icon, and progress bar, including the next number, but not the requirement text or the parameters. After a badge is earned, its tier label and proving passes are shown. accuracyFull and judgementsFull add server-rendered confirm text on that badge only. Public score cards keep the normal accuracy formatter.",
-    "valueTitle": "Value expressions",
-    "valueBody": "A badge expression returns the tier. clears are this player's public clears. levels are the public charts. mine are charts the creator is credited on, or charts this player has cleared. Filter with .filter(item => item.difficulty == \"G10\") and count with count(...) or .length. curve(count, start, step) and curveDown(count, start, step) turn that count into tiers. result(tier, credit, from, to) sets the tier and the bar directly. difficulty(\"G10\") gives total, cleared, and ratio. sequence([ids]) and consecutive([ids], item => item.ppMinusOne) walk clears in upload order and return how many steps matched. blocks(10, \"Impossible\", \"Censored\") returns completed id blocks. prefix(set) counts a leading difficulty set. gap() is the longest gap in days. pack() is the charts in this badge's pack. complete(set) is 1 when every difficulty in the set is charted. nth(100), lead(level, \"accuracy\"), first(level), and shared() read other players. Placeholder 5/40/5 sheets keep their chart fields, but their accuracy and judgement fields are empty. This is a small expression language with JavaScript shape. It does not run arbitrary JavaScript."
-  },
-  "admin": {
-    "metaTitle": "Badge editor",
-    "metaDescription": "Create and recompute collectable badges",
-    "title": "Badges",
-    "help": "Engine help",
-    "new": "New badge",
-    "list": "Definitions",
-    "reviews": "Reviews",
-    "jobs": "Jobs",
-    "save": "Save",
-    "saved": "Badge saved",
-    "saveFailed": "Could not save the badge",
-    "recompute": "Recompute",
-    "recomputed": "Recompute queued",
-    "replace": "Replace earned tiers",
-    "enabled": "Enabled",
-    "secret": "Secret",
-    "slug": "Slug",
-    "name": "Name",
-    "audience": "Audience",
-    "reducer": "Reducer",
-    "grant": "Grant",
-    "identity": "Identity",
-    "backfill": "Backfill",
-    "round": "Round",
-    "direction": "Direction",
-    "start": "Start",
-    "step": "Step",
-    "weight": "Weight",
-    "icon": "Icon",
-    "color": "Color",
-    "stat": "Stat",
-    "purple": "Purple",
-    "confirm": "Confirm",
-    "labels": "Tier labels",
-    "addLabel": "Add label",
-    "minTier": "From tier",
-    "label": "Label",
-    "params": "Params",
-    "packSearch": "Find a pack",
-    "approve": "Approve",
-    "reject": "Reject",
-    "video": "Video URL",
-    "reviewSaved": "Review saved",
-    "reviewFailed": "Could not save the review",
-    "videoRequired": "Add the video URL before approving",
-    "loadFailed": "Could not load badges",
-    "importCode": "Import code",
-    "importTitle": "Import badges",
-    "importHint": "Paste a configuration. Sets match by name and badges match by slug. Packs must already exist.",
-    "loadRequested": "Load requested set",
-    "requestedLoaded": "Requested set loaded",
-    "importAction": "Import",
-    "imported": "Imported {{count}} badges",
-    "importFailed": "Could not import badges",
-    "replaceImport": "Replace earned tiers",
-    "search": "Search",
-    "searchPlaceholder": "Name or slug",
-    "filterAll": "All",
-    "filterPlayer": "Player",
-    "filterCreator": "Creator",
-    "filterSecretOnly": "Secret",
-    "filterPublic": "Public",
-    "filterEnabledOnly": "Enabled",
-    "filterDisabled": "Disabled",
-    "showing": "Showing {{count}} of {{total}}",
-    "noMatches": "No badges match these filters.",
-    "refreshBackfill": "Refresh backfill",
-    "backfillStarting": "Starting backfill",
-    "backfillStarted": "Replacement backfill started",
-    "backfillAlready": "A replacement backfill is already running",
-    "backfillFailed": "Could not start the backfill",
-    "backfillWaiting": "Waiting to count owners",
-    "backfillProgress": "{{processed}} / {{total}} · {{players}} / {{playerTotal}} players · {{creators}} / {{creatorTotal}} creators",
-    "backfillPlayers": "{{processed}} / {{total}} players",
-    "backfillCreators": "{{processed}} / {{total}} creators",
-    "backfillLoading": "Loading every public clear and chart. Owners are not counted yet.",
-    "backfillQueued": "Replacement is waiting behind this run",
-    "backfillCursor": "{{status}} · owner {{current}} / {{total}} · badge {{badge}} / {{badgeTotal}} · {{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
-    "backfillPending": "Queued. The worker has not picked it up yet.",
-    "backfillNow": "Evaluating {{badge}} for {{kind}} {{owner}}. Owner {{current}} of {{total}}, badge {{badgeIndex}} of {{badgeTotal}} for this owner. {{players}} of {{playerTotal}} players and {{creators}} of {{creatorTotal}} creators are fully finished.",
-    "backfillUnknownBadge": "the next badge",
-    "backfillHeartbeat": "Checked in {{seconds}}s ago",
-    "cancelBackfill": "Cancel backfill",
-    "backfillCancelling": "Cancelling backfill",
-    "backfillCancelled": "Backfill cancelled",
-    "backfillCancelFailed": "Could not cancel the backfill",
-    "backfillOwners": "Owners {{done}} / {{total}}",
-    "backfillBadges": "Badges on this owner {{done}} / {{total}}",
-    "backfillRunning": "{{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
-    "backfillBadgesPlayer": "Badges for {{name}} {{done}} / {{total}}",
-    "backfillBadgesCreator": "Badges for {{name}} {{done}} / {{total}}",
-    "backfillPlayersFinished": "{{done}} / {{total}} players finished",
-    "backfillCreatorsFinished": "{{done}} / {{total}} creators finished",
-    "startFrom": "Start from #:",
-    "backfillReport": "Slowest badges",
-    "backfillReportDownload": "Download CSV",
-    "backfillReportFailed": "Could not download the timing report",
-    "backfillEta": "About {{eta}} left",
-    "backfillCancelConfirm": "Cancel the running backfill?"
-  },
-  "search": "Search",
-  "searchPlaceholder": "Badge name",
-  "status": "Status",
-  "statusAll": "All",
-  "statusEarned": "Earned",
-  "statusLocked": "Locked",
-  "statusEquipped": "Equipped",
-  "tone": "Mark",
-  "toneAll": "All marks",
-  "tonePurple": "Purple",
-  "tonePlain": "Standard",
-  "showing": "Showing {{count}} of {{total}}",
-  "noMatches": "No badges match these filters.",
   "creditUnit": "{{credit}} {{unit}}",
   "creditNextUnit": "{{credit}} / {{next}} {{unit}}",
-  "creditChart": "Chart {{credit}}",
+  "creditChart": "谱面 {{credit}}",
+  "reviewHint": "审核员授予此徽章。通关视频需要露出摄像头。",
   "units": {
-    "day": "day",
-    "days": "days",
-    "key": "key",
-    "keys": "keys",
-    "perfect": "perfect",
-    "perfects": "perfects"
+    "day": "天",
+    "days": "天",
+    "key": "键",
+    "keys": "键",
+    "perfect": "完美",
+    "perfects": "完美"
+  },
+  "saveEquip": "保存栏位",
+  "saved": "已保存徽章栏位",
+  "saveFailed": "无法保存徽章栏位",
+  "loadFailed": "无法加载徽章",
+  "confirmAccuracy": "准确率 {{value}}",
+  "confirmJudgements": "判定 {{value}}",
+  "search": "搜索",
+  "searchPlaceholder": "徽章名称",
+  "status": "状态",
+  "statusAll": "全部",
+  "statusEarned": "已获得",
+  "statusLocked": "未获得",
+  "statusEquipped": "已装备",
+  "tone": "标记",
+  "toneAll": "全部标记",
+  "tonePurple": "紫色",
+  "tonePlain": "普通",
+  "showing": "显示 {{count}} / {{total}}",
+  "noMatches": "没有符合这些筛选的徽章。",
+  "help": {
+    "title": "徽章引擎",
+    "subtitle": "授予脚本可以使用的全部列表、字段与结构。",
+    "close": "关闭",
+    "examplesTitle": "示例",
+    "sections": {
+      "lists": {
+        "title": "列表",
+        "intro": "这些名称始终在作用域中。每一项都是一行字段。占位 5/40/5 谱面会保留谱面字段，但准确率与判定字段为空。",
+        "fields": {
+          "clears": {
+            "title": "玩家通关",
+            "desc": "该玩家的公开通关。"
+          },
+          "levels": {
+            "title": "谱面",
+            "desc": "公开谱面。"
+          },
+          "mine": {
+            "title": "署名或已通关的谱面",
+            "desc": "该谱师有署名的谱面，或该玩家已通关的谱面。字段与 levels 相同。"
+          },
+          "ratings": {
+            "title": "评分",
+            "desc": "该用户评分的 <code>levelId</code> 与 <code>week</code> 行。"
+          }
+        }
+      },
+      "clearFields": {
+        "title": "通关字段",
+        "intro": "从 clears 的一行读取。名称区分大小写。",
+        "fields": {
+          "passId": {
+            "title": "通关 ID",
+            "desc": "数字。该 pass 的 ID。"
+          },
+          "levelId": {
+            "title": "谱面 ID",
+            "desc": "数字。这次通关所在的谱面。"
+          },
+          "identity": {
+            "title": "同一性键",
+            "desc": "文本。被徽章同一性合并的谱面共用一个键。"
+          },
+          "speed": {
+            "title": "倍速",
+            "desc": "数字，例如 1 或 2。没有倍速的通关为 null。"
+          },
+          "keyCount": {
+            "title": "键数",
+            "desc": "键数，或 null。"
+          },
+          "difficulty": {
+            "title": "当前难度",
+            "desc": "文本。谱面现在的难度名，例如 G10。"
+          },
+          "difficultyAt": {
+            "title": "上传时难度",
+            "desc": "文本。通关上传时的难度名。"
+          },
+          "family": {
+            "title": "当前系列",
+            "desc": "文本。当前难度所属系列，例如 G、U、GQ、UQ 或 QQ。"
+          },
+          "familyAt": {
+            "title": "上传时系列",
+            "desc": "文本。difficultyAt 的系列。"
+          },
+          "song": {
+            "title": "曲名",
+            "desc": "文本。谱面没有曲名时为空。"
+          },
+          "songId": {
+            "title": "曲目 ID",
+            "desc": "数字，或 null。"
+          },
+          "durationMs": {
+            "title": "时长",
+            "desc": "谱面时长（毫秒），或 null。"
+          },
+          "accuracy": {
+            "title": "准确率比值",
+            "desc": "0 到 1 的数字。占位谱面上为 null。"
+          },
+          "accuracyText": {
+            "title": "显示准确率",
+            "desc": "与站点相同格式的文本，例如 99.995。占位谱面上为空。"
+          },
+          "score": {
+            "title": "分数",
+            "desc": "分数 v2 的数字。占位谱面上为 null。"
+          },
+          "scoreText": {
+            "title": "显示分数",
+            "desc": "固定三位小数的分数，例如 100.000。"
+          },
+          "worldsFirst": {
+            "title": "1.0× 世界第一",
+            "desc": "仅当倍速恰好为 1 且当前世界第一旗帜已设置时为真。"
+          },
+          "isWorldsFirst": {
+            "title": "世界第一旗帜",
+            "desc": "任意倍速下的原始旗帜。不要求倍速为 1。"
+          },
+          "worldsFirstPP": {
+            "title": "PP 世界第一",
+            "desc": "这次通关持有世界第一纯完美时为真。"
+          },
+          "ancient": {
+            "title": "占位谱面",
+            "desc": "5/40/5 占位为真。此时准确率与判定字段为空。"
+          },
+          "xPerfect": {
+            "title": "X-perfect 模式",
+            "desc": "以 X-perfect 模式游玩时为真。"
+          },
+          "reference": {
+            "title": "参考谱面",
+            "desc": "该谱面是参考谱面时为真。"
+          },
+          "curation": {
+            "title": "精选名称",
+            "desc": "文本列表，例如 C3 或 V3。使用 <code>.includes</code>。"
+          },
+          "charterCount": {
+            "title": "谱师人数",
+            "desc": "该谱面署名的谱师人数。"
+          },
+          "vfxerCount": {
+            "title": "视效人数",
+            "desc": "该谱面署名的 VFXer 人数。"
+          },
+          "ownerIsCharter": {
+            "title": "所有者是谱师",
+            "desc": "该谱师，或作为谱师的玩家，是该谱面谱师时为真。"
+          },
+          "ownerIsVfxer": {
+            "title": "所有者是视效",
+            "desc": "该谱师是该谱面的 VFXer 时为真。"
+          },
+          "noPriorClear": {
+            "title": "该同一性的首次通关",
+            "desc": "在已知上传时间的该同一性最早通关上为真。"
+          },
+          "month": {
+            "title": "上传月份",
+            "desc": "UTC 月份，1 到 12。上传时间未知时为 null。"
+          },
+          "day": {
+            "title": "上传日期",
+            "desc": "UTC 日。上传时间未知时为 null。"
+          },
+          "uploadMs": {
+            "title": "上传时间",
+            "desc": "上传时间（毫秒），未知时为 null。"
+          }
+        },
+        "examples": {
+          "worldsFirst": "<b><code>clear.worldsFirst == true</code></b> 是 1.0× 世界第一。<b><code>clear.isWorldsFirst</code></b> 是任意倍速下的旗帜。",
+          "accuracyText": "<b><code>clear.accuracyText.endsWith(\"31\")</code></b> 匹配显示准确率，而不是原始比值。"
+        }
+      },
+      "judgements": {
+        "title": "判定字段",
+        "intro": "在占位或全零谱面上为空。缺失的判定桶计为 0。Too-late 不是这里的字段。",
+        "fields": {
+          "misses": {
+            "title": "Miss",
+            "desc": "Too-early 数量。earlyDouble 桶。"
+          },
+          "earlies": {
+            "title": "Early 单判",
+            "desc": "Early 单判数量。"
+          },
+          "lates": {
+            "title": "Late 单判",
+            "desc": "Late 单判数量。"
+          },
+          "ePerfect": {
+            "title": "Early 完美",
+            "desc": "Early 完美数量。"
+          },
+          "lPerfect": {
+            "title": "Late 完美",
+            "desc": "Late 完美数量。"
+          },
+          "perfect": {
+            "title": "中央完美",
+            "desc": "中央桶的完美。"
+          },
+          "perfects": {
+            "title": "完美合计",
+            "desc": "中央完美，加上 X-perfect 模式下的 perfect-minus 与 perfect-plus。"
+          },
+          "perfectMinus": {
+            "title": "Perfect minus",
+            "desc": "X-perfect 桶。该模式外为 0。"
+          },
+          "perfectPlus": {
+            "title": "Perfect plus",
+            "desc": "X-perfect 桶。该模式外为 0。"
+          },
+          "purePerfect": {
+            "title": "纯完美",
+            "desc": "准确率恰好为 100% 时为真。"
+          },
+          "ppMinusOne": {
+            "title": "偏离完美带一判",
+            "desc": "恰好一判在完美带外且没有 miss 时为真。"
+          },
+          "noMisses": {
+            "title": "无 miss",
+            "desc": "miss 为 0 且谱面非空时为真。"
+          },
+          "symmetry": {
+            "title": "对称分布",
+            "desc": "Early 单判等于 Late 单判、Early 完美等于 Late 完美，且不是纯完美时为真。"
+          },
+          "technicallyPure": {
+            "title": "技术纯",
+            "desc": "没有 Early 或 Late 完美，同时既有 Early 单判又有 Late 单判时为真。"
+          },
+          "noPerfects": {
+            "title": "无完美",
+            "desc": "完美合计为 0 且谱面非空时为真。"
+          },
+          "asymmetry": {
+            "title": "不对称分布",
+            "desc": "某个非完美桶大于完美合计时为真。"
+          }
+        },
+        "examples": {
+          "symmetry": "<b><code>clear.symmetry == true && (clear.familyAt == \"G\" || clear.familyAt == \"U\")</code></b> 保留对称的 G 或 U 通关。",
+          "ppMinusOne": "<b><code>clear.ppMinusOne == true</code></b> 是一判在完美带外且零 miss。"
+        }
+      },
+      "levelFields": {
+        "title": "谱面字段",
+        "intro": "从 levels 或 mine 的一行读取。",
+        "fields": {
+          "levelId": {
+            "title": "谱面 ID",
+            "desc": "数字。"
+          },
+          "identity": {
+            "title": "同一性键",
+            "desc": "文本。合并规则与通关相同。"
+          },
+          "difficulty": {
+            "title": "难度名",
+            "desc": "当前难度名。"
+          },
+          "family": {
+            "title": "系列",
+            "desc": "当前难度所属系列。"
+          },
+          "song": {
+            "title": "曲名",
+            "desc": "文本。"
+          },
+          "songId": {
+            "title": "曲目 ID",
+            "desc": "数字，或 null。"
+          },
+          "durationMs": {
+            "title": "时长",
+            "desc": "毫秒，或 null。"
+          },
+          "clears": {
+            "title": "通关数",
+            "desc": "该谱面有多少次公开通关。"
+          },
+          "reference": {
+            "title": "参考谱面",
+            "desc": "该谱面是参考谱面时为真。"
+          },
+          "curation": {
+            "title": "精选名称",
+            "desc": "文本列表。使用 <code>.includes</code>。"
+          },
+          "charterCount": {
+            "title": "谱师人数",
+            "desc": "署名谱师人数。"
+          },
+          "vfxerCount": {
+            "title": "视效人数",
+            "desc": "署名 VFXer 人数。"
+          },
+          "ownerIsCharter": {
+            "title": "所有者是谱师",
+            "desc": "该谱师制作了此谱面时为真。"
+          },
+          "ownerIsVfxer": {
+            "title": "所有者是视效",
+            "desc": "该谱师是 VFXer 时为真。"
+          },
+          "artistIds": {
+            "title": "曲师 ID",
+            "desc": "该曲的曲师 ID 列表。"
+          },
+          "rivals": {
+            "title": "其他玩家",
+            "desc": "有非占位通关的其他玩家人数。"
+          }
+        }
+      },
+      "structures": {
+        "title": "结构",
+        "intro": "脚本使用 JavaScript 形态。它不会运行任意 JavaScript。<code>//</code> 行注释和 <code>/* */</code> 块注释会被跳过。",
+        "fields": {
+          "eq": {
+            "title": "相等",
+            "desc": "<code>==</code> 和单个 <code>=</code> 做宽松比较。<code>===</code> 做严格比较。文本区分大小写。"
+          },
+          "compare": {
+            "title": "大小",
+            "desc": "<code>&gt;</code>、<code>&gt;=</code>、<code>&lt;</code> 和 <code>&lt;=</code> 比较数字。"
+          },
+          "and": {
+            "title": "组合",
+            "desc": "<code>&amp;&amp;</code> 要求两边。<code>||</code> 只要一边。"
+          },
+          "not": {
+            "title": "非",
+            "desc": "<code>!</code> 翻转条件。<code>!=</code> 和 <code>!==</code> 是否定比较。"
+          },
+          "ternary": {
+            "title": "选择",
+            "desc": "<code>condition ? whenTrue : whenFalse</code> 选出一个结果。"
+          },
+          "arrow": {
+            "title": "函数",
+            "desc": "<code>item =&gt; item.speed &gt;= 2</code> 是函数。<code>{ return ... }</code> 也可以。"
+          },
+          "array": {
+            "title": "列表字面量",
+            "desc": "<code>[1, 2, 3]</code> 构建列表。用 <code>[0]</code> 取下标。"
+          },
+          "filter": {
+            "title": "保留行",
+            "desc": "<code>.filter(item =&gt; ...)</code> 返回匹配的行。",
+            "example": "<code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code> 只保留 G10 通关。"
+          },
+          "map": {
+            "title": "转换行",
+            "desc": "<code>.map(item =&gt; item.levelId)</code> 构建新列表。",
+            "example": "<code>clears.map(clear =&gt; clear.levelId)</code> 是每次通关对应的谱面 ID 列表。"
+          },
+          "some": {
+            "title": "任一匹配",
+            "desc": "<code>.some(item =&gt; ...)</code> 有一行匹配即为真。",
+            "example": "<code>clears.some(clear =&gt; clear.misses &gt; 75)</code> 在任何通关 miss 超过 75 时为真。"
+          },
+          "every": {
+            "title": "全部匹配",
+            "desc": "<code>.every(item =&gt; ...)</code> 每一行都匹配才为真。空列表为真。",
+            "example": "<code>[\"C1\", \"C2\"].every(name =&gt; mine.some(level =&gt; level.curation.includes(name)))</code> 仅当两种精选都存在时为真。"
+          },
+          "find": {
+            "title": "第一个匹配",
+            "desc": "<code>.find(item =&gt; ...)</code> 返回第一个匹配行，或 null。",
+            "example": "<code>clears.find(clear =&gt; clear.levelId == 1)</code> 是谱面 1 的第一次通关，或 null。"
+          },
+          "includes": {
+            "title": "包含",
+            "desc": "列表上用 <code>.includes(value)</code>。文本上用 <code>.includes</code>、<code>.startsWith</code> 和 <code>.endsWith</code>。",
+            "example": "<code>clear.curation.includes(\"V3\")</code> 在该谱面有 V3 精选时为真。"
+          },
+          "length": {
+            "title": "大小",
+            "desc": "列表或文本的 <code>.length</code>。<code>count(list)</code> 对列表是同样的大小。",
+            "example": "<code>clears.length</code> 是通关次数。<code>\"G10\".length</code> 是 3。"
+          },
+          "text": {
+            "title": "文本大小写",
+            "desc": "<code>.toLowerCase()</code> 和 <code>.toUpperCase()</code>。",
+            "example": "<code>\"WYSI\".toLowerCase()</code> 是 wysi。<code>clear.accuracyText.endsWith(\"31\")</code> 检查显示准确率。"
+          },
+          "optional": {
+            "title": "缺失字段",
+            "desc": "<code>row?.field</code> 在行为 null 时得到 null，而不是失败。"
+          }
+        },
+        "examples": {
+          "filter": "<b><code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code></b> 保留 G10 通关。",
+          "text": "<b><code>clear.song.toLowerCase().includes(\"wysi\")</code></b> 忽略大小写匹配曲名。"
+        }
+      },
+      "numbers": {
+        "title": "数字函数",
+        "intro": "把行或数字变成一个数字。缺失数字在运算中计为 0。",
+        "fields": {
+          "count": {
+            "title": "有多少",
+            "desc": "<code>count(list)</code> 是行数。计入的行是徽章上显示的通关。",
+            "example": "<code>count(clears.filter(clear =&gt; clear.speed &gt;= 2))</code> 在四次通关为 2.0× 或更快时为 4。"
+          },
+          "distinct": {
+            "title": "每个键一次",
+            "desc": "<code>distinct(list, item =&gt; item.identity)</code> 保留每个键的第一行。",
+            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> 在同一谱面通关两次时仍只留一行。"
+          },
+          "sum": {
+            "title": "相加",
+            "desc": "<code>sum(list)</code> 把数字相加。<code>sum(list, item =&gt; item.speed)</code> 把字段相加。",
+            "example": "<code>sum([1, 0.5, 0.5])</code> 是 2。<code>sum(clears, clear =&gt; clear.speed)</code> 把每次倍速相加。"
+          },
+          "min": {
+            "title": "最小",
+            "desc": "<code>min(list)</code> 或 <code>min(list, item =&gt; item.keyCount)</code>。<code>min(a, b)</code> 比较两个数字。",
+            "example": "<code>min(4, 1)</code> 是 1。<code>min(clears.map(clear =&gt; clear.keyCount))</code> 是最低键数。"
+          },
+          "max": {
+            "title": "最大",
+            "desc": "<code>max(list)</code> 或 <code>max(a, b)</code>。",
+            "example": "<code>max(3, 9)</code> 是 9。<code>max(mine.map(level =&gt; level.clears))</code> 是通关最多的谱面。"
+          },
+          "abs": {
+            "title": "绝对值",
+            "desc": "<code>abs(n)</code>。",
+            "example": "<code>abs(-2)</code> 是 2。"
+          },
+          "floor": {
+            "title": "向下取整",
+            "desc": "<code>floor(n)</code>。",
+            "example": "<code>floor(1.9)</code> 是 1。"
+          },
+          "round": {
+            "title": "四舍五入",
+            "desc": "<code>round(n)</code>。",
+            "example": "<code>round(1.5)</code> 是 2。<code>round(1.4)</code> 是 1。"
+          },
+          "ceil": {
+            "title": "向上取整",
+            "desc": "<code>ceil(n)</code>。",
+            "example": "<code>ceil(1.1)</code> 是 2。"
+          },
+          "threshold": {
+            "title": "达到阈值",
+            "desc": "<code>threshold(n, 10)</code> 在 n 至少为 10 时为 1，否则为 0。",
+            "example": "<code>threshold(9, 10)</code> 是 0。<code>threshold(10, 10)</code> 是 1。"
+          }
+        },
+        "examples": {
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> 统计以 2.0× 或更快通关的谱面，每张只计一次。"
+        }
+      },
+      "curves": {
+        "title": "曲线与结果",
+        "intro": "脚本应返回一个等级。曲线把计数变成等级并设置进度条。",
+        "fields": {
+          "curve": {
+            "title": "上升等级",
+            "desc": "<code>curve(credit, start, step)</code> 在 start 获得一级，然后在 start 加 step 再获得，以此类推。",
+            "example": "<code>curve(30, 10, 20)</code> 是等级 2：10 得到等级 1，30 得到等级 2。"
+          },
+          "curveDown": {
+            "title": "下降等级",
+            "desc": "<code>curveDown(credit, start, step)</code> 在 start 获得一级，然后是 start 减 step。",
+            "example": "<code>curveDown(2, 4, 1)</code> 是等级 3，从 4 降到 3 再到 2。"
+          },
+          "result": {
+            "title": "直接设定等级和进度条",
+            "desc": "<code>result(tier, credit, from, to)</code> 直接设定它们，因此部分计数本身不会获得等级。",
+            "example": "<code>result(0, 6, 0, 8)</code> 保持等级 0，进度条显示 8 中的 6。"
+          },
+          "number": {
+            "title": "普通数字",
+            "desc": "1 或更大的数字本身就是等级。更小的是等级 0。",
+            "example": "<code>2</code> 是等级 2。<code>0.5</code> 是等级 0。"
+          }
+        },
+        "examples": {
+          "up": "<b><code>curve(count(clears), 10, 20)</code></b> 在 10 次通关时获得等级 1，之后每 20 一次。",
+          "down": "<b><code>curveDown(min(clears.map(clear =&gt; clear.keyCount)), 4, 1)</code></b> 从 4 键开始往下。",
+          "result": "<b><code>result(ratio &gt;= 0.75 ? 1 : 0, cleared, 0, total)</code></b> 显示计数，只在 75% 时授予等级。"
+        }
+      },
+      "functions": {
+        "title": "宿主函数",
+        "intro": "读取该玩家、该谱师，或其他玩家。",
+        "fields": {
+          "difficulty": {
+            "title": "一个难度",
+            "desc": "<code>difficulty(\"G10\")</code> 返回带 <code>total</code>、<code>cleared</code> 和 <code>ratio</code> 的一行。",
+            "example": "<code>difficulty(\"G10\").cleared</code> 在通关六张 G10 时为 6。<code>.ratio</code> 是 cleared 除以 total。"
+          },
+          "sequence": {
+            "title": "有序谱面 ID",
+            "desc": "<code>sequence([id, id])</code> 按上传顺序遍历通关，返回按顺序匹配了多少个 ID。",
+            "example": "<code>sequence([5017, 52])</code> 在谱面 52 于 5017 之后通关时为 2。只通关 5017 时为 1。"
+          },
+          "consecutive": {
+            "title": "无间隔顺序",
+            "desc": "<code>consecutive([id, id], item =&gt; item.ppMinusOne)</code> 是同样的遍历，每一步必须通过检测，且通关必须连续。",
+            "example": "<code>consecutive([5017, 52], clear =&gt; clear.ppMinusOne)</code> 仅当这些 PP-1 通关彼此紧挨、中间没有其他上传时为 2。"
+          },
+          "blocks": {
+            "title": "ID 块",
+            "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> 返回该大小的完整 ID 块数量，并跳过这些难度。",
+            "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> 在 ID 1–10 中其余谱面都已通关时为 1。会在第一个未完成块处停止。"
+          },
+          "prefix": {
+            "title": "前缀集合",
+            "desc": "<code>prefix(\"planetary\")</code> 用上传时难度，统计命名难度集合从开头通关了多远。",
+            "example": "<code>prefix(\"planetary\")</code> 在上传时难度为 P1、P2、P3 且 P4 未通关时为 3。"
+          },
+          "gap": {
+            "title": "最长间隔",
+            "desc": "<code>gap()</code> 是同一同一性通关之间最长的间隔天数。",
+            "example": "<code>gap()</code> 在同一谱面两次通关最长间隔为 730 天时为 730。"
+          },
+          "pack": {
+            "title": "曲包谱面 ID",
+            "desc": "<code>pack()</code> 是该徽章曲包中的谱面 ID。列出两次的谱面只计一次。",
+            "example": "<code>count(pack())</code> 在曲包列出 12 张谱面时为 12。列出两次仍只计一次。"
+          },
+          "complete": {
+            "title": "已制谱的集合",
+            "desc": "<code>complete(\"end-to-end\")</code> 在该谱师为命名集合中每个难度都制谱时为 1。",
+            "example": "<code>complete(\"end-to-end\")</code> 仅当该谱师为该集合每个难度都制谱时为 1。否则为 0。"
+          },
+          "nth": {
+            "title": "第 N 通关者",
+            "desc": "<code>nth(100)</code> 统计该玩家是第 100 个不同通关者的谱面。",
+            "example": "<code>nth(100)</code> 在两张谱面上是第 100 人时为 2。"
+          },
+          "lead": {
+            "title": "当前领先",
+            "desc": "<code>lead(level, \"accuracy\")</code> 在该玩家领先该谱面时为真。指标是 accuracy、score 或 speed。",
+            "example": "<code>lead(level, \"score\")</code> 在该玩家该谱面分数最高时为真。"
+          },
+          "first": {
+            "title": "任意倍速世界第一",
+            "desc": "<code>first(level)</code> 在该玩家持有该谱面原始世界第一旗帜时为真。",
+            "example": "<code>first(level)</code> 即使倍速不是 1.0×，只要持有该谱面世界第一旗帜即为真。"
+          },
+          "shared": {
+            "title": "共享准确率",
+            "desc": "<code>shared()</code> 统计该玩家显示准确率也出现在另一张谱面上的 galactic 或 universal 谱面。",
+            "example": "<code>shared()</code> 在该玩家某张 G 或 U 谱面的显示准确率也出现在另一张谱面上时为 1。"
+          },
+          "inSet": {
+            "title": "命名集合",
+            "desc": "<code>inSet(clear.difficultyAt, \"planetary\")</code> 在该值属于该命名集合时为真。",
+            "example": "<code>inSet(\"P3\", \"planetary\")</code> 为真。<code>inSet(\"G3\", \"planetary\")</code> 为假。"
+          },
+          "maxGroup": {
+            "title": "最大分组",
+            "desc": "<code>maxGroup(rows, \"artistIds\", \"songId\")</code> 是按第一个字段分组后最多的不同值数量。",
+            "example": "<code>maxGroup(mine, \"artistIds\", \"songId\")</code> 在一位曲师被该谱师制谱 20 首时为 20。"
+          }
+        },
+        "examples": {
+          "sequence": "<b><code>sequence([5017, 52]) == 2</code></b> 表示这两张谱面按该上传顺序通关。",
+          "lead": "<b><code>count(levels.filter(level =&gt; level.family == \"G\" &amp;&amp; lead(level, \"accuracy\")))</code></b> 统计该玩家准确率领先的 galactic 谱面。"
+        }
+      },
+      "clears": {
+        "title": "公开通关",
+        "intro": "引擎只看到公开的 pass 和谱面。",
+        "bullets": {
+          "visible": "隐藏和已删除的 pass 与谱面会被跳过。错误判定的 pass 会保留。",
+          "buckets": "缺失的判定桶计为 0。",
+          "worldsFirst": "世界第一检查还要求倍速恰好为 1，然后跟随当前旗帜。更早的 1.0x 上传被接受时旗帜会移动。",
+          "placeholder": "读取判定、准确率或分数的处理会跳过 5/40/5 占位谱面。全零谱面同样被忽略。",
+          "unknownTime": "上传时间 2023-01-01 07:27:27 和 2023-07-27 07:27:27 未知。gap、sequence、nth 以及按获得时间排序会跳过它们。"
+        }
+      },
+      "identity": {
+        "title": "谱面同一性",
+        "intro": "同一性决定关联谱面算一张还是多张。",
+        "fields": {
+          "level": {
+            "title": "谱面 ID",
+            "desc": "每个谱面 ID 各自一张谱面。"
+          },
+          "chartSubgroup": {
+            "title": "谱师子组",
+            "desc": "共享谱师子组的关联谱面会合并为一张。"
+          },
+          "vfxSubgroup": {
+            "title": "视效子组",
+            "desc": "共享视效子组的关联谱面会合并为一张。"
+          },
+          "group": {
+            "title": "关联组",
+            "desc": "整个关联组合并为一张。"
+          }
+        },
+        "bullets": {
+          "ownChart": "一次通关只贡献自己那张谱面的键数、难度和精选。通关无限键兄弟谱面不会继承 10 键谱面的键数。",
+          "reclear": "对于合并后的同一性，兄弟通关是再通关，不是第二张谱面。"
+        }
+      },
+      "history": {
+        "title": "当时的难度",
+        "intro": "difficultyAt 使用 pass 上传时谱面的难度。",
+        "bullets": {
+          "walk": "引擎按上传时间遍历重评历史。在第一次记录的变更之前，难度是该行的先前难度。",
+          "fallback": "没有历史时，使用通关时刻快照，然后是谱面当前难度。",
+          "snapshot": "接受 pass 或刷新世界第一旗帜时会写入快照。它存储难度、基础分、PP 基础分、精选类型 ID，以及谱师和 VFXer ID。",
+          "older": "更旧的 pass 会停留在当前难度，直到有东西重写它们。"
+        }
+      },
+      "grants": {
+        "title": "授予模式",
+        "intro": "授予模式决定等级能否失去。",
+        "fields": {
+          "live": {
+            "title": "重新计算",
+            "desc": "等级会重新计算，可能失去。"
+          },
+          "persistTier": {
+            "title": "保留最高等级",
+            "desc": "保留达到过的最高等级。"
+          },
+          "persistSnapshot": {
+            "title": "冻结集合",
+            "desc": "满足百分比徽章的谱面集合保持冻结，之后的谱面不会抬高分母。"
+          },
+          "resetOnGrowth": {
+            "title": "实时目标",
+            "desc": "曲包默认。曲包新增谱面会取消完成，直到通关该谱面。"
+          },
+          "manualLock": {
+            "title": "需要审核",
+            "desc": "在审核员批准视频之前保持关闭。"
+          },
+          "chase": {
+            "title": "存储数字",
+            "desc": "保留当前数字，例如最低未通关谱面 ID。"
+          }
+        },
+        "bullets": {
+          "replace": "保存定义会保留 persistTier 和 persistSnapshot 的结果，除非打开替换已获得等级。"
+        }
+      },
+      "backfill": {
+        "title": "回填",
+        "intro": "回填决定徽章发布时哪些已有通关符合条件。之后添加徽章使用同一任务。",
+        "fields": {
+          "now": {
+            "title": "当前全部通关",
+            "desc": "评估当前每一次公开通关。"
+          },
+          "forward": {
+            "title": "仅新通关",
+            "desc": "忽略发布前创建的 pass。"
+          },
+          "queue": {
+            "title": "仅审核",
+            "desc": "只创建审核行，不授予；manualLock 徽章在批准后授予。"
+          }
+        },
+        "bullets": {
+          "skips": "任务会记录因占位谱面、未知上传时间或缺失难度历史而跳过的 pass 数。",
+          "unreconstructed": "从未存储的事实无法重建，例如旧通关当时的精选。"
+        }
+      },
+      "reviews": {
+        "title": "审核与隐藏",
+        "intro": "审核控制手动徽章。隐藏控制未获得徽章显示什么。",
+        "bullets": {
+          "video": "批准审核需要视频 URL，并记录审核员。",
+          "secret": "未获得的隐藏徽章会从资料页省略。",
+          "locked": "其他未获得徽章会显示名称、图标和进度条（含下一个数字），但不显示条件文本或表达式。",
+          "earned": "获得后会显示等级标签和证明用 pass。",
+          "confirm": "accuracyFull 和 judgementsFull 只在该徽章上添加服务端渲染的确认文字。公开分数卡仍用普通准确率格式。"
+        }
+      }
+    }
+  },
+  "admin": {
+    "metaTitle": "徽章编辑器",
+    "metaDescription": "创建并重新计算可收集徽章",
+    "title": "徽章",
+    "help": "引擎帮助",
+    "new": "新徽章",
+    "list": "定义",
+    "reviews": "审核",
+    "jobs": "任务",
+    "save": "保存",
+    "saved": "已保存徽章",
+    "saveFailed": "无法保存徽章",
+    "recompute": "重新计算",
+    "recomputed": "已排队重新计算",
+    "replace": "替换已获得等级",
+    "enabled": "启用",
+    "secret": "隐藏",
+    "slug": "标识",
+    "name": "名称",
+    "audience": "对象",
+    "reducer": "归约器",
+    "grant": "授予",
+    "identity": "同一性",
+    "backfill": "回填",
+    "round": "取整",
+    "direction": "方向",
+    "start": "起点",
+    "step": "步长",
+    "weight": "权重",
+    "icon": "图标",
+    "color": "颜色",
+    "stat": "展示",
+    "purple": "紫色",
+    "confirm": "确认",
+    "labels": "等级标签",
+    "addLabel": "添加标签",
+    "minTier": "起始等级",
+    "label": "标签",
+    "params": "参数",
+    "packSearch": "查找曲包",
+    "approve": "批准",
+    "reject": "拒绝",
+    "video": "视频 URL",
+    "reviewSaved": "已保存审核",
+    "reviewFailed": "无法保存审核",
+    "videoRequired": "批准前请添加视频 URL",
+    "loadFailed": "无法加载徽章",
+    "importCode": "导入代码",
+    "importTitle": "导入徽章",
+    "importHint": "粘贴一份配置。集合按名称匹配，徽章按标识匹配。曲包必须已经存在。",
+    "loadRequested": "加载指定集合",
+    "requestedLoaded": "已加载指定集合",
+    "importAction": "导入",
+    "imported": "已导入 {{count}} 枚徽章",
+    "importFailed": "无法导入徽章",
+    "replaceImport": "替换已获得等级",
+    "search": "搜索",
+    "searchPlaceholder": "名称或标识",
+    "filterAll": "全部",
+    "filterPlayer": "玩家",
+    "filterCreator": "谱师",
+    "filterSecretOnly": "隐藏",
+    "filterPublic": "公开",
+    "filterEnabledOnly": "启用",
+    "filterDisabled": "停用",
+    "showing": "显示 {{count}} / {{total}}",
+    "noMatches": "没有符合这些筛选的徽章。",
+    "refreshBackfill": "刷新回填",
+    "backfillStarting": "正在启动回填",
+    "backfillStarted": "已开始替换回填",
+    "backfillAlready": "已有替换回填在运行",
+    "backfillFailed": "无法启动回填",
+    "backfillWaiting": "正在等待统计所有者",
+    "backfillLoading": "正在加载全部公开通关和谱面。尚未统计所有者。",
+    "backfillPending": "已排队。工作进程尚未领取。",
+    "backfillOwners": "所有者 {{done}} / {{total}}",
+    "backfillBadgesPlayer": "{{name}} 的徽章 {{done}} / {{total}}",
+    "backfillBadgesCreator": "{{name}} 的徽章 {{done}} / {{total}}",
+    "startFrom": "起始编号：",
+    "backfillReport": "最慢的徽章",
+    "backfillReportDownload": "下载 CSV",
+    "backfillReportFailed": "无法下载耗时报告",
+    "backfillEta": "大约还剩 {{eta}}",
+    "backfillPlayersFinished": "玩家 {{done}} / {{total}} 已完成",
+    "backfillCreatorsFinished": "谱师 {{done}} / {{total}} 已完成",
+    "backfillHeartbeat": "{{seconds}} 秒前检查过",
+    "cancelBackfill": "取消回填",
+    "backfillCancelConfirm": "取消正在运行的回填？",
+    "backfillCancelled": "已取消回填",
+    "backfillCancelFailed": "无法取消回填",
+    "backfillQueued": "替换正在这次运行后面等待",
+    "backfillCursor": "{{status}} · 所有者 {{current}} / {{total}} · 徽章 {{badge}} / {{badgeTotal}} · 玩家 {{players}} / {{playerTotal}} 已完成 · 谱师 {{creators}} / {{creatorTotal}} 已完成",
+    "backfillProgress": "{{processed}} / {{total}} · 玩家 {{players}} / {{playerTotal}} · 谱师 {{creators}} / {{creatorTotal}}",
+    "backfillPlayers": "玩家 {{processed}} / {{total}}",
+    "backfillCreators": "谱师 {{processed}} / {{total}}",
+    "backfillNow": "正在为 {{kind}} {{owner}} 评估 {{badge}}。所有者 {{current}} / {{total}}，该所有者徽章 {{badgeIndex}} / {{badgeTotal}}。玩家 {{players}} / {{playerTotal}}、谱师 {{creators}} / {{creatorTotal}} 已全部完成。",
+    "backfillUnknownBadge": "下一枚徽章",
+    "backfillCancelling": "正在取消回填",
+    "backfillBadges": "该所有者的徽章 {{done}} / {{total}}",
+    "backfillRunning": "玩家 {{players}} / {{playerTotal}} 已完成 · 谱师 {{creators}} / {{creatorTotal}} 已完成",
+    "sectionBadge": "徽章",
+    "sectionFormula": "授予脚本",
+    "sectionDisplay": "显示",
+    "sectionPublish": "发布",
+    "scriptHelp": "脚本参考",
+    "formulaOk": "表达式有效",
+    "packName": "曲包名称",
+    "description": "描述",
+    "noScript": "没有授予脚本",
+    "noReviews": "没有待审核项。",
+    "noJobs": "还没有任务。",
+    "pageTabs": {
+      "definitions": "徽章",
+      "groups": "分组",
+      "reviews": "审核",
+      "jobs": "任务"
+    },
+    "dragDisabled": "清除搜索和筛选后再调整徽章顺序。",
+    "groups": {
+      "createButton": "创建分组",
+      "noGroups": "还没有分组。创建一个分组来整理徽章。",
+      "ungrouped": "未分组",
+      "badgeCount": "{{count}} 枚徽章",
+      "badgeCount_plural": "{{count}} 枚徽章",
+      "create": {
+        "title": "创建分组",
+        "name": "名称",
+        "createButton": "创建"
+      },
+      "edit": {
+        "title": "编辑分组",
+        "name": "名称",
+        "updateButton": "更新"
+      },
+      "delete": {
+        "title": "删除分组",
+        "message": "删除分组“{{name}}”？",
+        "description": "该分组中的徽章将变为未分组。",
+        "deleteButton": "删除"
+      },
+      "notifications": {
+        "reordered": "已调整分组顺序",
+        "reorderFailed": "无法调整分组顺序",
+        "created": "已创建分组",
+        "createFailed": "无法创建分组",
+        "updated": "已重命名分组",
+        "updateFailed": "无法重命名分组",
+        "deleted": "已删除分组",
+        "deleteFailed": "无法删除分组",
+        "badgesReordered": "已调整徽章顺序",
+        "badgesReorderFailed": "无法调整徽章顺序"
+      }
+    }
   }
 }

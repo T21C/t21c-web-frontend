@@ -55,21 +55,44 @@ function unitWord(unit, credit, t) {
   return t(`badges.units.${key}`, { defaultValue: fallback[key] || key });
 }
 
-function rarityRank(badge) {
-  const label = String(badge.tierLabel || '').trim().toLowerCase();
-  if (label === 'legendary') return 3;
-  if (label === 'common') return 1;
-  return label ? 2 : 0;
+function comparePlacement(left, right) {
+  const byOrder = (Number(left.sortOrder) || 0) - (Number(right.sortOrder) || 0);
+  if (byOrder) return byOrder;
+  return String(left.name || '').localeCompare(String(right.name || ''));
 }
 
-function compareBadges(left, right) {
-  const byRarity = rarityRank(right) - rarityRank(left);
-  if (byRarity) return byRarity;
-  const byTier = (Number(right.tier) || 0) - (Number(left.tier) || 0);
-  if (byTier) return byTier;
-  const byPercent = barPercent(right.bar, right.earned) - barPercent(left.bar, left.earned);
-  if (byPercent) return byPercent;
-  return String(left.name || '').localeCompare(String(right.name || ''));
+function badgeSections(badges) {
+  const named = new Map();
+  const ungrouped = [];
+  for (const badge of badges) {
+    if (badge.groupId === null || badge.groupId === undefined) {
+      ungrouped.push(badge);
+      continue;
+    }
+    const key = String(badge.groupId);
+    let section = named.get(key);
+    if (!section) {
+      section = {
+        key,
+        name: badge.groupName || '',
+        sortOrder: Number(badge.groupSortOrder) || 0,
+        badges: [],
+      };
+      named.set(key, section);
+    }
+    section.badges.push(badge);
+  }
+  const sections = [...named.values()].sort((left, right) => {
+    const byOrder = left.sortOrder - right.sortOrder;
+    if (byOrder) return byOrder;
+    return String(left.name).localeCompare(String(right.name));
+  });
+  for (const section of sections) section.badges.sort(comparePlacement);
+  ungrouped.sort(comparePlacement);
+  if (ungrouped.length) {
+    sections.push({ key: 'ungrouped', name: null, sortOrder: Number.POSITIVE_INFINITY, badges: ungrouped });
+  }
+  return sections;
 }
 
 function badgeCreditText(badge, t) {
@@ -164,8 +187,9 @@ const BadgeSectionPage = ({ audience }) => {
       if (tone === 'purple' && !badge.purple) return false;
       if (tone === 'plain' && badge.purple) return false;
       return true;
-    }).sort(compareBadges);
+    });
   }, [badges, query, status, tone, slots]);
+  const sections = useMemo(() => badgeSections(visibleBadges), [visibleBadges]);
 
   const toggle = (badge) => {
     if (!payload?.canEquip || !badge.earned) return;
@@ -263,76 +287,85 @@ const BadgeSectionPage = ({ audience }) => {
           <p className="badge-section__count">{t('badges.showing', { count: visibleBadges.length, total: badges.length })}</p>
         </div>
       )}
-      <div className="badge-section__grid">
+      <div className="badge-section__groups">
         {badges.length === 0 && <p>{t('badges.empty')}</p>}
         {badges.length > 0 && visibleBadges.length === 0 && <p>{t('badges.noMatches')}</p>}
-        {visibleBadges.map((badge) => {
-          const creditText = badgeCreditText(badge, t);
-          const stat = badge.stat || 'barThenNumber';
-          const showBar = badge.bar && stat !== 'tier' && (barPercent(badge.bar, badge.earned) > 0 || creditText);
-          const confirms = (badge.confirm || []).filter((row) => row.clear);
-          const legendary = String(badge.tierLabel || '').toLowerCase() === 'legendary';
-          return (
-          <article
-            key={badge.id}
-            className={[
-              'badge-section__card',
-              badge.earned && 'badge-section__card--earned',
-              badge.purple && 'badge-section__card--purple',
-              legendary && 'badge-section__card--legendary',
-              badge.manual && 'badge-section__card--review',
-              slots.includes(badge.id) && 'badge-section__card--slotted',
-            ].filter(Boolean).join(' ')}
-          >
-            {badge.manual && (
-              <span
-                className="badge-section__review"
-                tabIndex={0}
-                role="img"
-                aria-label={t('badges.reviewHint', { defaultValue: 'A reviewer awards this badge. The clear video needs to show a webcam.' })}
-                data-hint={t('badges.reviewHint', { defaultValue: 'A reviewer awards this badge. The clear video needs to show a webcam.' })}
-              >
-                <CameraIcon size={16} color="currentColor" />
-              </span>
-            )}
-            <button
-              type="button"
-              className="badge-section__card-main"
-              onClick={() => toggle(badge)}
-              disabled={!payload?.canEquip || !badge.earned}
-            >
-              <span className="badge-section__plate">
-                <BadgeMark badge={badge} />
-              </span>
-              <span className="badge-section__copy">
-                <span className="badge-section__headline">
-                  <span className="badge-section__name">{badge.name}</span>
-                  {badge.earned && badge.tier > 0 && <span className="badge-section__tier">{t('badges.tier', { tier: badge.tier })}</span>}
-                  {badge.tierLabel && <span className="badge-section__label">{badge.tierLabel}</span>}
-                </span>
-                {badge.description && <span className="badge-section__desc" title={badge.description}>{badge.description}</span>}
-              </span>
-            </button>
-            {(showBar || creditText) && (
-              <div className="badge-section__meter">
-                {showBar && (
-                  <div className="badge-section__bar" aria-hidden="true">
-                    <span style={{ width: `${barPercent(badge.bar, badge.earned)}%` }} />
-                  </div>
-                )}
-                {creditText && <span className="badge-section__credit">{creditText}</span>}
-              </div>
-            )}
-            {confirms.length > 0 && (
-              <div className="badge-section__confirms">
-                {confirms.map((row) => (
-                  <ScoreCard key={row.passId} scoreData={row.clear} mode="compact" />
-                ))}
-              </div>
-            )}
-          </article>
-          );
-        })}
+        {sections.map((section) => (
+          <section key={section.key} className="badge-section__group">
+            <h2 className="badge-section__group-title">
+              {section.name || t('badges.ungrouped')}
+            </h2>
+            <div className="badge-section__grid">
+              {section.badges.map((badge) => {
+                const creditText = badgeCreditText(badge, t);
+                const stat = badge.stat || 'barThenNumber';
+                const showBar = badge.bar && stat !== 'tier' && (barPercent(badge.bar, badge.earned) > 0 || creditText);
+                const confirms = (badge.confirm || []).filter((row) => row.clear);
+                const legendary = String(badge.tierLabel || '').toLowerCase() === 'legendary';
+                return (
+                <article
+                  key={badge.id}
+                  className={[
+                    'badge-section__card',
+                    badge.earned && 'badge-section__card--earned',
+                    badge.purple && 'badge-section__card--purple',
+                    legendary && 'badge-section__card--legendary',
+                    badge.manual && 'badge-section__card--review',
+                    slots.includes(badge.id) && 'badge-section__card--slotted',
+                  ].filter(Boolean).join(' ')}
+                >
+                  {badge.manual && (
+                    <span
+                      className="badge-section__review"
+                      tabIndex={0}
+                      role="img"
+                      aria-label={t('badges.reviewHint', { defaultValue: 'A reviewer awards this badge. The clear video needs to show a webcam.' })}
+                      data-hint={t('badges.reviewHint', { defaultValue: 'A reviewer awards this badge. The clear video needs to show a webcam.' })}
+                    >
+                      <CameraIcon size={16} color="currentColor" />
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    className="badge-section__card-main"
+                    onClick={() => toggle(badge)}
+                    disabled={!payload?.canEquip || !badge.earned}
+                  >
+                    <span className="badge-section__plate">
+                      <BadgeMark badge={badge} />
+                    </span>
+                    <span className="badge-section__copy">
+                      <span className="badge-section__headline">
+                        <span className="badge-section__name">{badge.name}</span>
+                        {badge.earned && badge.tier > 0 && <span className="badge-section__tier">{t('badges.tier', { tier: badge.tier })}</span>}
+                        {badge.tierLabel && <span className="badge-section__label">{badge.tierLabel}</span>}
+                      </span>
+                      {badge.description && <span className="badge-section__desc" title={badge.description}>{badge.description}</span>}
+                    </span>
+                  </button>
+                  {(showBar || creditText) && (
+                    <div className="badge-section__meter">
+                      {showBar && (
+                        <div className="badge-section__bar" aria-hidden="true">
+                          <span style={{ width: `${barPercent(badge.bar, badge.earned)}%` }} />
+                        </div>
+                      )}
+                      {creditText && <span className="badge-section__credit">{creditText}</span>}
+                    </div>
+                  )}
+                  {confirms.length > 0 && (
+                    <div className="badge-section__confirms">
+                      {confirms.map((row) => (
+                        <ScoreCard key={row.passId} scoreData={row.clear} mode="compact" />
+                      ))}
+                    </div>
+                  )}
+                </article>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </main>
   );

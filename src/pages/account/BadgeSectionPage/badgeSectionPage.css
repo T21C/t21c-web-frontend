@@ -12,6 +12,8 @@
 }
 
 .badge-section__slots,
+.badge-section__groups,
+.badge-section__group,
 .badge-section__grid,
 .badge-section__filters,
 .badge-section__search,
@@ -21,6 +23,17 @@
 .badge-section__slot-actions {
   display: flex;
   gap: 12px;
+}
+
+.badge-section__groups,
+.badge-section__group {
+  flex-direction: column;
+}
+
+.badge-section__group-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .badge-section__filters {
