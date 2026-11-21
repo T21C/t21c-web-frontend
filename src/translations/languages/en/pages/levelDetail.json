@@ -121,7 +121,8 @@
   },
   "components": {
     "clearCard": {
-      "feeling": "Feeling:"
+      "feeling": "Feeling:",
+      "expected": "Expected:"
     }
   },
   "errors": {

@@ -47,6 +47,19 @@
     "subtitle": "Every list, field, and structure a grant script can use.",
     "close": "Close",
     "examplesTitle": "Examples",
+    "copyMarkdown": "Copy .md",
+    "copyMarkdownAria": "Copy a Markdown brief for agent-assisted grant scripts",
+    "copyMarkdownCopied": "Agent brief copied",
+    "copyMarkdownFailed": "Could not copy the agent brief",
+    "agentBrief": {
+      "intro": "Paste this Markdown into an assistant, fill in the requested behavior, and ask it to write the grant expression.",
+      "requestedTitle": "Requested behavior",
+      "requestedPlaceholder": "(Describe the badge here.)",
+      "outputTitle": "What to return",
+      "output": "Return the grant expression the admin can paste into the badge editor. Add short notes only if identity, grant, or curve also need to change. Do not invent functions, fields, or syntax.",
+      "rulesTitle": "Engine rules",
+      "rules": "- The parser is WYSIWYG: the saved expression is evaluated as written.\n- The language looks like JavaScript but is not arbitrary JavaScript. Line and block comments are allowed; modules, assignments, and object internals are not.\n- Do not nest `.filter` or `.map` over the same list unless you have to. Use `maxCount` or `maxGroup` instead.\n- `familyAt` is the difficulty family when the pass was uploaded, not the current chart difficulty.\n- Return `curve(...)`, `result(...)`, or a number."
+    },
     "sections": {
       "lists": {
         "title": "Lists",

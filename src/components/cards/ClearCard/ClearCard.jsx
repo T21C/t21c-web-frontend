@@ -50,16 +50,43 @@ const XPERFECT_JUDGEMENT_KEYS = [
   ["lateDouble", "late-double"],
 ];
 
+function ClearRating({ label, value, expanded, onToggle }) {
+  const needsExpansion = Boolean(value && value.length > 20);
+
+  return (
+    <div className="feeling-rating">
+      <span className="feeling-label">{label}</span>
+      <div className={`feeling-container ${expanded ? "expanded" : ""}`}>
+        <div
+          className={`feeling-content${needsExpansion ? " feeling-content--expandable" : ""}`}
+          onClick={needsExpansion ? onToggle : undefined}
+        >
+          <span className="feeling-text">
+            {value || "(None)"}
+          </span>
+          {needsExpansion && (
+            <span className={`expand-arrow ${expanded ? "collapse" : ""}`}>
+              <ChevronIcon size={16} direction="right"/>
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation(["pages", "components"]);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [feelingExpanded, setFeelingExpanded] = useState(false);
+  const [expectedExpanded, setExpectedExpanded] = useState(false);
   const countryCode = scoreData.player?.country;
   const judgements = scoreData.judgements;
   const judgementKeys = shouldShowXPerfectJudgements(scoreData, judgements)
     ? XPERFECT_JUDGEMENT_KEYS
     : BASE_JUDGEMENT_KEYS;
   const feelingRating = scoreData.feelingRating;
-  const needsExpansion = Boolean(feelingRating && feelingRating.length > 20);
+  const expectedRating = scoreData.expectedRating;
+  const ratingsExpanded = feelingExpanded || expectedExpanded;
   const xPerfectMode = !!(scoreData.isXPerfectMode || scoreData.flags?.isXPerfectMode);
   const pureXPerfect = isPureXPerfect(judgements, xPerfectMode);
   const accuracyClass = pureXPerfect
@@ -68,9 +95,9 @@ const ClearCard = ({scoreData, index}) => {
       ? "pure-perfect"
       : "";
 
-  const toggleExpand = (e) => {
+  const toggleExpand = (setExpanded) => (e) => {
     e.stopPropagation();
-    setIsExpanded(!isExpanded);
+    setExpanded((open) => !open);
   };
 
   const isDeletedPass = Boolean(scoreData.isDeleted);
@@ -79,7 +106,7 @@ const ClearCard = ({scoreData, index}) => {
   const rankColor = rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "#f66" : "inherit";
   const cardClassName = [
     "clear-card",
-    isExpanded ? "expanded" : "",
+    ratingsExpanded ? "expanded" : "",
     isDeletedPass ? "deleted-pass" : "",
     isHiddenPass ? "hidden-pass" : "",
   ].filter(Boolean).join(" ");
@@ -169,23 +196,19 @@ const ClearCard = ({scoreData, index}) => {
       </div>
 
       <div className="clear-card__meta">
-        <div className="feeling-rating">
-          <span className="feeling-label">{t("levelDetail.components.clearCard.feeling")}</span>
-          <div className={`feeling-container ${isExpanded ? "expanded" : ""}`}>
-            <div
-              className={`feeling-content${needsExpansion ? " feeling-content--expandable" : ""}`}
-              onClick={needsExpansion ? toggleExpand : undefined}
-            >
-              <span className="feeling-text">
-                {feelingRating || "(None)"}
-              </span>
-              {needsExpansion && (
-                <span className={`expand-arrow ${isExpanded ? "collapse" : ""}`}>
-                  <ChevronIcon size={16} direction="right"/>
-                </span>
-              )}
-            </div>
-          </div>
+        <div className={`rating-stack${ratingsExpanded ? " rating-stack--expanded" : ""}`}>
+          <ClearRating
+            label={t("levelDetail.components.clearCard.feeling")}
+            value={feelingRating}
+            expanded={feelingExpanded}
+            onToggle={toggleExpand(setFeelingExpanded)}
+          />
+          <ClearRating
+            label={t("levelDetail.components.clearCard.expected")}
+            value={expectedRating}
+            expanded={expectedExpanded}
+            onToggle={toggleExpand(setExpectedExpanded)}
+          />
         </div>
         <div className="time-info">{formatPassDate(scoreData.vidUploadTime, i18next?.language)}</div>
       </div>

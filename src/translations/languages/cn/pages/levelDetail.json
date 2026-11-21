@@ -121,7 +121,8 @@
   },
   "components": {
     "clearCard": {
-      "feeling": "体感难度："
+      "feeling": "体感难度：",
+      "expected": "预期难度："
     }
   },
   "errors": {

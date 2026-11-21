@@ -47,6 +47,19 @@
     "subtitle": "付与スクリプトが使えるすべてのリスト、フィールド、構文です。",
     "close": "閉じる",
     "examplesTitle": "例",
+    "copyMarkdown": ".md をコピー",
+    "copyMarkdownAria": "付与スクリプト作成用の Markdown ブリーフをコピー",
+    "copyMarkdownCopied": "アシスタント用ブリーフをコピーしました",
+    "copyMarkdownFailed": "アシスタント用ブリーフをコピーできませんでした",
+    "agentBrief": {
+      "intro": "この Markdown をアシスタントに貼り、求めているバッジの挙動を書いて、付与式の作成を依頼してください。",
+      "requestedTitle": "求めている挙動",
+      "requestedPlaceholder": "（ここにバッジの説明を書く）",
+      "outputTitle": "返すもの",
+      "output": "管理者がバッジ編集画面に貼れる付与式を返してください。identity・grant・curve も変える必要があるときだけ短い注記を付けます。関数・フィールド・構文は発明しないでください。",
+      "rulesTitle": "エンジンの規則",
+      "rules": "- パーサーは WYSIWYG です。保存した式がそのまま評価されます。\n- JavaScript の形ですが、任意の JavaScript ではありません。行・ブロックコメントは可。モジュール、代入、オブジェクト内部は不可です。\n- 同じリストへの `.filter` や `.map` の入れ子は必要なときだけにし、`maxCount` や `maxGroup` を使ってください。\n- `familyAt` はパス投稿時の難易度ファミリーであり、現在の譜面難易度ではありません。\n- `curve(...)`、`result(...)`、または数値を返してください。"
+    },
     "sections": {
       "lists": {
         "title": "リスト",

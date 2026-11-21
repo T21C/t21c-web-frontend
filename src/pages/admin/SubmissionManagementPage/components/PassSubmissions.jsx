@@ -34,6 +34,7 @@ import {
 import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
 import SubmissionLockButton from './SubmissionLockButton';
 import { togglePendingSubmissionLock } from './submissionLock';
+import SubmissionCollapsibleText from './SubmissionCollapsibleText';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
@@ -472,27 +473,17 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
                           <span className="detail-value">{submission.feelingDifficulty || <span className="detail-value-none">None</span>}</span>
                         </div>
 
-                        <div className="detail-row">
-                          <span className="detail-label">{t('passSubmissions.details.feelingExplanation')}</span>
-                          <div className="detail-value pass-submission-details-text">
-                            {submission.feelingExplanation?.trim()
-                              ? <CommentFormatter>{submission.feelingExplanation}</CommentFormatter>
-                              : <span className="detail-value-none">None</span>}
-                          </div>
-                        </div>
+                        <SubmissionCollapsibleText
+                          label={t('passSubmissions.details.feelingExplanation')}
+                          empty={!submission.feelingExplanation?.trim()}
+                          emptyLabel="None"
+                        >
+                          <CommentFormatter>{submission.feelingExplanation}</CommentFormatter>
+                        </SubmissionCollapsibleText>
 
                         <div className="detail-row">
                           <span className="detail-label">{t('passSubmissions.details.expectedDiff')}</span>
                           <span className="detail-value">{submission.expectedDifficulty || <span className="detail-value-none">None</span>}</span>
-                        </div>
-
-                        <div className="detail-row">
-                          <span className="detail-label">{t('passSubmissions.details.passDetails')}</span>
-                          <span className="detail-value pass-submission-details-text">
-                            {submission.details?.trim()
-                              ? submission.details
-                              : <span className="detail-value-none">None</span>}
-                          </span>
                         </div>
                       </>
                     }
@@ -667,6 +658,15 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
                       });
                     }}
                   />
+                  <div className="pass-submission-side-slot">
+                    <SubmissionCollapsibleText
+                      label={t('passSubmissions.details.passDetails')}
+                      empty={!submission.details?.trim()}
+                      emptyLabel="None"
+                    >
+                      <div className="pass-submission-details-text">{submission.details}</div>
+                    </SubmissionCollapsibleText>
+                  </div>
                 </div>
               {isSettledCardPhase(phase) && (
                 <SubmissionCompleteCloseButton

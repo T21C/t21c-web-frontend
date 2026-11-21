@@ -47,6 +47,19 @@
     "subtitle": "부여 스크립트가 쓸 수 있는 모든 목록, 필드, 구조입니다.",
     "close": "닫기",
     "examplesTitle": "예시",
+    "copyMarkdown": ".md 복사",
+    "copyMarkdownAria": "에이전트용 부여 스크립트 Markdown 브리프 복사",
+    "copyMarkdownCopied": "에이전트 브리프를 복사했습니다",
+    "copyMarkdownFailed": "에이전트 브리프를 복사하지 못했습니다",
+    "agentBrief": {
+      "intro": "이 Markdown을 어시스턴트에 붙여 넣고, 원하는 배지 동작을 적은 뒤 부여 식을 작성해 달라고 하세요.",
+      "requestedTitle": "원하는 동작",
+      "requestedPlaceholder": "(여기에 배지를 설명하세요.)",
+      "outputTitle": "반환할 것",
+      "output": "관리자가 배지 편집기에 붙여 넣을 부여 식을 반환하세요. identity, grant, curve도 바꿔야 할 때만 짧은 메모를 덧붙이세요. 함수, 필드, 문법을 만들지 마세요.",
+      "rulesTitle": "엔진 규칙",
+      "rules": "- 파서는 WYSIWYG입니다. 저장한 식이 그대로 평가됩니다.\n- JavaScript 형태이지만 임의의 JavaScript는 아닙니다. 줄/블록 주석은 되고, 모듈, 대입, 객체 내부는 안 됩니다.\n- 같은 리스트에 `.filter`나 `.map`을 중첩하지 말고, 꼭 필요할 때만 쓰세요. `maxCount`나 `maxGroup`을 쓰세요.\n- `familyAt`는 패스 업로드 당시 난이도 계열이며, 현재 차트 난이도가 아닙니다.\n- `curve(...)`, `result(...)`, 또는 숫자를 반환하세요."
+    },
     "sections": {
       "lists": {
         "title": "목록",

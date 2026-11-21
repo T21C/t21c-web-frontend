@@ -100,7 +100,8 @@
   },
   "components": {
     "clearCard": {
-      "feeling": "Szacowany poz. trudności:"
+      "feeling": "Szacowany poz. trudności:",
+      "expected": "Oczekiwany poz. trudności:"
     }
   },
   "toRatePending": {

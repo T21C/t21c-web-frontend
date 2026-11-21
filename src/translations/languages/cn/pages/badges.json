@@ -47,6 +47,19 @@
     "subtitle": "授予脚本可以使用的全部列表、字段与结构。",
     "close": "关闭",
     "examplesTitle": "示例",
+    "copyMarkdown": "复制 .md",
+    "copyMarkdownAria": "复制供助手撰写授予脚本的 Markdown 简报",
+    "copyMarkdownCopied": "已复制助手简报",
+    "copyMarkdownFailed": "无法复制助手简报",
+    "agentBrief": {
+      "intro": "把这份 Markdown 贴给助手，填好所需徽章行为，再请它写授予表达式。",
+      "requestedTitle": "所需行为",
+      "requestedPlaceholder": "（在此描述徽章。）",
+      "outputTitle": "应返回什么",
+      "output": "返回管理员可粘贴到徽章编辑器的授予表达式。仅在 identity、grant 或曲线也需要改动时附加短注。不要发明函数、字段或语法。",
+      "rulesTitle": "引擎规则",
+      "rules": "- 解析器是所见即所得：保存的表达式按原文求值。\n- 形态像 JavaScript，但不是任意 JavaScript。允许行注释和块注释；不允许模块、赋值和对象内部。\n- 不要对同一列表嵌套 `.filter` 或 `.map`，除非确实需要。改用 `maxCount` 或 `maxGroup`。\n- `familyAt` 是 pass 上传时的难度族，不是当前谱面难度。\n- 返回 `curve(...)`、`result(...)` 或一个数字。"
+    },
     "sections": {
       "lists": {
         "title": "列表",

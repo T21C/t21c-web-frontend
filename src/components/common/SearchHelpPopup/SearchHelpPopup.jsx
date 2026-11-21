@@ -119,6 +119,7 @@ export const SearchHelpPopup = ({
   sections,
   defaultOpenSection = '',
   translationNs = 'components',
+  headerActions = null,
 }) => {
   const { t } = useTranslation([translationNs]);
   const [openSection, setOpenSection] = useState(defaultOpenSection);
@@ -136,10 +137,19 @@ export const SearchHelpPopup = ({
         />
 
         <div className="search-help-popup__content">
-          <h2 className="search-help-popup__title">{t(titleKey)}</h2>
-          {subtitleKey && (
-            <p className="search-help-popup__subtitle">{t(subtitleKey)}</p>
-          )}
+          <div className="search-help-popup__heading">
+            <div className="search-help-popup__heading-text">
+              <h2 className="search-help-popup__title">{t(titleKey)}</h2>
+              {subtitleKey && (
+                <p className="search-help-popup__subtitle">{t(subtitleKey)}</p>
+              )}
+            </div>
+            {headerActions && (
+              <div className="search-help-popup__heading-actions">
+                {headerActions}
+              </div>
+            )}
+          </div>
 
           <div className="search-help-popup__accordion">
             {sections.map((sec) => {
@@ -217,6 +227,7 @@ SearchHelpPopup.propTypes = {
   ).isRequired,
   defaultOpenSection: PropTypes.string,
   translationNs: PropTypes.string,
+  headerActions: PropTypes.node,
 };
 
 export default SearchHelpPopup;

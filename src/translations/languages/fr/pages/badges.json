@@ -47,6 +47,19 @@
     "subtitle": "Toutes les listes, champs et structures qu'un script d'attribution peut utiliser.",
     "close": "Fermer",
     "examplesTitle": "Exemples",
+    "copyMarkdown": "Copier le .md",
+    "copyMarkdownAria": "Copier un brief Markdown pour écrire le script avec un assistant",
+    "copyMarkdownCopied": "Brief assistant copié",
+    "copyMarkdownFailed": "Impossible de copier le brief assistant",
+    "agentBrief": {
+      "intro": "Collez ce Markdown dans un assistant, décrivez le comportement demandé, puis demandez-lui d'écrire l'expression d'attribution.",
+      "requestedTitle": "Comportement demandé",
+      "requestedPlaceholder": "(Décrivez le badge ici.)",
+      "outputTitle": "Quoi renvoyer",
+      "output": "Renvoyez l'expression d'attribution à coller dans l'éditeur de badge. Ajoutez de courtes notes seulement si l'identité, l'attribution ou la courbe doivent aussi changer. N'inventez ni fonctions, ni champs, ni syntaxe.",
+      "rulesTitle": "Règles du moteur",
+      "rules": "- L'analyseur est WYSIWYG : l'expression enregistrée est évaluée telle quelle.\n- Le langage a une forme JavaScript, ce n'est pas du JavaScript arbitraire. Les commentaires de ligne et de bloc sont autorisés ; pas les modules, les affectations, ni les internes d'objets.\n- N'imbriquez `.filter` ou `.map` sur la même liste que si c'est indispensable. Utilisez `maxCount` ou `maxGroup`.\n- `familyAt` est la famille de difficulté au moment de l'envoi du pass, pas la difficulté actuelle du niveau.\n- Renvoyez `curve(...)`, `result(...)`, ou un nombre."
+    },
     "sections": {
       "lists": {
         "title": "Listes",

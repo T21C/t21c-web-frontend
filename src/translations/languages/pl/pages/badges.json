@@ -47,6 +47,19 @@
     "subtitle": "Wszystkie listy, pola i struktury, których może użyć skrypt przyznawania.",
     "close": "Zamknij",
     "examplesTitle": "Przykłady",
+    "copyMarkdown": "Kopiuj .md",
+    "copyMarkdownAria": "Skopiuj brief Markdown do pisania skryptu z asystentem",
+    "copyMarkdownCopied": "Skopiowano brief dla asystenta",
+    "copyMarkdownFailed": "Nie udało się skopiować briefu dla asystenta",
+    "agentBrief": {
+      "intro": "Wklej ten Markdown do asystenta, uzupełnij żądane zachowanie i poproś o napisanie wyrażenia przyznawania.",
+      "requestedTitle": "Żądane zachowanie",
+      "requestedPlaceholder": "(Opisz odznakę tutaj.)",
+      "outputTitle": "Co zwrócić",
+      "output": "Zwróć wyrażenie przyznawania do wklejenia w edytorze odznak. Krótkie uwagi dodawaj tylko, gdy trzeba też zmienić identity, grant albo krzywą. Nie wymyślaj funkcji, pól ani składni.",
+      "rulesTitle": "Zasady silnika",
+      "rules": "- Parser jest WYSIWYG: zapisane wyrażenie jest liczone tak, jak je napisano.\n- Język ma kształt JavaScriptu, ale to nie jest dowolny JavaScript. Komentarze liniowe i blokowe są dozwolone; moduły, przypisania i wnętrza obiektów nie.\n- Nie zagnieżdżaj `.filter` ani `.map` na tej samej liście, chyba że musisz. Użyj `maxCount` albo `maxGroup`.\n- `familyAt` to rodzina trudności w chwili wysłania passa, nie obecna trudność poziomu.\n- Zwróć `curve(...)`, `result(...)` albo liczbę."
+    },
     "sections": {
       "lists": {
         "title": "Listy",
