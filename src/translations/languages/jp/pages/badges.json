@@ -1,169 +1,877 @@
 {
   "meta": {
-    "title": "Badges",
-    "description": "Collectable player and creator badges"
+    "title": "バッジ",
+    "description": "プレイヤーとクリエイター向けの収集バッジ"
   },
-  "open": "Badges",
-  "title": "Badges",
-  "empty": "No badges to show yet.",
-  "locked": "Locked",
-  "earned": "Earned",
-  "tier": "Tier {{tier}}",
+  "open": "バッジ",
+  "title": "バッジ",
+  "empty": "まだ表示できるバッジがありません。",
+  "ungrouped": "未分類",
+  "locked": "未獲得",
+  "earned": "獲得済み",
+  "tier": "ティア {{tier}}",
   "credit": "{{credit}} / {{next}}",
-  "saveEquip": "Save slots",
-  "saved": "Badge slots saved",
-  "saveFailed": "Could not save badge slots",
-  "loadFailed": "Could not load badges",
-  "confirmAccuracy": "Accuracy {{value}}",
-  "confirmJudgements": "Judgements {{value}}",
-  "help": {
-    "title": "Badge engine",
-    "intro": "This page documents the engine. Secret badge rows stay in the database and are not part of this help text. A formula never reaches the public site until that badge is earned.",
-    "close": "Close",
-    "formulaTitle": "Excel-style conditions",
-    "formulaBody": "Where a badge filters clears or charts, the condition is a formula like Excel. Start with =. Compare fields with =, <>, >, >=, <, and <=. Combine them with AND, OR, NOT, and IF. ISBLANK checks a missing value, EXACT compares text with case, and HAS looks for a curation name. Example: =AND(speed>=2, OR(family=\"G\", family=\"U\")). An empty formula counts every row. The formula box only appears for badge types that filter rows.",
-    "filterTitle": "Public clears",
-    "filterBody": "Only passes and charts that are not hidden and not deleted are visible. Wrong-judgement passes stay. A missing judgement bucket counts as 0. World-first checks also require speed exactly 1 and then follow the live world-first flag, which moves when an earlier 1.0x upload is accepted. The 5/40/5 placeholder sheet is skipped only by reducers that read judgements, accuracy, or score, and those reducers also ignore an all-zero sheet. Upload times 2023-01-01 07:27:27 and 2023-07-27 07:27:27 are unknown and are skipped by gap, sequence, nth-clearer, and earned-time ordering.",
-    "identityTitle": "Chart identity",
-    "identityBody": "level uses the chart id. chartSubgroup and vfxSubgroup collapse linked charts that share that subgroup. group collapses the whole link group. A clear only contributes its own chart's key count, difficulty, and curation. Clearing the unlimited sibling does not inherit the 10-key chart's key count. For a collapsed identity, the sibling clear is a reclear, not a second chart.",
-    "historyTitle": "Difficulty at the time",
-    "historyBody": "difficultyAt walks level rerate history against the upload time. Before the first recorded change, the difficulty is that row's previous difficulty. With no history, the clear-time snapshot is used, then the chart's current difficulty. Snapshots are written when a pass is accepted or a world-first flag is refreshed. They store difficulty, base score, PP base score, curation type ids, and charter and VFXer ids. Older passes stay on current difficulty until something rewrites them.",
-    "curveTitle": "Curve, bars, and tier names",
-    "curveBody": "curve(credit, start, step) earns a tier when credit reaches start, then start plus step, and so on. curveDown(credit, start, step) is the descending form: start 4 and step 1 produces tiers at 4, then 3, then 2, then 1. result(tier, credit, from, to) sets the tier and the bar directly, which is how an all-or-nothing badge keeps a partial count from earning a tier. A plain number of 1 or more is itself the tier. Tier labels are { minTier, label } pairs. The label shown is the one with the greatest minTier that is still at or below the earned tier. common and legendary are examples, not a fixed list. An empty list shows no label. Shared creator credit is written in the expression, usually 0.5 when more than one person holds the role. Half a credit does not reach a start of 1.",
-    "grantTitle": "Grant modes",
-    "grantBody": "live recomputes and can be lost. persistTier keeps the highest tier reached. persistSnapshot freezes the chart set that satisfied a percent badge, so later charts do not raise the denominator. resetOnGrowth uses the live target, which is the pack default: a chart added to the pack removes completion until it is cleared. manualLock stays off until a reviewer approves a video. chase stores the current number, such as the lowest uncleared chart id. Saving a definition keeps persistTier and persistSnapshot results unless Replace earned tiers is on.",
-    "backfillTitle": "Backfill",
-    "backfillBody": "now evaluates every current public clear when the badge is published. forward ignores passes created before publication. queue only creates review rows and does not grant, except a manualLock badge which grants after approval. The job records how many passes it skipped for a placeholder sheet, an unknown upload time, or a missing difficulty history. Adding a badge later is the same job. Facts that were never stored, such as curation at the moment of an old clear, cannot be reconstructed.",
-    "reducersTitle": "Reducers",
-    "reducersBody": "threshold counts filtered clears or creator charts. aggregate is count, countDistinct, maxPerIdentity, maxPerSong, maxChartClears, maxSongsPerArtist, or ratingWeek. Filters include minSpeed, speedEquals, worldsFirst, worldsFirstPP, purePerfect, families, difficultyNames, difficultySet, key counts, minDurationMs, useDifficultyAt, requireNoPriorClear, curationTypes, role, and sole. coverage fills bins from a named set, every reference chart, one curation type, or a list of curation types. prefix stops at the first gap. percentOf needs fraction and minCharts. record uses metric accuracy, score, or speed, with optional world-first and highest score or speed. creditFrom otherClears uses the largest crowd on a chart the player still leads. pattern matches one pass: accuracyIncludes, ppMinusOne, minMisses, noMisses, symmetry, technicallyPure, noPerfects, asymmetry, gamma, bucketEquals, judgementPattern (7 integers: too-early, early, ePerfect, perfect, lPerfect, late, too-late), month, day, levelIds, families, minSpeed, minDurationMs, scoreEndsWith, or sharedAccuracy. sequence uses order, blocks, or rangeSize, with excludeDifficultyNames, perStep, and consecutive. gap uses minDays and stores the largest gap. nthClearer uses n. chase uses excludeDifficultyNames and shows the lowest uncleared id. best uses metric keyCount, perfectCount, difficultyNumber, misses, speed, or accuracy. manual wraps a pattern or sequence and waits for a review. pack takes packId. Folders and notes are ignored, a chart listed twice counts once, and the tier is earned only when every public chart in the pack is cleared. Official levels are whichever pack you select.",
-    "reviewTitle": "Reviews and secrecy",
-    "reviewBody": "Approving a review requires a video URL and records the reviewer. Unearned secret badges are omitted from profiles. Other unearned badges show a name, icon, and progress bar, including the next number, but not the requirement text or the parameters. After a badge is earned, its tier label and proving passes are shown. accuracyFull and judgementsFull add server-rendered confirm text on that badge only. Public score cards keep the normal accuracy formatter.",
-    "valueTitle": "Value expressions",
-    "valueBody": "A badge expression returns the tier. clears are this player's public clears. levels are the public charts. mine are charts the creator is credited on, or charts this player has cleared. Filter with .filter(item => item.difficulty == \"G10\") and count with count(...) or .length. curve(count, start, step) and curveDown(count, start, step) turn that count into tiers. result(tier, credit, from, to) sets the tier and the bar directly. difficulty(\"G10\") gives total, cleared, and ratio. sequence([ids]) and consecutive([ids], item => item.ppMinusOne) walk clears in upload order and return how many steps matched. blocks(10, \"Impossible\", \"Censored\") returns completed id blocks. prefix(set) counts a leading difficulty set. gap() is the longest gap in days. pack() is the charts in this badge's pack. complete(set) is 1 when every difficulty in the set is charted. nth(100), lead(level, \"accuracy\"), first(level), and shared() read other players. Placeholder 5/40/5 sheets keep their chart fields, but their accuracy and judgement fields are empty. This is a small expression language with JavaScript shape. It does not run arbitrary JavaScript."
-  },
-  "admin": {
-    "metaTitle": "Badge editor",
-    "metaDescription": "Create and recompute collectable badges",
-    "title": "Badges",
-    "help": "Engine help",
-    "new": "New badge",
-    "list": "Definitions",
-    "reviews": "Reviews",
-    "jobs": "Jobs",
-    "save": "Save",
-    "saved": "Badge saved",
-    "saveFailed": "Could not save the badge",
-    "recompute": "Recompute",
-    "recomputed": "Recompute queued",
-    "replace": "Replace earned tiers",
-    "enabled": "Enabled",
-    "secret": "Secret",
-    "slug": "Slug",
-    "name": "Name",
-    "audience": "Audience",
-    "reducer": "Reducer",
-    "grant": "Grant",
-    "identity": "Identity",
-    "backfill": "Backfill",
-    "round": "Round",
-    "direction": "Direction",
-    "start": "Start",
-    "step": "Step",
-    "weight": "Weight",
-    "icon": "Icon",
-    "color": "Color",
-    "stat": "Stat",
-    "purple": "Purple",
-    "confirm": "Confirm",
-    "labels": "Tier labels",
-    "addLabel": "Add label",
-    "minTier": "From tier",
-    "label": "Label",
-    "params": "Params",
-    "packSearch": "Find a pack",
-    "approve": "Approve",
-    "reject": "Reject",
-    "video": "Video URL",
-    "reviewSaved": "Review saved",
-    "reviewFailed": "Could not save the review",
-    "videoRequired": "Add the video URL before approving",
-    "loadFailed": "Could not load badges",
-    "importCode": "Import code",
-    "importTitle": "Import badges",
-    "importHint": "Paste a configuration. Sets match by name and badges match by slug. Packs must already exist.",
-    "loadRequested": "Load requested set",
-    "requestedLoaded": "Requested set loaded",
-    "importAction": "Import",
-    "imported": "Imported {{count}} badges",
-    "importFailed": "Could not import badges",
-    "replaceImport": "Replace earned tiers",
-    "search": "Search",
-    "searchPlaceholder": "Name or slug",
-    "filterAll": "All",
-    "filterPlayer": "Player",
-    "filterCreator": "Creator",
-    "filterSecretOnly": "Secret",
-    "filterPublic": "Public",
-    "filterEnabledOnly": "Enabled",
-    "filterDisabled": "Disabled",
-    "showing": "Showing {{count}} of {{total}}",
-    "noMatches": "No badges match these filters.",
-    "refreshBackfill": "Refresh backfill",
-    "backfillStarting": "Starting backfill",
-    "backfillStarted": "Replacement backfill started",
-    "backfillAlready": "A replacement backfill is already running",
-    "backfillFailed": "Could not start the backfill",
-    "backfillWaiting": "Waiting to count owners",
-    "backfillProgress": "{{processed}} / {{total}} · {{players}} / {{playerTotal}} players · {{creators}} / {{creatorTotal}} creators",
-    "backfillPlayers": "{{processed}} / {{total}} players",
-    "backfillCreators": "{{processed}} / {{total}} creators",
-    "backfillLoading": "Loading every public clear and chart. Owners are not counted yet.",
-    "backfillQueued": "Replacement is waiting behind this run",
-    "backfillCursor": "{{status}} · owner {{current}} / {{total}} · badge {{badge}} / {{badgeTotal}} · {{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
-    "backfillPending": "Queued. The worker has not picked it up yet.",
-    "backfillNow": "Evaluating {{badge}} for {{kind}} {{owner}}. Owner {{current}} of {{total}}, badge {{badgeIndex}} of {{badgeTotal}} for this owner. {{players}} of {{playerTotal}} players and {{creators}} of {{creatorTotal}} creators are fully finished.",
-    "backfillUnknownBadge": "the next badge",
-    "backfillHeartbeat": "Checked in {{seconds}}s ago",
-    "cancelBackfill": "Cancel backfill",
-    "backfillCancelling": "Cancelling backfill",
-    "backfillCancelled": "Backfill cancelled",
-    "backfillCancelFailed": "Could not cancel the backfill",
-    "backfillOwners": "Owners {{done}} / {{total}}",
-    "backfillBadges": "Badges on this owner {{done}} / {{total}}",
-    "backfillRunning": "{{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
-    "backfillBadgesPlayer": "Badges for {{name}} {{done}} / {{total}}",
-    "backfillBadgesCreator": "Badges for {{name}} {{done}} / {{total}}",
-    "backfillPlayersFinished": "{{done}} / {{total}} players finished",
-    "backfillCreatorsFinished": "{{done}} / {{total}} creators finished",
-    "startFrom": "Start from #:",
-    "backfillReport": "Slowest badges",
-    "backfillReportDownload": "Download CSV",
-    "backfillReportFailed": "Could not download the timing report",
-    "backfillEta": "About {{eta}} left",
-    "backfillCancelConfirm": "Cancel the running backfill?"
-  },
-  "search": "Search",
-  "searchPlaceholder": "Badge name",
-  "status": "Status",
-  "statusAll": "All",
-  "statusEarned": "Earned",
-  "statusLocked": "Locked",
-  "statusEquipped": "Equipped",
-  "tone": "Mark",
-  "toneAll": "All marks",
-  "tonePurple": "Purple",
-  "tonePlain": "Standard",
-  "showing": "Showing {{count}} of {{total}}",
-  "noMatches": "No badges match these filters.",
   "creditUnit": "{{credit}} {{unit}}",
   "creditNextUnit": "{{credit}} / {{next}} {{unit}}",
-  "creditChart": "Chart {{credit}}",
+  "creditChart": "譜面 {{credit}}",
+  "reviewHint": "審査担当者がこのバッジを付与します。クリア動画にはウェブカメラが写っている必要があります。",
   "units": {
-    "day": "day",
-    "days": "days",
-    "key": "key",
-    "keys": "keys",
-    "perfect": "perfect",
-    "perfects": "perfects"
+    "day": "日",
+    "days": "日",
+    "key": "キー",
+    "keys": "キー",
+    "perfect": "パーフェクト",
+    "perfects": "パーフェクト"
+  },
+  "saveEquip": "スロットを保存",
+  "saved": "バッジスロットを保存しました",
+  "saveFailed": "バッジスロットを保存できませんでした",
+  "loadFailed": "バッジを読み込めませんでした",
+  "confirmAccuracy": "精度 {{value}}",
+  "confirmJudgements": "判定 {{value}}",
+  "search": "検索",
+  "searchPlaceholder": "バッジ名",
+  "status": "状態",
+  "statusAll": "すべて",
+  "statusEarned": "獲得済み",
+  "statusLocked": "未獲得",
+  "statusEquipped": "装備中",
+  "tone": "マーク",
+  "toneAll": "すべてのマーク",
+  "tonePurple": "紫",
+  "tonePlain": "標準",
+  "showing": "{{total}} 件中 {{count}} 件を表示",
+  "noMatches": "これらの条件に合うバッジはありません。",
+  "help": {
+    "title": "バッジエンジン",
+    "subtitle": "付与スクリプトが使えるすべてのリスト、フィールド、構文です。",
+    "close": "閉じる",
+    "examplesTitle": "例",
+    "sections": {
+      "lists": {
+        "title": "リスト",
+        "intro": "これらの名前は常にスコープにあります。各項目はフィールドの行です。プレースホルダーの 5/40/5 譜面は譜面フィールドを残しますが、精度と判定のフィールドは空です。",
+        "fields": {
+          "clears": {
+            "title": "プレイヤーのクリア",
+            "desc": "このプレイヤーの公開クリアです。"
+          },
+          "levels": {
+            "title": "譜面",
+            "desc": "公開譜面です。"
+          },
+          "mine": {
+            "title": "クレジットまたはクリアした譜面",
+            "desc": "このクリエイターがクレジットされている譜面、またはこのプレイヤーがクリアした譜面です。levels と同じフィールドです。"
+          },
+          "ratings": {
+            "title": "評価",
+            "desc": "このユーザーの評価の <code>levelId</code> と <code>week</code> の行です。"
+          }
+        }
+      },
+      "clearFields": {
+        "title": "クリアのフィールド",
+        "intro": "clears の行から読みます。名前は大文字と小文字を区別します。",
+        "fields": {
+          "passId": {
+            "title": "クリア ID",
+            "desc": "数値。パスの ID です。"
+          },
+          "levelId": {
+            "title": "譜面 ID",
+            "desc": "数値。このクリアの譜面です。"
+          },
+          "identity": {
+            "title": "同一性キー",
+            "desc": "テキスト。バッジの同一性でまとめられた譜面は同じキーを共有します。"
+          },
+          "speed": {
+            "title": "速度",
+            "desc": "1 や 2 などの数値。速度がないクリアでは null です。"
+          },
+          "keyCount": {
+            "title": "キー数",
+            "desc": "キーの数、または null。"
+          },
+          "difficulty": {
+            "title": "現在の難易度",
+            "desc": "テキスト。譜面の現在の難易度名です。例: G10。"
+          },
+          "difficultyAt": {
+            "title": "投稿時の難易度",
+            "desc": "テキスト。クリア投稿時の難易度名です。"
+          },
+          "family": {
+            "title": "現在の系統",
+            "desc": "テキスト。現在の難易度の系統です。例: G、U、GQ、UQ、QQ。"
+          },
+          "familyAt": {
+            "title": "投稿時の系統",
+            "desc": "テキスト。difficultyAt の系統です。"
+          },
+          "song": {
+            "title": "曲名",
+            "desc": "テキスト。曲名がない譜面では空です。"
+          },
+          "songId": {
+            "title": "曲 ID",
+            "desc": "数値、または null。"
+          },
+          "durationMs": {
+            "title": "長さ",
+            "desc": "譜面の長さ（ミリ秒）、または null。"
+          },
+          "accuracy": {
+            "title": "精度比",
+            "desc": "0 から 1 の数値。プレースホルダー譜面では null です。"
+          },
+          "accuracyText": {
+            "title": "表示精度",
+            "desc": "サイトと同じ書式の 99.995 のようなテキストです。プレースホルダー譜面では空です。"
+          },
+          "score": {
+            "title": "スコア",
+            "desc": "スコア v2 の数値。プレースホルダー譜面では null です。"
+          },
+          "scoreText": {
+            "title": "表示スコア",
+            "desc": "小数 3 桁に固定したスコアです。例: 100.000。"
+          },
+          "worldsFirst": {
+            "title": "1.0× ワールドファースト",
+            "desc": "速度がちょうど 1 で、現在のワールドファースト旗が立っているときだけ真です。"
+          },
+          "isWorldsFirst": {
+            "title": "ワールドファースト旗",
+            "desc": "どの速度でも使える生の旗です。速度 1 は不要です。"
+          },
+          "worldsFirstPP": {
+            "title": "PP ワールドファースト",
+            "desc": "このクリアが世界初のピュアパーフェクトを持っているとき真です。"
+          },
+          "ancient": {
+            "title": "プレースホルダー譜面",
+            "desc": "5/40/5 のプレースホルダーで真です。そのとき精度と判定のフィールドは空です。"
+          },
+          "xPerfect": {
+            "title": "X-perfect モード",
+            "desc": "X-perfect モードでプレイされたクリアで真です。"
+          },
+          "reference": {
+            "title": "リファレンス譜面",
+            "desc": "リファレンス譜面のとき真です。"
+          },
+          "curation": {
+            "title": "キュレーション名",
+            "desc": "C3 や V3 などのテキストのリストです。<code>.includes</code> を使います。"
+          },
+          "charterCount": {
+            "title": "譜師の人数",
+            "desc": "譜面にクレジットされている譜師の人数です。"
+          },
+          "vfxerCount": {
+            "title": "VFX 担当の人数",
+            "desc": "譜面にクレジットされている VFXer の人数です。"
+          },
+          "ownerIsCharter": {
+            "title": "所有者が譜師",
+            "desc": "このクリエイター、またはクリエイターとしてのプレイヤーが譜師のとき真です。"
+          },
+          "ownerIsVfxer": {
+            "title": "所有者が VFXer",
+            "desc": "このクリエイターが譜面の VFXer のとき真です。"
+          },
+          "noPriorClear": {
+            "title": "その同一性の初クリア",
+            "desc": "投稿時刻が分かっている、その同一性の最も早いクリアで真です。"
+          },
+          "month": {
+            "title": "投稿月",
+            "desc": "UTC の月、1 から 12。投稿時刻が不明なときは null です。"
+          },
+          "day": {
+            "title": "投稿日",
+            "desc": "UTC の日。投稿時刻が不明なときは null です。"
+          },
+          "uploadMs": {
+            "title": "投稿時刻",
+            "desc": "投稿時刻（ミリ秒）、不明なときは null です。"
+          }
+        },
+        "examples": {
+          "worldsFirst": "<b><code>clear.worldsFirst == true</code></b> は 1.0× のワールドファーストです。<b><code>clear.isWorldsFirst</code></b> はどの速度でも使える旗です。",
+          "accuracyText": "<b><code>clear.accuracyText.endsWith(\"31\")</code></b> は生の比率ではなく、表示精度に一致します。"
+        }
+      },
+      "judgements": {
+        "title": "判定フィールド",
+        "intro": "プレースホルダーや全ゼロの譜面では空です。欠けた判定枠は 0 です。Too-late はこのフィールドではありません。",
+        "fields": {
+          "misses": {
+            "title": "ミス",
+            "desc": "Too-early の数。earlyDouble 枠です。"
+          },
+          "earlies": {
+            "title": "Early シングル",
+            "desc": "Early シングルの数です。"
+          },
+          "lates": {
+            "title": "Late シングル",
+            "desc": "Late シングルの数です。"
+          },
+          "ePerfect": {
+            "title": "Early パーフェクト",
+            "desc": "Early パーフェクトの数です。"
+          },
+          "lPerfect": {
+            "title": "Late パーフェクト",
+            "desc": "Late パーフェクトの数です。"
+          },
+          "perfect": {
+            "title": "中央パーフェクト",
+            "desc": "中央枠のパーフェクトです。"
+          },
+          "perfects": {
+            "title": "パーフェクト合計",
+            "desc": "中央パーフェクトに加え、X-perfect モードでは perfect-minus と perfect-plus も含みます。"
+          },
+          "perfectMinus": {
+            "title": "Perfect minus",
+            "desc": "X-perfect の枠です。そのモード以外では 0 です。"
+          },
+          "perfectPlus": {
+            "title": "Perfect plus",
+            "desc": "X-perfect の枠です。そのモード以外では 0 です。"
+          },
+          "purePerfect": {
+            "title": "ピュアパーフェクト",
+            "desc": "精度がちょうど 100% のとき真です。"
+          },
+          "ppMinusOne": {
+            "title": "パーフェクト帯から 1 つ外れ",
+            "desc": "パーフェクト帯の外の判定がちょうど 1 つで、ミスが 0 のとき真です。"
+          },
+          "noMisses": {
+            "title": "ミスなし",
+            "desc": "ミスが 0 で、譜面が空でないとき真です。"
+          },
+          "symmetry": {
+            "title": "左右対称",
+            "desc": "Early シングルが Late シングルと等しく、Early パーフェクトが Late パーフェクトと等しく、ピュアパーフェクトではないとき真です。"
+          },
+          "technicallyPure": {
+            "title": "技術的にピュア",
+            "desc": "Early / Late パーフェクトがなく、Early シングルと Late シングルの両方があるとき真です。"
+          },
+          "noPerfects": {
+            "title": "パーフェクトなし",
+            "desc": "パーフェクト合計が 0 で、譜面が空でないとき真です。"
+          },
+          "asymmetry": {
+            "title": "非対称",
+            "desc": "パーフェクト以外のある枠がパーフェクト合計より大きいとき真です。"
+          }
+        },
+        "examples": {
+          "symmetry": "<b><code>clear.symmetry == true && (clear.familyAt == \"G\" || clear.familyAt == \"U\")</code></b> は対称な G または U のクリアを残します。",
+          "ppMinusOne": "<b><code>clear.ppMinusOne == true</code></b> はパーフェクト帯の外の判定が 1 つで、ミスが 0 です。"
+        }
+      },
+      "levelFields": {
+        "title": "譜面フィールド",
+        "intro": "levels または mine の行から読みます。",
+        "fields": {
+          "levelId": {
+            "title": "譜面 ID",
+            "desc": "数値。"
+          },
+          "identity": {
+            "title": "同一性キー",
+            "desc": "テキスト。クリアと同じまとめ方です。"
+          },
+          "difficulty": {
+            "title": "難易度名",
+            "desc": "現在の難易度名です。"
+          },
+          "family": {
+            "title": "系統",
+            "desc": "現在の難易度の系統です。"
+          },
+          "song": {
+            "title": "曲名",
+            "desc": "テキスト。"
+          },
+          "songId": {
+            "title": "曲 ID",
+            "desc": "数値、または null。"
+          },
+          "durationMs": {
+            "title": "長さ",
+            "desc": "ミリ秒、または null。"
+          },
+          "clears": {
+            "title": "クリア数",
+            "desc": "譜面の公開クリア数です。"
+          },
+          "reference": {
+            "title": "リファレンス譜面",
+            "desc": "リファレンス譜面のとき真です。"
+          },
+          "curation": {
+            "title": "キュレーション名",
+            "desc": "テキストのリストです。<code>.includes</code> を使います。"
+          },
+          "charterCount": {
+            "title": "譜師の人数",
+            "desc": "クレジットされている譜師の人数です。"
+          },
+          "vfxerCount": {
+            "title": "VFX 担当の人数",
+            "desc": "クレジットされている VFXer の人数です。"
+          },
+          "ownerIsCharter": {
+            "title": "所有者が譜師",
+            "desc": "このクリエイターがその譜面の譜師のとき真です。"
+          },
+          "ownerIsVfxer": {
+            "title": "所有者が VFXer",
+            "desc": "このクリエイターが VFXer のとき真です。"
+          },
+          "artistIds": {
+            "title": "アーティスト ID",
+            "desc": "曲のアーティスト ID のリストです。"
+          },
+          "rivals": {
+            "title": "他のプレイヤー",
+            "desc": "プレースホルダーでないクリアを持つ他のプレイヤー数です。"
+          }
+        }
+      },
+      "structures": {
+        "title": "構文",
+        "intro": "スクリプトは JavaScript の形を使います。任意の JavaScript は実行しません。<code>//</code> 行コメントと <code>/* */</code> ブロックコメントは飛ばされます。書いた内容がそのまま実行されます。同じリストへの <code>.filter</code> や <code>.map</code> の入れ子は必要なときだけにし、<code>maxCount</code> や <code>maxGroup</code> を使ってください。",
+        "fields": {
+          "eq": {
+            "title": "等しい",
+            "desc": "<code>==</code> と単独の <code>=</code> は緩い比較です。<code>===</code> は厳密比較です。テキストは大文字小文字を区別します。"
+          },
+          "compare": {
+            "title": "大小",
+            "desc": "<code>&gt;</code>、<code>&gt;=</code>、<code>&lt;</code>、<code>&lt;=</code> は数値を比較します。"
+          },
+          "and": {
+            "title": "組み合わせ",
+            "desc": "<code>&amp;&amp;</code> は両方が必要です。<code>||</code> はどちらかです。"
+          },
+          "not": {
+            "title": "否定",
+            "desc": "<code>!</code> は条件を反転します。<code>!=</code> と <code>!==</code> は否定の比較です。"
+          },
+          "ternary": {
+            "title": "選択",
+            "desc": "<code>condition ? whenTrue : whenFalse</code> は一方の結果を選びます。"
+          },
+          "arrow": {
+            "title": "関数",
+            "desc": "<code>item =&gt; item.speed &gt;= 2</code> は関数です。<code>{ return ... }</code> も使えます。"
+          },
+          "array": {
+            "title": "リストリテラル",
+            "desc": "<code>[1, 2, 3]</code> はリストを作ります。<code>[0]</code> で添字します。"
+          },
+          "filter": {
+            "title": "行を残す",
+            "desc": "<code>.filter(item =&gt; ...)</code> は一致する行を返します。",
+            "example": "<code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code> は G10 のクリアだけを残します。"
+          },
+          "map": {
+            "title": "行を変換",
+            "desc": "<code>.map(item =&gt; item.levelId)</code> は新しいリストを作ります。",
+            "example": "<code>clears.map(clear =&gt; clear.levelId)</code> はクリアごとの譜面 ID のリストです。"
+          },
+          "some": {
+            "title": "どれか一致",
+            "desc": "<code>.some(item =&gt; ...)</code> は 1 行でも一致すれば真です。",
+            "example": "<code>clears.some(clear =&gt; clear.misses &gt; 75)</code> はミスが 75 を超えるクリアがあれば真です。"
+          },
+          "every": {
+            "title": "すべて一致",
+            "desc": "<code>.every(item =&gt; ...)</code> はすべての行が一致すれば真です。空のリストは真です。",
+            "example": "<code>[\"C1\", \"C2\"].every(name =&gt; mine.some(level =&gt; level.curation.includes(name)))</code> は両方のキュレーションがあるときだけ真です。"
+          },
+          "find": {
+            "title": "最初の一致",
+            "desc": "<code>.find(item =&gt; ...)</code> は最初に一致した行、または null を返します。",
+            "example": "<code>clears.find(clear =&gt; clear.levelId == 1)</code> は譜面 1 の最初のクリア、または null です。"
+          },
+          "includes": {
+            "title": "含む",
+            "desc": "リストでは <code>.includes(value)</code>。テキストでは <code>.includes</code>、<code>.startsWith</code>、<code>.endsWith</code> です。",
+            "example": "<code>clear.curation.includes(\"V3\")</code> はその譜面に V3 キュレーションがあるとき真です。"
+          },
+          "length": {
+            "title": "大きさ",
+            "desc": "リストまたはテキストの <code>.length</code>。<code>count(list)</code> はリストの同じ大きさです。",
+            "example": "<code>clears.length</code> はクリア数です。<code>\"G10\".length</code> は 3 です。"
+          },
+          "text": {
+            "title": "文字の大小",
+            "desc": "<code>.toLowerCase()</code> と <code>.toUpperCase()</code>。",
+            "example": "<code>\"WYSI\".toLowerCase()</code> は wysi です。<code>clear.accuracyText.endsWith(\"31\")</code> は表示精度を調べます。"
+          },
+          "optional": {
+            "title": "欠けたフィールド",
+            "desc": "<code>row?.field</code> は行が null のとき失敗せず null になります。"
+          }
+        },
+        "examples": {
+          "filter": "<b><code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code></b> は G10 のクリアを残します。",
+          "text": "<b><code>clear.song.toLowerCase().includes(\"wysi\")</code></b> は大小を無視して曲名に一致します。"
+        }
+      },
+      "numbers": {
+        "title": "数値関数",
+        "intro": "行や数値を 1 つの数にします。欠けた数値は計算の中では 0 です。",
+        "fields": {
+          "count": {
+            "title": "件数",
+            "desc": "<code>count(list)</code> は行数です。数える行はバッジに表示されるクリアです。",
+            "example": "<code>count(clears.filter(clear =&gt; clear.speed &gt;= 2))</code> は 2.0× 以上のクリアが 4 件なら 4 です。"
+          },
+          "distinct": {
+            "title": "キーごとに 1 件",
+            "desc": "<code>distinct(list, item =&gt; item.identity)</code> は各キーの最初の行を残します。",
+            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> は同じ譜面を 2 回クリアしても 1 行です。"
+          },
+          "sum": {
+            "title": "合計",
+            "desc": "<code>sum(list)</code> は数値を足します。<code>sum(list, item =&gt; item.speed)</code> はフィールドを足します。",
+            "example": "<code>sum([1, 0.5, 0.5])</code> は 2 です。<code>sum(clears, clear =&gt; clear.speed)</code> はすべての速度を足します。"
+          },
+          "min": {
+            "title": "最小",
+            "desc": "<code>min(list)</code> または <code>min(list, item =&gt; item.keyCount)</code>。<code>min(a, b)</code> は 2 つの数を比較します。",
+            "example": "<code>min(4, 1)</code> は 1 です。<code>min(clears.map(clear =&gt; clear.keyCount))</code> は最も少ないキー数です。"
+          },
+          "max": {
+            "title": "最大",
+            "desc": "<code>max(list)</code> または <code>max(a, b)</code>。",
+            "example": "<code>max(3, 9)</code> は 9 です。<code>max(mine.map(level =&gt; level.clears))</code> は最もクリアが多い譜面です。"
+          },
+          "maxCount": {
+            "title": "同じキーの最多件数",
+            "desc": "<code>maxCount(list, \"identity\")</code> は各キーの行数を数え、最大値を返します。同じリストに filter を重ねる代わりに使います。",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> は、G または U の譜面を 100 回クリアしていれば 100 です。"
+          },
+          "abs": {
+            "title": "絶対値",
+            "desc": "<code>abs(n)</code>。",
+            "example": "<code>abs(-2)</code> は 2 です。"
+          },
+          "floor": {
+            "title": "切り下げ",
+            "desc": "<code>floor(n)</code>。",
+            "example": "<code>floor(1.9)</code> は 1 です。"
+          },
+          "round": {
+            "title": "四捨五入",
+            "desc": "<code>round(n)</code>。",
+            "example": "<code>round(1.5)</code> は 2 です。<code>round(1.4)</code> は 1 です。"
+          },
+          "ceil": {
+            "title": "切り上げ",
+            "desc": "<code>ceil(n)</code>。",
+            "example": "<code>ceil(1.1)</code> は 2 です。"
+          },
+          "threshold": {
+            "title": "しきい値到達",
+            "desc": "<code>threshold(n, 10)</code> は n が 10 以上なら 1、それ以外は 0 です。",
+            "example": "<code>threshold(9, 10)</code> は 0 です。<code>threshold(10, 10)</code> は 1 です。"
+          }
+        },
+        "examples": {
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> は 2.0× 以上でクリアした譜面を、それぞれ 1 回ずつ数えます。"
+        }
+      },
+      "curves": {
+        "title": "カーブと結果",
+        "intro": "スクリプトはティアを返す必要があります。カーブは件数をティアに変え、進捗バーを設定します。",
+        "fields": {
+          "curve": {
+            "title": "上昇ティア",
+            "desc": "<code>curve(credit, start, step)</code> は start で 1 ティア、その後 start に step を足した値で次のティアです。",
+            "example": "<code>curve(30, 10, 20)</code> はティア 2 です。10 でティア 1、30 でティア 2 です。"
+          },
+          "curveDown": {
+            "title": "下降ティア",
+            "desc": "<code>curveDown(credit, start, step)</code> は start で 1 ティア、その後 start から step を引いた値です。",
+            "example": "<code>curveDown(2, 4, 1)</code> はティア 3 で、4 から 3、2 と下がります。"
+          },
+          "result": {
+            "title": "ティアとバーを指定",
+            "desc": "<code>result(tier, credit, from, to)</code> は直接設定するので、途中の件数だけではティアになりません。",
+            "example": "<code>result(0, 6, 0, 8)</code> はティア 0 のまま、バーは 8 のうち 6 を示します。"
+          },
+          "number": {
+            "title": "ただの数値",
+            "desc": "1 以上の数値はそのままティアです。それより小さい値はティア 0 です。",
+            "example": "<code>2</code> はティア 2 です。<code>0.5</code> はティア 0 です。"
+          }
+        },
+        "examples": {
+          "up": "<b><code>curve(count(clears), 10, 20)</code></b> は 10 クリアでティア 1、その後 20 ごとです。",
+          "down": "<b><code>curveDown(min(clears.map(clear =&gt; clear.keyCount)), 4, 1)</code></b> は 4 キーから下がります。",
+          "result": "<b><code>result(ratio &gt;= 0.75 ? 1 : 0, cleared, 0, total)</code></b> は件数を表示し、75% でのみティアを与えます。"
+        }
+      },
+      "functions": {
+        "title": "ホスト関数",
+        "intro": "このプレイヤー、このクリエイター、または他のプレイヤーを読みます。",
+        "fields": {
+          "difficulty": {
+            "title": "1 つの難易度",
+            "desc": "<code>difficulty(\"G10\")</code> は <code>total</code>、<code>cleared</code>、<code>ratio</code> の行を返します。",
+            "example": "<code>difficulty(\"G10\").cleared</code> は G10 譜面を 6 枚クリアしていれば 6 です。<code>.ratio</code> は cleared を total で割った値です。"
+          },
+          "sequence": {
+            "title": "順番どおりの譜面 ID",
+            "desc": "<code>sequence([id, id])</code> は投稿順にクリアをたどり、順番どおりに一致した ID の数を返します。",
+            "example": "<code>sequence([5017, 52])</code> は譜面 52 が 5017 の後にクリアされていれば 2 です。5017 だけなら 1 です。"
+          },
+          "consecutive": {
+            "title": "隙間のない順番",
+            "desc": "<code>consecutive([id, id], item =&gt; item.ppMinusOne)</code> は同じたどり方で、各段が検査を通り、クリアが連続している必要があります。",
+            "example": "<code>consecutive([5017, 52], clear =&gt; clear.ppMinusOne)</code> は、それらの PP-1 クリアが間に何も投稿されずに続くときだけ 2 です。"
+          },
+          "blocks": {
+            "title": "ID ブロック",
+            "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> はその大きさの完了した ID ブロック数を返し、それらの難易度は飛ばします。",
+            "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> は ID 1–10 のほかの譜面がすべてクリアされていれば 1 です。最初の未完了ブロックで止まります。"
+          },
+          "prefix": {
+            "title": "先頭の集合",
+            "desc": "<code>prefix(\"planetary\")</code> は名前付き難易度集合が先頭からどこまでクリアされたかを、投稿時の難易度で数えます。",
+            "example": "<code>prefix(\"planetary\")</code> は投稿時の難易度が P1、P2、P3 で、P4 が未クリアなら 3 です。"
+          },
+          "gap": {
+            "title": "最長の間隔",
+            "desc": "<code>gap()</code> は同じ同一性のクリアの間の最長の日数です。",
+            "example": "<code>gap()</code> は同じ譜面の 2 クリア間の最長が 730 日なら 730 です。"
+          },
+          "pack": {
+            "title": "パックの譜面 ID",
+            "desc": "<code>pack()</code> はこのバッジのパックの譜面 ID です。2 回載っている譜面は 1 回です。",
+            "example": "<code>count(pack())</code> はパックに 12 譜面あれば 12 です。2 回載っていても 1 回です。"
+          },
+          "complete": {
+            "title": "譜面化した集合",
+            "desc": "<code>complete(\"end-to-end\")</code> はこのクリエイターが名前付き集合のすべての難易度を譜面化していれば 1 です。",
+            "example": "<code>complete(\"end-to-end\")</code> はその集合のすべての難易度を譜面化したときだけ 1 です。そうでなければ 0 です。"
+          },
+          "nth": {
+            "title": "N 番目のクリア者",
+            "desc": "<code>nth(100)</code> はこのプレイヤーが 100 人目の異なるクリア者だった譜面を数えます。",
+            "example": "<code>nth(100)</code> は 2 譜面で 100 人目なら 2 です。"
+          },
+          "lead": {
+            "title": "現在の首位",
+            "desc": "<code>lead(level, \"accuracy\")</code> はこのプレイヤーがその譜面で首位なら真です。指標は accuracy、score、speed です。",
+            "example": "<code>lead(level, \"score\")</code> はその譜面でこのプレイヤーのスコアが最高なら真です。"
+          },
+          "first": {
+            "title": "どの速度でもワールドファースト",
+            "desc": "<code>first(level)</code> はこのプレイヤーがその譜面の生のワールドファースト旗を持っていれば真です。",
+            "example": "<code>first(level)</code> は 1.0× 以外でも、その譜面のワールドファースト旗を持っていれば真です。"
+          },
+          "shared": {
+            "title": "共有された精度",
+            "desc": "<code>shared()</code> はこのプレイヤーの表示精度が別の譜面にも出ている galactic または universal 譜面を数えます。",
+            "example": "<code>shared()</code> は G または U 譜面の表示精度が別の譜面にもあれば 1 です。"
+          },
+          "inSet": {
+            "title": "名前付き集合",
+            "desc": "<code>inSet(clear.difficultyAt, \"planetary\")</code> はその値がその名前付き集合にあれば真です。",
+            "example": "<code>inSet(\"P3\", \"planetary\")</code> は真です。<code>inSet(\"G3\", \"planetary\")</code> は偽です。"
+          },
+          "maxGroup": {
+            "title": "最大グループ",
+            "desc": "<code>maxGroup(rows, \"artistIds\", \"songId\")</code> は最初のフィールドでまとめたときの最も多い異なる値の数です。",
+            "example": "<code>maxGroup(mine, \"artistIds\", \"songId\")</code> は 1 人のアーティストがこのクリエイターによって 20 曲譜面化されていれば 20 です。"
+          }
+        },
+        "examples": {
+          "sequence": "<b><code>sequence([5017, 52]) == 2</code></b> は、その 2 譜面がその投稿順でクリアされたことを意味します。",
+          "lead": "<b><code>count(levels.filter(level =&gt; level.family == \"G\" &amp;&amp; lead(level, \"accuracy\")))</code></b> はこのプレイヤーが精度で首位の galactic 譜面を数えます。"
+        }
+      },
+      "clears": {
+        "title": "公開クリア",
+        "intro": "エンジンは公開されているパスと譜面だけを見ます。",
+        "bullets": {
+          "visible": "非表示と削除済みのパスと譜面は飛ばされます。誤判定のパスは残ります。",
+          "buckets": "欠けた判定枠は 0 です。",
+          "worldsFirst": "ワールドファーストの確認は速度がちょうど 1 であることも求め、その後は現在の旗に従います。より早い 1.0x 投稿が受理されると旗は移ります。",
+          "placeholder": "5/40/5 のプレースホルダー譜面は、判定・精度・スコアを読む処理では飛ばされます。全ゼロの譜面も同じです。",
+          "unknownTime": "投稿時刻 2023-01-01 07:27:27 と 2023-07-27 07:27:27 は不明です。gap、sequence、nth、獲得時刻の並びはそれらを飛ばします。"
+        }
+      },
+      "identity": {
+        "title": "譜面の同一性",
+        "intro": "同一性は、リンクされた譜面を 1 譜面として数えるか複数として数えるかを決めます。",
+        "fields": {
+          "level": {
+            "title": "譜面 ID",
+            "desc": "各譜面 ID はそれぞれ別の譜面です。"
+          },
+          "chartSubgroup": {
+            "title": "譜師サブグループ",
+            "desc": "同じ譜師サブグループを共有するリンク譜面は 1 つにまとまります。"
+          },
+          "vfxSubgroup": {
+            "title": "VFX サブグループ",
+            "desc": "同じ VFX サブグループを共有するリンク譜面は 1 つにまとまります。"
+          },
+          "group": {
+            "title": "リンクグループ",
+            "desc": "リンクグループ全体が 1 つにまとまります。"
+          }
+        },
+        "bullets": {
+          "ownChart": "クリアは自分の譜面のキー数、難易度、キュレーションだけを寄与します。unlimited の兄弟をクリアしても 10 キー譜面のキー数は引き継ぎません。",
+          "reclear": "まとめられた同一性では、兄弟のクリアは再クリアであり、2 つ目の譜面ではありません。"
+        }
+      },
+      "history": {
+        "title": "当時の難易度",
+        "intro": "difficultyAt はパス投稿時の譜面難易度を使います。",
+        "bullets": {
+          "walk": "エンジンは投稿時刻に対して再レート履歴をたどります。最初の記録された変更より前は、その行の以前の難易度です。",
+          "fallback": "履歴がなければクリア時のスナップショット、次に譜面の現在の難易度です。",
+          "snapshot": "パスが受理されたとき、またはワールドファースト旗が更新されたときにスナップショットが書かれます。難易度、基礎スコア、PP 基礎スコア、キュレーション種別 ID、譜師と VFXer の ID を保存します。",
+          "older": "古いパスは、何かが書き換えるまで現在の難易度のままです。"
+        }
+      },
+      "grants": {
+        "title": "付与モード",
+        "intro": "付与モードはティアを失えるかどうかを決めます。",
+        "fields": {
+          "live": {
+            "title": "再計算",
+            "desc": "ティアは再計算され、失うことがあります。"
+          },
+          "persistTier": {
+            "title": "最高ティアを保持",
+            "desc": "到達した最高ティアを残します。"
+          },
+          "persistSnapshot": {
+            "title": "集合を固定",
+            "desc": "パーセントバッジを満たした譜面集合は固定され、後からの譜面は分母を上げません。"
+          },
+          "resetOnGrowth": {
+            "title": "ライブ目標",
+            "desc": "パックの既定です。パックに譜面が追加されると、それがクリアされるまで完了は外れます。"
+          },
+          "manualLock": {
+            "title": "審査が必要",
+            "desc": "審査担当者が動画を承認するまでオフのままです。"
+          },
+          "chase": {
+            "title": "数値を保存",
+            "desc": "未クリアの最小譜面 ID などの現在の数値を残します。"
+          }
+        },
+        "bullets": {
+          "replace": "定義を保存しても、獲得済みティアを置き換えるがオンでない限り persistTier と persistSnapshot の結果は残ります。"
+        }
+      },
+      "backfill": {
+        "title": "バックフィル",
+        "intro": "バックフィルは、バッジ公開時に既存のどのクリアが対象かを決めます。後からバッジを追加しても同じジョブです。",
+        "fields": {
+          "now": {
+            "title": "現在のすべてのクリア",
+            "desc": "現在のすべての公開クリアを評価します。"
+          },
+          "forward": {
+            "title": "新しいクリアのみ",
+            "desc": "公開前に作られたパスは無視します。"
+          },
+          "queue": {
+            "title": "審査のみ",
+            "desc": "審査行だけを作り、付与しません。ただし manualLock バッジは承認後に付与します。"
+          }
+        },
+        "bullets": {
+          "skips": "ジョブは、プレースホルダー譜面、不明な投稿時刻、欠けた難易度履歴のために飛ばしたパス数を記録します。",
+          "unreconstructed": "古いクリア時点のキュレーションなど、保存されなかった事実は復元できません。"
+        }
+      },
+      "reviews": {
+        "title": "審査とシークレット",
+        "intro": "審査は手動バッジを制御します。シークレットは未獲得バッジの表示を制御します。",
+        "bullets": {
+          "video": "審査の承認には動画 URL が必要で、審査担当者が記録されます。",
+          "secret": "未獲得のシークレットバッジはプロフィールから省かれます。",
+          "locked": "ほかの未獲得バッジは名前、アイコン、進捗バー（次の数値を含む）を出しますが、条件文や式は出しません。",
+          "earned": "獲得後はティア名と証明用パスが表示されます。",
+          "confirm": "accuracyFull と judgementsFull は、そのバッジだけにサーバー描画の確認文を足します。公開スコアカードは通常の精度書式のままです。"
+        }
+      }
+    }
+  },
+  "admin": {
+    "metaTitle": "バッジ編集",
+    "metaDescription": "収集バッジの作成と再計算",
+    "title": "バッジ",
+    "help": "エンジンのヘルプ",
+    "new": "新しいバッジ",
+    "list": "定義",
+    "reviews": "審査",
+    "jobs": "ジョブ",
+    "save": "保存",
+    "saved": "バッジを保存しました",
+    "saveFailed": "バッジを保存できませんでした",
+    "recompute": "再計算",
+    "recomputed": "再計算をキューに入れました",
+    "replace": "獲得済みティアを置き換える",
+    "enabled": "有効",
+    "secret": "シークレット",
+    "slug": "スラッグ",
+    "name": "名前",
+    "audience": "対象",
+    "reducer": "リデューサー",
+    "grant": "付与",
+    "identity": "同一性",
+    "backfill": "バックフィル",
+    "round": "丸め",
+    "direction": "方向",
+    "start": "開始",
+    "step": "間隔",
+    "weight": "重み",
+    "icon": "アイコン",
+    "color": "色",
+    "stat": "表示",
+    "purple": "紫",
+    "confirm": "確認",
+    "labels": "ティア名",
+    "addLabel": "名前を追加",
+    "minTier": "開始ティア",
+    "label": "名前",
+    "params": "パラメータ",
+    "packSearch": "パックを探す",
+    "approve": "承認",
+    "reject": "却下",
+    "video": "動画 URL",
+    "reviewSaved": "審査を保存しました",
+    "reviewFailed": "審査を保存できませんでした",
+    "videoRequired": "承認する前に動画 URL を追加してください",
+    "loadFailed": "バッジを読み込めませんでした",
+    "importCode": "コードを取り込む",
+    "importTitle": "バッジを取り込む",
+    "importHint": "設定を貼り付けます。セットは名前、バッジはスラッグで一致します。パックは既に存在する必要があります。",
+    "loadRequested": "指定セットを読み込む",
+    "requestedLoaded": "指定セットを読み込みました",
+    "importAction": "取り込む",
+    "imported": "{{count}} 件のバッジを取り込みました",
+    "importFailed": "バッジを取り込めませんでした",
+    "replaceImport": "獲得済みティアを置き換える",
+    "search": "検索",
+    "searchPlaceholder": "名前またはスラッグ",
+    "filterAll": "すべて",
+    "filterPlayer": "プレイヤー",
+    "filterCreator": "クリエイター",
+    "filterSecretOnly": "シークレット",
+    "filterPublic": "公開",
+    "filterEnabledOnly": "有効",
+    "filterDisabled": "無効",
+    "showing": "{{total}} 件中 {{count}} 件を表示",
+    "noMatches": "これらの条件に合うバッジはありません。",
+    "refreshBackfill": "バックフィルを更新",
+    "backfillStarting": "バックフィルを開始しています",
+    "backfillStarted": "置き換えバックフィルを開始しました",
+    "backfillAlready": "置き換えバックフィルはすでに実行中です",
+    "backfillFailed": "バックフィルを開始できませんでした",
+    "backfillWaiting": "所有者の件数を待っています",
+    "backfillLoading": "すべての公開クリアと譜面を読み込んでいます。所有者はまだ数えていません。",
+    "backfillPending": "待機中です。ワーカーはまだ受け取っていません。",
+    "backfillOwners": "所有者 {{done}} / {{total}}",
+    "backfillBadgesPlayer": "{{name}} のバッジ {{done}} / {{total}}",
+    "backfillBadgesCreator": "{{name}} のバッジ {{done}} / {{total}}",
+    "startFrom": "開始番号:",
+    "backfillReport": "遅いバッジ",
+    "backfillReportDownload": "CSV をダウンロード",
+    "backfillReportFailed": "所要時間レポートをダウンロードできませんでした",
+    "backfillEta": "残りおよそ {{eta}}",
+    "backfillPlayersFinished": "プレイヤー {{done}} / {{total}} 完了",
+    "backfillCreatorsFinished": "クリエイター {{done}} / {{total}} 完了",
+    "backfillHeartbeat": "{{seconds}} 秒前に確認",
+    "cancelBackfill": "バックフィルをキャンセル",
+    "backfillCancelConfirm": "実行中のバックフィルをキャンセルしますか？",
+    "backfillCancelled": "バックフィルをキャンセルしました",
+    "backfillCancelFailed": "バックフィルをキャンセルできませんでした",
+    "backfillQueued": "置き換えはこの実行の後ろで待っています",
+    "backfillCursor": "{{status}} · 所有者 {{current}} / {{total}} · バッジ {{badge}} / {{badgeTotal}} · プレイヤー {{players}} / {{playerTotal}} 完了 · クリエイター {{creators}} / {{creatorTotal}} 完了",
+    "backfillProgress": "{{processed}} / {{total}} · プレイヤー {{players}} / {{playerTotal}} · クリエイター {{creators}} / {{creatorTotal}}",
+    "backfillPlayers": "プレイヤー {{processed}} / {{total}}",
+    "backfillCreators": "クリエイター {{processed}} / {{total}}",
+    "backfillNow": "{{kind}} {{owner}} の {{badge}} を評価中。所有者 {{current}} / {{total}}、この所有者のバッジ {{badgeIndex}} / {{badgeTotal}}。プレイヤー {{players}} / {{playerTotal}}、クリエイター {{creators}} / {{creatorTotal}} が完了しています。",
+    "backfillUnknownBadge": "次のバッジ",
+    "backfillCancelling": "バックフィルをキャンセルしています",
+    "backfillBadges": "この所有者のバッジ {{done}} / {{total}}",
+    "backfillRunning": "プレイヤー {{players}} / {{playerTotal}} 完了 · クリエイター {{creators}} / {{creatorTotal}} 完了",
+    "sectionBadge": "バッジ",
+    "sectionFormula": "付与スクリプト",
+    "sectionDisplay": "表示",
+    "sectionPublish": "公開",
+    "scriptHelp": "スクリプト参照",
+    "formulaOk": "式は有効です",
+    "packName": "パック名",
+    "description": "説明",
+    "noScript": "付与スクリプトなし",
+    "noReviews": "保留中の審査はありません。",
+    "noJobs": "まだジョブはありません。",
+    "pageTabs": {
+      "definitions": "バッジ",
+      "groups": "グループ",
+      "reviews": "審査",
+      "jobs": "ジョブ"
+    },
+    "dragDisabled": "並び替えるには検索とフィルターを解除してください。",
+    "groups": {
+      "createButton": "グループを作成",
+      "noGroups": "グループはまだありません。バッジを整理するグループを作成してください。",
+      "ungrouped": "未分類",
+      "badgeCount": "{{count}} 個のバッジ",
+      "badgeCount_plural": "{{count}} 個のバッジ",
+      "create": {
+        "title": "グループを作成",
+        "name": "名前",
+        "createButton": "作成"
+      },
+      "edit": {
+        "title": "グループを編集",
+        "name": "名前",
+        "updateButton": "更新"
+      },
+      "delete": {
+        "title": "グループを削除",
+        "message": "グループ「{{name}}」を削除しますか？",
+        "description": "このグループのバッジは未分類になります。",
+        "deleteButton": "削除"
+      },
+      "notifications": {
+        "reordered": "グループの順を更新しました",
+        "reorderFailed": "グループの並び替えに失敗しました",
+        "created": "グループを作成しました",
+        "createFailed": "グループを作成できませんでした",
+        "updated": "グループ名を更新しました",
+        "updateFailed": "グループ名を更新できませんでした",
+        "deleted": "グループを削除しました",
+        "deleteFailed": "グループを削除できませんでした",
+        "badgesReordered": "バッジの順を更新しました",
+        "badgesReorderFailed": "バッジの並び替えに失敗しました"
+      }
+    }
   }
 }

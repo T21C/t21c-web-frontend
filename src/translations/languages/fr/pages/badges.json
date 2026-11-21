@@ -1,169 +1,877 @@
 {
   "meta": {
     "title": "Badges",
-    "description": "Collectable player and creator badges"
+    "description": "Badges collectionnables pour les joueurs et les créateurs"
   },
   "open": "Badges",
   "title": "Badges",
-  "empty": "No badges to show yet.",
-  "locked": "Locked",
-  "earned": "Earned",
-  "tier": "Tier {{tier}}",
+  "empty": "Aucun badge à afficher pour le moment.",
+  "ungrouped": "Sans groupe",
+  "locked": "Verrouillé",
+  "earned": "Obtenu",
+  "tier": "Palier {{tier}}",
   "credit": "{{credit}} / {{next}}",
-  "saveEquip": "Save slots",
-  "saved": "Badge slots saved",
-  "saveFailed": "Could not save badge slots",
-  "loadFailed": "Could not load badges",
-  "confirmAccuracy": "Accuracy {{value}}",
-  "confirmJudgements": "Judgements {{value}}",
-  "help": {
-    "title": "Badge engine",
-    "intro": "This page documents the engine. Secret badge rows stay in the database and are not part of this help text. A formula never reaches the public site until that badge is earned.",
-    "close": "Close",
-    "formulaTitle": "Excel-style conditions",
-    "formulaBody": "Where a badge filters clears or charts, the condition is a formula like Excel. Start with =. Compare fields with =, <>, >, >=, <, and <=. Combine them with AND, OR, NOT, and IF. ISBLANK checks a missing value, EXACT compares text with case, and HAS looks for a curation name. Example: =AND(speed>=2, OR(family=\"G\", family=\"U\")). An empty formula counts every row. The formula box only appears for badge types that filter rows.",
-    "filterTitle": "Public clears",
-    "filterBody": "Only passes and charts that are not hidden and not deleted are visible. Wrong-judgement passes stay. A missing judgement bucket counts as 0. World-first checks also require speed exactly 1 and then follow the live world-first flag, which moves when an earlier 1.0x upload is accepted. The 5/40/5 placeholder sheet is skipped only by reducers that read judgements, accuracy, or score, and those reducers also ignore an all-zero sheet. Upload times 2023-01-01 07:27:27 and 2023-07-27 07:27:27 are unknown and are skipped by gap, sequence, nth-clearer, and earned-time ordering.",
-    "identityTitle": "Chart identity",
-    "identityBody": "level uses the chart id. chartSubgroup and vfxSubgroup collapse linked charts that share that subgroup. group collapses the whole link group. A clear only contributes its own chart's key count, difficulty, and curation. Clearing the unlimited sibling does not inherit the 10-key chart's key count. For a collapsed identity, the sibling clear is a reclear, not a second chart.",
-    "historyTitle": "Difficulty at the time",
-    "historyBody": "difficultyAt walks level rerate history against the upload time. Before the first recorded change, the difficulty is that row's previous difficulty. With no history, the clear-time snapshot is used, then the chart's current difficulty. Snapshots are written when a pass is accepted or a world-first flag is refreshed. They store difficulty, base score, PP base score, curation type ids, and charter and VFXer ids. Older passes stay on current difficulty until something rewrites them.",
-    "curveTitle": "Curve, bars, and tier names",
-    "curveBody": "curve(credit, start, step) earns a tier when credit reaches start, then start plus step, and so on. curveDown(credit, start, step) is the descending form: start 4 and step 1 produces tiers at 4, then 3, then 2, then 1. result(tier, credit, from, to) sets the tier and the bar directly, which is how an all-or-nothing badge keeps a partial count from earning a tier. A plain number of 1 or more is itself the tier. Tier labels are { minTier, label } pairs. The label shown is the one with the greatest minTier that is still at or below the earned tier. common and legendary are examples, not a fixed list. An empty list shows no label. Shared creator credit is written in the expression, usually 0.5 when more than one person holds the role. Half a credit does not reach a start of 1.",
-    "grantTitle": "Grant modes",
-    "grantBody": "live recomputes and can be lost. persistTier keeps the highest tier reached. persistSnapshot freezes the chart set that satisfied a percent badge, so later charts do not raise the denominator. resetOnGrowth uses the live target, which is the pack default: a chart added to the pack removes completion until it is cleared. manualLock stays off until a reviewer approves a video. chase stores the current number, such as the lowest uncleared chart id. Saving a definition keeps persistTier and persistSnapshot results unless Replace earned tiers is on.",
-    "backfillTitle": "Backfill",
-    "backfillBody": "now evaluates every current public clear when the badge is published. forward ignores passes created before publication. queue only creates review rows and does not grant, except a manualLock badge which grants after approval. The job records how many passes it skipped for a placeholder sheet, an unknown upload time, or a missing difficulty history. Adding a badge later is the same job. Facts that were never stored, such as curation at the moment of an old clear, cannot be reconstructed.",
-    "reducersTitle": "Reducers",
-    "reducersBody": "threshold counts filtered clears or creator charts. aggregate is count, countDistinct, maxPerIdentity, maxPerSong, maxChartClears, maxSongsPerArtist, or ratingWeek. Filters include minSpeed, speedEquals, worldsFirst, worldsFirstPP, purePerfect, families, difficultyNames, difficultySet, key counts, minDurationMs, useDifficultyAt, requireNoPriorClear, curationTypes, role, and sole. coverage fills bins from a named set, every reference chart, one curation type, or a list of curation types. prefix stops at the first gap. percentOf needs fraction and minCharts. record uses metric accuracy, score, or speed, with optional world-first and highest score or speed. creditFrom otherClears uses the largest crowd on a chart the player still leads. pattern matches one pass: accuracyIncludes, ppMinusOne, minMisses, noMisses, symmetry, technicallyPure, noPerfects, asymmetry, gamma, bucketEquals, judgementPattern (7 integers: too-early, early, ePerfect, perfect, lPerfect, late, too-late), month, day, levelIds, families, minSpeed, minDurationMs, scoreEndsWith, or sharedAccuracy. sequence uses order, blocks, or rangeSize, with excludeDifficultyNames, perStep, and consecutive. gap uses minDays and stores the largest gap. nthClearer uses n. chase uses excludeDifficultyNames and shows the lowest uncleared id. best uses metric keyCount, perfectCount, difficultyNumber, misses, speed, or accuracy. manual wraps a pattern or sequence and waits for a review. pack takes packId. Folders and notes are ignored, a chart listed twice counts once, and the tier is earned only when every public chart in the pack is cleared. Official levels are whichever pack you select.",
-    "reviewTitle": "Reviews and secrecy",
-    "reviewBody": "Approving a review requires a video URL and records the reviewer. Unearned secret badges are omitted from profiles. Other unearned badges show a name, icon, and progress bar, including the next number, but not the requirement text or the parameters. After a badge is earned, its tier label and proving passes are shown. accuracyFull and judgementsFull add server-rendered confirm text on that badge only. Public score cards keep the normal accuracy formatter.",
-    "valueTitle": "Value expressions",
-    "valueBody": "A badge expression returns the tier. clears are this player's public clears. levels are the public charts. mine are charts the creator is credited on, or charts this player has cleared. Filter with .filter(item => item.difficulty == \"G10\") and count with count(...) or .length. curve(count, start, step) and curveDown(count, start, step) turn that count into tiers. result(tier, credit, from, to) sets the tier and the bar directly. difficulty(\"G10\") gives total, cleared, and ratio. sequence([ids]) and consecutive([ids], item => item.ppMinusOne) walk clears in upload order and return how many steps matched. blocks(10, \"Impossible\", \"Censored\") returns completed id blocks. prefix(set) counts a leading difficulty set. gap() is the longest gap in days. pack() is the charts in this badge's pack. complete(set) is 1 when every difficulty in the set is charted. nth(100), lead(level, \"accuracy\"), first(level), and shared() read other players. Placeholder 5/40/5 sheets keep their chart fields, but their accuracy and judgement fields are empty. This is a small expression language with JavaScript shape. It does not run arbitrary JavaScript."
-  },
-  "admin": {
-    "metaTitle": "Badge editor",
-    "metaDescription": "Create and recompute collectable badges",
-    "title": "Badges",
-    "help": "Engine help",
-    "new": "New badge",
-    "list": "Definitions",
-    "reviews": "Reviews",
-    "jobs": "Jobs",
-    "save": "Save",
-    "saved": "Badge saved",
-    "saveFailed": "Could not save the badge",
-    "recompute": "Recompute",
-    "recomputed": "Recompute queued",
-    "replace": "Replace earned tiers",
-    "enabled": "Enabled",
-    "secret": "Secret",
-    "slug": "Slug",
-    "name": "Name",
-    "audience": "Audience",
-    "reducer": "Reducer",
-    "grant": "Grant",
-    "identity": "Identity",
-    "backfill": "Backfill",
-    "round": "Round",
-    "direction": "Direction",
-    "start": "Start",
-    "step": "Step",
-    "weight": "Weight",
-    "icon": "Icon",
-    "color": "Color",
-    "stat": "Stat",
-    "purple": "Purple",
-    "confirm": "Confirm",
-    "labels": "Tier labels",
-    "addLabel": "Add label",
-    "minTier": "From tier",
-    "label": "Label",
-    "params": "Params",
-    "packSearch": "Find a pack",
-    "approve": "Approve",
-    "reject": "Reject",
-    "video": "Video URL",
-    "reviewSaved": "Review saved",
-    "reviewFailed": "Could not save the review",
-    "videoRequired": "Add the video URL before approving",
-    "loadFailed": "Could not load badges",
-    "importCode": "Import code",
-    "importTitle": "Import badges",
-    "importHint": "Paste a configuration. Sets match by name and badges match by slug. Packs must already exist.",
-    "loadRequested": "Load requested set",
-    "requestedLoaded": "Requested set loaded",
-    "importAction": "Import",
-    "imported": "Imported {{count}} badges",
-    "importFailed": "Could not import badges",
-    "replaceImport": "Replace earned tiers",
-    "search": "Search",
-    "searchPlaceholder": "Name or slug",
-    "filterAll": "All",
-    "filterPlayer": "Player",
-    "filterCreator": "Creator",
-    "filterSecretOnly": "Secret",
-    "filterPublic": "Public",
-    "filterEnabledOnly": "Enabled",
-    "filterDisabled": "Disabled",
-    "showing": "Showing {{count}} of {{total}}",
-    "noMatches": "No badges match these filters.",
-    "refreshBackfill": "Refresh backfill",
-    "backfillStarting": "Starting backfill",
-    "backfillStarted": "Replacement backfill started",
-    "backfillAlready": "A replacement backfill is already running",
-    "backfillFailed": "Could not start the backfill",
-    "backfillWaiting": "Waiting to count owners",
-    "backfillProgress": "{{processed}} / {{total}} · {{players}} / {{playerTotal}} players · {{creators}} / {{creatorTotal}} creators",
-    "backfillPlayers": "{{processed}} / {{total}} players",
-    "backfillCreators": "{{processed}} / {{total}} creators",
-    "backfillLoading": "Loading every public clear and chart. Owners are not counted yet.",
-    "backfillQueued": "Replacement is waiting behind this run",
-    "backfillCursor": "{{status}} · owner {{current}} / {{total}} · badge {{badge}} / {{badgeTotal}} · {{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
-    "backfillPending": "Queued. The worker has not picked it up yet.",
-    "backfillNow": "Evaluating {{badge}} for {{kind}} {{owner}}. Owner {{current}} of {{total}}, badge {{badgeIndex}} of {{badgeTotal}} for this owner. {{players}} of {{playerTotal}} players and {{creators}} of {{creatorTotal}} creators are fully finished.",
-    "backfillUnknownBadge": "the next badge",
-    "backfillHeartbeat": "Checked in {{seconds}}s ago",
-    "cancelBackfill": "Cancel backfill",
-    "backfillCancelling": "Cancelling backfill",
-    "backfillCancelled": "Backfill cancelled",
-    "backfillCancelFailed": "Could not cancel the backfill",
-    "backfillOwners": "Owners {{done}} / {{total}}",
-    "backfillBadges": "Badges on this owner {{done}} / {{total}}",
-    "backfillRunning": "{{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
-    "backfillBadgesPlayer": "Badges for {{name}} {{done}} / {{total}}",
-    "backfillBadgesCreator": "Badges for {{name}} {{done}} / {{total}}",
-    "backfillPlayersFinished": "{{done}} / {{total}} players finished",
-    "backfillCreatorsFinished": "{{done}} / {{total}} creators finished",
-    "startFrom": "Start from #:",
-    "backfillReport": "Slowest badges",
-    "backfillReportDownload": "Download CSV",
-    "backfillReportFailed": "Could not download the timing report",
-    "backfillEta": "About {{eta}} left",
-    "backfillCancelConfirm": "Cancel the running backfill?"
-  },
-  "search": "Search",
-  "searchPlaceholder": "Badge name",
-  "status": "Status",
-  "statusAll": "All",
-  "statusEarned": "Earned",
-  "statusLocked": "Locked",
-  "statusEquipped": "Equipped",
-  "tone": "Mark",
-  "toneAll": "All marks",
-  "tonePurple": "Purple",
-  "tonePlain": "Standard",
-  "showing": "Showing {{count}} of {{total}}",
-  "noMatches": "No badges match these filters.",
   "creditUnit": "{{credit}} {{unit}}",
   "creditNextUnit": "{{credit}} / {{next}} {{unit}}",
-  "creditChart": "Chart {{credit}}",
+  "creditChart": "Niveau {{credit}}",
+  "reviewHint": "Un relecteur attribue ce badge. La vidéo de la complétion doit montrer une webcam.",
   "units": {
-    "day": "day",
-    "days": "days",
-    "key": "key",
-    "keys": "keys",
-    "perfect": "perfect",
-    "perfects": "perfects"
+    "day": "jour",
+    "days": "jours",
+    "key": "touche",
+    "keys": "touches",
+    "perfect": "parfait",
+    "perfects": "parfaits"
+  },
+  "saveEquip": "Enregistrer les emplacements",
+  "saved": "Emplacements de badges enregistrés",
+  "saveFailed": "Impossible d'enregistrer les emplacements",
+  "loadFailed": "Impossible de charger les badges",
+  "confirmAccuracy": "Précision {{value}}",
+  "confirmJudgements": "Jugements {{value}}",
+  "search": "Rechercher",
+  "searchPlaceholder": "Nom du badge",
+  "status": "Statut",
+  "statusAll": "Tous",
+  "statusEarned": "Obtenus",
+  "statusLocked": "Verrouillés",
+  "statusEquipped": "Équipés",
+  "tone": "Marque",
+  "toneAll": "Toutes les marques",
+  "tonePurple": "Violet",
+  "tonePlain": "Standard",
+  "showing": "{{count}} sur {{total}} affichés",
+  "noMatches": "Aucun badge ne correspond à ces filtres.",
+  "help": {
+    "title": "Moteur de badges",
+    "subtitle": "Toutes les listes, champs et structures qu'un script d'attribution peut utiliser.",
+    "close": "Fermer",
+    "examplesTitle": "Exemples",
+    "sections": {
+      "lists": {
+        "title": "Listes",
+        "intro": "Ces noms sont toujours dans la portée. Chaque élément est une ligne de champs. Une feuille placeholder 5/40/5 conserve ses champs de niveau, mais ses champs de précision et de jugements sont vides.",
+        "fields": {
+          "clears": {
+            "title": "Complétions du joueur",
+            "desc": "Complétions publiques de ce joueur."
+          },
+          "levels": {
+            "title": "Niveaux",
+            "desc": "Niveaux publics."
+          },
+          "mine": {
+            "title": "Niveaux crédités ou complétés",
+            "desc": "Niveaux où ce créateur est crédité, ou niveaux que ce joueur a complétés. Mêmes champs que levels."
+          },
+          "ratings": {
+            "title": "Évaluations",
+            "desc": "Lignes de <code>levelId</code> et <code>week</code> pour les évaluations de cet utilisateur."
+          }
+        }
+      },
+      "clearFields": {
+        "title": "Champs de complétion",
+        "intro": "Lisez-les depuis une ligne de clears. Les noms sont sensibles à la casse.",
+        "fields": {
+          "passId": {
+            "title": "Id de complétion",
+            "desc": "Nombre. L'id du pass."
+          },
+          "levelId": {
+            "title": "Id du niveau",
+            "desc": "Nombre. Le niveau de cette complétion."
+          },
+          "identity": {
+            "title": "Clé d'identité",
+            "desc": "Texte. Les niveaux regroupés par l'identité du badge partagent une clé."
+          },
+          "speed": {
+            "title": "Vitesse",
+            "desc": "Nombre, comme 1 ou 2. Null si la complétion n'a pas de vitesse."
+          },
+          "keyCount": {
+            "title": "Nombre de touches",
+            "desc": "Nombre de touches, ou null."
+          },
+          "difficulty": {
+            "title": "Difficulté actuelle",
+            "desc": "Texte. Le nom de difficulté actuel du niveau, comme G10."
+          },
+          "difficultyAt": {
+            "title": "Difficulté à l'envoi",
+            "desc": "Texte. Le nom de difficulté au moment de l'envoi."
+          },
+          "family": {
+            "title": "Famille actuelle",
+            "desc": "Texte. La famille de la difficulté actuelle, comme G, U, GQ, UQ ou QQ."
+          },
+          "familyAt": {
+            "title": "Famille à l'envoi",
+            "desc": "Texte. La famille de difficultyAt."
+          },
+          "song": {
+            "title": "Titre de la chanson",
+            "desc": "Texte. Vide si le niveau n'a pas de titre."
+          },
+          "songId": {
+            "title": "Id de la chanson",
+            "desc": "Nombre, ou null."
+          },
+          "durationMs": {
+            "title": "Durée",
+            "desc": "Durée du niveau en millisecondes, ou null."
+          },
+          "accuracy": {
+            "title": "Ratio de précision",
+            "desc": "Nombre de 0 à 1. Null sur une feuille placeholder."
+          },
+          "accuracyText": {
+            "title": "Précision affichée",
+            "desc": "Texte comme 99.995, avec le même format que le site. Vide sur une feuille placeholder."
+          },
+          "score": {
+            "title": "Score",
+            "desc": "Score v2 en nombre. Null sur une feuille placeholder."
+          },
+          "scoreText": {
+            "title": "Score affiché",
+            "desc": "Score fixé à 3 décimales, comme 100.000."
+          },
+          "worldsFirst": {
+            "title": "World first 1.0×",
+            "desc": "Vrai seulement si la vitesse est exactement 1 et que le drapeau world-first actuel est posé."
+          },
+          "isWorldsFirst": {
+            "title": "Drapeau world-first",
+            "desc": "Le drapeau brut, à n'importe quelle vitesse. Il n'exige pas la vitesse 1."
+          },
+          "worldsFirstPP": {
+            "title": "World first PP",
+            "desc": "Vrai si cette complétion détient le premier pure perfect mondial."
+          },
+          "ancient": {
+            "title": "Feuille placeholder",
+            "desc": "Vrai pour le placeholder 5/40/5. Les champs de précision et de jugements sont alors vides."
+          },
+          "xPerfect": {
+            "title": "Mode X-perfect",
+            "desc": "Vrai si la complétion a été jouée en mode X-perfect."
+          },
+          "reference": {
+            "title": "Niveau de référence",
+            "desc": "Vrai si le niveau est un niveau de référence."
+          },
+          "curation": {
+            "title": "Noms de curation",
+            "desc": "Liste de textes, comme C3 ou V3. Utilisez <code>.includes</code>."
+          },
+          "charterCount": {
+            "title": "Nombre de charters",
+            "desc": "Combien de charters sont crédités sur le niveau."
+          },
+          "vfxerCount": {
+            "title": "Nombre de VFXers",
+            "desc": "Combien de VFXers sont crédités sur le niveau."
+          },
+          "ownerIsCharter": {
+            "title": "Le propriétaire est charter",
+            "desc": "Vrai si ce créateur, ou le joueur en tant que créateur, est charter du niveau."
+          },
+          "ownerIsVfxer": {
+            "title": "Le propriétaire est VFXer",
+            "desc": "Vrai si ce créateur est VFXer du niveau."
+          },
+          "noPriorClear": {
+            "title": "Première complétion de l'identité",
+            "desc": "Vrai sur la plus ancienne complétion de cette identité avec une heure d'envoi connue."
+          },
+          "month": {
+            "title": "Mois d'envoi",
+            "desc": "Mois UTC, de 1 à 12. Null si l'heure d'envoi est inconnue."
+          },
+          "day": {
+            "title": "Jour d'envoi",
+            "desc": "Jour du mois UTC. Null si l'heure d'envoi est inconnue."
+          },
+          "uploadMs": {
+            "title": "Heure d'envoi",
+            "desc": "Heure d'envoi en millisecondes, ou null si elle est inconnue."
+          }
+        },
+        "examples": {
+          "worldsFirst": "<b><code>clear.worldsFirst == true</code></b> est un world first 1.0×. <b><code>clear.isWorldsFirst</code></b> est le drapeau à n'importe quelle vitesse.",
+          "accuracyText": "<b><code>clear.accuracyText.endsWith(\"31\")</code></b> correspond à la précision affichée, pas au ratio brut."
+        }
+      },
+      "judgements": {
+        "title": "Champs de jugements",
+        "intro": "Ils sont vides sur une feuille placeholder ou entièrement à zéro. Un seau manquant compte comme 0. Too-late n'est pas un champ ici.",
+        "fields": {
+          "misses": {
+            "title": "Misses",
+            "desc": "Compte too-early. Le seau earlyDouble."
+          },
+          "earlies": {
+            "title": "Early simples",
+            "desc": "Nombre d'early simples."
+          },
+          "lates": {
+            "title": "Late simples",
+            "desc": "Nombre de late simples."
+          },
+          "ePerfect": {
+            "title": "Parfaits early",
+            "desc": "Nombre de parfaits early."
+          },
+          "lPerfect": {
+            "title": "Parfaits late",
+            "desc": "Nombre de parfaits late."
+          },
+          "perfect": {
+            "title": "Parfaits centraux",
+            "desc": "Parfaits du seau central."
+          },
+          "perfects": {
+            "title": "Total de parfaits",
+            "desc": "Parfaits centraux, plus perfect-minus et perfect-plus en mode X-perfect."
+          },
+          "perfectMinus": {
+            "title": "Perfect minus",
+            "desc": "Seau X-perfect. 0 hors de ce mode."
+          },
+          "perfectPlus": {
+            "title": "Perfect plus",
+            "desc": "Seau X-perfect. 0 hors de ce mode."
+          },
+          "purePerfect": {
+            "title": "Pure perfect",
+            "desc": "Vrai si la précision est exactement 100 %."
+          },
+          "ppMinusOne": {
+            "title": "Un jugement hors du parfait",
+            "desc": "Vrai si exactement un jugement est hors de la bande parfaite et qu'il n'y a aucun miss."
+          },
+          "noMisses": {
+            "title": "Sans miss",
+            "desc": "Vrai si les misses valent 0 et que la feuille n'est pas vide."
+          },
+          "symmetry": {
+            "title": "Répartition symétrique",
+            "desc": "Vrai si les early simples égalent les late simples et les parfaits early égalent les parfaits late, et que la complétion n'est pas un pure perfect."
+          },
+          "technicallyPure": {
+            "title": "Techniquement pur",
+            "desc": "Vrai s'il n'y a ni parfait early ni parfait late, et à la fois un early simple et un late simple."
+          },
+          "noPerfects": {
+            "title": "Sans parfait",
+            "desc": "Vrai si le total de parfaits vaut 0 et que la feuille n'est pas vide."
+          },
+          "asymmetry": {
+            "title": "Répartition asymétrique",
+            "desc": "Vrai si un seau hors parfait est plus grand que le total de parfaits."
+          }
+        },
+        "examples": {
+          "symmetry": "<b><code>clear.symmetry == true && (clear.familyAt == \"G\" || clear.familyAt == \"U\")</code></b> garde les complétions G ou U symétriques.",
+          "ppMinusOne": "<b><code>clear.ppMinusOne == true</code></b> est un jugement hors de la bande parfaite et zéro miss."
+        }
+      },
+      "levelFields": {
+        "title": "Champs de niveau",
+        "intro": "Lisez-les depuis une ligne de levels ou mine.",
+        "fields": {
+          "levelId": {
+            "title": "Id du niveau",
+            "desc": "Nombre."
+          },
+          "identity": {
+            "title": "Clé d'identité",
+            "desc": "Texte. Mêmes règles de regroupement qu'une complétion."
+          },
+          "difficulty": {
+            "title": "Nom de difficulté",
+            "desc": "Nom de difficulté actuel."
+          },
+          "family": {
+            "title": "Famille",
+            "desc": "Famille de la difficulté actuelle."
+          },
+          "song": {
+            "title": "Titre de la chanson",
+            "desc": "Texte."
+          },
+          "songId": {
+            "title": "Id de la chanson",
+            "desc": "Nombre, ou null."
+          },
+          "durationMs": {
+            "title": "Durée",
+            "desc": "Millisecondes, ou null."
+          },
+          "clears": {
+            "title": "Nombre de complétions",
+            "desc": "Combien de complétions publiques le niveau a."
+          },
+          "reference": {
+            "title": "Niveau de référence",
+            "desc": "Vrai si le niveau est un niveau de référence."
+          },
+          "curation": {
+            "title": "Noms de curation",
+            "desc": "Liste de textes. Utilisez <code>.includes</code>."
+          },
+          "charterCount": {
+            "title": "Nombre de charters",
+            "desc": "Combien de charters sont crédités."
+          },
+          "vfxerCount": {
+            "title": "Nombre de VFXers",
+            "desc": "Combien de VFXers sont crédités."
+          },
+          "ownerIsCharter": {
+            "title": "Le propriétaire est charter",
+            "desc": "Vrai si ce créateur a charté le niveau."
+          },
+          "ownerIsVfxer": {
+            "title": "Le propriétaire est VFXer",
+            "desc": "Vrai si ce créateur est VFXer."
+          },
+          "artistIds": {
+            "title": "Ids d'artistes",
+            "desc": "Liste des ids d'artistes de la chanson."
+          },
+          "rivals": {
+            "title": "Autres joueurs",
+            "desc": "Combien d'autres joueurs ont une complétion non placeholder."
+          }
+        }
+      },
+      "structures": {
+        "title": "Structures",
+        "intro": "Le script a une forme JavaScript. Il n'exécute pas de JavaScript arbitraire. Les commentaires de ligne <code>//</code> et de bloc <code>/* */</code> sont ignorés. Ce qui est écrit est ce qui s'exécute : n'imbriquez <code>.filter</code> ou <code>.map</code> sur la même liste que si c'est indispensable ; préférez <code>maxCount</code> ou <code>maxGroup</code>.",
+        "fields": {
+          "eq": {
+            "title": "Égal",
+            "desc": "<code>==</code> et un seul <code>=</code> comparent de façon souple. <code>===</code> compare strictement. Le texte est sensible à la casse."
+          },
+          "compare": {
+            "title": "Ordre",
+            "desc": "<code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code> et <code>&lt;=</code> comparent des nombres."
+          },
+          "and": {
+            "title": "Combiner",
+            "desc": "<code>&amp;&amp;</code> exige les deux côtés. <code>||</code> exige l'un ou l'autre."
+          },
+          "not": {
+            "title": "Non",
+            "desc": "<code>!</code> inverse une condition. <code>!=</code> et <code>!==</code> sont les comparaisons niées."
+          },
+          "ternary": {
+            "title": "Choisir",
+            "desc": "<code>condition ? whenTrue : whenFalse</code> choisit un résultat."
+          },
+          "arrow": {
+            "title": "Fonction",
+            "desc": "<code>item =&gt; item.speed &gt;= 2</code> est une fonction. <code>{ return ... }</code> est aussi autorisé."
+          },
+          "array": {
+            "title": "Liste littérale",
+            "desc": "<code>[1, 2, 3]</code> construit une liste. Indexez avec <code>[0]</code>."
+          },
+          "filter": {
+            "title": "Garder des lignes",
+            "desc": "<code>.filter(item =&gt; ...)</code> renvoie les lignes qui correspondent.",
+            "example": "<code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code> ne garde que les complétions G10."
+          },
+          "map": {
+            "title": "Transformer des lignes",
+            "desc": "<code>.map(item =&gt; item.levelId)</code> construit une nouvelle liste.",
+            "example": "<code>clears.map(clear =&gt; clear.levelId)</code> est la liste des ids de niveaux, un par complétion."
+          },
+          "some": {
+            "title": "Au moins une correspondance",
+            "desc": "<code>.some(item =&gt; ...)</code> est vrai si une ligne correspond.",
+            "example": "<code>clears.some(clear =&gt; clear.misses &gt; 75)</code> est vrai si une complétion a plus de 75 misses."
+          },
+          "every": {
+            "title": "Toutes correspondent",
+            "desc": "<code>.every(item =&gt; ...)</code> est vrai si chaque ligne correspond. Une liste vide est vraie.",
+            "example": "<code>[\"C1\", \"C2\"].every(name =&gt; mine.some(level =&gt; level.curation.includes(name)))</code> n'est vrai que si les deux curations sont présentes."
+          },
+          "find": {
+            "title": "Première correspondance",
+            "desc": "<code>.find(item =&gt; ...)</code> renvoie la première ligne correspondante, ou null.",
+            "example": "<code>clears.find(clear =&gt; clear.levelId == 1)</code> est la première complétion du niveau 1, ou null."
+          },
+          "includes": {
+            "title": "Contient",
+            "desc": "Sur une liste, <code>.includes(value)</code>. Sur du texte, <code>.includes</code>, <code>.startsWith</code> et <code>.endsWith</code>.",
+            "example": "<code>clear.curation.includes(\"V3\")</code> est vrai si ce niveau a une curation V3."
+          },
+          "length": {
+            "title": "Taille",
+            "desc": "<code>.length</code> sur une liste ou du texte. <code>count(list)</code> est la même taille pour une liste.",
+            "example": "<code>clears.length</code> est le nombre de complétions. <code>\"G10\".length</code> vaut 3."
+          },
+          "text": {
+            "title": "Casse du texte",
+            "desc": "<code>.toLowerCase()</code> et <code>.toUpperCase()</code>.",
+            "example": "<code>\"WYSI\".toLowerCase()</code> donne wysi. <code>clear.accuracyText.endsWith(\"31\")</code> vérifie la précision affichée."
+          },
+          "optional": {
+            "title": "Champ manquant",
+            "desc": "<code>row?.field</code> vaut null si la ligne est null, au lieu d'échouer."
+          }
+        },
+        "examples": {
+          "filter": "<b><code>clears.filter(clear =&gt; clear.difficultyAt == \"G10\")</code></b> garde les complétions G10.",
+          "text": "<b><code>clear.song.toLowerCase().includes(\"wysi\")</code></b> correspond au titre sans tenir compte de la casse."
+        }
+      },
+      "numbers": {
+        "title": "Fonctions numériques",
+        "intro": "Elles transforment des lignes ou des nombres en un seul nombre. Un nombre manquant compte comme 0 dans l'arithmétique.",
+        "fields": {
+          "count": {
+            "title": "Combien",
+            "desc": "<code>count(list)</code> est le nombre de lignes. Les lignes comptées sont les complétions affichées sur le badge.",
+            "example": "<code>count(clears.filter(clear =&gt; clear.speed &gt;= 2))</code> vaut 4 si quatre complétions sont à 2.0× ou plus."
+          },
+          "distinct": {
+            "title": "Une par clé",
+            "desc": "<code>distinct(list, item =&gt; item.identity)</code> garde la première ligne de chaque clé.",
+            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> garde une ligne si le même niveau a été complété deux fois."
+          },
+          "sum": {
+            "title": "Additionner",
+            "desc": "<code>sum(list)</code> additionne les nombres. <code>sum(list, item =&gt; item.speed)</code> additionne un champ.",
+            "example": "<code>sum([1, 0.5, 0.5])</code> vaut 2. <code>sum(clears, clear =&gt; clear.speed)</code> additionne chaque vitesse."
+          },
+          "min": {
+            "title": "Plus petit",
+            "desc": "<code>min(list)</code> ou <code>min(list, item =&gt; item.keyCount)</code>. <code>min(a, b)</code> compare deux nombres.",
+            "example": "<code>min(4, 1)</code> vaut 1. <code>min(clears.map(clear =&gt; clear.keyCount))</code> est le plus petit nombre de touches."
+          },
+          "max": {
+            "title": "Plus grand",
+            "desc": "<code>max(list)</code> ou <code>max(a, b)</code>.",
+            "example": "<code>max(3, 9)</code> vaut 9. <code>max(mine.map(level =&gt; level.clears))</code> est le niveau le plus joué."
+          },
+          "maxCount": {
+            "title": "Plus d'occurrences d'une clé",
+            "desc": "<code>maxCount(list, \"identity\")</code> compte les lignes qui partagent chaque clé et renvoie le plus grand total. À utiliser à la place d'un filter imbriqué sur la même liste.",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> vaut 100 si un niveau G ou U a été complété 100 fois."
+          },
+          "abs": {
+            "title": "Valeur absolue",
+            "desc": "<code>abs(n)</code>.",
+            "example": "<code>abs(-2)</code> vaut 2."
+          },
+          "floor": {
+            "title": "Arrondir vers le bas",
+            "desc": "<code>floor(n)</code>.",
+            "example": "<code>floor(1.9)</code> vaut 1."
+          },
+          "round": {
+            "title": "Entier le plus proche",
+            "desc": "<code>round(n)</code>.",
+            "example": "<code>round(1.5)</code> vaut 2. <code>round(1.4)</code> vaut 1."
+          },
+          "ceil": {
+            "title": "Arrondir vers le haut",
+            "desc": "<code>ceil(n)</code>.",
+            "example": "<code>ceil(1.1)</code> vaut 2."
+          },
+          "threshold": {
+            "title": "Seuil atteint",
+            "desc": "<code>threshold(n, 10)</code> vaut 1 si n est au moins 10, sinon 0.",
+            "example": "<code>threshold(9, 10)</code> vaut 0. <code>threshold(10, 10)</code> vaut 1."
+          }
+        },
+        "examples": {
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> compte les niveaux complétés à 2.0× ou plus, une fois chacun."
+        }
+      },
+      "curves": {
+        "title": "Courbes et résultats",
+        "intro": "Le script doit renvoyer un palier. Une courbe transforme un compte en paliers et règle la barre de progression.",
+        "fields": {
+          "curve": {
+            "title": "Paliers croissants",
+            "desc": "<code>curve(credit, start, step)</code> gagne un palier à start, puis start plus step, et ainsi de suite.",
+            "example": "<code>curve(30, 10, 20)</code> est le palier 2 : 10 donne le palier 1 et 30 le palier 2."
+          },
+          "curveDown": {
+            "title": "Paliers décroissants",
+            "desc": "<code>curveDown(credit, start, step)</code> gagne un palier à start, puis start moins step.",
+            "example": "<code>curveDown(2, 4, 1)</code> est le palier 3, en descendant de 4 à 3 puis 2."
+          },
+          "result": {
+            "title": "Fixer le palier et la barre",
+            "desc": "<code>result(tier, credit, from, to)</code> les fixe directement, donc un compte partiel n'accorde pas un palier à lui seul.",
+            "example": "<code>result(0, 6, 0, 8)</code> reste au palier 0 pendant que la barre affiche 6 sur 8."
+          },
+          "number": {
+            "title": "Nombre simple",
+            "desc": "Un nombre de 1 ou plus est lui-même le palier. Tout ce qui est plus petit est le palier 0.",
+            "example": "<code>2</code> est le palier 2. <code>0.5</code> est le palier 0."
+          }
+        },
+        "examples": {
+          "up": "<b><code>curve(count(clears), 10, 20)</code></b> gagne le palier 1 à 10 complétions, puis tous les 20.",
+          "down": "<b><code>curveDown(min(clears.map(clear =&gt; clear.keyCount)), 4, 1)</code></b> commence à 4 touches et descend.",
+          "result": "<b><code>result(ratio &gt;= 0.75 ? 1 : 0, cleared, 0, total)</code></b> affiche le compte et n'accorde le palier qu'à 75 %."
+        }
+      },
+      "functions": {
+        "title": "Fonctions hôte",
+        "intro": "Elles lisent ce joueur, ce créateur, ou d'autres joueurs.",
+        "fields": {
+          "difficulty": {
+            "title": "Une difficulté",
+            "desc": "<code>difficulty(\"G10\")</code> renvoie une ligne avec <code>total</code>, <code>cleared</code> et <code>ratio</code>.",
+            "example": "<code>difficulty(\"G10\").cleared</code> vaut 6 si six niveaux G10 sont complétés. <code>.ratio</code> est cleared divisé par total."
+          },
+          "sequence": {
+            "title": "Ids de niveaux ordonnés",
+            "desc": "<code>sequence([id, id])</code> parcourt les complétions dans l'ordre d'envoi et renvoie combien d'ids ont correspondu dans l'ordre.",
+            "example": "<code>sequence([5017, 52])</code> vaut 2 si le niveau 52 est complété après 5017. Il vaut 1 si seul 5017 a été complété."
+          },
+          "consecutive": {
+            "title": "Ordre sans trou",
+            "desc": "<code>consecutive([id, id], item =&gt; item.ppMinusOne)</code> est la même marche, chaque étape doit passer le test, et les complétions doivent être consécutives.",
+            "example": "<code>consecutive([5017, 52], clear =&gt; clear.ppMinusOne)</code> vaut 2 seulement si ces complétions PP-1 se suivent sans rien d'envoyé entre elles."
+          },
+          "blocks": {
+            "title": "Blocs d'ids",
+            "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> renvoie combien de blocs d'ids complets de cette taille existent, en sautant ces difficultés.",
+            "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> vaut 1 si tous les autres niveaux des ids 1–10 sont complétés. Il s'arrête au premier bloc inachevé."
+          },
+          "prefix": {
+            "title": "Ensemble de tête",
+            "desc": "<code>prefix(\"planetary\")</code> compte jusqu'où un ensemble de difficultés nommé est complété depuis le début, avec la difficulté à l'envoi.",
+            "example": "<code>prefix(\"planetary\")</code> vaut 3 si P1, P2 et P3 étaient les difficultés à l'envoi, et que P4 n'a pas été complété."
+          },
+          "gap": {
+            "title": "Plus grand écart",
+            "desc": "<code>gap()</code> est le plus long écart en jours entre des complétions de la même identité.",
+            "example": "<code>gap()</code> vaut 730 si le plus long écart entre deux complétions du même niveau est de 730 jours."
+          },
+          "pack": {
+            "title": "Ids de niveaux du pack",
+            "desc": "<code>pack()</code> sont les ids de niveaux du pack de ce badge. Un niveau listé deux fois ne compte qu'une fois.",
+            "example": "<code>count(pack())</code> vaut 12 si le pack liste 12 niveaux. Un niveau listé deux fois ne compte toujours qu'une fois."
+          },
+          "complete": {
+            "title": "Ensemble charté",
+            "desc": "<code>complete(\"end-to-end\")</code> vaut 1 si ce créateur a charté chaque difficulté de l'ensemble nommé.",
+            "example": "<code>complete(\"end-to-end\")</code> vaut 1 seulement si ce créateur a charté chaque difficulté de cet ensemble. Sinon il vaut 0."
+          },
+          "nth": {
+            "title": "Nième clearer",
+            "desc": "<code>nth(100)</code> compte les niveaux où ce joueur était le 100e clearer distinct.",
+            "example": "<code>nth(100)</code> vaut 2 si ce joueur était le 100e clearer distinct sur deux niveaux."
+          },
+          "lead": {
+            "title": "Tête actuelle",
+            "desc": "<code>lead(level, \"accuracy\")</code> est vrai si ce joueur mène ce niveau. La métrique est accuracy, score ou speed.",
+            "example": "<code>lead(level, \"score\")</code> est vrai si le score de ce joueur sur ce niveau est le plus élevé."
+          },
+          "first": {
+            "title": "World first à n'importe quelle vitesse",
+            "desc": "<code>first(level)</code> est vrai si ce joueur a le drapeau world-first brut sur ce niveau.",
+            "example": "<code>first(level)</code> est vrai si ce joueur détient le drapeau world-first sur ce niveau, même à une vitesse autre que 1.0×."
+          },
+          "shared": {
+            "title": "Précision partagée",
+            "desc": "<code>shared()</code> compte les niveaux galactic ou universal où la précision affichée de ce joueur apparaît aussi sur un autre niveau.",
+            "example": "<code>shared()</code> vaut 1 si la précision affichée de ce joueur sur un niveau G ou U apparaît aussi sur un autre niveau."
+          },
+          "inSet": {
+            "title": "Ensemble nommé",
+            "desc": "<code>inSet(clear.difficultyAt, \"planetary\")</code> est vrai si la valeur est dans cet ensemble nommé.",
+            "example": "<code>inSet(\"P3\", \"planetary\")</code> est vrai. <code>inSet(\"G3\", \"planetary\")</code> est faux."
+          },
+          "maxGroup": {
+            "title": "Plus grand groupe",
+            "desc": "<code>maxGroup(rows, \"artistIds\", \"songId\")</code> est le plus grand nombre de valeurs distinctes groupées par le premier champ.",
+            "example": "<code>maxGroup(mine, \"artistIds\", \"songId\")</code> vaut 20 si un artiste a 20 chansons chartées par ce créateur."
+          }
+        },
+        "examples": {
+          "sequence": "<b><code>sequence([5017, 52]) == 2</code></b> signifie que ces deux niveaux ont été complétés dans cet ordre d'envoi.",
+          "lead": "<b><code>count(levels.filter(level =&gt; level.family == \"G\" &amp;&amp; lead(level, \"accuracy\")))</code></b> compte les niveaux galactic où ce joueur mène en précision."
+        }
+      },
+      "clears": {
+        "title": "Complétions publiques",
+        "intro": "Le moteur ne voit que les passes et niveaux publics.",
+        "bullets": {
+          "visible": "Les passes et niveaux masqués ou supprimés sont ignorés. Les passes à mauvais jugements restent.",
+          "buckets": "Un seau de jugement manquant compte comme 0.",
+          "worldsFirst": "Une vérification world-first exige aussi une vitesse exactement 1, puis suit le drapeau actuel. Le drapeau bouge si un envoi 1.0x plus ancien est accepté.",
+          "placeholder": "La feuille placeholder 5/40/5 est ignorée par tout ce qui lit les jugements, la précision ou le score. Une feuille entièrement à zéro est ignorée de la même façon.",
+          "unknownTime": "Les heures d'envoi 2023-01-01 07:27:27 et 2023-07-27 07:27:27 sont inconnues. gap, sequence, nth et l'ordre par date d'obtention les ignorent."
+        }
+      },
+      "identity": {
+        "title": "Identité du niveau",
+        "intro": "L'identité décide si des niveaux liés comptent comme un seul niveau ou plusieurs.",
+        "fields": {
+          "level": {
+            "title": "Id du niveau",
+            "desc": "Chaque id de niveau est son propre niveau."
+          },
+          "chartSubgroup": {
+            "title": "Sous-groupe charter",
+            "desc": "Les niveaux liés qui partagent un sous-groupe charter fusionnent en un."
+          },
+          "vfxSubgroup": {
+            "title": "Sous-groupe VFX",
+            "desc": "Les niveaux liés qui partagent un sous-groupe VFX fusionnent en un."
+          },
+          "group": {
+            "title": "Groupe de liens",
+            "desc": "Tout le groupe de liens fusionne en un."
+          }
+        },
+        "bullets": {
+          "ownChart": "Une complétion ne contribue que le nombre de touches, la difficulté et la curation de son propre niveau. Compléter le jumeau unlimited n'hérite pas du nombre de touches du niveau 10 touches.",
+          "reclear": "Pour une identité fusionnée, la complétion jumelle est une recomplétion, pas un second niveau."
+        }
+      },
+      "history": {
+        "title": "Difficulté au moment voulu",
+        "intro": "difficultyAt utilise la difficulté du niveau au moment de l'envoi du pass.",
+        "bullets": {
+          "walk": "Le moteur parcourt l'historique de rerates par rapport à l'heure d'envoi. Avant le premier changement enregistré, la difficulté est la difficulté précédente de cette ligne.",
+          "fallback": "Sans historique, l'instantané au moment de la complétion est utilisé, puis la difficulté actuelle du niveau.",
+          "snapshot": "Un instantané est écrit quand un pass est accepté ou qu'un drapeau world-first est rafraîchi. Il stocke la difficulté, le score de base, le score de base PP, les ids de types de curation, et les ids de charters et VFXers.",
+          "older": "Les anciens passes restent sur la difficulté actuelle jusqu'à ce que quelque chose les réécrive."
+        }
+      },
+      "grants": {
+        "title": "Modes d'attribution",
+        "intro": "Le mode d'attribution décide si un palier peut être perdu.",
+        "fields": {
+          "live": {
+            "title": "Recalculer",
+            "desc": "Le palier est recalculé et peut être perdu."
+          },
+          "persistTier": {
+            "title": "Garder le meilleur palier",
+            "desc": "Le palier le plus élevé atteint est conservé."
+          },
+          "persistSnapshot": {
+            "title": "Geler l'ensemble",
+            "desc": "L'ensemble de niveaux qui a satisfait un badge en pourcentage reste gelé, donc les niveaux plus tardifs n'augmentent pas le dénominateur."
+          },
+          "resetOnGrowth": {
+            "title": "Cible en direct",
+            "desc": "Le défaut des packs. Un niveau ajouté au pack retire la complétion jusqu'à ce qu'il soit complété."
+          },
+          "manualLock": {
+            "title": "Besoin d'une relecture",
+            "desc": "Reste éteint jusqu'à ce qu'un relecteur approuve une vidéo."
+          },
+          "chase": {
+            "title": "Stocker un nombre",
+            "desc": "Garde le nombre actuel, comme le plus petit id de niveau non complété."
+          }
+        },
+        "bullets": {
+          "replace": "Enregistrer une définition conserve les résultats persistTier et persistSnapshot sauf si Remplacer les paliers obtenus est activé."
+        }
+      },
+      "backfill": {
+        "title": "Rattrapage",
+        "intro": "Le rattrapage décide quelles complétions existantes sont éligibles à la publication du badge. Ajouter un badge plus tard utilise le même travail.",
+        "fields": {
+          "now": {
+            "title": "Toutes les complétions actuelles",
+            "desc": "Évalue chaque complétion publique actuelle."
+          },
+          "forward": {
+            "title": "Nouvelles complétions seulement",
+            "desc": "Ignore les passes créés avant la publication."
+          },
+          "queue": {
+            "title": "Relectures seulement",
+            "desc": "Crée des lignes de relecture et n'attribue pas, sauf un badge manualLock, qui s'attribue après approbation."
+          }
+        },
+        "bullets": {
+          "skips": "Le travail note combien de passes il a ignorés pour une feuille placeholder, une heure d'envoi inconnue, ou un historique de difficulté manquant.",
+          "unreconstructed": "Les faits jamais stockés, comme la curation au moment d'une ancienne complétion, ne peuvent pas être reconstruits."
+        }
+      },
+      "reviews": {
+        "title": "Relectures et secret",
+        "intro": "Les relectures contrôlent les badges manuels. Le secret contrôle ce qu'un badge verrouillé affiche.",
+        "bullets": {
+          "video": "Approuver une relecture exige une URL de vidéo et enregistre le relecteur.",
+          "secret": "Les badges secrets non obtenus sont omis des profils.",
+          "locked": "Les autres badges non obtenus montrent un nom, une icône et une barre de progression, y compris le prochain nombre, mais pas le texte d'exigence ni l'expression.",
+          "earned": "Après obtention, le libellé de palier et les passes de preuve sont affichés.",
+          "confirm": "accuracyFull et judgementsFull ajoutent un texte de confirmation rendu côté serveur sur ce badge seulement. Les cartes de score publiques gardent le formateur de précision normal."
+        }
+      }
+    }
+  },
+  "admin": {
+    "metaTitle": "Éditeur de badges",
+    "metaDescription": "Créer et recalculer les badges collectionnables",
+    "title": "Badges",
+    "help": "Aide du moteur",
+    "new": "Nouveau badge",
+    "list": "Définitions",
+    "reviews": "Relectures",
+    "jobs": "Travaux",
+    "save": "Enregistrer",
+    "saved": "Badge enregistré",
+    "saveFailed": "Impossible d'enregistrer le badge",
+    "recompute": "Recalculer",
+    "recomputed": "Recalcul mis en file",
+    "replace": "Remplacer les paliers obtenus",
+    "enabled": "Activé",
+    "secret": "Secret",
+    "slug": "Identifiant",
+    "name": "Nom",
+    "audience": "Audience",
+    "reducer": "Réducteur",
+    "grant": "Attribution",
+    "identity": "Identité",
+    "backfill": "Rattrapage",
+    "round": "Arrondi",
+    "direction": "Direction",
+    "start": "Début",
+    "step": "Pas",
+    "weight": "Poids",
+    "icon": "Icône",
+    "color": "Couleur",
+    "stat": "Stat",
+    "purple": "Violet",
+    "confirm": "Confirmation",
+    "labels": "Libellés de palier",
+    "addLabel": "Ajouter un libellé",
+    "minTier": "À partir du palier",
+    "label": "Libellé",
+    "params": "Paramètres",
+    "packSearch": "Trouver un pack",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "video": "URL de la vidéo",
+    "reviewSaved": "Relecture enregistrée",
+    "reviewFailed": "Impossible d'enregistrer la relecture",
+    "videoRequired": "Ajoutez l'URL de la vidéo avant d'approuver",
+    "loadFailed": "Impossible de charger les badges",
+    "importCode": "Importer du code",
+    "importTitle": "Importer des badges",
+    "importHint": "Collez une configuration. Les ensembles correspondent par nom et les badges par identifiant. Les packs doivent déjà exister.",
+    "loadRequested": "Charger l'ensemble demandé",
+    "requestedLoaded": "Ensemble demandé chargé",
+    "importAction": "Importer",
+    "imported": "{{count}} badges importés",
+    "importFailed": "Impossible d'importer les badges",
+    "replaceImport": "Remplacer les paliers obtenus",
+    "search": "Rechercher",
+    "searchPlaceholder": "Nom ou identifiant",
+    "filterAll": "Tous",
+    "filterPlayer": "Joueur",
+    "filterCreator": "Créateur",
+    "filterSecretOnly": "Secrets",
+    "filterPublic": "Publics",
+    "filterEnabledOnly": "Activés",
+    "filterDisabled": "Désactivés",
+    "showing": "{{count}} sur {{total}} affichés",
+    "noMatches": "Aucun badge ne correspond à ces filtres.",
+    "refreshBackfill": "Relancer le rattrapage",
+    "backfillStarting": "Démarrage du rattrapage",
+    "backfillStarted": "Rattrapage de remplacement démarré",
+    "backfillAlready": "Un rattrapage de remplacement est déjà en cours",
+    "backfillFailed": "Impossible de démarrer le rattrapage",
+    "backfillWaiting": "En attente du décompte des propriétaires",
+    "backfillLoading": "Chargement de toutes les complétions et niveaux publics. Les propriétaires ne sont pas encore comptés.",
+    "backfillPending": "En file. Le worker ne l'a pas encore pris.",
+    "backfillOwners": "Propriétaires {{done}} / {{total}}",
+    "backfillBadgesPlayer": "Badges pour {{name}} {{done}} / {{total}}",
+    "backfillBadgesCreator": "Badges pour {{name}} {{done}} / {{total}}",
+    "startFrom": "Commencer à partir de n° :",
+    "backfillReport": "Badges les plus lents",
+    "backfillReportDownload": "Télécharger le CSV",
+    "backfillReportFailed": "Impossible de télécharger le rapport de durées",
+    "backfillEta": "Environ {{eta}} restantes",
+    "backfillPlayersFinished": "{{done}} / {{total}} joueurs terminés",
+    "backfillCreatorsFinished": "{{done}} / {{total}} créateurs terminés",
+    "backfillHeartbeat": "Vérifié il y a {{seconds}} s",
+    "cancelBackfill": "Annuler le rattrapage",
+    "backfillCancelConfirm": "Annuler le rattrapage en cours ?",
+    "backfillCancelled": "Rattrapage annulé",
+    "backfillCancelFailed": "Impossible d'annuler le rattrapage",
+    "backfillQueued": "Le remplacement attend derrière cette exécution",
+    "backfillCursor": "{{status}} · propriétaire {{current}} / {{total}} · badge {{badge}} / {{badgeTotal}} · {{players}} / {{playerTotal}} joueurs terminés · {{creators}} / {{creatorTotal}} créateurs terminés",
+    "backfillProgress": "{{processed}} / {{total}} · {{players}} / {{playerTotal}} joueurs · {{creators}} / {{creatorTotal}} créateurs",
+    "backfillPlayers": "{{processed}} / {{total}} joueurs",
+    "backfillCreators": "{{processed}} / {{total}} créateurs",
+    "backfillNow": "Évaluation de {{badge}} pour {{kind}} {{owner}}. Propriétaire {{current}} sur {{total}}, badge {{badgeIndex}} sur {{badgeTotal}} pour ce propriétaire. {{players}} sur {{playerTotal}} joueurs et {{creators}} sur {{creatorTotal}} créateurs sont entièrement terminés.",
+    "backfillUnknownBadge": "le prochain badge",
+    "backfillCancelling": "Annulation du rattrapage",
+    "backfillBadges": "Badges de ce propriétaire {{done}} / {{total}}",
+    "backfillRunning": "{{players}} / {{playerTotal}} joueurs terminés · {{creators}} / {{creatorTotal}} créateurs terminés",
+    "sectionBadge": "Badge",
+    "sectionFormula": "Script d'attribution",
+    "sectionDisplay": "Affichage",
+    "sectionPublish": "Publication",
+    "scriptHelp": "Référence du script",
+    "formulaOk": "L'expression est valide",
+    "packName": "Nom du pack",
+    "description": "Description",
+    "noScript": "Pas de script d'attribution",
+    "noReviews": "Aucune relecture en attente.",
+    "noJobs": "Aucun travail pour le moment.",
+    "pageTabs": {
+      "definitions": "Badges",
+      "groups": "Groupes",
+      "reviews": "Relectures",
+      "jobs": "Travaux"
+    },
+    "dragDisabled": "Effacez la recherche et les filtres pour réordonner les badges.",
+    "groups": {
+      "createButton": "Créer un groupe",
+      "noGroups": "Aucun groupe. Créez un groupe pour organiser les badges.",
+      "ungrouped": "Sans groupe",
+      "badgeCount": "{{count}} badge",
+      "badgeCount_plural": "{{count}} badges",
+      "create": {
+        "title": "Créer un groupe",
+        "name": "Nom",
+        "createButton": "Créer"
+      },
+      "edit": {
+        "title": "Modifier le groupe",
+        "name": "Nom",
+        "updateButton": "Mettre à jour"
+      },
+      "delete": {
+        "title": "Supprimer le groupe",
+        "message": "Supprimer le groupe « {{name}} » ?",
+        "description": "Les badges de ce groupe deviendront sans groupe.",
+        "deleteButton": "Supprimer"
+      },
+      "notifications": {
+        "reordered": "Groupes réordonnés",
+        "reorderFailed": "Impossible de réordonner les groupes",
+        "created": "Groupe créé",
+        "createFailed": "Impossible de créer le groupe",
+        "updated": "Groupe renommé",
+        "updateFailed": "Impossible de renommer le groupe",
+        "deleted": "Groupe supprimé",
+        "deleteFailed": "Impossible de supprimer le groupe",
+        "badgesReordered": "Badges réordonnés",
+        "badgesReorderFailed": "Impossible de réordonner les badges"
+      }
+    }
   }
 }

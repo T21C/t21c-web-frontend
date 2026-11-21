@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -7,9 +7,10 @@ import { routes } from '@/api/routes';
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
-import { QuestionmarkCircleIcon, RefreshIcon } from '@/components/common/icons';
+import { EditIcon, QuestionmarkCircleIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import BadgeHelpPopup from '@/components/popups/Badges/BadgeHelpPopup';
@@ -25,7 +26,45 @@ const BACKFILLS = ['now', 'forward', 'queue'];
 const STATS = ['tier', 'credit', 'bar', 'barThenNumber'];
 const CONFIRMS = ['none', 'accuracyFull', 'judgementsFull'];
 const AUDIENCES = ['player', 'creator'];
-const PAGE_TABS = ['definitions', 'reviews', 'jobs'];
+const PAGE_TABS = ['definitions', 'groups', 'reviews', 'jobs'];
+const UNGROUPED_ID = 'ungrouped';
+
+function sortByOrderThenName(left, right) {
+  const byOrder = (Number(left.sortOrder) || 0) - (Number(right.sortOrder) || 0);
+  if (byOrder) return byOrder;
+  return String(left.name || '').localeCompare(String(right.name || ''));
+}
+
+function droppableGroupId(groupId) {
+  return groupId == null ? UNGROUPED_ID : `group-${groupId}`;
+}
+
+function badgesInGroup(definitions, groupId) {
+  return definitions
+    .filter((row) => (groupId == null ? row.groupId == null : row.groupId === groupId))
+    .sort(sortByOrderThenName);
+}
+
+function placementPayload(groups, definitions) {
+  const known = new Set(groups.map((group) => group.id));
+  return {
+    groups: groups.map((group) => ({
+      id: group.id,
+      badgeIds: badgesInGroup(definitions, group.id).map((row) => row.id),
+    })),
+    ungrouped: definitions
+      .filter((row) => row.groupId == null || !known.has(row.groupId))
+      .sort(sortByOrderThenName)
+      .map((row) => row.id),
+  };
+}
+
+function tabLabelDefault(id) {
+  if (id === 'definitions') return 'Badges';
+  if (id === 'groups') return 'Groups';
+  if (id === 'reviews') return 'Reviews';
+  return 'Jobs';
+}
 
 const EXAMPLES = [
   'curve(count(distinct(clears.filter(clear => clear.worldsFirst == true), clear => clear.identity)), 1, 1)',
@@ -510,8 +549,17 @@ const BadgeAdminPage = () => {
   const location = useLocation();
   const [pageTab, setPageTab] = useState('definitions');
   const [definitions, setDefinitions] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+  const [editingGroup, setEditingGroup] = useState(null);
+  const [deletingGroup, setDeletingGroup] = useState(null);
+  const [newGroupName, setNewGroupName] = useState('');
+  const [editGroupName, setEditGroupName] = useState('');
+  const [isGroupsReordering, setIsGroupsReordering] = useState(false);
+  const [isBadgesReordering, setIsBadgesReordering] = useState(false);
+  const skipBadgeClick = useRef(false);
   const [form, setForm] = useState(emptyForm);
   const [formulaState, setFormulaState] = useState({ ok: true, error: '' });
   const [editorOpen, setEditorOpen] = useState(false);
@@ -559,6 +607,32 @@ const BadgeAdminPage = () => {
       return true;
     });
   }, [definitions, query, audienceFilter, reducerFilter, secretFilter, enabledFilter]);
+  const filtersActive = Boolean(
+    query.trim()
+    || audienceFilter !== 'all'
+    || reducerFilter !== 'all'
+    || secretFilter !== 'all'
+    || enabledFilter !== 'all',
+  );
+  const sortedGroups = useMemo(() => [...groups].sort(sortByOrderThenName), [groups]);
+  const groupedBadgeLists = useMemo(() => {
+    const source = filtersActive ? filteredDefinitions : definitions;
+    const known = new Set(sortedGroups.map((group) => group.id));
+    const named = sortedGroups.map((group) => ({
+      key: droppableGroupId(group.id),
+      groupId: group.id,
+      name: group.name,
+      badges: badgesInGroup(source, group.id),
+    }));
+    const ungrouped = source
+      .filter((row) => row.groupId == null || !known.has(row.groupId))
+      .sort(sortByOrderThenName);
+    const lists = filtersActive ? named.filter((list) => list.badges.length > 0) : named;
+    return {
+      lists,
+      ungrouped: { key: UNGROUPED_ID, groupId: null, name: null, badges: ungrouped },
+    };
+  }, [definitions, filteredDefinitions, filtersActive, sortedGroups]);
 
   const pageMeta = useMemo(
     () => buildStaticPageMeta({
@@ -572,12 +646,14 @@ const BadgeAdminPage = () => {
 
   const load = useCallback(async () => {
     try {
-      const [definitionRes, jobRes, reviewRes] = await Promise.all([
+      const [definitionRes, groupRes, jobRes, reviewRes] = await Promise.all([
         api.get(routes.admin.badges.definitions()),
+        api.get(routes.admin.badges.groups()),
         api.get(routes.admin.badges.jobs()),
         api.get(routes.admin.badges.reviews()),
       ]);
       setDefinitions(definitionRes.data?.definitions ?? []);
+      setGroups(groupRes.data?.groups ?? []);
       setJobs(jobRes.data?.jobs ?? []);
       setReviews(reviewRes.data?.reviews ?? []);
     } catch {
@@ -743,6 +819,208 @@ const BadgeAdminPage = () => {
     }
   };
 
+  const openBadgeEditor = (row) => {
+    setForm(formFromRow(row));
+    setEditorOpen(true);
+  };
+
+  const handleBadgeDragStart = () => {
+    skipBadgeClick.current = true;
+  };
+
+  const handleBadgeDragEnd = async (result) => {
+    if (!result.destination || filtersActive) return;
+    const sourceId = result.source.droppableId;
+    const destId = result.destination.droppableId;
+    if (sourceId === destId && result.source.index === result.destination.index) return;
+
+    const buckets = new Map();
+    const known = new Set(sortedGroups.map((group) => group.id));
+    for (const group of sortedGroups) {
+      buckets.set(droppableGroupId(group.id), badgesInGroup(definitions, group.id).map((row) => row.id));
+    }
+    buckets.set(
+      UNGROUPED_ID,
+      definitions
+        .filter((row) => row.groupId == null || !known.has(row.groupId))
+        .sort(sortByOrderThenName)
+        .map((row) => row.id),
+    );
+
+    const sourceList = [...(buckets.get(sourceId) || [])];
+    const destList = sourceId === destId ? sourceList : [...(buckets.get(destId) || [])];
+    const [moved] = sourceList.splice(result.source.index, 1);
+    if (moved == null) return;
+    destList.splice(result.destination.index, 0, moved);
+    buckets.set(sourceId, sourceList);
+    buckets.set(destId, destList);
+
+    const groupIdByDroppable = new Map([[UNGROUPED_ID, null]]);
+    for (const group of sortedGroups) groupIdByDroppable.set(droppableGroupId(group.id), group.id);
+
+    const next = definitions.map((row) => ({ ...row }));
+    const byId = new Map(next.map((row) => [row.id, row]));
+    for (const [droppableId, ids] of buckets) {
+      const groupId = groupIdByDroppable.has(droppableId) ? groupIdByDroppable.get(droppableId) : null;
+      ids.forEach((id, index) => {
+        const row = byId.get(id);
+        if (row) {
+          row.groupId = groupId;
+          row.sortOrder = index;
+        }
+      });
+    }
+    setDefinitions(next);
+    setIsBadgesReordering(true);
+    try {
+      const res = await api.put(routes.admin.badges.placements(), placementPayload(sortedGroups, next));
+      setDefinitions(res.data?.definitions ?? next);
+      toast.success(t('badges.admin.groups.notifications.badgesReordered'));
+    } catch (error) {
+      toast.error(error?.response?.data?.error || t('badges.admin.groups.notifications.badgesReorderFailed'));
+      await load();
+    } finally {
+      setIsBadgesReordering(false);
+    }
+  };
+
+  const handleGroupDragEnd = async (result) => {
+    if (!result.destination) return;
+    if (result.source.index === result.destination.index) return;
+    const items = [...sortedGroups];
+    const [moved] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, moved);
+    const next = items.map((group, index) => ({ ...group, sortOrder: index }));
+    setGroups(next);
+    setIsGroupsReordering(true);
+    try {
+      const res = await api.put(routes.admin.badges.groupSortOrders(), {
+        sortOrders: next.map((group, index) => ({ id: group.id, sortOrder: index })),
+      });
+      setGroups(res.data?.groups ?? next);
+      toast.success(t('badges.admin.groups.notifications.reordered'));
+    } catch (error) {
+      toast.error(error?.response?.data?.error || t('badges.admin.groups.notifications.reorderFailed'));
+      await load();
+    } finally {
+      setIsGroupsReordering(false);
+    }
+  };
+
+  const createGroup = async () => {
+    const name = newGroupName.trim();
+    if (!name) return;
+    try {
+      await api.post(routes.admin.badges.groups(), { name });
+      toast.success(t('badges.admin.groups.notifications.created'));
+      setIsCreatingGroup(false);
+      setNewGroupName('');
+      await load();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || t('badges.admin.groups.notifications.createFailed'));
+    }
+  };
+
+  const updateGroup = async () => {
+    if (!editingGroup) return;
+    const name = editGroupName.trim();
+    if (!name) return;
+    try {
+      await api.put(routes.admin.badges.group(editingGroup.id), { name });
+      toast.success(t('badges.admin.groups.notifications.updated'));
+      setEditingGroup(null);
+      setEditGroupName('');
+      await load();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || t('badges.admin.groups.notifications.updateFailed'));
+    }
+  };
+
+  const deleteGroup = async () => {
+    if (!deletingGroup) return;
+    try {
+      await api.delete(routes.admin.badges.group(deletingGroup.id));
+      toast.success(t('badges.admin.groups.notifications.deleted'));
+      setDeletingGroup(null);
+      await load();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || t('badges.admin.groups.notifications.deleteFailed'));
+    }
+  };
+
+  const renderBadgeRow = (row, index, droppableId) => {
+    const progress = badgeBackfill(trackedJob, row);
+    const dragDisabled = filtersActive || isBadgesReordering;
+    return (
+      <Draggable
+        key={`${droppableId}-${row.id}`}
+        draggableId={`badge-${row.id}`}
+        index={index}
+        isDragDisabled={dragDisabled}
+      >
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className={[
+              'badge-admin-page__row',
+              snapshot.isDragging && 'is-dragging',
+              dragDisabled && 'is-drag-disabled',
+            ].filter(Boolean).join(' ')}
+            onClick={() => {
+              if (skipBadgeClick.current) {
+                skipBadgeClick.current = false;
+                return;
+              }
+              openBadgeEditor(row);
+            }}
+          >
+            <span className="badge-admin-page__card-title">{row.name}</span>
+            <span className="badge-admin-page__card-meta">{row.audience} · {row.grantMode}</span>
+            <code className="badge-admin-page__card-script">
+              {row.params?.expression || t('badges.admin.noScript', { defaultValue: 'No grant script' })}
+            </code>
+            {progress && (
+              <span className="badge-admin-page__card-progress">
+                <span className="badge-admin-page__backfill-bar" aria-hidden="true">
+                  <span style={{ width: `${(progress.processed / progress.total) * 100}%` }} />
+                </span>
+                {progress.audience === 'creator'
+                  ? t('badges.admin.backfillCreators', { processed: progress.processed, total: progress.total })
+                  : t('badges.admin.backfillPlayers', { processed: progress.processed, total: progress.total })}
+              </span>
+            )}
+            {row.secret && <span className="badge-admin-page__card-flag">{t('badges.admin.secret')}</span>}
+          </div>
+        )}
+      </Draggable>
+    );
+  };
+
+  const renderBadgeList = (list) => (
+    <section key={list.key} className="badge-admin-page__group">
+      <h3 className="badge-admin-page__group-header">
+        {list.name || t('badges.admin.groups.ungrouped')}
+        <span className="badge-admin-page__group-count">
+          {t('badges.admin.groups.badgeCount', { count: list.badges.length })}
+        </span>
+      </h3>
+      <Droppable droppableId={list.key} isDropDisabled={filtersActive || isBadgesReordering}>
+        {(provided) => (
+          <div
+            className="badge-admin-page__list"
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {list.badges.map((row, index) => renderBadgeRow(row, index, list.key))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </section>
+  );
+
   if (user?.permissionFlags === undefined) {
     return (
       <div className="badge-admin-page">
@@ -788,7 +1066,7 @@ const BadgeAdminPage = () => {
               className={`tab-button${pageTab === id ? ' active' : ''}`}
               onClick={() => setPageTab(id)}
             >
-              {t(`badges.admin.pageTabs.${id}`, { defaultValue: id === 'definitions' ? 'Badges' : id === 'reviews' ? 'Reviews' : 'Jobs' })}
+              {t(`badges.admin.pageTabs.${id}`, { defaultValue: tabLabelDefault(id) })}
             </button>
           ))}
         </div>
@@ -887,32 +1165,106 @@ const BadgeAdminPage = () => {
             )}
             {definitions.length === 0 && <p className="badge-admin-page__empty">{t('badges.empty')}</p>}
             {definitions.length > 0 && filteredDefinitions.length === 0 && <p className="badge-admin-page__empty">{t('badges.admin.noMatches')}</p>}
-            <div className="badge-admin-page__grid">
-              {filteredDefinitions.map((row) => {
-                const progress = badgeBackfill(trackedJob, row);
-                return (
-                <button key={row.id} type="button" className="badge-admin-page__card" onClick={() => { setForm(formFromRow(row)); setEditorOpen(true); }}>
-                  <span className="badge-admin-page__card-title">{row.name}</span>
-                  <span className="badge-admin-page__card-meta">{row.audience} · {row.grantMode}</span>
-                  <code className="badge-admin-page__card-script">
-                    {row.params?.expression || t('badges.admin.noScript', { defaultValue: 'No grant script' })}
-                  </code>
-                  {progress && (
-                    <span className="badge-admin-page__card-progress">
-                      <span className="badge-admin-page__backfill-bar" aria-hidden="true">
-                        <span style={{ width: `${(progress.processed / progress.total) * 100}%` }} />
-                      </span>
-                      {progress.audience === 'creator'
-                        ? t('badges.admin.backfillCreators', { processed: progress.processed, total: progress.total })
-                        : t('badges.admin.backfillPlayers', { processed: progress.processed, total: progress.total })}
-                    </span>
-                  )}
-                  {row.secret && <span className="badge-admin-page__card-flag">{t('badges.admin.secret')}</span>}
-                </button>
-                );
-              })}
-            </div>
+            {filtersActive && (
+              <p className="badge-admin-page__drag-hint">{t('badges.admin.dragDisabled')}</p>
+            )}
+            {definitions.length > 0 && filteredDefinitions.length > 0 && (
+              <DragDropContext onDragStart={handleBadgeDragStart} onDragEnd={handleBadgeDragEnd}>
+                <div className="badge-admin-page__grouped">
+                  {groupedBadgeLists.lists.map(renderBadgeList)}
+                  {(groupedBadgeLists.ungrouped.badges.length > 0 || !filtersActive) && renderBadgeList(groupedBadgeLists.ungrouped)}
+                </div>
+              </DragDropContext>
+            )}
           </>
+        )}
+
+        {pageTab === 'groups' && (
+          <div className="badge-admin-page__stack">
+            <button
+              type="button"
+              className="btn-fill-primary"
+              onClick={() => {
+                setNewGroupName('');
+                setIsCreatingGroup(true);
+              }}
+              disabled={isGroupsReordering}
+            >
+              {t('badges.admin.groups.createButton')}
+            </button>
+            {sortedGroups.length === 0 && (
+              <p className="badge-admin-page__empty">{t('badges.admin.groups.noGroups')}</p>
+            )}
+            {sortedGroups.length > 0 && (
+              <DragDropContext onDragEnd={handleGroupDragEnd}>
+                <Droppable droppableId="badge-groups">
+                  {(provided) => (
+                    <div
+                      className="badge-admin-page__groups-list"
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {sortedGroups.map((group, index) => {
+                        const count = badgesInGroup(definitions, group.id).length;
+                        return (
+                          <Draggable
+                            key={group.id}
+                            draggableId={`group-${group.id}`}
+                            index={index}
+                            isDragDisabled={isGroupsReordering}
+                          >
+                            {(dragProvided, snapshot) => (
+                              <div
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                                {...dragProvided.dragHandleProps}
+                                className={`badge-admin-page__group-item${snapshot.isDragging ? ' is-dragging' : ''}`}
+                              >
+                                <div className="badge-admin-page__group-item-content">
+                                  <div className="badge-admin-page__group-item-name">{group.name}</div>
+                                  <div className="badge-admin-page__group-item-count">
+                                    {t('badges.admin.groups.badgeCount', { count })}
+                                  </div>
+                                </div>
+                                <div className="badge-admin-page__group-item-actions">
+                                  <button
+                                    type="button"
+                                    onMouseDown={(event) => event.stopPropagation()}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setEditingGroup(group);
+                                      setEditGroupName(group.name);
+                                    }}
+                                    disabled={isGroupsReordering}
+                                    aria-label={t('badges.admin.groups.edit.title')}
+                                  >
+                                    <EditIcon color="#fff" size="20px" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onMouseDown={(event) => event.stopPropagation()}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setDeletingGroup(group);
+                                    }}
+                                    disabled={isGroupsReordering}
+                                    aria-label={t('badges.admin.groups.delete.title')}
+                                  >
+                                    <TrashIcon color="#fff" size="20px" />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            )}
+          </div>
         )}
 
         {pageTab === 'reviews' && (
@@ -967,6 +1319,113 @@ const BadgeAdminPage = () => {
         />
       )}
       {helpOpen && <BadgeHelpPopup onClose={() => setHelpOpen(false)} />}
+      {isCreatingGroup && (
+        <PopupShell
+          onClose={() => setIsCreatingGroup(false)}
+          overlayClassName="badge-admin-page badge-admin-page__modal"
+          panelClassName="badge-admin-page__modal-panel"
+          ariaLabelledBy="badge-create-group-title"
+        >
+          <CloseButton
+            variant="floating"
+            onClick={() => setIsCreatingGroup(false)}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
+          <h2 id="badge-create-group-title">{t('badges.admin.groups.create.title')}</h2>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              createGroup();
+            }}
+          >
+            <div className="form-group">
+              <label htmlFor="badge-create-group-name">{t('badges.admin.groups.create.name')}</label>
+              <input
+                id="badge-create-group-name"
+                type="text"
+                value={newGroupName}
+                onChange={(event) => setNewGroupName(event.target.value)}
+                maxLength={80}
+                required
+              />
+            </div>
+            <div className="modal-actions">
+              <button type="button" className="btn-fill-ghost" onClick={() => setIsCreatingGroup(false)}>
+                {t('buttons.cancel', { ns: 'common' })}
+              </button>
+              <button type="submit" className="btn-fill-primary" disabled={!newGroupName.trim()}>
+                {t('badges.admin.groups.create.createButton')}
+              </button>
+            </div>
+          </form>
+        </PopupShell>
+      )}
+      {editingGroup && (
+        <PopupShell
+          onClose={() => setEditingGroup(null)}
+          overlayClassName="badge-admin-page badge-admin-page__modal"
+          panelClassName="badge-admin-page__modal-panel"
+          ariaLabelledBy="badge-edit-group-title"
+        >
+          <CloseButton
+            variant="floating"
+            onClick={() => setEditingGroup(null)}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
+          <h2 id="badge-edit-group-title">{t('badges.admin.groups.edit.title')}</h2>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              updateGroup();
+            }}
+          >
+            <div className="form-group">
+              <label htmlFor="badge-edit-group-name">{t('badges.admin.groups.edit.name')}</label>
+              <input
+                id="badge-edit-group-name"
+                type="text"
+                value={editGroupName}
+                onChange={(event) => setEditGroupName(event.target.value)}
+                maxLength={80}
+                required
+              />
+            </div>
+            <div className="modal-actions">
+              <button type="button" className="btn-fill-ghost" onClick={() => setEditingGroup(null)}>
+                {t('buttons.cancel', { ns: 'common' })}
+              </button>
+              <button type="submit" className="btn-fill-primary" disabled={!editGroupName.trim()}>
+                {t('badges.admin.groups.edit.updateButton')}
+              </button>
+            </div>
+          </form>
+        </PopupShell>
+      )}
+      {deletingGroup && (
+        <PopupShell
+          onClose={() => setDeletingGroup(null)}
+          overlayClassName="badge-admin-page badge-admin-page__modal"
+          panelClassName="badge-admin-page__modal-panel"
+          ariaLabelledBy="badge-delete-group-title"
+        >
+          <CloseButton
+            variant="floating"
+            onClick={() => setDeletingGroup(null)}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
+          <h2 id="badge-delete-group-title">{t('badges.admin.groups.delete.title')}</h2>
+          <p>{t('badges.admin.groups.delete.message', { name: deletingGroup.name })}</p>
+          <p>{t('badges.admin.groups.delete.description')}</p>
+          <div className="modal-actions">
+            <button type="button" className="btn-fill-ghost" onClick={() => setDeletingGroup(null)}>
+              {t('buttons.cancel', { ns: 'common' })}
+            </button>
+            <button type="button" className="btn-fill-danger" onClick={deleteGroup}>
+              {t('badges.admin.groups.delete.deleteButton')}
+            </button>
+          </div>
+        </PopupShell>
+      )}
     </div>
   );
 };

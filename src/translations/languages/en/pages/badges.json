@@ -6,6 +6,7 @@
   "open": "Badges",
   "title": "Badges",
   "empty": "No badges to show yet.",
+  "ungrouped": "Ungrouped",
   "locked": "Locked",
   "earned": "Earned",
   "tier": "Tier {{tier}}",
@@ -349,7 +350,7 @@
       },
       "structures": {
         "title": "Structures",
-        "intro": "The script uses JavaScript shape. It does not run arbitrary JavaScript. <code>//</code> line comments and <code>/* */</code> block comments are skipped.",
+        "intro": "The script uses JavaScript shape. It does not run arbitrary JavaScript. <code>//</code> line comments and <code>/* */</code> block comments are skipped. What you write is what runs: do not nest <code>.filter</code> or <code>.map</code> over the same list unless you have to; use <code>maxCount</code> or <code>maxGroup</code> instead.",
         "fields": {
           "eq": {
             "title": "Equal",
@@ -457,6 +458,11 @@
             "title": "Largest",
             "desc": "<code>max(list)</code> or <code>max(a, b)</code>.",
             "example": "<code>max(3, 9)</code> is 9. <code>max(mine.map(level =&gt; level.clears))</code> is the busiest chart."
+          },
+          "maxCount": {
+            "title": "Most rows for one key",
+            "desc": "<code>maxCount(list, \"identity\")</code> counts how many rows share each key and returns the largest count. Use this instead of mapping a filter over the same list.",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> is 100 when one G or U chart was cleared 100 times."
           },
           "abs": {
             "title": "Absolute value",
@@ -808,6 +814,64 @@
     "backfillCursor": "{{status}} · owner {{current}} / {{total}} · badge {{badge}} / {{badgeTotal}} · {{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
     "backfillProgress": "{{processed}} / {{total}} · {{players}} / {{playerTotal}} players · {{creators}} / {{creatorTotal}} creators",
     "backfillPlayers": "{{processed}} / {{total}} players",
-    "backfillCreators": "{{processed}} / {{total}} creators"
+    "backfillCreators": "{{processed}} / {{total}} creators",
+    "backfillNow": "Evaluating {{badge}} for {{kind}} {{owner}}. Owner {{current}} / {{total}}, badge {{badgeIndex}} / {{badgeTotal}} for this owner. {{players}} / {{playerTotal}} players and {{creators}} / {{creatorTotal}} creators fully finished.",
+    "backfillUnknownBadge": "the next badge",
+    "backfillCancelling": "Cancelling backfill",
+    "backfillBadges": "Badges for this owner {{done}} / {{total}}",
+    "backfillRunning": "{{players}} / {{playerTotal}} players finished · {{creators}} / {{creatorTotal}} creators finished",
+    "sectionBadge": "Badge",
+    "sectionFormula": "Grant script",
+    "sectionDisplay": "Display",
+    "sectionPublish": "Publish",
+    "scriptHelp": "Script reference",
+    "formulaOk": "Expression is valid",
+    "packName": "Pack name",
+    "description": "Description",
+    "noScript": "No grant script",
+    "noReviews": "No pending reviews.",
+    "noJobs": "No jobs yet.",
+    "pageTabs": {
+      "definitions": "Badges",
+      "groups": "Groups",
+      "reviews": "Reviews",
+      "jobs": "Jobs"
+    },
+    "dragDisabled": "Clear search and filters to reorder badges.",
+    "groups": {
+      "createButton": "Create group",
+      "noGroups": "No groups yet. Create a group to organize badges.",
+      "ungrouped": "Ungrouped",
+      "badgeCount": "{{count}} badge",
+      "badgeCount_plural": "{{count}} badges",
+      "create": {
+        "title": "Create group",
+        "name": "Name",
+        "createButton": "Create"
+      },
+      "edit": {
+        "title": "Edit group",
+        "name": "Name",
+        "updateButton": "Update"
+      },
+      "delete": {
+        "title": "Delete group",
+        "message": "Delete the group \"{{name}}\"?",
+        "description": "Badges in this group will become ungrouped.",
+        "deleteButton": "Delete"
+      },
+      "notifications": {
+        "reordered": "Groups reordered",
+        "reorderFailed": "Could not reorder groups",
+        "created": "Group created",
+        "createFailed": "Could not create the group",
+        "updated": "Group renamed",
+        "updateFailed": "Could not rename the group",
+        "deleted": "Group deleted",
+        "deleteFailed": "Could not delete the group",
+        "badgesReordered": "Badges reordered",
+        "badgesReorderFailed": "Could not reorder badges"
+      }
+    }
   }
 }

@@ -20,6 +20,14 @@
 .badge-admin-page .badge-admin-page__search,
 .badge-admin-page .tab-navigation,
 .badge-admin-page .badge-admin-page__grid,
+.badge-admin-page .badge-admin-page__grouped,
+.badge-admin-page .badge-admin-page__group,
+.badge-admin-page .badge-admin-page__group-header,
+.badge-admin-page .badge-admin-page__list,
+.badge-admin-page .badge-admin-page__groups-list,
+.badge-admin-page .badge-admin-page__group-item,
+.badge-admin-page .badge-admin-page__group-item-content,
+.badge-admin-page .badge-admin-page__group-item-actions,
 .badge-admin-page .badge-admin-page__review,
 .badge-admin-page .badge-admin-page__stack,
 .badge-admin-page .badge-admin-page__backfill,
@@ -251,6 +259,184 @@
 
 .badge-admin-page .badge-admin-page__card:hover {
   border-color: var(--color-purple-1);
+}
+
+.badge-admin-page .badge-admin-page__drag-hint {
+  margin: 0 0 0.75rem;
+  color: var(--color-gray-2);
+}
+
+.badge-admin-page .badge-admin-page__grouped {
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.badge-admin-page .badge-admin-page__group {
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: var(--color-white-t05);
+}
+
+.badge-admin-page .badge-admin-page__group-header {
+  align-items: baseline;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-white-t20);
+  color: var(--color-white);
+  font-size: 1.1rem;
+}
+
+.badge-admin-page .badge-admin-page__group-count {
+  color: var(--color-white-t60);
+  font-size: 0.85rem;
+  font-weight: normal;
+}
+
+.badge-admin-page .badge-admin-page__list {
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}
+
+.badge-admin-page .badge-admin-page__row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-white-t10);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  text-align: left;
+  cursor: grab;
+}
+
+.badge-admin-page .badge-admin-page__row:hover {
+  border-color: var(--color-purple-1);
+}
+
+.badge-admin-page .badge-admin-page__row.is-dragging {
+  background-color: var(--color-white-t20);
+  cursor: grabbing;
+}
+
+.badge-admin-page .badge-admin-page__row.is-drag-disabled {
+  cursor: pointer;
+}
+
+.badge-admin-page .badge-admin-page__groups-list {
+  flex-direction: column;
+}
+
+.badge-admin-page .badge-admin-page__group-item {
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: var(--color-white-t10);
+  cursor: grab;
+}
+
+.badge-admin-page .badge-admin-page__group-item:hover {
+  background-color: var(--color-white-t20);
+}
+
+.badge-admin-page .badge-admin-page__group-item.is-dragging {
+  background-color: var(--color-white-t30);
+  cursor: grabbing;
+}
+
+.badge-admin-page .badge-admin-page__group-item-content {
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.badge-admin-page .badge-admin-page__group-item-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.badge-admin-page .badge-admin-page__group-item-count {
+  font-size: 0.85rem;
+  color: var(--color-white-t60);
+}
+
+.badge-admin-page .badge-admin-page__group-item-actions {
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.badge-admin-page .badge-admin-page__group-item-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid var(--color-white-t30);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.badge-admin-page .badge-admin-page__group-item-actions button:hover {
+  background-color: var(--color-white-t10);
+}
+
+.badge-admin-page.badge-admin-page__modal .badge-admin-page__modal-panel,
+.badge-admin-page .badge-admin-page__modal-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 90%;
+  max-width: 600px;
+  max-height: calc(100vh - 12rem);
+  padding: 2rem;
+  overflow-y: auto;
+  border-radius: 8px;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  position: relative;
+}
+
+.badge-admin-page .badge-admin-page__modal-panel h2,
+.badge-admin-page .badge-admin-page__modal-panel p {
+  margin: 0;
+}
+
+.badge-admin-page .badge-admin-page__modal-panel p {
+  color: var(--color-white-t70);
+  font-size: 0.875rem;
+}
+
+.badge-admin-page .badge-admin-page__modal-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.badge-admin-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.badge-admin-page .form-group label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.badge-admin-page .modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1rem;
 }
 
 .badge-admin-page .badge-admin-page__card-title {

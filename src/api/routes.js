@@ -125,7 +125,11 @@ export const routes = {
     badges: {
       definitions: () => '/v2/admin/badges/definitions',
       definition: (id) => `/v2/admin/badges/definitions/${enc(id)}`,
+      placements: () => '/v2/admin/badges/definitions/placements',
       recompute: (id) => `/v2/admin/badges/definitions/${enc(id)}/recompute`,
+      groups: () => '/v2/admin/badges/groups',
+      group: (id) => `/v2/admin/badges/groups/${enc(id)}`,
+      groupSortOrders: () => '/v2/admin/badges/groups/sort-orders',
       sets: () => '/v2/admin/badges/sets',
       reviews: () => '/v2/admin/badges/reviews',
       review: (id) => `/v2/admin/badges/reviews/${enc(id)}/decision`,
