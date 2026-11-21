@@ -978,53 +978,135 @@
   }
 
   .submission-admin-page .submission-notes {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
     min-width: 0;
     width: 100%;
     max-width: 100%;
-    min-height: 8rem;
   }
 
-  .submission-admin-page .submission-notes__label {
+  .submission-admin-page .submission-collapsible-text {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .submission-admin-page .submission-details .submission-collapsible-text {
+    width: auto;
+    margin-left: 1rem;
+    margin-bottom: 7px;
+  }
+
+  .submission-admin-page .submission-collapsible-text__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .submission-admin-page .submission-collapsible-text__header .detail-label {
+    flex-shrink: 0;
+  }
+
+  .submission-admin-page .submission-collapsible-text__actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .submission-admin-page .submission-collapsible-text__trigger.tuf-collapsible__trigger {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    gap: 0.35rem;
+    min-width: 0;
+    width: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .submission-admin-page .submission-collapsible-text__trigger.tuf-collapsible__trigger:hover:not(:disabled) {
+    background: transparent;
+    border-color: transparent;
+    opacity: 0.85;
+  }
+
+  .submission-admin-page .submission-collapsible-text__body {
+    min-width: 0;
+    width: 100%;
+    padding-top: 0.35rem;
+    color: var(--color-white);
+    font-size: 0.95rem;
+    line-height: 1.45;
+    font-weight: 500;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    text-align: start;
+  }
+
+  .submission-admin-page .embed-column .submission-collapsible-text__header {
+    justify-content: flex-end;
+  }
+
+  .submission-admin-page .embed-column .submission-collapsible-text .detail-label {
+    min-width: 0;
+    margin-right: 0;
     font-size: 0.85rem;
+    font-weight: 500;
     color: var(--color-white-t70);
   }
 
-  .submission-admin-page .submission-notes__display,
+  .submission-admin-page .embed-column .submission-collapsible-text__trigger.tuf-collapsible__trigger {
+    justify-content: flex-end;
+    color: var(--color-white-t70);
+  }
+
+  .submission-admin-page .pass-submission-card .submission-details .submission-collapsible-text__trigger.tuf-collapsible__trigger {
+    color: #aaa;
+  }
+
+  .submission-admin-page .embed-column .submission-collapsible-text--empty .detail-value-none {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: end;
+  }
+
+  .submission-admin-page .pass-submission-side-slot {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+    width: 100%;
+  }
+
   .submission-admin-page .submission-notes__edit {
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
     gap: 0.5rem;
-    flex: 1;
     min-width: 0;
     width: 100%;
     max-width: 100%;
   }
 
   .submission-admin-page .submission-notes__body {
-    flex: 1;
     min-width: 0;
-    text-align: end;
+    width: 100%;
+    text-align: start;
     max-width: 100%;
     margin: 0;
     color: var(--color-white);
     font-size: 0.9rem;
     white-space: pre-wrap;
     word-break: break-word;
-  }
-
-  .submission-admin-page .submission-notes__empty {
-    flex: 1;
-    min-width: 0;
-    text-align: end;
-    opacity: 0.5;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .submission-admin-page .submission-notes__textarea {
@@ -1379,6 +1461,18 @@
     font-weight: 600;
     line-height: 1.2;
     color: var(--color-white);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-accuracy.pure-perfect {
+    color: rgb(255, 255, 0);
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+    font-weight: 700;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-accuracy.pure-xperfect {
+    color: var(--color-platinum);
+    text-shadow: 0 0 10px rgba(var(--color-platinum-rgb), 1);
+    font-weight: 700;
   }
 
   /* react-tooltip (portal); anchor on .judgements-details (view) or .pass-submission-judgements-inputs (edit) */
@@ -1833,6 +1927,7 @@
 
   .submission-admin-page .pass-submission-card .embed-column {
     grid-column: 7 / span 5;
+    align-self: stretch;
   }
 
   .submission-admin-page .loader-shell--submission {
@@ -2813,6 +2908,13 @@
   pointer-events: auto;
 }
 
+.submission-admin-page .submission-card.complete .embed-container,
+.submission-admin-page .submission-card.complete .embed-container iframe,
+.submission-admin-page .submission-card.declined .embed-container,
+.submission-admin-page .submission-card.declined .embed-container iframe {
+  pointer-events: auto;
+}
+
 .submission-admin-page .submission-card.complete .submission-complete-close,
 .submission-admin-page .submission-card.declined .submission-complete-close {
   position: absolute;
@@ -2849,6 +2951,7 @@
 .submission-admin-page .submission-card.is-locked .submission-details,
 .submission-admin-page .submission-card.is-locked .submission-video-link-field,
 .submission-admin-page .submission-card.is-locked .submission-notes,
+.submission-admin-page .submission-card.is-locked .pass-submission-side-slot,
 .submission-admin-page .submission-card.is-locked .submission-tag-request {
   filter: grayscale(1);
   opacity: 0.5;
@@ -2857,6 +2960,7 @@
 .submission-admin-page .submission-card.is-locked .card-content,
 .submission-admin-page .submission-card.is-locked .submission-video-link-field,
 .submission-admin-page .submission-card.is-locked .submission-notes,
+.submission-admin-page .submission-card.is-locked .pass-submission-side-slot,
 .submission-admin-page .submission-card.is-locked .submission-tag-request {
   pointer-events: none;
 }

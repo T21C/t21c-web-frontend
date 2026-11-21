@@ -121,7 +121,8 @@
   },
   "components": {
     "clearCard": {
-      "feeling": "体感:"
+      "feeling": "体感:",
+      "expected": "予想:"
     }
   },
   "errors": {

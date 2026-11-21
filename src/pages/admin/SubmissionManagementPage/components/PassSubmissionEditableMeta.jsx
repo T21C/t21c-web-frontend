@@ -23,7 +23,7 @@ import {
   visualAdofaiVersion,
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
-import calcAcc, { applyDerivedPerfects } from '@/utils/CalcAcc';
+import calcAcc, { applyDerivedPerfects, isPureXPerfect } from '@/utils/CalcAcc';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { AdofaiVersionFlagTooltip } from '@/components/cards/PassFlags/PassAdofaiV2Flag';
 import { getSongDisplayName } from '@/utils/levelHelpers';
@@ -244,10 +244,19 @@ export default function PassSubmissionEditableMeta({
     }
   }
 
-  const judgementAccuracy = useMemo(() => {
+  const { judgementAccuracy, accuracyGlowClass } = useMemo(() => {
     const source = editingJudgements ? draftJudgements : submission.judgements;
-    return formatAccuracyRatio(calcAcc(source));
-  }, [editingJudgements, draftJudgements, submission.judgements]);
+    const raw = calcAcc(source);
+    const glow = isPureXPerfect(source, activeFlags.isXPerfectMode)
+      ? 'pure-xperfect'
+      : raw === 1
+        ? 'pure-perfect'
+        : '';
+    return {
+      judgementAccuracy: formatAccuracyRatio(raw),
+      accuracyGlowClass: glow,
+    };
+  }, [editingJudgements, draftJudgements, submission.judgements, activeFlags.isXPerfectMode]);
 
   const displayJudgementKeys = visibleJudgementKeys(viewingFlags, submission.judgements);
   const editJudgementKeys = visibleJudgementKeys(
@@ -695,7 +704,7 @@ export default function PassSubmissionEditableMeta({
                     </span>
                   ))}
                 </div>
-                <span className="pass-submission-judgements-accuracy">{judgementAccuracy}</span>
+                <span className={`pass-submission-judgements-accuracy${accuracyGlowClass ? ` ${accuracyGlowClass}` : ''}`}>{judgementAccuracy}</span>
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditJudgements}>
                 {t('passSubmissions.edit.edit')}
@@ -724,7 +733,7 @@ export default function PassSubmissionEditableMeta({
                     </label>
                   ))}
                 </div>
-                <span className="pass-submission-judgements-accuracy">{judgementAccuracy}</span>
+                <span className={`pass-submission-judgements-accuracy${accuracyGlowClass ? ` ${accuracyGlowClass}` : ''}`}>{judgementAccuracy}</span>
               </div>
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveJudgements}>

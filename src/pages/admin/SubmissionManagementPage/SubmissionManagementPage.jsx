@@ -137,7 +137,6 @@ const SubmissionManagementPage = () => {
       if (request) {
         setOpenJobs(prev => upsertRequestTree(prev, { ...request, items: request.items || [] }));
         (request.items || []).forEach(emitSnapshotJobItem);
-        setDrawerExpanded(true);
       }
       return;
     }
@@ -153,7 +152,6 @@ const SubmissionManagementPage = () => {
         });
       } else {
         setOpenJobs(prev => upsertRequestTree(prev, request));
-        setDrawerExpanded(true);
       }
       return;
     }

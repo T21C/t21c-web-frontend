@@ -318,12 +318,25 @@
   font-size: 0.85rem;
 }
 
+.clear-card .rating-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+  min-width: 0;
+  flex: 1 1 8rem;
+}
+
+.clear-card .rating-stack--expanded {
+  flex-basis: 100%;
+}
+
 .clear-card .feeling-rating {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   min-width: 0;
-  flex: 1 1 8rem;
+  width: 100%;
 }
 
 .clear-card .feeling-label {
@@ -362,11 +375,7 @@
   white-space: nowrap;
 }
 
-.clear-card.expanded .feeling-rating {
-  flex: 1 1 100%;
-}
-
-.clear-card.expanded .feeling-text {
+.clear-card .feeling-container.expanded .feeling-text {
   white-space: normal;
   overflow: visible;
   text-overflow: unset;
