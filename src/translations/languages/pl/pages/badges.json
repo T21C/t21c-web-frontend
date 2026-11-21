@@ -350,7 +350,7 @@
       },
       "structures": {
         "title": "Struktury",
-        "intro": "Skrypt ma kształt JavaScriptu. Nie uruchamia dowolnego JavaScriptu. Komentarze liniowe <code>//</code> i blokowe <code>/* */</code> są pomijane.",
+        "intro": "Skrypt ma kształt JavaScriptu. Nie uruchamia dowolnego JavaScriptu. Komentarze liniowe <code>//</code> i blokowe <code>/* */</code> są pomijane. To, co napiszesz, jest tym, co się wykona: nie zagnieżdżaj <code>.filter</code> ani <code>.map</code> na tej samej liście, chyba że musisz; użyj <code>maxCount</code> albo <code>maxGroup</code>.",
         "fields": {
           "eq": {
             "title": "Równość",
@@ -458,6 +458,11 @@
             "title": "Największa",
             "desc": "<code>max(list)</code> albo <code>max(a, b)</code>.",
             "example": "<code>max(3, 9)</code> to 9. <code>max(mine.map(level =&gt; level.clears))</code> to najbardziej oblegany poziom."
+          },
+          "maxCount": {
+            "title": "Najwięcej wierszy dla jednego klucza",
+            "desc": "<code>maxCount(list, \"identity\")</code> zlicza wiersze o tym samym kluczu i zwraca największą liczbę. Użyj tego zamiast zagnieżdżonego filter na tej samej liście.",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> to 100, gdy jeden poziom G lub U został przejście 100 razy."
           },
           "abs": {
             "title": "Wartość bezwzględna",

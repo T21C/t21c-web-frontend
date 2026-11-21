@@ -81,7 +81,7 @@ export const BADGE_HELP_SECTIONS = [
     id: 'numbers',
     titleKey: 'badges.help.sections.numbers.title',
     introKey: 'badges.help.sections.numbers.intro',
-    fields: fields('numbers', ['count', 'distinct', 'sum', 'min', 'max', 'abs', 'floor', 'round', 'ceil', 'threshold'], true),
+    fields: fields('numbers', ['count', 'distinct', 'sum', 'min', 'max', 'maxCount', 'abs', 'floor', 'round', 'ceil', 'threshold'], true),
   },
   {
     id: 'curves',

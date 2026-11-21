@@ -350,7 +350,7 @@
       },
       "structures": {
         "title": "구조",
-        "intro": "스크립트는 JavaScript 형태를 씁니다. 임의의 JavaScript는 실행하지 않습니다. <code>//</code> 줄 주석과 <code>/* */</code> 블록 주석은 건너뜁니다.",
+        "intro": "스크립트는 JavaScript 형태를 씁니다. 임의의 JavaScript는 실행하지 않습니다. <code>//</code> 줄 주석과 <code>/* */</code> 블록 주석은 건너뜁니다. 적은 그대로 실행됩니다. 같은 리스트에 <code>.filter</code>나 <code>.map</code>을 중첩하지 말고, 꼭 필요할 때만 쓰세요. <code>maxCount</code>나 <code>maxGroup</code>을 쓰세요.",
         "fields": {
           "eq": {
             "title": "같음",
@@ -458,6 +458,11 @@
             "title": "최댓값",
             "desc": "<code>max(list)</code> 또는 <code>max(a, b)</code>.",
             "example": "<code>max(3, 9)</code>는 9입니다. <code>max(mine.map(level =&gt; level.clears))</code>는 가장 붐비는 차트입니다."
+          },
+          "maxCount": {
+            "title": "한 키의 최다 행",
+            "desc": "<code>maxCount(list, \"identity\")</code>는 키마다 행 수를 세고 가장 큰 값을 반환합니다. 같은 리스트에 filter를 중첩하는 대신 쓰세요.",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code>는 G 또는 U 차트를 100번 클리어하면 100입니다."
           },
           "abs": {
             "title": "절댓값",

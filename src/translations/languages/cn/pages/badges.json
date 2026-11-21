@@ -350,7 +350,7 @@
       },
       "structures": {
         "title": "结构",
-        "intro": "脚本使用 JavaScript 形态。它不会运行任意 JavaScript。<code>//</code> 行注释和 <code>/* */</code> 块注释会被跳过。",
+        "intro": "脚本使用 JavaScript 形态。它不会运行任意 JavaScript。<code>//</code> 行注释和 <code>/* */</code> 块注释会被跳过。写什么就执行什么：不要对同一列表嵌套 <code>.filter</code> 或 <code>.map</code>，除非确实需要；改用 <code>maxCount</code> 或 <code>maxGroup</code>。",
         "fields": {
           "eq": {
             "title": "相等",
@@ -458,6 +458,11 @@
             "title": "最大",
             "desc": "<code>max(list)</code> 或 <code>max(a, b)</code>。",
             "example": "<code>max(3, 9)</code> 是 9。<code>max(mine.map(level =&gt; level.clears))</code> 是通关最多的谱面。"
+          },
+          "maxCount": {
+            "title": "同一键的最多行数",
+            "desc": "<code>maxCount(list, \"identity\")</code> 统计每个键出现多少行，并返回最大值。不要对同一列表再套一层 filter。",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> 在同一张 G 或 U 谱面通关 100 次时为 100。"
           },
           "abs": {
             "title": "绝对值",

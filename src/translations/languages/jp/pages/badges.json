@@ -350,7 +350,7 @@
       },
       "structures": {
         "title": "構文",
-        "intro": "スクリプトは JavaScript の形を使います。任意の JavaScript は実行しません。<code>//</code> 行コメントと <code>/* */</code> ブロックコメントは飛ばされます。",
+        "intro": "スクリプトは JavaScript の形を使います。任意の JavaScript は実行しません。<code>//</code> 行コメントと <code>/* */</code> ブロックコメントは飛ばされます。書いた内容がそのまま実行されます。同じリストへの <code>.filter</code> や <code>.map</code> の入れ子は必要なときだけにし、<code>maxCount</code> や <code>maxGroup</code> を使ってください。",
         "fields": {
           "eq": {
             "title": "等しい",
@@ -458,6 +458,11 @@
             "title": "最大",
             "desc": "<code>max(list)</code> または <code>max(a, b)</code>。",
             "example": "<code>max(3, 9)</code> は 9 です。<code>max(mine.map(level =&gt; level.clears))</code> は最もクリアが多い譜面です。"
+          },
+          "maxCount": {
+            "title": "同じキーの最多件数",
+            "desc": "<code>maxCount(list, \"identity\")</code> は各キーの行数を数え、最大値を返します。同じリストに filter を重ねる代わりに使います。",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> は、G または U の譜面を 100 回クリアしていれば 100 です。"
           },
           "abs": {
             "title": "絶対値",

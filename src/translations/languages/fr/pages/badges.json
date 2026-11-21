@@ -350,7 +350,7 @@
       },
       "structures": {
         "title": "Structures",
-        "intro": "Le script a une forme JavaScript. Il n'exécute pas de JavaScript arbitraire. Les commentaires de ligne <code>//</code> et de bloc <code>/* */</code> sont ignorés.",
+        "intro": "Le script a une forme JavaScript. Il n'exécute pas de JavaScript arbitraire. Les commentaires de ligne <code>//</code> et de bloc <code>/* */</code> sont ignorés. Ce qui est écrit est ce qui s'exécute : n'imbriquez <code>.filter</code> ou <code>.map</code> sur la même liste que si c'est indispensable ; préférez <code>maxCount</code> ou <code>maxGroup</code>.",
         "fields": {
           "eq": {
             "title": "Égal",
@@ -458,6 +458,11 @@
             "title": "Plus grand",
             "desc": "<code>max(list)</code> ou <code>max(a, b)</code>.",
             "example": "<code>max(3, 9)</code> vaut 9. <code>max(mine.map(level =&gt; level.clears))</code> est le niveau le plus joué."
+          },
+          "maxCount": {
+            "title": "Plus d'occurrences d'une clé",
+            "desc": "<code>maxCount(list, \"identity\")</code> compte les lignes qui partagent chaque clé et renvoie le plus grand total. À utiliser à la place d'un filter imbriqué sur la même liste.",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> vaut 100 si un niveau G ou U a été complété 100 fois."
           },
           "abs": {
             "title": "Valeur absolue",

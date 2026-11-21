@@ -350,7 +350,7 @@
       },
       "structures": {
         "title": "Structures",
-        "intro": "The script uses JavaScript shape. It does not run arbitrary JavaScript. <code>//</code> line comments and <code>/* */</code> block comments are skipped.",
+        "intro": "The script uses JavaScript shape. It does not run arbitrary JavaScript. <code>//</code> line comments and <code>/* */</code> block comments are skipped. What you write is what runs: do not nest <code>.filter</code> or <code>.map</code> over the same list unless you have to; use <code>maxCount</code> or <code>maxGroup</code> instead.",
         "fields": {
           "eq": {
             "title": "Equal",
@@ -458,6 +458,11 @@
             "title": "Largest",
             "desc": "<code>max(list)</code> or <code>max(a, b)</code>.",
             "example": "<code>max(3, 9)</code> is 9. <code>max(mine.map(level =&gt; level.clears))</code> is the busiest chart."
+          },
+          "maxCount": {
+            "title": "Most rows for one key",
+            "desc": "<code>maxCount(list, \"identity\")</code> counts how many rows share each key and returns the largest count. Use this instead of mapping a filter over the same list.",
+            "example": "<code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> is 100 when one G or U chart was cleared 100 times."
           },
           "abs": {
             "title": "Absolute value",
