@@ -1,9 +1,18 @@
 // tuf-search: #SubmissionCollapsibleText #submissionCollapsibleText #admin #submissionManagement
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/common/Collapsible';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { Collapsible, CollapsibleTrigger } from '@/components/common/Collapsible';
+
+/** Matches --submission-text-peek. About two lines, enough to see if the text matters. */
+const PEEK_REM = 3.6;
+
+function peekLimitPx() {
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  return (Number.isFinite(root) ? root : 16) * PEEK_REM;
+}
 
 /**
- * Compact disclosure for free-text that can grow very large (details, notes).
- * Empty values stay a single row. Text is mounted only while open.
+ * Free-text disclosure for submission cards (details, notes, feeling explanation).
+ * Collapsed text keeps a short preview. The rest opens only when it does not fit.
  *
  * @param {object} props
  * @param {string} props.label
@@ -27,7 +36,27 @@ export default function SubmissionCollapsibleText({
   defaultOpen = false,
   onOpenChange,
 }) {
-  const rootClass = ['submission-collapsible-text', className].filter(Boolean).join(' ');
+  const bodyRef = useRef(null);
+  const [overflows, setOverflows] = useState(false);
+  const rootClass = ['submission-collapsible-text', overflows && 'is-overflowing', className]
+    .filter(Boolean)
+    .join(' ');
+
+  useLayoutEffect(() => {
+    const node = bodyRef.current;
+    if (!node) {
+      setOverflows((prev) => (prev ? false : prev));
+      return undefined;
+    }
+    const measure = () => {
+      const next = node.scrollHeight > peekLimitPx() + 2;
+      setOverflows((prev) => (prev === next ? prev : next));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [empty, children, open]);
 
   if (empty) {
     return (
@@ -50,17 +79,18 @@ export default function SubmissionCollapsibleText({
       fade={false}
     >
       <div className="submission-collapsible-text__header">
-        <CollapsibleTrigger preset="chevron" className="submission-collapsible-text__trigger">
+        {overflows ? (
+          <CollapsibleTrigger preset="chevron" className="submission-collapsible-text__trigger">
+            <span className="detail-label">{label}</span>
+          </CollapsibleTrigger>
+        ) : (
           <span className="detail-label">{label}</span>
-        </CollapsibleTrigger>
+        )}
         {actions ? <div className="submission-collapsible-text__actions">{actions}</div> : null}
       </div>
-      <CollapsibleContent
-        className="submission-collapsible-text__region"
-        clipClassName="submission-collapsible-text__clip"
-      >
-        <div className="submission-collapsible-text__body">{children}</div>
-      </CollapsibleContent>
+      <div className="submission-collapsible-text__body" ref={bodyRef}>
+        {children}
+      </div>
     </Collapsible>
   );
 }

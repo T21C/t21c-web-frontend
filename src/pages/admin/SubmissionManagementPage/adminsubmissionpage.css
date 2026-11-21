@@ -984,6 +984,7 @@
   }
 
   .submission-admin-page .submission-collapsible-text {
+    --submission-text-peek: 3.6rem;
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
@@ -1038,7 +1039,10 @@
   .submission-admin-page .submission-collapsible-text__body {
     min-width: 0;
     width: 100%;
-    padding-top: 0.35rem;
+    box-sizing: border-box;
+    max-height: var(--submission-text-peek);
+    overflow: hidden;
+    padding-top: 0.2rem;
     color: var(--color-white);
     font-size: 0.95rem;
     line-height: 1.45;
@@ -1047,6 +1051,18 @@
     overflow-wrap: anywhere;
     word-break: break-word;
     text-align: start;
+  }
+
+  .submission-admin-page .submission-collapsible-text.is-overflowing:not(.tuf-collapsible--open) .submission-collapsible-text__body {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+  }
+
+  .submission-admin-page .submission-collapsible-text.tuf-collapsible--open .submission-collapsible-text__body {
+    max-height: none;
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .submission-admin-page .embed-column .submission-collapsible-text__header {
