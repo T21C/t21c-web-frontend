@@ -7,7 +7,7 @@ import { routes } from '@/api/routes';
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
-import { EditIcon, QuestionmarkCircleIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
+import { CopyIcon, EditIcon, QuestionmarkCircleIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
@@ -80,7 +80,7 @@ const emptyForm = () => ({
   reducer: 'value',
   grant: 'live',
   identity: 'level',
-  backfill: 'now',
+  backfill: 'forward',
   enabled: true,
   secret: false,
   replace: false,
@@ -366,6 +366,27 @@ function BadgeEditorPopup({
   );
 }
 
+async function copyText(value) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+  } catch {
+    // Some browsers expose clipboard.writeText but reject it; fall back below.
+  }
+  const input = document.createElement('textarea');
+  input.value = value;
+  input.setAttribute('readonly', '');
+  input.style.position = 'fixed';
+  input.style.left = '-9999px';
+  document.body.appendChild(input);
+  input.select();
+  const ok = document.execCommand('copy');
+  document.body.removeChild(input);
+  if (!ok) throw new Error('copy failed');
+}
+
 const BadgeImportPopup = ({ onClose, onImported }) => {
   const { t } = useTranslation(['pages', 'common']);
   const [code, setCode] = useState('');
@@ -436,7 +457,29 @@ function jobDirtLabel(job) {
   if (dirt.levels?.length) parts.push(`${dirt.levels.length}lv`);
   if (dirt.packs?.length) parts.push(`${dirt.packs.length}pk`);
   if (dirt.catalog) parts.push('cat');
-  return parts.length ? ` ${parts.join(' ')}` : '';
+  return parts.join(' ');
+}
+
+function jobScopeLabel(job) {
+  const dirt = jobDirtLabel(job);
+  if (!dirt) return job.scope || '';
+  return `${job.scope} · ${dirt}`;
+}
+
+function jobPhaseLabel(job) {
+  const status = String(job?.status || '');
+  const phase = String(job?.phase || '').trim();
+  if (!phase || phase === status) return '';
+  if (status === 'done' || status === 'failed' || status === 'cancelled') return '';
+  return phase;
+}
+
+const JOB_STATUSES = new Set(['pending', 'running', 'done', 'failed', 'cancelled']);
+
+function jobStatusClass(status) {
+  const key = String(status || '');
+  if (!JOB_STATUSES.has(key)) return 'badge-admin-page__job-status';
+  return `badge-admin-page__job-status badge-admin-page__job-status--${key}`;
 }
 
 function badgeBackfill(job, row) {
@@ -471,6 +514,26 @@ function backfillRatios(job) {
   };
 }
 
+function ownerBoundsFor(bounds, kind) {
+  const row = kind === 'creator' ? bounds?.creator : bounds?.player;
+  const min = Math.floor(Number(row?.min));
+  const max = Math.floor(Number(row?.max));
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min < 1 || max < min) return null;
+  return { min, max };
+}
+
+function clampOwnerInput(raw, bounds) {
+  if (raw == null) return '';
+  const text = String(raw).trim();
+  if (text === '') return '';
+  const n = Math.floor(Number(text));
+  if (!Number.isFinite(n)) return text;
+  if (!bounds) return n < 1 ? '1' : String(n);
+  if (n < bounds.min) return String(bounds.min);
+  if (n > bounds.max) return String(bounds.max);
+  return String(n);
+}
+
 function clipName(name, fallback) {
   const text = String(name || '').trim();
   if (!text) return fallback;
@@ -493,23 +556,39 @@ function BackfillBars({ job, definitions, t }) {
   const badge = definitions.find((row) => Number(row.id) === Number(job?.currentDefinitionId));
   const forCreator = badge?.audience === 'creator';
   const who = clipName(job?.currentOwnerName, forCreator ? 'this creator' : 'this player');
+  const ownerId = Number(job?.currentOwnerId);
+  const whoLabel = Number.isInteger(ownerId) && ownerId > 0 ? `${who} #${ownerId}` : who;
+  const rangeFrom = Number(job?.ownerFrom) > 0 ? Number(job.ownerFrom) : (Number(job?.startFrom) > 0 ? Number(job.startFrom) : null);
+  const rangeTo = Number(job?.ownerTo) > 0 ? Number(job.ownerTo) : null;
+  const scanKind = job?.ownerKind === 'creator' ? 'creator' : (job?.ownerKind === 'player' ? 'player' : null);
   const badgeLabel = t(forCreator ? 'badges.admin.backfillBadgesCreator' : 'badges.admin.backfillBadgesPlayer', {
     defaultValue: forCreator ? 'Badges for {{name}} {{done}} / {{total}}' : 'Badges for {{name}} {{done}} / {{total}}',
-    name: who,
+    name: whoLabel,
     done: ratios.badgesDone,
     total: ratios.badgesTotal,
   });
+  const ownersLabel = t('badges.admin.backfillOwners', { defaultValue: 'Owners {{done}} / {{total}}', done: ratios.ownersDone, total: ratios.ownersTotal });
+  const rangeLabel = scanKind
+    ? t(scanKind === 'creator' ? 'badges.admin.backfillCreatorRange' : 'badges.admin.backfillPlayerRange', {
+      defaultValue: scanKind === 'creator' ? 'Creators {{from}}–{{to}}' : 'Players {{from}}–{{to}}',
+      from: rangeFrom ?? 1,
+      to: rangeTo ?? '…',
+    })
+    : '';
   return (
     <div className="badge-admin-page__backfill-bars">
       <div className="badge-admin-page__backfill-row">
-        <span>{t('badges.admin.backfillOwners', { defaultValue: 'Owners {{done}} / {{total}}', done: ratios.ownersDone, total: ratios.ownersTotal })}</span>
+        {scanKind && (
+          <span className="badge-admin-page__backfill-title">{rangeLabel}</span>
+        )}
+        <span className="badge-admin-page__backfill-owners">{ownersLabel}</span>
         <div
           className="badge-admin-page__backfill-bar"
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={Math.max(ratios.ownersTotal, 1)}
           aria-valuenow={ratios.ownersDone}
-          aria-label={t('badges.admin.backfillOwners', { defaultValue: 'Owners {{done}} / {{total}}', done: ratios.ownersDone, total: ratios.ownersTotal })}
+          aria-label={scanKind ? `${rangeLabel}. ${ownersLabel}` : ownersLabel}
         >
           <span style={{ width: `${ratios.ownersWidth}%` }} />
         </div>
@@ -593,7 +672,16 @@ const BadgeAdminPage = () => {
   const [secretFilter, setSecretFilter] = useState('all');
   const [enabledFilter, setEnabledFilter] = useState('all');
   const [videoDrafts, setVideoDrafts] = useState({});
-  const [startFrom, setStartFrom] = useState('');
+  const [ownerFrom, setOwnerFrom] = useState('');
+  const [ownerTo, setOwnerTo] = useState('');
+  const [ownerKind, setOwnerKind] = useState('player');
+  const [ownerBounds, setOwnerBounds] = useState({ player: null, creator: null });
+  const currentOwnerBounds = useMemo(() => ownerBoundsFor(ownerBounds, ownerKind), [ownerBounds, ownerKind]);
+
+  useEffect(() => {
+    setOwnerFrom((value) => clampOwnerInput(value, currentOwnerBounds));
+    setOwnerTo((value) => clampOwnerInput(value, currentOwnerBounds));
+  }, [currentOwnerBounds]);
 
   const audienceOptions = useMemo(() => [
     { value: 'all', label: t('badges.admin.filterAll') },
@@ -666,16 +754,21 @@ const BadgeAdminPage = () => {
 
   const load = useCallback(async () => {
     try {
-      const [definitionRes, groupRes, jobRes, reviewRes] = await Promise.all([
+      const [definitionRes, groupRes, jobRes, reviewRes, boundsRes] = await Promise.all([
         api.get(routes.admin.badges.definitions()),
         api.get(routes.admin.badges.groups()),
         api.get(routes.admin.badges.jobs()),
         api.get(routes.admin.badges.reviews()),
+        api.get(routes.admin.badges.ownerBounds()).catch(() => ({ data: null })),
       ]);
       setDefinitions(definitionRes.data?.definitions ?? []);
       setGroups(groupRes.data?.groups ?? []);
       setJobs(jobRes.data?.jobs ?? []);
       setReviews(reviewRes.data?.reviews ?? []);
+      setOwnerBounds({
+        player: boundsRes.data?.player ?? null,
+        creator: boundsRes.data?.creator ?? null,
+      });
     } catch {
       toast.error(t('badges.admin.loadFailed'));
     }
@@ -733,15 +826,29 @@ const BadgeAdminPage = () => {
   const refreshBackfill = async () => {
     const toastId = toast.loading(t('badges.admin.backfillStarting', { defaultValue: 'Starting backfill' }));
     try {
+      const fromId = Math.floor(Number(clampOwnerInput(ownerFrom, currentOwnerBounds)));
+      const toId = Math.floor(Number(clampOwnerInput(ownerTo, currentOwnerBounds)));
       await api.post(routes.admin.badges.backfill(), {
         replace: true,
-        startFrom: Math.max(0, Math.floor(Number(startFrom) || 0)),
+        ownerFrom: Number.isInteger(fromId) && fromId >= 1 ? fromId : null,
+        ownerTo: Number.isInteger(toId) && toId >= 1 ? toId : null,
+        ownerKind: ownerKind === 'creator' ? 'creator' : 'player',
       });
       toast.success(t('badges.admin.backfillStarted', { defaultValue: 'Replacement backfill started' }), { id: toastId });
       const jobRes = await api.get(routes.admin.badges.jobs());
       setJobs(jobRes.data?.jobs ?? []);
     } catch (error) {
       toast.error(error?.response?.data?.error || t('badges.admin.backfillFailed', { defaultValue: 'Could not start the backfill' }), { id: toastId });
+    }
+  };
+
+  const exportCatalog = async () => {
+    try {
+      const res = await api.get(routes.admin.badges.export());
+      await copyText(JSON.stringify(res.data, null, 2));
+      toast.success(t('badges.admin.exported'));
+    } catch {
+      toast.error(t('badges.admin.exportFailed'));
     }
   };
 
@@ -1100,24 +1207,61 @@ const BadgeAdminPage = () => {
                 <button type="button" className="btn-fill-primary" onClick={() => { setForm(emptyForm()); setEditorOpen(true); }}>
                   {t('badges.admin.new')}
                 </button>
-                <button type="button" className="btn-fill-secondary" onClick={() => setImportOpen(true)}>
-                  {t('badges.admin.importCode')}
-                </button>
+                <div className="badge-admin-page__io">
+                  <button type="button" className="btn-fill-secondary" onClick={() => setImportOpen(true)}>
+                    {t('badges.admin.importCode')}
+                  </button>
+                  <button type="button" className="btn-fill-secondary btn-sm" onClick={exportCatalog}>
+                    <CopyIcon size={14} color="currentColor" aria-hidden />
+                    {t('badges.admin.exportCode')}
+                  </button>
+                </div>
                 {!trackedJob && (
                   <>
-                    <label className="badge-admin-page__start">
-                      <span>{t('badges.admin.startFrom', { defaultValue: 'Start from #:' })}</span>
-                      <input
-                        type="number"
-                        min="0"
-                        inputMode="numeric"
-                        value={startFrom}
-                        onChange={(event) => setStartFrom(event.target.value)}
+                    <div className="badge-admin-page__range">
+                      <label className="badge-admin-page__start">
+                        <span>
+                          {t(ownerKind === 'creator' ? 'badges.admin.creatorFrom' : 'badges.admin.playerFrom', {
+                            defaultValue: ownerKind === 'creator' ? 'From creator ID:' : 'From player ID:',
+                          })}
+                        </span>
+                        <input
+                          type="number"
+                          min={currentOwnerBounds?.min || 1}
+                          max={currentOwnerBounds?.max || undefined}
+                          inputMode="numeric"
+                          value={ownerFrom}
+                          onChange={(event) => setOwnerFrom(clampOwnerInput(event.target.value, currentOwnerBounds))}
+                        />
+                      </label>
+                      <label className="badge-admin-page__start">
+                        <span>
+                          {t(ownerKind === 'creator' ? 'badges.admin.creatorTo' : 'badges.admin.playerTo', {
+                            defaultValue: ownerKind === 'creator' ? 'To creator ID:' : 'To player ID:',
+                          })}
+                        </span>
+                        <input
+                          type="number"
+                          min={currentOwnerBounds?.min || 1}
+                          max={currentOwnerBounds?.max || undefined}
+                          inputMode="numeric"
+                          value={ownerTo}
+                          onChange={(event) => setOwnerTo(clampOwnerInput(event.target.value, currentOwnerBounds))}
+                        />
+                      </label>
+                    </div>
+                    <div className="badge-admin-page__refresh">
+                      <button type="button" className="btn-fill-secondary" onClick={refreshBackfill}>
+                        {t('badges.admin.refreshBackfill', { defaultValue: 'Refresh backfill' })}
+                      </button>
+                      <StateDisplay
+                        className="badge-admin-page__scan"
+                        label={t('badges.admin.backfillScan', { defaultValue: 'Scan' })}
+                        states={['player', 'creator']}
+                        currentState={ownerKind}
+                        onChange={(next) => setOwnerKind(next === 'creator' ? 'creator' : 'player')}
                       />
-                    </label>
-                    <button type="button" className="btn-fill-secondary" onClick={refreshBackfill}>
-                      {t('badges.admin.refreshBackfill', { defaultValue: 'Refresh backfill' })}
-                    </button>
+                    </div>
                   </>
                 )}
               </div>
@@ -1310,15 +1454,24 @@ const BadgeAdminPage = () => {
         {pageTab === 'jobs' && (
           <div className="badge-admin-page__stack">
             {jobs.length === 0 && <p className="badge-admin-page__empty">{t('badges.admin.noJobs', { defaultValue: 'No jobs yet.' })}</p>}
-            {jobs.map((job) => (
-              <div key={job.id} className="badge-admin-page__job">
-                <span>#{job.id} {job.scope}{jobDirtLabel(job)} {job.status}{job.phase ? ` · ${job.phase}` : ''}</span>
-                {job.id === trackedJob?.id && (job.status === 'running' || job.status === 'pending') && (
-                  <BackfillBars job={job} definitions={definitions} t={t} />
-                )}
-                {job.summary && <span>{job.summary}</span>}
-              </div>
-            ))}
+            {jobs.map((job) => {
+              const phase = jobPhaseLabel(job);
+              const detail = job.summary || job.error;
+              return (
+                <div key={job.id} className="badge-admin-page__job">
+                  <div className="badge-admin-page__job-head">
+                    <span className="badge-admin-page__job-id">#{job.id}</span>
+                    <span className="badge-admin-page__job-scope">{jobScopeLabel(job)}</span>
+                    {phase && <span className="badge-admin-page__job-phase">{phase}</span>}
+                    <span className={jobStatusClass(job.status)}>{job.status}</span>
+                  </div>
+                  {detail && <p className="badge-admin-page__job-summary">{detail}</p>}
+                  {job.id === trackedJob?.id && (job.status === 'running' || job.status === 'pending') && (
+                    <BackfillBars job={job} definitions={definitions} t={t} />
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

@@ -23,6 +23,8 @@
     "keyword": "側面",
     "on": "オン",
     "off": "オフ",
+    "player": "プレイヤー",
+    "creator": "クリエイター",
     "single": "単一地点",
     "split": "分割",
     "requestExportDefault": "デフォルト",

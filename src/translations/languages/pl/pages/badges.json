@@ -56,9 +56,34 @@
       "requestedTitle": "Żądane zachowanie",
       "requestedPlaceholder": "(Opisz odznakę tutaj.)",
       "outputTitle": "Co zwrócić",
-      "output": "Zwróć wyrażenie przyznawania do wklejenia w edytorze odznak. Krótkie uwagi dodawaj tylko, gdy trzeba też zmienić identity, grant albo krzywą. Nie wymyślaj funkcji, pól ani składni.",
+      "output": "Zwróć wyrażenie przyznawania do wklejenia w edytorze odznak. Gdy istnieje tani host z „Trzymaj tanio”, użyj go. Krótkie uwagi dodawaj tylko, gdy trzeba też zmienić identity, grant albo krzywą. Nie wymyślaj funkcji, pól ani składni.",
       "rulesTitle": "Zasady silnika",
-      "rules": "- Parser jest WYSIWYG: zapisane wyrażenie jest liczone tak, jak je napisano.\n- Język ma kształt JavaScriptu, ale to nie jest dowolny JavaScript. Komentarze liniowe i blokowe są dozwolone; moduły, przypisania i wnętrza obiektów nie.\n- Nie zagnieżdżaj `.filter` ani `.map` na tej samej liście, chyba że musisz. Użyj `maxCount` albo `maxGroup`.\n- `familyAt` to rodzina trudności w chwili wysłania passa, nie obecna trudność poziomu.\n- Zwróć `curve(...)`, `result(...)` albo liczbę."
+      "rules": "- Parser jest WYSIWYG: zapisane wyrażenie jest liczone tak, jak je napisano.\n- Język ma kształt JavaScriptu, ale to nie jest dowolny JavaScript. Komentarze liniowe i blokowe są dozwolone; moduły, przypisania i wnętrza obiektów nie.\n- Preferuj host (`difficulty`, `chase`, `maxCount`, `maxGroup`, `blocks`, `nth`, `lead`, `first`, `shared`) zamiast zagnieżdżonych `.filter` / `.map` / `.some` / `.every`.\n- Nie zagnieżdżaj `.filter` ani `.map` na tej samej liście, chyba że musisz. Użyj `maxCount` albo `maxGroup`.\n- Dla unikalnych poziomów podaj nazwę pola `\"identity\"`, nie `clear => clear.identity`.\n- `familyAt` to rodzina trudności w chwili wysłania passa, nie obecna trudność poziomu.\n- Zwróć `curve(...)`, `result(...)` albo liczbę.",
+      "cheapTitle": "Trzymaj tanio",
+      "cheapIntro": "Zagnieżdżone przejścia po `levels` i `clears` to zwykły powód, dla którego odznaka jest wolna. Preferuj host albo pomocnika w jednym przebiegu, potem owiń `curve` albo `result`. Wspominaj `levels` tylko, gdy odznaka naprawdę potrzebuje katalogu.",
+      "cheapPreferTitle": "Preferuj te kształty",
+      "cheapAvoidTitle": "Unikaj",
+      "cheapNotesTitle": "Uwagi silnika",
+      "cheap": {
+        "prefer": {
+          "difficulty": "<b>Procent jednej trudności:</b> <code>result(difficulty(\"U6\").total &gt;= 8 &amp;&amp; difficulty(\"U6\").ratio &gt;= 0.75 ? 1 : 0, difficulty(\"U6\").cleared, 0, difficulty(\"U6\").total)</code> — nie <code>levels.filter</code> plus <code>clears.some</code>.",
+          "reclears": "<b>Najwięcej ponownych przejść jednego poziomu:</b> <code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> — nie zagnieżdżaj <code>map</code> / <code>filter</code> na tej samej liście.",
+          "distinct": "<b>Unikalne poziomy:</b> <code>count(distinct(clears.filter(...), \"identity\"))</code> — podaj nazwę pola <code>\"identity\"</code>, nie <code>clear =&gt; clear.identity</code>.",
+          "chase": "<b>Najniższe nieprzeszedłe id poziomu:</b> <code>chase(\"Impossible\", \"Censored\")</code> — nie <code>min(levels.filter(level =&gt; !clears.some(...)))</code>.",
+          "blocks": "<b>Kompletne bloki id:</b> <code>blocks(10, \"Impossible\", \"Censored\")</code> — nie chodź sam po <code>levels</code>.",
+          "world": "<b>N-ty clearer, prowadzenie, world-first, wspólna celność:</b> <code>nth(100)</code>, <code>lead(level, \"accuracy\")</code>, <code>first(level)</code>, <code>shared()</code>. Filtrowanie <code>levels</code> pod <code>lead</code> / <code>first</code> jest w porządku; nie skanuj też <code>clears</code>.",
+          "sets": "<b>Paczki i nazwane zbiory:</b> <code>pack()</code>, <code>complete(\"end-to-end\")</code>, <code>inSet(clear.difficultyAt, \"planetary\")</code>, <code>prefix(\"planetary\")</code>, <code>maxGroup(mine, \"artistIds\", \"songId\")</code>."
+        },
+        "avoid": {
+          "completeScan": "Nie pisz <code>levels.filter(...).every(level =&gt; clears.some(clear =&gt; clear.levelId == level.levelId))</code>. To O(poziomy × przejścia). Użyj <code>difficulty(\"G10\")</code> albo innego hosta.",
+          "nested": "Nie zagnieżdżaj <code>.filter</code> / <code>.map</code> / <code>.some</code> na <code>clears</code>, żeby liczyć tę samą tożsamość. Użyj <code>maxCount</code> albo <code>distinct(..., \"identity\")</code>.",
+          "levels": "Nie wspominaj <code>levels</code>, chyba że odznaka potrzebuje katalogu (<code>lead</code>, <code>first</code> albo prawdziwy test per poziom). <code>levels</code> buduje wiersz dla każdego publicznego poziomu."
+        },
+        "notes": {
+          "familyAt": "<code>familyAt</code> to rodzina trudności w chwili wysłania passa. <code>family</code> to poziom teraz.",
+          "lower": "Kompilator potrafi obniżyć <code>difficulty</code>, <code>chase</code>, <code>maxCount</code>, <code>maxGroup</code> i <code>count(distinct(..., \"identity\"))</code> do jednego wspólnego przebiegu. Zagnieżdżone skrypty katalogu — nie."
+        }
+      }
     },
     "sections": {
       "lists": {
@@ -71,7 +96,7 @@
           },
           "levels": {
             "title": "Poziomy",
-            "desc": "Publiczne poziomy."
+            "desc": "Publiczne poziomy. Drogie w budowie; używaj tej listy tylko dla lead, first albo prawdziwego testu per poziom."
           },
           "mine": {
             "title": "Poziomy z kredytem lub przejściem",
@@ -454,8 +479,8 @@
           },
           "distinct": {
             "title": "Jeden na klucz",
-            "desc": "<code>distinct(list, item =&gt; item.identity)</code> zostawia pierwszy wiersz każdego klucza.",
-            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> zostawia jeden wiersz, gdy ten sam poziom przeszedłeś dwa razy."
+            "desc": "<code>distinct(list, \"identity\")</code> zostawia pierwszy wiersz każdego klucza. Podaj nazwę pola, nie strzałkę.",
+            "example": "<code>distinct(clears, \"identity\")</code> zostawia jeden wiersz, gdy ten sam poziom przeszedłeś dwa razy."
           },
           "sum": {
             "title": "Dodaj",
@@ -504,7 +529,7 @@
           }
         },
         "examples": {
-          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> liczy poziomy przejście przy 2.0× lub szybciej, po razie."
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), \"identity\"))</code></b> liczy poziomy przejście przy 2.0× lub szybciej, po razie."
         }
       },
       "curves": {
@@ -540,7 +565,7 @@
       },
       "functions": {
         "title": "Funkcje gospodarza",
-        "intro": "Czytają tego gracza, tego twórcę albo innych graczy.",
+        "intro": "Czytają tego gracza, tego twórcę albo innych graczy. Preferuj je zamiast zagnieżdżonych przejść po levels i clears.",
         "fields": {
           "difficulty": {
             "title": "Jedna trudność",
@@ -705,15 +730,15 @@
       },
       "backfill": {
         "title": "Uzupełnienie",
-        "intro": "Uzupełnienie decyduje, które istniejące przejścia kwalifikują się przy publikacji odznaki. Dodanie odznaki później używa tego samego zadania.",
+        "intro": "Uzupełnienie decyduje, które istniejące przejścia kwalifikują się przy publikacji odznaki. Domyślnie liczą się tylko nowe przejścia, więc zapis odznaki nie obchodzi wszystkich właścicieli.",
         "fields": {
           "now": {
             "title": "Wszystkie obecne przejścia",
-            "desc": "Ocenia każde obecne publiczne przejście."
+            "desc": "Ocenia każde obecne publiczne przejście. Zapis uruchamia to zadanie tylko, gdy zmienił się skrypt."
           },
           "forward": {
             "title": "Tylko nowe przejścia",
-            "desc": "Ignoruje passy utworzone przed publikacją."
+            "desc": "Domyślne. Ignoruje passy utworzone przed publikacją. Zapis nigdy nie startuje historycznego obchodu właścicieli."
           },
           "queue": {
             "title": "Tylko recenzje",
@@ -786,8 +811,11 @@
     "videoRequired": "Dodaj URL filmu przed zatwierdzeniem",
     "loadFailed": "Nie udało się wczytać odznak",
     "importCode": "Importuj kod",
+    "exportCode": "Eksportuj",
+    "exported": "Skopiowano wszystkie odznaki",
+    "exportFailed": "Nie udało się skopiować odznak",
     "importTitle": "Importuj odznaki",
-    "importHint": "Wklej konfigurację. Zestawy pasują po nazwie, odznaki po identyfikatorze. Paczki muszą już istnieć.",
+    "importHint": "Wklej eksport wszystkich odznak. Grupy i zestawy pasują po nazwie, odznaki po identyfikatorze. Paczki muszą już istnieć.",
     "loadRequested": "Wczytaj żądany zestaw",
     "requestedLoaded": "Wczytano żądany zestaw",
     "importAction": "Importuj",
@@ -816,7 +844,17 @@
     "backfillOwners": "Właściciele {{done}} / {{total}}",
     "backfillBadgesPlayer": "Odznaki dla {{name}} {{done}} / {{total}}",
     "backfillBadgesCreator": "Odznaki dla {{name}} {{done}} / {{total}}",
-    "startFrom": "Zacznij od nr:",
+    "startFrom": "ID gracza od:",
+    "ownerFrom": "ID gracza od:",
+    "ownerTo": "ID gracza do:",
+    "playerFrom": "ID gracza od:",
+    "playerTo": "ID gracza do:",
+    "creatorFrom": "ID twórcy od:",
+    "creatorTo": "ID twórcy do:",
+    "backfillScan": "Skanuj",
+    "backfillOwnerRange": "ID {{from}}–{{to}}",
+    "backfillPlayerRange": "Gracze {{from}}–{{to}}",
+    "backfillCreatorRange": "Twórcy {{from}}–{{to}}",
     "backfillReport": "Najwolniejsze odznaki",
     "backfillReportDownload": "Pobierz CSV",
     "backfillReportFailed": "Nie udało się pobrać raportu czasów",

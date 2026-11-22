@@ -16,6 +16,8 @@
     "v2": "v2",
     "on": "Wł.",
     "off": "Wył.",
+    "player": "Gracz",
+    "creator": "Twórca",
     "single": "Jeden punkt",
     "split": "Rozdziel",
     "requestExportDefault": "Domyślne",

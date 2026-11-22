@@ -56,9 +56,34 @@
       "requestedTitle": "Comportement demandé",
       "requestedPlaceholder": "(Décrivez le badge ici.)",
       "outputTitle": "Quoi renvoyer",
-      "output": "Renvoyez l'expression d'attribution à coller dans l'éditeur de badge. Ajoutez de courtes notes seulement si l'identité, l'attribution ou la courbe doivent aussi changer. N'inventez ni fonctions, ni champs, ni syntaxe.",
+      "output": "Renvoyez l'expression d'attribution à coller dans l'éditeur de badge. Utilisez un hôte peu coûteux de « Gardez-la légère » dès qu'il en existe un. Ajoutez de courtes notes seulement si l'identité, l'attribution ou la courbe doivent aussi changer. N'inventez ni fonctions, ni champs, ni syntaxe.",
       "rulesTitle": "Règles du moteur",
-      "rules": "- L'analyseur est WYSIWYG : l'expression enregistrée est évaluée telle quelle.\n- Le langage a une forme JavaScript, ce n'est pas du JavaScript arbitraire. Les commentaires de ligne et de bloc sont autorisés ; pas les modules, les affectations, ni les internes d'objets.\n- N'imbriquez `.filter` ou `.map` sur la même liste que si c'est indispensable. Utilisez `maxCount` ou `maxGroup`.\n- `familyAt` est la famille de difficulté au moment de l'envoi du pass, pas la difficulté actuelle du niveau.\n- Renvoyez `curve(...)`, `result(...)`, ou un nombre."
+      "rules": "- L'analyseur est WYSIWYG : l'expression enregistrée est évaluée telle quelle.\n- Le langage a une forme JavaScript, ce n'est pas du JavaScript arbitraire. Les commentaires de ligne et de bloc sont autorisés ; pas les modules, les affectations, ni les internes d'objets.\n- Préférez un hôte (`difficulty`, `chase`, `maxCount`, `maxGroup`, `blocks`, `nth`, `lead`, `first`, `shared`) aux `.filter` / `.map` / `.some` / `.every` imbriqués.\n- N'imbriquez `.filter` ou `.map` sur la même liste que si c'est indispensable. Utilisez `maxCount` ou `maxGroup`.\n- Pour des niveaux distincts, passez le nom de champ `\"identity\"`, pas `clear => clear.identity`.\n- `familyAt` est la famille de difficulté au moment de l'envoi du pass, pas la difficulté actuelle du niveau.\n- Renvoyez `curve(...)`, `result(...)`, ou un nombre.",
+      "cheapTitle": "Gardez-la légère",
+      "cheapIntro": "Les parcours imbriqués sur `levels` et `clears` sont la cause habituelle d'un badge lent. Préférez un hôte ou un helper en une passe, puis enveloppez `curve` ou `result`. Ne mentionnez `levels` que si le badge a vraiment besoin du catalogue.",
+      "cheapPreferTitle": "Préférez ces formes",
+      "cheapAvoidTitle": "À éviter",
+      "cheapNotesTitle": "Notes du moteur",
+      "cheap": {
+        "prefer": {
+          "difficulty": "<b>Pourcentage d'une difficulté :</b> <code>result(difficulty(\"U6\").total &gt;= 8 &amp;&amp; difficulty(\"U6\").ratio &gt;= 0.75 ? 1 : 0, difficulty(\"U6\").cleared, 0, difficulty(\"U6\").total)</code> — pas <code>levels.filter</code> plus <code>clears.some</code>.",
+          "reclears": "<b>Plus de reclears d'un niveau :</b> <code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> — pas un <code>map</code> / <code>filter</code> imbriqué sur la même liste.",
+          "distinct": "<b>Niveaux distincts :</b> <code>count(distinct(clears.filter(...), \"identity\"))</code> — passez le nom de champ <code>\"identity\"</code>, pas <code>clear =&gt; clear.identity</code>.",
+          "chase": "<b>Plus petit id de niveau non complété :</b> <code>chase(\"Impossible\", \"Censored\")</code> — pas <code>min(levels.filter(level =&gt; !clears.some(...)))</code>.",
+          "blocks": "<b>Blocs d'ids complets :</b> <code>blocks(10, \"Impossible\", \"Censored\")</code> — ne parcourez pas <code>levels</code> vous-même.",
+          "world": "<b>Nième clearer, tête, world-first, précision partagée :</b> <code>nth(100)</code>, <code>lead(level, \"accuracy\")</code>, <code>first(level)</code>, <code>shared()</code>. Filtrer <code>levels</code> pour <code>lead</code> / <code>first</code> est correct ; ne scannez pas aussi <code>clears</code>.",
+          "sets": "<b>Packs et ensembles nommés :</b> <code>pack()</code>, <code>complete(\"end-to-end\")</code>, <code>inSet(clear.difficultyAt, \"planetary\")</code>, <code>prefix(\"planetary\")</code>, <code>maxGroup(mine, \"artistIds\", \"songId\")</code>."
+        },
+        "avoid": {
+          "completeScan": "N'écrivez pas <code>levels.filter(...).every(level =&gt; clears.some(clear =&gt; clear.levelId == level.levelId))</code>. C'est O(niveaux × clears). Utilisez <code>difficulty(\"G10\")</code> ou un autre hôte.",
+          "nested": "N'imbriquez pas <code>.filter</code> / <code>.map</code> / <code>.some</code> sur <code>clears</code> pour compter la même identité. Utilisez <code>maxCount</code> ou <code>distinct(..., \"identity\")</code>.",
+          "levels": "Ne mentionnez <code>levels</code> que si le badge a besoin du catalogue (<code>lead</code>, <code>first</code>, ou un vrai test par niveau). <code>levels</code> construit une ligne pour chaque niveau public."
+        },
+        "notes": {
+          "familyAt": "<code>familyAt</code> est la famille de difficulté au moment de l'envoi du pass. <code>family</code> est le niveau maintenant.",
+          "lower": "Le compilateur peut abaisser <code>difficulty</code>, <code>chase</code>, <code>maxCount</code>, <code>maxGroup</code> et <code>count(distinct(..., \"identity\"))</code> en une passe partagée. Les scripts de catalogue imbriqués, non."
+        }
+      }
     },
     "sections": {
       "lists": {
@@ -71,7 +96,7 @@
           },
           "levels": {
             "title": "Niveaux",
-            "desc": "Niveaux publics."
+            "desc": "Niveaux publics. Coûteux à construire ; n'utilisez cette liste que pour lead, first, ou un vrai test par niveau."
           },
           "mine": {
             "title": "Niveaux crédités ou complétés",
@@ -454,8 +479,8 @@
           },
           "distinct": {
             "title": "Une par clé",
-            "desc": "<code>distinct(list, item =&gt; item.identity)</code> garde la première ligne de chaque clé.",
-            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> garde une ligne si le même niveau a été complété deux fois."
+            "desc": "<code>distinct(list, \"identity\")</code> garde la première ligne de chaque clé. Passez le nom du champ, pas une flèche.",
+            "example": "<code>distinct(clears, \"identity\")</code> garde une ligne si le même niveau a été complété deux fois."
           },
           "sum": {
             "title": "Additionner",
@@ -504,7 +529,7 @@
           }
         },
         "examples": {
-          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> compte les niveaux complétés à 2.0× ou plus, une fois chacun."
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), \"identity\"))</code></b> compte les niveaux complétés à 2.0× ou plus, une fois chacun."
         }
       },
       "curves": {
@@ -540,7 +565,7 @@
       },
       "functions": {
         "title": "Fonctions hôte",
-        "intro": "Elles lisent ce joueur, ce créateur, ou d'autres joueurs.",
+        "intro": "Elles lisent ce joueur, ce créateur, ou d'autres joueurs. Préférez-les aux parcours imbriqués de levels et clears.",
         "fields": {
           "difficulty": {
             "title": "Une difficulté",
@@ -705,15 +730,15 @@
       },
       "backfill": {
         "title": "Rattrapage",
-        "intro": "Le rattrapage décide quelles complétions existantes sont éligibles à la publication du badge. Ajouter un badge plus tard utilise le même travail.",
+        "intro": "Le rattrapage décide quelles complétions existantes sont éligibles à la publication du badge. Par défaut, seules les nouvelles complétions comptent, donc enregistrer un badge ne parcourt pas tous les propriétaires.",
         "fields": {
           "now": {
             "title": "Toutes les complétions actuelles",
-            "desc": "Évalue chaque complétion publique actuelle."
+            "desc": "Évalue chaque complétion publique actuelle. L'enregistrement ne lance ce travail que si le script a changé."
           },
           "forward": {
             "title": "Nouvelles complétions seulement",
-            "desc": "Ignore les passes créés avant la publication."
+            "desc": "Par défaut. Ignore les passes créés avant la publication. L'enregistrement ne relance jamais un parcours historique."
           },
           "queue": {
             "title": "Relectures seulement",
@@ -786,8 +811,11 @@
     "videoRequired": "Ajoutez l'URL de la vidéo avant d'approuver",
     "loadFailed": "Impossible de charger les badges",
     "importCode": "Importer du code",
+    "exportCode": "Exporter",
+    "exported": "Tous les badges ont été copiés",
+    "exportFailed": "Impossible de copier les badges",
     "importTitle": "Importer des badges",
-    "importHint": "Collez une configuration. Les ensembles correspondent par nom et les badges par identifiant. Les packs doivent déjà exister.",
+    "importHint": "Collez un export de tous les badges. Les groupes et ensembles correspondent par nom, les badges par identifiant. Les packs doivent déjà exister.",
     "loadRequested": "Charger l'ensemble demandé",
     "requestedLoaded": "Ensemble demandé chargé",
     "importAction": "Importer",
@@ -816,7 +844,17 @@
     "backfillOwners": "Propriétaires {{done}} / {{total}}",
     "backfillBadgesPlayer": "Badges pour {{name}} {{done}} / {{total}}",
     "backfillBadgesCreator": "Badges pour {{name}} {{done}} / {{total}}",
-    "startFrom": "Commencer à partir de n° :",
+    "startFrom": "ID joueur de :",
+    "ownerFrom": "ID joueur de :",
+    "ownerTo": "ID joueur à :",
+    "playerFrom": "ID joueur de :",
+    "playerTo": "ID joueur à :",
+    "creatorFrom": "ID créateur de :",
+    "creatorTo": "ID créateur à :",
+    "backfillScan": "Parcourir",
+    "backfillOwnerRange": "IDs {{from}}–{{to}}",
+    "backfillPlayerRange": "Joueurs {{from}}–{{to}}",
+    "backfillCreatorRange": "Créateurs {{from}}–{{to}}",
     "backfillReport": "Badges les plus lents",
     "backfillReportDownload": "Télécharger le CSV",
     "backfillReportFailed": "Impossible de télécharger le rapport de durées",

@@ -56,9 +56,34 @@
       "requestedTitle": "所需行为",
       "requestedPlaceholder": "（在此描述徽章。）",
       "outputTitle": "应返回什么",
-      "output": "返回管理员可粘贴到徽章编辑器的授予表达式。仅在 identity、grant 或曲线也需要改动时附加短注。不要发明函数、字段或语法。",
+      "output": "返回管理员可粘贴到徽章编辑器的授予表达式。只要有对应宿主，就用「保持轻量」里的便宜写法。仅在 identity、grant 或曲线也需要改动时附加短注。不要发明函数、字段或语法。",
       "rulesTitle": "引擎规则",
-      "rules": "- 解析器是所见即所得：保存的表达式按原文求值。\n- 形态像 JavaScript，但不是任意 JavaScript。允许行注释和块注释；不允许模块、赋值和对象内部。\n- 不要对同一列表嵌套 `.filter` 或 `.map`，除非确实需要。改用 `maxCount` 或 `maxGroup`。\n- `familyAt` 是 pass 上传时的难度族，不是当前谱面难度。\n- 返回 `curve(...)`、`result(...)` 或一个数字。"
+      "rules": "- 解析器是所见即所得：保存的表达式按原文求值。\n- 形态像 JavaScript，但不是任意 JavaScript。允许行注释和块注释；不允许模块、赋值和对象内部。\n- 优先用宿主（`difficulty`、`chase`、`maxCount`、`maxGroup`、`blocks`、`nth`、`lead`、`first`、`shared`），不要嵌套 `.filter` / `.map` / `.some` / `.every`。\n- 不要对同一列表嵌套 `.filter` 或 `.map`，除非确实需要。改用 `maxCount` 或 `maxGroup`。\n- 去重谱面时传入字段名 `\"identity\"`，不要写 `clear => clear.identity`。\n- `familyAt` 是 pass 上传时的难度族，不是当前谱面难度。\n- 返回 `curve(...)`、`result(...)` 或一个数字。",
+      "cheapTitle": "保持轻量",
+      "cheapIntro": "在 `levels` 和 `clears` 上嵌套遍历，是徽章变慢的常见原因。优先用宿主或一次遍历的助手，再用 `curve` 或 `result` 包起来。只有真正需要目录时才写 `levels`。",
+      "cheapPreferTitle": "优先用这些写法",
+      "cheapAvoidTitle": "避免",
+      "cheapNotesTitle": "引擎说明",
+      "cheap": {
+        "prefer": {
+          "difficulty": "<b>某一难度的完成比例：</b> <code>result(difficulty(\"U6\").total &gt;= 8 &amp;&amp; difficulty(\"U6\").ratio &gt;= 0.75 ? 1 : 0, difficulty(\"U6\").cleared, 0, difficulty(\"U6\").total)</code> — 不要用 <code>levels.filter</code> 再加 <code>clears.some</code>。",
+          "reclears": "<b>同一谱面最多再通关次数：</b> <code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> — 不要对同一列表嵌套 <code>map</code> / <code>filter</code>。",
+          "distinct": "<b>去重谱面：</b> <code>count(distinct(clears.filter(...), \"identity\"))</code> — 传入字段名 <code>\"identity\"</code>，不要写 <code>clear =&gt; clear.identity</code>。",
+          "chase": "<b>尚未通关的最小谱面 id：</b> <code>chase(\"Impossible\", \"Censored\")</code> — 不要写 <code>min(levels.filter(level =&gt; !clears.some(...)))</code>。",
+          "blocks": "<b>完整的 id 区块：</b> <code>blocks(10, \"Impossible\", \"Censored\")</code> — 不要自己遍历 <code>levels</code>。",
+          "world": "<b>第 N 通关、领先、世界第一、共享精度：</b> <code>nth(100)</code>、<code>lead(level, \"accuracy\")</code>、<code>first(level)</code>、<code>shared()</code>。为 <code>lead</code> / <code>first</code> 过滤 <code>levels</code> 可以；不要再扫一遍 <code>clears</code>。",
+          "sets": "<b>曲包和命名集合：</b> <code>pack()</code>、<code>complete(\"end-to-end\")</code>、<code>inSet(clear.difficultyAt, \"planetary\")</code>、<code>prefix(\"planetary\")</code>、<code>maxGroup(mine, \"artistIds\", \"songId\")</code>。"
+        },
+        "avoid": {
+          "completeScan": "不要写 <code>levels.filter(...).every(level =&gt; clears.some(clear =&gt; clear.levelId == level.levelId))</code>。复杂度是谱面×通关。改用 <code>difficulty(\"G10\")</code> 或其他宿主。",
+          "nested": "不要为了按同一 identity 计数，对 <code>clears</code> 嵌套 <code>.filter</code> / <code>.map</code> / <code>.some</code>。改用 <code>maxCount</code> 或 <code>distinct(..., \"identity\")</code>。",
+          "levels": "只有徽章需要目录时（<code>lead</code>、<code>first</code>，或真正的逐谱面判断）才写 <code>levels</code>。<code>levels</code> 会为每张公开谱面建一行。"
+        },
+        "notes": {
+          "familyAt": "<code>familyAt</code> 是 pass 上传时的难度族。<code>family</code> 是现在的谱面。",
+          "lower": "编译器可以把 <code>difficulty</code>、<code>chase</code>、<code>maxCount</code>、<code>maxGroup</code> 和 <code>count(distinct(..., \"identity\"))</code> 降成一次共享遍历。嵌套的目录脚本不能。"
+        }
+      }
     },
     "sections": {
       "lists": {
@@ -71,7 +96,7 @@
           },
           "levels": {
             "title": "谱面",
-            "desc": "公开谱面。"
+            "desc": "公开谱面。构建成本高；只在 lead、first，或真正的逐谱面判断时用这个列表。"
           },
           "mine": {
             "title": "署名或已通关的谱面",
@@ -454,8 +479,8 @@
           },
           "distinct": {
             "title": "每个键一次",
-            "desc": "<code>distinct(list, item =&gt; item.identity)</code> 保留每个键的第一行。",
-            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> 在同一谱面通关两次时仍只留一行。"
+            "desc": "<code>distinct(list, \"identity\")</code> 保留每个键的第一行。传入字段名，不要写箭头函数。",
+            "example": "<code>distinct(clears, \"identity\")</code> 在同一谱面通关两次时仍只留一行。"
           },
           "sum": {
             "title": "相加",
@@ -504,7 +529,7 @@
           }
         },
         "examples": {
-          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> 统计以 2.0× 或更快通关的谱面，每张只计一次。"
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), \"identity\"))</code></b> 统计以 2.0× 或更快通关的谱面，每张只计一次。"
         }
       },
       "curves": {
@@ -540,7 +565,7 @@
       },
       "functions": {
         "title": "宿主函数",
-        "intro": "读取该玩家、该谱师，或其他玩家。",
+        "intro": "读取该玩家、该谱师，或其他玩家。优先用它们，不要嵌套遍历 levels 和 clears。",
         "fields": {
           "difficulty": {
             "title": "一个难度",
@@ -705,15 +730,15 @@
       },
       "backfill": {
         "title": "回填",
-        "intro": "回填决定徽章发布时哪些已有通关符合条件。之后添加徽章使用同一任务。",
+        "intro": "回填决定徽章发布时哪些已有通关符合条件。默认只计新通关，因此保存徽章不会遍历所有拥有者。",
         "fields": {
           "now": {
             "title": "当前全部通关",
-            "desc": "评估当前每一次公开通关。"
+            "desc": "评估当前每一次公开通关。仅当数值脚本变化时，保存才会启动该任务。"
           },
           "forward": {
             "title": "仅新通关",
-            "desc": "忽略发布前创建的 pass。"
+            "desc": "默认。忽略发布前创建的 pass。保存绝不会启动历史拥有者遍历。"
           },
           "queue": {
             "title": "仅审核",
@@ -786,8 +811,11 @@
     "videoRequired": "批准前请添加视频 URL",
     "loadFailed": "无法加载徽章",
     "importCode": "导入代码",
+    "exportCode": "导出",
+    "exported": "已复制全部徽章",
+    "exportFailed": "无法复制徽章",
     "importTitle": "导入徽章",
-    "importHint": "粘贴一份配置。集合按名称匹配，徽章按标识匹配。曲包必须已经存在。",
+    "importHint": "粘贴全部徽章的导出。分组和集合按名称匹配，徽章按标识匹配。曲包必须已经存在。",
     "loadRequested": "加载指定集合",
     "requestedLoaded": "已加载指定集合",
     "importAction": "导入",
@@ -816,7 +844,17 @@
     "backfillOwners": "所有者 {{done}} / {{total}}",
     "backfillBadgesPlayer": "{{name}} 的徽章 {{done}} / {{total}}",
     "backfillBadgesCreator": "{{name}} 的徽章 {{done}} / {{total}}",
-    "startFrom": "起始编号：",
+    "startFrom": "玩家 ID 起：",
+    "ownerFrom": "玩家 ID 起：",
+    "ownerTo": "玩家 ID 止：",
+    "playerFrom": "玩家 ID 起：",
+    "playerTo": "玩家 ID 止：",
+    "creatorFrom": "作者 ID 起：",
+    "creatorTo": "作者 ID 止：",
+    "backfillScan": "扫描",
+    "backfillOwnerRange": "ID {{from}}–{{to}}",
+    "backfillPlayerRange": "玩家 {{from}}–{{to}}",
+    "backfillCreatorRange": "作者 {{from}}–{{to}}",
     "backfillReport": "最慢的徽章",
     "backfillReportDownload": "下载 CSV",
     "backfillReportFailed": "无法下载耗时报告",
