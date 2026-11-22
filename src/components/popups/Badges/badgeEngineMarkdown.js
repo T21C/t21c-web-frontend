@@ -1,3 +1,5 @@
+import { BADGE_CHEAP_AVOID, BADGE_CHEAP_NOTES, BADGE_CHEAP_PREFER } from './badgeHelpSections';
+
 function decodeHelpEntities(value) {
   return String(value ?? '')
     .replace(/&amp;/gi, '&')
@@ -34,9 +36,27 @@ export function buildBadgeEngineMarkdown(t, sections) {
   pushBlock(lines, helpTextToMarkdown(t('badges.help.agentBrief.output')));
   pushBlock(lines, `## ${t('badges.help.agentBrief.rulesTitle')}`);
   pushBlock(lines, helpTextToMarkdown(t('badges.help.agentBrief.rules')));
+  pushBlock(lines, `## ${t('badges.help.agentBrief.cheapTitle')}`);
+  pushBlock(lines, helpTextToMarkdown(t('badges.help.agentBrief.cheapIntro')));
+  pushBlock(lines, `**${t('badges.help.agentBrief.cheapPreferTitle')}**`);
+  for (const key of BADGE_CHEAP_PREFER) {
+    lines.push(`- ${helpTextToMarkdown(t(key))}`);
+  }
+  lines.push('');
+  pushBlock(lines, `**${t('badges.help.agentBrief.cheapAvoidTitle')}**`);
+  for (const key of BADGE_CHEAP_AVOID) {
+    lines.push(`- ${helpTextToMarkdown(t(key))}`);
+  }
+  lines.push('');
+  pushBlock(lines, `**${t('badges.help.agentBrief.cheapNotesTitle')}**`);
+  for (const key of BADGE_CHEAP_NOTES) {
+    lines.push(`- ${helpTextToMarkdown(t(key))}`);
+  }
+  lines.push('');
   pushBlock(lines, `## ${t('badges.help.subtitle')}`);
 
   for (const section of sections) {
+    if (section.id === 'cheap') continue;
     pushBlock(lines, `### ${t(section.titleKey)}`);
     if (section.introKey) pushBlock(lines, helpTextToMarkdown(t(section.introKey)));
     if (section.htmlKey) pushBlock(lines, helpTextToMarkdown(t(section.htmlKey)));

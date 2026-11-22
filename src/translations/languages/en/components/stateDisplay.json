@@ -23,6 +23,8 @@
     "keyword": "side",
     "on": "On",
     "off": "Off",
+    "player": "Player",
+    "creator": "Creator",
     "single": "Single point",
     "split": "Split",
     "requestExportDefault": "Default",

@@ -56,9 +56,34 @@
       "requestedTitle": "求めている挙動",
       "requestedPlaceholder": "（ここにバッジの説明を書く）",
       "outputTitle": "返すもの",
-      "output": "管理者がバッジ編集画面に貼れる付与式を返してください。identity・grant・curve も変える必要があるときだけ短い注記を付けます。関数・フィールド・構文は発明しないでください。",
+      "output": "管理者がバッジ編集画面に貼れる付与式を返してください。該当するホストがあれば「軽く保つ」の安いホストを使います。identity・grant・curve も変える必要があるときだけ短い注記を付けます。関数・フィールド・構文は発明しないでください。",
       "rulesTitle": "エンジンの規則",
-      "rules": "- パーサーは WYSIWYG です。保存した式がそのまま評価されます。\n- JavaScript の形ですが、任意の JavaScript ではありません。行・ブロックコメントは可。モジュール、代入、オブジェクト内部は不可です。\n- 同じリストへの `.filter` や `.map` の入れ子は必要なときだけにし、`maxCount` や `maxGroup` を使ってください。\n- `familyAt` はパス投稿時の難易度ファミリーであり、現在の譜面難易度ではありません。\n- `curve(...)`、`result(...)`、または数値を返してください。"
+      "rules": "- パーサーは WYSIWYG です。保存した式がそのまま評価されます。\n- JavaScript の形ですが、任意の JavaScript ではありません。行・ブロックコメントは可。モジュール、代入、オブジェクト内部は不可です。\n- 入れ子の `.filter` / `.map` / `.some` / `.every` よりホスト（`difficulty`、`chase`、`maxCount`、`maxGroup`、`blocks`、`nth`、`lead`、`first`、`shared`）を使ってください。\n- 同じリストへの `.filter` や `.map` の入れ子は必要なときだけにし、`maxCount` や `maxGroup` を使ってください。\n- 重複しない譜面は `clear => clear.identity` ではなくフィールド名 `\"identity\"` を渡してください。\n- `familyAt` はパス投稿時の難易度ファミリーであり、現在の譜面難易度ではありません。\n- `curve(...)`、`result(...)`、または数値を返してください。",
+      "cheapTitle": "軽く保つ",
+      "cheapIntro": "`levels` と `clears` の入れ子走査がバッジが遅くなる典型原因です。ホストか一回のヘルパーを使い、`curve` か `result` で包みます。カタログが本当に必要なときだけ `levels` に触れてください。",
+      "cheapPreferTitle": "この形を使う",
+      "cheapAvoidTitle": "避ける",
+      "cheapNotesTitle": "エンジンの注記",
+      "cheap": {
+        "prefer": {
+          "difficulty": "<b>1 つの難易度の割合:</b> <code>result(difficulty(\"U6\").total &gt;= 8 &amp;&amp; difficulty(\"U6\").ratio &gt;= 0.75 ? 1 : 0, difficulty(\"U6\").cleared, 0, difficulty(\"U6\").total)</code> — <code>levels.filter</code> と <code>clears.some</code> ではありません。",
+          "reclears": "<b>1 譜面の最多再クリア:</b> <code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> — 同じリストへの入れ子 <code>map</code> / <code>filter</code> ではありません。",
+          "distinct": "<b>重複しない譜面:</b> <code>count(distinct(clears.filter(...), \"identity\"))</code> — アロー <code>clear =&gt; clear.identity</code> ではなくフィールド名 <code>\"identity\"</code> を渡します。",
+          "chase": "<b>未クリアの最小譜面 id:</b> <code>chase(\"Impossible\", \"Censored\")</code> — <code>min(levels.filter(level =&gt; !clears.some(...)))</code> ではありません。",
+          "blocks": "<b>完了した id ブロック:</b> <code>blocks(10, \"Impossible\", \"Censored\")</code> — <code>levels</code> を自分で走査しないでください。",
+          "world": "<b>N 番目クリア、首位、ワールドファースト、共有精度:</b> <code>nth(100)</code>、<code>lead(level, \"accuracy\")</code>、<code>first(level)</code>、<code>shared()</code>。<code>lead</code> / <code>first</code> のために <code>levels</code> を絞るのはよく、<code>clears</code> を重ねて走査しないでください。",
+          "sets": "<b>パックと名前付きセット:</b> <code>pack()</code>、<code>complete(\"end-to-end\")</code>、<code>inSet(clear.difficultyAt, \"planetary\")</code>、<code>prefix(\"planetary\")</code>、<code>maxGroup(mine, \"artistIds\", \"songId\")</code>。"
+        },
+        "avoid": {
+          "completeScan": "<code>levels.filter(...).every(level =&gt; clears.some(clear =&gt; clear.levelId == level.levelId))</code> は書かないでください。譜面×クリアに比例します。<code>difficulty(\"G10\")</code> か別ホストを使います。",
+          "nested": "同じ identity を数えるために <code>clears</code> へ <code>.filter</code> / <code>.map</code> / <code>.some</code> を入れ子にしないでください。<code>maxCount</code> か <code>distinct(..., \"identity\")</code> を使います。",
+          "levels": "カタログが必要なとき（<code>lead</code>、<code>first</code>、または譜面ごとの判定）だけ <code>levels</code> に触れてください。<code>levels</code> は公開譜面ごとに行を作ります。"
+        },
+        "notes": {
+          "familyAt": "<code>familyAt</code> はパス投稿時の難易度ファミリーです。<code>family</code> は今の譜面です。",
+          "lower": "コンパイラは <code>difficulty</code>、<code>chase</code>、<code>maxCount</code>、<code>maxGroup</code>、<code>count(distinct(..., \"identity\"))</code> を共有の 1 パスに下げられます。入れ子のカタログスクリプトはできません。"
+        }
+      }
     },
     "sections": {
       "lists": {
@@ -71,7 +96,7 @@
           },
           "levels": {
             "title": "譜面",
-            "desc": "公開譜面です。"
+            "desc": "公開譜面です。構築コストが高いので、lead、first、または譜面ごとの判定が必要なときだけ使ってください。"
           },
           "mine": {
             "title": "クレジットまたはクリアした譜面",
@@ -454,8 +479,8 @@
           },
           "distinct": {
             "title": "キーごとに 1 件",
-            "desc": "<code>distinct(list, item =&gt; item.identity)</code> は各キーの最初の行を残します。",
-            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> は同じ譜面を 2 回クリアしても 1 行です。"
+            "desc": "<code>distinct(list, \"identity\")</code> は各キーの最初の行を残します。アローではなくフィールド名を渡してください。",
+            "example": "<code>distinct(clears, \"identity\")</code> は同じ譜面を 2 回クリアしても 1 行です。"
           },
           "sum": {
             "title": "合計",
@@ -504,7 +529,7 @@
           }
         },
         "examples": {
-          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> は 2.0× 以上でクリアした譜面を、それぞれ 1 回ずつ数えます。"
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), \"identity\"))</code></b> は 2.0× 以上でクリアした譜面を、それぞれ 1 回ずつ数えます。"
         }
       },
       "curves": {
@@ -540,7 +565,7 @@
       },
       "functions": {
         "title": "ホスト関数",
-        "intro": "このプレイヤー、このクリエイター、または他のプレイヤーを読みます。",
+        "intro": "このプレイヤー、このクリエイター、または他のプレイヤーを読みます。levels と clears の入れ子走査よりこちらを使ってください。",
         "fields": {
           "difficulty": {
             "title": "1 つの難易度",
@@ -561,6 +586,11 @@
             "title": "ID ブロック",
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> はその大きさの完了した ID ブロック数を返し、それらの難易度は飛ばします。",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> は ID 1–10 のほかの譜面がすべてクリアされていれば 1 です。最初の未完了ブロックで止まります。"
+          },
+          "chase": {
+            "title": "未クリアの最小 ID",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> はそれらの難易度を飛ばし、残っている最小譜面 ID をクリアすると 1 を与え、次の未クリア ID を保存します。",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> は入れ子の levels/clears 走査の代わりです。credit は次の未クリア ID です。"
           },
           "prefix": {
             "title": "先頭の集合",
@@ -700,15 +730,15 @@
       },
       "backfill": {
         "title": "バックフィル",
-        "intro": "バックフィルは、バッジ公開時に既存のどのクリアが対象かを決めます。後からバッジを追加しても同じジョブです。",
+        "intro": "バックフィルは、バッジ公開時に既存のどのクリアが対象かを決めます。既定は新しいクリアのみなので、保存しても全オーナーを走査しません。",
         "fields": {
           "now": {
             "title": "現在のすべてのクリア",
-            "desc": "現在のすべての公開クリアを評価します。"
+            "desc": "現在のすべての公開クリアを評価します。保存時のジョブは値スクリプトが変わったときだけです。"
           },
           "forward": {
             "title": "新しいクリアのみ",
-            "desc": "公開前に作られたパスは無視します。"
+            "desc": "既定。公開前に作られたパスは無視します。保存では履歴オーナー走査を始めません。"
           },
           "queue": {
             "title": "審査のみ",
@@ -781,8 +811,11 @@
     "videoRequired": "承認する前に動画 URL を追加してください",
     "loadFailed": "バッジを読み込めませんでした",
     "importCode": "コードを取り込む",
+    "exportCode": "書き出す",
+    "exported": "すべてのバッジをコピーしました",
+    "exportFailed": "バッジをコピーできませんでした",
     "importTitle": "バッジを取り込む",
-    "importHint": "設定を貼り付けます。セットは名前、バッジはスラッグで一致します。パックは既に存在する必要があります。",
+    "importHint": "全バッジの書き出しを貼り付けます。グループとセットは名前、バッジはスラッグで一致します。パックは既に存在する必要があります。",
     "loadRequested": "指定セットを読み込む",
     "requestedLoaded": "指定セットを読み込みました",
     "importAction": "取り込む",
@@ -811,7 +844,17 @@
     "backfillOwners": "所有者 {{done}} / {{total}}",
     "backfillBadgesPlayer": "{{name}} のバッジ {{done}} / {{total}}",
     "backfillBadgesCreator": "{{name}} のバッジ {{done}} / {{total}}",
-    "startFrom": "開始番号:",
+    "startFrom": "プレイヤーID から:",
+    "ownerFrom": "プレイヤーID から:",
+    "ownerTo": "プレイヤーID まで:",
+    "playerFrom": "プレイヤーID から:",
+    "playerTo": "プレイヤーID まで:",
+    "creatorFrom": "クリエイターID から:",
+    "creatorTo": "クリエイターID まで:",
+    "backfillScan": "対象",
+    "backfillOwnerRange": "ID {{from}}–{{to}}",
+    "backfillPlayerRange": "プレイヤー {{from}}–{{to}}",
+    "backfillCreatorRange": "クリエイター {{from}}–{{to}}",
     "backfillReport": "遅いバッジ",
     "backfillReportDownload": "CSV をダウンロード",
     "backfillReportFailed": "所要時間レポートをダウンロードできませんでした",

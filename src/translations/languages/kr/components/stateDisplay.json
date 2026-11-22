@@ -21,6 +21,8 @@
     "keyword": "side",
     "on": "켜기",
     "off": "끄기",
+    "player": "플레이어",
+    "creator": "크리에이터",
     "single": "단일 지점",
     "split": "분리",
     "requestExportDefault": "기본",

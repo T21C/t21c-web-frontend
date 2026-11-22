@@ -7,7 +7,35 @@ const field = (section, token, example = false) => ({
 
 const fields = (section, tokens, example = false) => tokens.map((token) => field(section, token, example));
 
+export const BADGE_CHEAP_PREFER = [
+  'badges.help.agentBrief.cheap.prefer.difficulty',
+  'badges.help.agentBrief.cheap.prefer.reclears',
+  'badges.help.agentBrief.cheap.prefer.distinct',
+  'badges.help.agentBrief.cheap.prefer.chase',
+  'badges.help.agentBrief.cheap.prefer.blocks',
+  'badges.help.agentBrief.cheap.prefer.world',
+  'badges.help.agentBrief.cheap.prefer.sets',
+];
+
+export const BADGE_CHEAP_AVOID = [
+  'badges.help.agentBrief.cheap.avoid.completeScan',
+  'badges.help.agentBrief.cheap.avoid.nested',
+  'badges.help.agentBrief.cheap.avoid.levels',
+];
+
+export const BADGE_CHEAP_NOTES = [
+  'badges.help.agentBrief.cheap.notes.familyAt',
+  'badges.help.agentBrief.cheap.notes.lower',
+];
+
 export const BADGE_HELP_SECTIONS = [
+  {
+    id: 'cheap',
+    titleKey: 'badges.help.agentBrief.cheapTitle',
+    introKey: 'badges.help.agentBrief.cheapIntro',
+    examples: BADGE_CHEAP_PREFER,
+    bullets: [...BADGE_CHEAP_AVOID, ...BADGE_CHEAP_NOTES],
+  },
   {
     id: 'lists',
     titleKey: 'badges.help.sections.lists.title',
@@ -95,7 +123,7 @@ export const BADGE_HELP_SECTIONS = [
     introKey: 'badges.help.sections.functions.intro',
     fields: fields('functions', [
       'difficulty', 'sequence', 'consecutive', 'blocks', 'prefix', 'gap', 'pack',
-      'complete', 'nth', 'lead', 'first', 'shared', 'inSet', 'maxGroup',
+      'complete', 'nth', 'lead', 'first', 'shared', 'inSet', 'maxGroup', 'chase',
     ], true),
   },
   {

@@ -55,6 +55,13 @@
   justify-content: flex-end;
 }
 
+.badge-admin-page .badge-admin-page__io {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
+}
+
 .badge-admin-page .badge-admin-page__backfill-bars,
 .badge-admin-page .badge-admin-page__backfill-row,
 .badge-admin-page .badge-admin-page__backfill-stats,
@@ -89,6 +96,18 @@
   line-height: 1.3;
 }
 
+.badge-admin-page .badge-admin-page__backfill-title {
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge-admin-page .badge-admin-page__backfill-owners {
+  color: var(--color-gray-2);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
 .badge-admin-page .badge-admin-page__backfill-name {
   color: var(--color-white);
 }
@@ -97,17 +116,39 @@
   color: var(--color-gray-2);
 }
 
+.badge-admin-page .badge-admin-page__start {
+  min-width: 15rem;
+  justify-content: flex-end;
+}
+
+.badge-admin-page .badge-admin-page__range,
+.badge-admin-page .badge-admin-page__refresh,
 .badge-admin-page .badge-admin-page__start,
 .badge-admin-page .badge-admin-page__report {
   display: flex;
-  align-items: center;
   gap: 0.4rem;
+}
+
+
+.badge-admin-page .badge-admin-page__range,
+.badge-admin-page .badge-admin-page__refresh {
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.badge-admin-page .badge-admin-page__scan {
+  align-self: stretch;
+}
+
+.badge-admin-page .badge-admin-page__start,
+.badge-admin-page .badge-admin-page__report {
+  align-items: center;
   color: var(--color-gray-2);
   font-size: 0.85rem;
 }
 
 .badge-admin-page .badge-admin-page__start input {
-  width: 5.5rem;
+  width: 6rem;
 }
 
 .badge-admin-page .badge-admin-page__pulse {
@@ -446,8 +487,7 @@
 .badge-admin-page .badge-admin-page__card-meta,
 .badge-admin-page .badge-admin-page__card-flag,
 .badge-admin-page .badge-admin-page__card-script,
-.badge-admin-page .badge-admin-page__empty,
-.badge-admin-page .badge-admin-page__job {
+.badge-admin-page .badge-admin-page__empty {
   margin: 0;
   color: var(--color-gray-2);
 }
@@ -464,10 +504,80 @@
   -webkit-box-orient: vertical;
 }
 
-.badge-admin-page .badge-admin-page__stack,
+.badge-admin-page .badge-admin-page__stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.badge-admin-page .badge-admin-page__job,
+.badge-admin-page .badge-admin-page__job-head {
+  display: flex;
+  gap: 0.35rem 0.75rem;
+}
+
 .badge-admin-page .badge-admin-page__job {
   flex-direction: column;
   align-items: stretch;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  background: var(--color-white-t5);
+}
+
+.badge-admin-page .badge-admin-page__job-head {
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.badge-admin-page .badge-admin-page__job-id {
+  color: var(--color-white);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.badge-admin-page .badge-admin-page__job-scope,
+.badge-admin-page .badge-admin-page__job-phase,
+.badge-admin-page .badge-admin-page__job-summary {
+  margin: 0;
+  color: var(--color-gray-2);
+}
+
+.badge-admin-page .badge-admin-page__job-status {
+  margin-left: auto;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background: var(--color-white-t10);
+}
+
+.badge-admin-page .badge-admin-page__job-status--pending {
+  color: var(--btn-warning);
+  background: color-mix(in srgb, var(--btn-warning) 16%, transparent);
+}
+
+.badge-admin-page .badge-admin-page__job-status--running {
+  color: var(--btn-info);
+  background: color-mix(in srgb, var(--btn-info) 16%, transparent);
+}
+
+.badge-admin-page .badge-admin-page__job-status--done {
+  color: var(--btn-success);
+  background: color-mix(in srgb, var(--btn-success) 16%, transparent);
+}
+
+.badge-admin-page .badge-admin-page__job-status--failed {
+  color: var(--btn-danger);
+  background: color-mix(in srgb, var(--btn-danger) 16%, transparent);
+}
+
+.badge-admin-page .badge-admin-page__job-status--cancelled {
+  color: var(--color-gray-3);
+  background: var(--color-white-t10);
+}
+
+.badge-admin-page .badge-admin-page__job-summary {
+  font-size: 0.9rem;
 }
 
 .badge-admin-page .badge-admin-page__review {

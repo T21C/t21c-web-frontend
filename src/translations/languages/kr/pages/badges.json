@@ -56,9 +56,34 @@
       "requestedTitle": "원하는 동작",
       "requestedPlaceholder": "(여기에 배지를 설명하세요.)",
       "outputTitle": "반환할 것",
-      "output": "관리자가 배지 편집기에 붙여 넣을 부여 식을 반환하세요. identity, grant, curve도 바꿔야 할 때만 짧은 메모를 덧붙이세요. 함수, 필드, 문법을 만들지 마세요.",
+      "output": "관리자가 배지 편집기에 붙여 넣을 부여 식을 반환하세요. 해당하는 호스트가 있으면 「가볍게 유지」의 싼 호스트를 쓰세요. identity, grant, curve도 바꿔야 할 때만 짧은 메모를 덧붙이세요. 함수, 필드, 문법을 만들지 마세요.",
       "rulesTitle": "엔진 규칙",
-      "rules": "- 파서는 WYSIWYG입니다. 저장한 식이 그대로 평가됩니다.\n- JavaScript 형태이지만 임의의 JavaScript는 아닙니다. 줄/블록 주석은 되고, 모듈, 대입, 객체 내부는 안 됩니다.\n- 같은 리스트에 `.filter`나 `.map`을 중첩하지 말고, 꼭 필요할 때만 쓰세요. `maxCount`나 `maxGroup`을 쓰세요.\n- `familyAt`는 패스 업로드 당시 난이도 계열이며, 현재 차트 난이도가 아닙니다.\n- `curve(...)`, `result(...)`, 또는 숫자를 반환하세요."
+      "rules": "- 파서는 WYSIWYG입니다. 저장한 식이 그대로 평가됩니다.\n- JavaScript 형태이지만 임의의 JavaScript는 아닙니다. 줄/블록 주석은 되고, 모듈, 대입, 객체 내부는 안 됩니다.\n- 중첩 `.filter` / `.map` / `.some` / `.every`보다 호스트(`difficulty`, `chase`, `maxCount`, `maxGroup`, `blocks`, `nth`, `lead`, `first`, `shared`)를 쓰세요.\n- 같은 리스트에 `.filter`나 `.map`을 중첩하지 말고, 꼭 필요할 때만 쓰세요. `maxCount`나 `maxGroup`을 쓰세요.\n- 서로 다른 차트는 화살표 `clear => clear.identity`가 아니라 필드 이름 `\"identity\"`를 넘기세요.\n- `familyAt`는 패스 업로드 당시 난이도 계열이며, 현재 차트 난이도가 아닙니다.\n- `curve(...)`, `result(...)`, 또는 숫자를 반환하세요.",
+      "cheapTitle": "가볍게 유지",
+      "cheapIntro": "`levels`와 `clears`를 중첩해 도는 것이 배지가 느려지는 흔한 원인입니다. 호스트나 한 번의 헬퍼를 쓴 뒤 `curve`나 `result`로 감싸세요. 카탈로그가 정말 필요할 때만 `levels`를 언급하세요.",
+      "cheapPreferTitle": "이 형태를 쓰세요",
+      "cheapAvoidTitle": "피하세요",
+      "cheapNotesTitle": "엔진 참고",
+      "cheap": {
+        "prefer": {
+          "difficulty": "<b>한 난이도의 비율:</b> <code>result(difficulty(\"U6\").total &gt;= 8 &amp;&amp; difficulty(\"U6\").ratio &gt;= 0.75 ? 1 : 0, difficulty(\"U6\").cleared, 0, difficulty(\"U6\").total)</code> — <code>levels.filter</code>와 <code>clears.some</code>이 아닙니다.",
+          "reclears": "<b>한 차트의 최다 재클리어:</b> <code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> — 같은 리스트에 중첩 <code>map</code> / <code>filter</code>를 쓰지 마세요.",
+          "distinct": "<b>서로 다른 차트:</b> <code>count(distinct(clears.filter(...), \"identity\"))</code> — 화살표 <code>clear =&gt; clear.identity</code>가 아니라 필드 이름 <code>\"identity\"</code>를 넘기세요.",
+          "chase": "<b>아직 안 깬 가장 낮은 차트 id:</b> <code>chase(\"Impossible\", \"Censored\")</code> — <code>min(levels.filter(level =&gt; !clears.some(...)))</code>이 아닙니다.",
+          "blocks": "<b>완성된 id 블록:</b> <code>blocks(10, \"Impossible\", \"Censored\")</code> — <code>levels</code>를 직접 순회하지 마세요.",
+          "world": "<b>N번째 클리어, 선두, 월드 퍼스트, 공유 정확도:</b> <code>nth(100)</code>, <code>lead(level, \"accuracy\")</code>, <code>first(level)</code>, <code>shared()</code>. <code>lead</code> / <code>first</code>를 위해 <code>levels</code>를 거르는 것은 괜찮고, <code>clears</code>를 다시 스캔하지는 마세요.",
+          "sets": "<b>팩과 이름 있는 세트:</b> <code>pack()</code>, <code>complete(\"end-to-end\")</code>, <code>inSet(clear.difficultyAt, \"planetary\")</code>, <code>prefix(\"planetary\")</code>, <code>maxGroup(mine, \"artistIds\", \"songId\")</code>."
+        },
+        "avoid": {
+          "completeScan": "<code>levels.filter(...).every(level =&gt; clears.some(clear =&gt; clear.levelId == level.levelId))</code>를 쓰지 마세요. 차트×클리어에 비례합니다. <code>difficulty(\"G10\")</code>나 다른 호스트를 쓰세요.",
+          "nested": "같은 identity를 세기 위해 <code>clears</code>에 <code>.filter</code> / <code>.map</code> / <code>.some</code>을 중첩하지 마세요. <code>maxCount</code>나 <code>distinct(..., \"identity\")</code>를 쓰세요.",
+          "levels": "카탈로그가 필요할 때(<code>lead</code>, <code>first</code>, 또는 차트별 검사)만 <code>levels</code>를 언급하세요. <code>levels</code>는 공개 차트마다 행을 만듭니다."
+        },
+        "notes": {
+          "familyAt": "<code>familyAt</code>는 패스 업로드 당시 난이도 계열입니다. <code>family</code>는 지금 차트입니다.",
+          "lower": "컴파일러는 <code>difficulty</code>, <code>chase</code>, <code>maxCount</code>, <code>maxGroup</code>, <code>count(distinct(..., \"identity\"))</code>를 공유 한 번 패스로 내릴 수 있습니다. 중첩 카탈로그 스크립트는 안 됩니다."
+        }
+      }
     },
     "sections": {
       "lists": {
@@ -71,7 +96,7 @@
           },
           "levels": {
             "title": "차트",
-            "desc": "공개 차트입니다."
+            "desc": "공개 차트입니다. 만들기 비싸니 lead, first, 또는 차트별 검사가 필요할 때만 이 목록을 쓰세요."
           },
           "mine": {
             "title": "크레딧되었거나 클리어한 차트",
@@ -454,8 +479,8 @@
           },
           "distinct": {
             "title": "키당 하나",
-            "desc": "<code>distinct(list, item =&gt; item.identity)</code>는 각 키의 첫 행을 남깁니다.",
-            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code>는 같은 차트를 두 번 클리어해도 한 행입니다."
+            "desc": "<code>distinct(list, \"identity\")</code>는 각 키의 첫 행을 남깁니다. 화살표가 아니라 필드 이름을 넘기세요.",
+            "example": "<code>distinct(clears, \"identity\")</code>는 같은 차트를 두 번 클리어해도 한 행입니다."
           },
           "sum": {
             "title": "더하기",
@@ -504,7 +529,7 @@
           }
         },
         "examples": {
-          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b>는 2.0× 이상으로 클리어한 차트를 각각 한 번씩 셉니다."
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), \"identity\"))</code></b>는 2.0× 이상으로 클리어한 차트를 각각 한 번씩 셉니다."
         }
       },
       "curves": {
@@ -540,7 +565,7 @@
       },
       "functions": {
         "title": "호스트 함수",
-        "intro": "이 플레이어, 이 크리에이터, 또는 다른 플레이어를 읽습니다.",
+        "intro": "이 플레이어, 이 크리에이터, 또는 다른 플레이어를 읽습니다. levels와 clears를 중첩해 도는 것보다 이것을 쓰세요.",
         "fields": {
           "difficulty": {
             "title": "한 난이도",
@@ -561,6 +586,11 @@
             "title": "ID 블록",
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code>는 그 크기의 완료된 ID 블록 수를 반환하고 해당 난이도는 건너뜁니다.",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code>는 ID 1–10의 다른 차트가 모두 클리어되면 1입니다. 첫 미완료 블록에서 멈춥니다."
+          },
+          "chase": {
+            "title": "가장 낮은 미클리어 ID",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code>는 해당 난이도를 건너뛰고, 남은 가장 낮은 차트 ID를 클리어하면 1을 주며, 다음 미클리어 ID를 저장합니다.",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code>는 중첩된 levels/clears 스캔을 대체합니다. credit는 다음 미클리어 ID입니다."
           },
           "prefix": {
             "title": "앞쪽 집합",
@@ -700,15 +730,15 @@
       },
       "backfill": {
         "title": "백필",
-        "intro": "백필은 배지 공개 때 어떤 기존 클리어가 대상인지 정합니다. 나중에 배지를 추가해도 같은 작업입니다.",
+        "intro": "백필은 배지 공개 때 어떤 기존 클리어가 대상인지 정합니다. 기본은 새 클리어만이라 저장해도 모든 소유자를 순회하지 않습니다.",
         "fields": {
           "now": {
             "title": "현재 모든 클리어",
-            "desc": "현재 모든 공개 클리어를 평가합니다."
+            "desc": "현재 모든 공개 클리어를 평가합니다. 저장 시 작업은 값 스크립트가 바뀔 때만 시작합니다."
           },
           "forward": {
             "title": "새 클리어만",
-            "desc": "공개 전에 만들어진 패스는 무시합니다."
+            "desc": "기본. 공개 전에 만들어진 패스는 무시합니다. 저장은 과거 소유자 순회를 시작하지 않습니다."
           },
           "queue": {
             "title": "심사만",
@@ -781,8 +811,11 @@
     "videoRequired": "승인하기 전에 영상 URL을 추가하세요",
     "loadFailed": "배지를 불러오지 못했습니다",
     "importCode": "코드 가져오기",
+    "exportCode": "내보내기",
+    "exported": "모든 배지를 복사했습니다",
+    "exportFailed": "배지를 복사하지 못했습니다",
     "importTitle": "배지 가져오기",
-    "importHint": "설정을 붙여넣으세요. 세트는 이름, 배지는 슬러그로 맞춥니다. 팩은 이미 있어야 합니다.",
+    "importHint": "전체 배지 내보내기를 붙여넣으세요. 그룹과 세트는 이름, 배지는 슬러그로 맞춥니다. 팩은 이미 있어야 합니다.",
     "loadRequested": "요청한 세트 불러오기",
     "requestedLoaded": "요청한 세트를 불러왔습니다",
     "importAction": "가져오기",
@@ -811,7 +844,17 @@
     "backfillOwners": "소유자 {{done}} / {{total}}",
     "backfillBadgesPlayer": "{{name}}의 배지 {{done}} / {{total}}",
     "backfillBadgesCreator": "{{name}}의 배지 {{done}} / {{total}}",
-    "startFrom": "시작 번호:",
+    "startFrom": "플레이어 ID 시작:",
+    "ownerFrom": "플레이어 ID 시작:",
+    "ownerTo": "플레이어 ID 끝:",
+    "playerFrom": "플레이어 ID 시작:",
+    "playerTo": "플레이어 ID 끝:",
+    "creatorFrom": "크리에이터 ID 시작:",
+    "creatorTo": "크리에이터 ID 끝:",
+    "backfillScan": "대상",
+    "backfillOwnerRange": "ID {{from}}–{{to}}",
+    "backfillPlayerRange": "플레이어 {{from}}–{{to}}",
+    "backfillCreatorRange": "크리에이터 {{from}}–{{to}}",
     "backfillReport": "가장 느린 배지",
     "backfillReportDownload": "CSV 다운로드",
     "backfillReportFailed": "소요 시간 보고서를 받지 못했습니다",

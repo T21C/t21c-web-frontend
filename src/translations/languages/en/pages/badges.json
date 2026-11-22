@@ -56,9 +56,34 @@
       "requestedTitle": "Requested behavior",
       "requestedPlaceholder": "(Describe the badge here.)",
       "outputTitle": "What to return",
-      "output": "Return the grant expression the admin can paste into the badge editor. Add short notes only if identity, grant, or curve also need to change. Do not invent functions, fields, or syntax.",
+      "output": "Return the grant expression the admin can paste into the badge editor. Use a cheap host from Keep it cheap whenever one exists. Add short notes only if identity, grant, or curve also need to change. Do not invent functions, fields, or syntax.",
       "rulesTitle": "Engine rules",
-      "rules": "- The parser is WYSIWYG: the saved expression is evaluated as written.\n- The language looks like JavaScript but is not arbitrary JavaScript. Line and block comments are allowed; modules, assignments, and object internals are not.\n- Do not nest `.filter` or `.map` over the same list unless you have to. Use `maxCount` or `maxGroup` instead.\n- `familyAt` is the difficulty family when the pass was uploaded, not the current chart difficulty.\n- Return `curve(...)`, `result(...)`, or a number."
+      "rules": "- The parser is WYSIWYG: the saved expression is evaluated as written.\n- The language looks like JavaScript but is not arbitrary JavaScript. Line and block comments are allowed; modules, assignments, and object internals are not.\n- Prefer a host (`difficulty`, `chase`, `maxCount`, `maxGroup`, `blocks`, `nth`, `lead`, `first`, `shared`) over nested `.filter` / `.map` / `.some` / `.every`.\n- Do not nest `.filter` or `.map` over the same list unless you have to. Use `maxCount` or `maxGroup` instead.\n- For distinct charts pass the field name `\"identity\"`, not `clear => clear.identity`.\n- `familyAt` is the difficulty family when the pass was uploaded, not the current chart difficulty.\n- Return `curve(...)`, `result(...)`, or a number.",
+      "cheapTitle": "Keep it cheap",
+      "cheapIntro": "Nested walks over `levels` and `clears` are the usual way a badge gets slow. Prefer a host or a one-pass helper, then wrap `curve` or `result`. Mention `levels` only when the badge truly needs the catalog.",
+      "cheapPreferTitle": "Prefer these shapes",
+      "cheapAvoidTitle": "Avoid",
+      "cheapNotesTitle": "Engine notes",
+      "cheap": {
+        "prefer": {
+          "difficulty": "<b>Percent of one difficulty:</b> <code>result(difficulty(\"U6\").total &gt;= 8 &amp;&amp; difficulty(\"U6\").ratio &gt;= 0.75 ? 1 : 0, difficulty(\"U6\").cleared, 0, difficulty(\"U6\").total)</code> — not <code>levels.filter</code> plus <code>clears.some</code>.",
+          "reclears": "<b>Most reclears of one chart:</b> <code>maxCount(clears.filter(clear =&gt; clear.familyAt == \"G\" || clear.familyAt == \"U\"), \"identity\")</code> — not a nested <code>map</code> / <code>filter</code> on the same list.",
+          "distinct": "<b>Distinct charts:</b> <code>count(distinct(clears.filter(...), \"identity\"))</code> — pass the field name <code>\"identity\"</code>, not <code>clear =&gt; clear.identity</code>.",
+          "chase": "<b>Lowest uncleared chart id:</b> <code>chase(\"Impossible\", \"Censored\")</code> — not <code>min(levels.filter(level =&gt; !clears.some(...)))</code>.",
+          "blocks": "<b>Complete id blocks:</b> <code>blocks(10, \"Impossible\", \"Censored\")</code> — do not walk <code>levels</code> yourself.",
+          "world": "<b>Nth clearer, lead, world-first, shared accuracy:</b> <code>nth(100)</code>, <code>lead(level, \"accuracy\")</code>, <code>first(level)</code>, <code>shared()</code>. Filtering <code>levels</code> for <code>lead</code> / <code>first</code> is fine; do not also scan <code>clears</code>.",
+          "sets": "<b>Packs and named sets:</b> <code>pack()</code>, <code>complete(\"end-to-end\")</code>, <code>inSet(clear.difficultyAt, \"planetary\")</code>, <code>prefix(\"planetary\")</code>, <code>maxGroup(mine, \"artistIds\", \"songId\")</code>."
+        },
+        "avoid": {
+          "completeScan": "Do not write <code>levels.filter(...).every(level =&gt; clears.some(clear =&gt; clear.levelId == level.levelId))</code>. That is O(charts × clears). Use <code>difficulty(\"G10\")</code> or another host.",
+          "nested": "Do not nest <code>.filter</code> / <code>.map</code> / <code>.some</code> over <code>clears</code> to count the same identity. Use <code>maxCount</code> or <code>distinct(..., \"identity\")</code>.",
+          "levels": "Do not mention <code>levels</code> unless the badge needs the catalog (<code>lead</code>, <code>first</code>, or a true per-chart test). <code>levels</code> builds a row for every public chart."
+        },
+        "notes": {
+          "familyAt": "<code>familyAt</code> is the difficulty family when the pass was uploaded. <code>family</code> is the chart now.",
+          "lower": "The compiler can lower <code>difficulty</code>, <code>chase</code>, <code>maxCount</code>, <code>maxGroup</code>, and <code>count(distinct(..., \"identity\"))</code> to one shared pass. Nested catalog scripts cannot."
+        }
+      }
     },
     "sections": {
       "lists": {
@@ -71,7 +96,7 @@
           },
           "levels": {
             "title": "Charts",
-            "desc": "Public charts."
+            "desc": "Public charts. Expensive to build; only use this list for lead, first, or a true per-chart test."
           },
           "mine": {
             "title": "Credited or cleared charts",
@@ -454,8 +479,8 @@
           },
           "distinct": {
             "title": "One per key",
-            "desc": "<code>distinct(list, item =&gt; item.identity)</code> keeps the first row of each key.",
-            "example": "<code>distinct(clears, clear =&gt; clear.identity)</code> keeps one row when the same chart was cleared twice."
+            "desc": "<code>distinct(list, \"identity\")</code> keeps the first row of each key. Pass the field name, not an arrow.",
+            "example": "<code>distinct(clears, \"identity\")</code> keeps one row when the same chart was cleared twice."
           },
           "sum": {
             "title": "Add",
@@ -504,7 +529,7 @@
           }
         },
         "examples": {
-          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), clear =&gt; clear.identity))</code></b> counts charts cleared at 2.0× or faster, once each."
+          "distinct": "<b><code>count(distinct(clears.filter(clear =&gt; clear.speed &gt;= 2), \"identity\"))</code></b> counts charts cleared at 2.0× or faster, once each."
         }
       },
       "curves": {
@@ -540,7 +565,7 @@
       },
       "functions": {
         "title": "Host functions",
-        "intro": "These read this player, this creator, or other players.",
+        "intro": "These read this player, this creator, or other players. Prefer them over nested walks of levels and clears.",
         "fields": {
           "difficulty": {
             "title": "One difficulty",
@@ -561,6 +586,11 @@
             "title": "Id blocks",
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> returns how many complete id blocks of that size exist, skipping those difficulties.",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> is 1 when every other chart in ids 1–10 is cleared. It stops at the first unfinished block."
+          },
+          "chase": {
+            "title": "Lowest uncleared id",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> skips those difficulties, awards 1 when the lowest remaining chart id is cleared, and stores the next uncleared id.",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> replaces a nested levels/clears scan. Credit is the next uncleared id."
           },
           "prefix": {
             "title": "Leading set",
@@ -700,15 +730,15 @@
       },
       "backfill": {
         "title": "Backfill",
-        "intro": "Backfill decides which existing clears are eligible when the badge is published. Adding a badge later uses the same job.",
+        "intro": "Backfill decides which existing clears are eligible when the badge is published. The default is new clears only, so saving a badge does not walk every owner.",
         "fields": {
           "now": {
             "title": "All current clears",
-            "desc": "Evaluates every current public clear."
+            "desc": "Evaluates every current public clear. Saving still skips that job unless the value script changed."
           },
           "forward": {
             "title": "New clears only",
-            "desc": "Ignores passes created before publication."
+            "desc": "Default. Ignores passes created before publication. Saving never starts a historical owner walk."
           },
           "queue": {
             "title": "Reviews only",
@@ -781,8 +811,11 @@
     "videoRequired": "Add the video URL before approving",
     "loadFailed": "Could not load badges",
     "importCode": "Import code",
+    "exportCode": "Export",
+    "exported": "Copied all badges",
+    "exportFailed": "Could not copy badges",
     "importTitle": "Import badges",
-    "importHint": "Paste a configuration. Sets match by name and badges match by slug. Packs must already exist.",
+    "importHint": "Paste an export of all badges. Groups and sets match by name, badges match by slug. Packs must already exist.",
     "loadRequested": "Load requested set",
     "requestedLoaded": "Requested set loaded",
     "importAction": "Import",
@@ -811,7 +844,17 @@
     "backfillOwners": "Owners {{done}} / {{total}}",
     "backfillBadgesPlayer": "Badges for {{name}} {{done}} / {{total}}",
     "backfillBadgesCreator": "Badges for {{name}} {{done}} / {{total}}",
-    "startFrom": "Start from #:",
+    "startFrom": "From player ID:",
+    "ownerFrom": "From player ID:",
+    "ownerTo": "To player ID:",
+    "playerFrom": "From player ID:",
+    "playerTo": "To player ID:",
+    "creatorFrom": "From creator ID:",
+    "creatorTo": "To creator ID:",
+    "backfillScan": "Scan",
+    "backfillOwnerRange": "IDs {{from}}–{{to}}",
+    "backfillPlayerRange": "Players {{from}}–{{to}}",
+    "backfillCreatorRange": "Creators {{from}}–{{to}}",
     "backfillReport": "Slowest badges",
     "backfillReportDownload": "Download CSV",
     "backfillReportFailed": "Could not download the timing report",
