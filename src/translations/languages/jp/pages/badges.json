@@ -562,6 +562,11 @@
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> はその大きさの完了した ID ブロック数を返し、それらの難易度は飛ばします。",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> は ID 1–10 のほかの譜面がすべてクリアされていれば 1 です。最初の未完了ブロックで止まります。"
           },
+          "chase": {
+            "title": "未クリアの最小 ID",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> はそれらの難易度を飛ばし、残っている最小譜面 ID をクリアすると 1 を与え、次の未クリア ID を保存します。",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> は入れ子の levels/clears 走査の代わりです。credit は次の未クリア ID です。"
+          },
           "prefix": {
             "title": "先頭の集合",
             "desc": "<code>prefix(\"planetary\")</code> は名前付き難易度集合が先頭からどこまでクリアされたかを、投稿時の難易度で数えます。",

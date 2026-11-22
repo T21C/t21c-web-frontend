@@ -562,6 +562,11 @@
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> returns how many complete id blocks of that size exist, skipping those difficulties.",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> is 1 when every other chart in ids 1–10 is cleared. It stops at the first unfinished block."
           },
+          "chase": {
+            "title": "Lowest uncleared id",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> skips those difficulties, awards 1 when the lowest remaining chart id is cleared, and stores the next uncleared id.",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> replaces a nested levels/clears scan. Credit is the next uncleared id."
+          },
           "prefix": {
             "title": "Leading set",
             "desc": "<code>prefix(\"planetary\")</code> counts how far a named difficulty set is cleared from the start, using difficulty at upload.",

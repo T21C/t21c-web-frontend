@@ -562,6 +562,11 @@
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code>는 그 크기의 완료된 ID 블록 수를 반환하고 해당 난이도는 건너뜁니다.",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code>는 ID 1–10의 다른 차트가 모두 클리어되면 1입니다. 첫 미완료 블록에서 멈춥니다."
           },
+          "chase": {
+            "title": "가장 낮은 미클리어 ID",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code>는 해당 난이도를 건너뛰고, 남은 가장 낮은 차트 ID를 클리어하면 1을 주며, 다음 미클리어 ID를 저장합니다.",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code>는 중첩된 levels/clears 스캔을 대체합니다. credit는 다음 미클리어 ID입니다."
+          },
           "prefix": {
             "title": "앞쪽 집합",
             "desc": "<code>prefix(\"planetary\")</code>는 이름 있는 난이도 집합이 처음부터 어디까지 클리어됐는지, 업로드 시점 난이도로 셉니다.",

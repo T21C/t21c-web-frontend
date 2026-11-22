@@ -562,6 +562,11 @@
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> zwraca, ile pełnych bloków id tej wielkości istnieje, pomijając te trudności.",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> to 1, gdy każdy inny poziom w id 1–10 jest przejście. Zatrzymuje się na pierwszym niedokończonym bloku."
           },
+          "chase": {
+            "title": "Najniższe nieprzejście id",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> pomija te trudności, przyznaje 1 gdy najniższe pozostałe id jest przejście, i zapisuje następne nieprzejście id.",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> zastępuje zagnieżdżone skanowanie levels/clears. Credit to następne nieprzejście id."
+          },
           "prefix": {
             "title": "Zestaw od początku",
             "desc": "<code>prefix(\"planetary\")</code> liczy, jak daleko nazwany zestaw trudności jest przejście od początku, używając trudności przy wysłaniu.",

@@ -562,6 +562,11 @@
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> 返回该大小的完整 ID 块数量，并跳过这些难度。",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> 在 ID 1–10 中其余谱面都已通关时为 1。会在第一个未完成块处停止。"
           },
+          "chase": {
+            "title": "最低未通关 ID",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> 会跳过这些难度：通关最低剩余谱面 ID 时授予 1，并保存下一个未通关 ID。",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> 用来替代嵌套的 levels/clears 扫描。credit 是下一个未通关 ID。"
+          },
           "prefix": {
             "title": "前缀集合",
             "desc": "<code>prefix(\"planetary\")</code> 用上传时难度，统计命名难度集合从开头通关了多远。",

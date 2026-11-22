@@ -562,6 +562,11 @@
             "desc": "<code>blocks(10, \"Impossible\", \"Censored\")</code> renvoie combien de blocs d'ids complets de cette taille existent, en sautant ces difficultés.",
             "example": "<code>blocks(10, \"Impossible\", \"Censored\")</code> vaut 1 si tous les autres niveaux des ids 1–10 sont complétés. Il s'arrête au premier bloc inachevé."
           },
+          "chase": {
+            "title": "Plus petit id non complété",
+            "desc": "<code>chase(\"Impossible\", \"Censored\")</code> ignore ces difficultés, donne 1 quand le plus petit id restant est complété, et stocke le prochain id non complété.",
+            "example": "<code>chase(\"Impossible\", \"Censored\")</code> remplace un parcours imbriqué de levels/clears. Le crédit est le prochain id non complété."
+          },
           "prefix": {
             "title": "Ensemble de tête",
             "desc": "<code>prefix(\"planetary\")</code> compte jusqu'où un ensemble de difficultés nommé est complété depuis le début, avec la difficulté à l'envoi.",

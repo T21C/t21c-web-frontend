@@ -95,7 +95,7 @@ export const BADGE_HELP_SECTIONS = [
     introKey: 'badges.help.sections.functions.intro',
     fields: fields('functions', [
       'difficulty', 'sequence', 'consecutive', 'blocks', 'prefix', 'gap', 'pack',
-      'complete', 'nth', 'lead', 'first', 'shared', 'inSet', 'maxGroup',
+      'complete', 'nth', 'lead', 'first', 'shared', 'inSet', 'maxGroup', 'chase',
     ], true),
   },
   {
