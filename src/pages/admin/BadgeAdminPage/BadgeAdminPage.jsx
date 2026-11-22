@@ -286,7 +286,15 @@ function BadgeEditorPopup({
             </div>
             <p className={formulaState.ok ? 'badge-editor-popup__ok' : 'badge-editor-popup__err'}>
               {formulaState.ok
-                ? t('badges.admin.formulaOk', { defaultValue: 'Expression is valid' })
+                ? [
+                  t('badges.admin.formulaOk', { defaultValue: 'Expression is valid' }),
+                  formulaState.plan?.ops?.length
+                    ? t('badges.admin.formulaPlan', {
+                      defaultValue: 'Runs as {{ops}}',
+                      ops: formulaState.plan.ops.join(', '),
+                    })
+                    : null,
+                ].filter(Boolean).join(' · ')
                 : formulaState.error}
             </p>
             <div className="badge-editor-popup__chips">
@@ -417,6 +425,18 @@ function progressCount(progress, id) {
   if (!progress || typeof progress !== 'object') return 0;
   const value = progress[id] ?? progress[String(id)];
   return Number(value) || 0;
+}
+
+function jobDirtLabel(job) {
+  const dirt = job?.dirt;
+  if (job?.scope !== 'dirty' || !dirt || typeof dirt !== 'object') return '';
+  const parts = [];
+  if (dirt.players?.length) parts.push(`${dirt.players.length}p`);
+  if (dirt.creators?.length) parts.push(`${dirt.creators.length}c`);
+  if (dirt.levels?.length) parts.push(`${dirt.levels.length}lv`);
+  if (dirt.packs?.length) parts.push(`${dirt.packs.length}pk`);
+  if (dirt.catalog) parts.push('cat');
+  return parts.length ? ` ${parts.join(' ')}` : '';
 }
 
 function badgeBackfill(job, row) {
@@ -753,7 +773,9 @@ const BadgeAdminPage = () => {
     if (!editorOpen) return undefined;
     const handle = setTimeout(() => {
       api.post(routes.admin.badges.formula(), { expression: form.expression })
-        .then((res) => setFormulaState(res.data?.ok ? { ok: true, error: '' } : { ok: false, error: res.data?.error || 'Invalid expression' }))
+        .then((res) => setFormulaState(res.data?.ok
+          ? { ok: true, error: '', plan: res.data.plan || null }
+          : { ok: false, error: res.data?.error || 'Invalid expression' }))
         .catch(() => setFormulaState({ ok: false, error: t('badges.admin.saveFailed') }));
     }, 250);
     return () => clearTimeout(handle);
@@ -1290,7 +1312,7 @@ const BadgeAdminPage = () => {
             {jobs.length === 0 && <p className="badge-admin-page__empty">{t('badges.admin.noJobs', { defaultValue: 'No jobs yet.' })}</p>}
             {jobs.map((job) => (
               <div key={job.id} className="badge-admin-page__job">
-                <span>#{job.id} {job.scope} {job.status}{job.phase ? ` · ${job.phase}` : ''}</span>
+                <span>#{job.id} {job.scope}{jobDirtLabel(job)} {job.status}{job.phase ? ` · ${job.phase}` : ''}</span>
                 {job.id === trackedJob?.id && (job.status === 'running' || job.status === 'pending') && (
                   <BackfillBars job={job} definitions={definitions} t={t} />
                 )}
