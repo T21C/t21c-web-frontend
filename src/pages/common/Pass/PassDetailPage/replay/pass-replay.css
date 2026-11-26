@@ -1,40 +1,38 @@
 /* tuf-search: #PassReplay #autoSubmission */
-.pass-detail--replay .pass-detail-body {
-  flex-direction: column;
-}
-.pass-detail--replay .pass-detail-body > .info {
-  display: grid;
-  grid-template-columns: 1fr .75fr 1.25fr;
-  align-items: start;
-  gap: 1.5rem;
-  border-radius: 5px;
-}
-.pass-detail--replay .info-items {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-.pass-detail--replay .flags-container {
-  padding: .25rem 0;
-  border: 0;
-}
-.pass-detail--replay .judgements {
-  margin: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-.pass-replay {
+.pass-detail .pass-replay {
   --replay-accent: var(--color-purple-1);
-  color: var(--color-white);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1.4;
   min-width: 0;
+  min-height: 0;
+  color: var(--color-white);
 }
 .replay-heading, .replay-title-row, .replay-heading-actions {
   display: flex;
   align-items: center;
   gap: .75rem;
 }
-.replay-heading {
-  justify-content: space-between;
-  margin-bottom: .5rem;
+.pass-detail .replay-heading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 2;
+  margin: 0;
+  padding: .5rem .75rem;
+  pointer-events: none;
+}
+.replay-heading-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.pass-detail .replay-heading .replay-heading-actions,
+.pass-detail .replay-heading button {
+  pointer-events: auto;
 }
 .replay-heading h2 {
   margin: 0;
@@ -54,14 +52,25 @@
   border-radius: 3px;
   font-size: .75rem;
 }
+.pass-detail .replay-workspace,
+.pass-detail .replay-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
 .replay-workspace {
   position: relative;
   background: var(--color-white-t10);
   border-radius: 5px;
 }
 .replay-main {
-  min-width: 0;
   container-type: inline-size;
+}
+.pass-detail .replay-stage {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .replay-stage {
   /* Embed geometry contract: reserve the toolbar before the iframe exists. */
@@ -149,17 +158,10 @@
   background: #ffffff10;
   color: #fff;
 }
-@media (max-width: 900px) {
-  .pass-detail--replay .pass-detail-body > .info {
-    grid-template-columns: 1fr 1fr;
-  }
-  .pass-detail--replay .judgements {
-    grid-column: 1 / -1;
-  }
-}
-@media (max-width: 540px) {
-  .pass-detail--replay .pass-detail-body > .info {
-    display: flex;
-    gap: 1rem;
+@media (max-width: 1024px) {
+  .pass-detail .pass-replay {
+    order: -1;
+    flex: none;
+    width: 100%;
   }
 }

@@ -6,6 +6,8 @@
 import { parseCurationFamilyTier } from "./curationTypeFamilies";
 
 const PGU_REGEX = /^([PGUpgu])(\d{1,2})$/;
+/** Live labels are `GQ1` or `GQ1 (G5~G8)` / `UQ2 (U9~U12)`. Bare Q is not GQ/UQ. */
+const Q_DIFFICULTY_REGEX = /^(GQ|UQ)([0-4])(?:\s|\(|$)/i;
 
 /** 1-based n in 1..20 ➔ Q tier 0..4 (four difficulties per bucket). */
 export function pguNumberToQTier(n) {
@@ -23,6 +25,139 @@ function parsePguDifficultyName(name) {
   const n = parseInt(m[2], 10);
   if (!Number.isFinite(n) || n < 1 || n > 20) return null;
   return { letter, n };
+}
+
+/** @returns {{ letter: "G" | "U"; tier: number } | null} */
+function parseQDifficultyName(name) {
+  if (name == null || typeof name !== "string") return null;
+  const m = String(name).trim().match(Q_DIFFICULTY_REGEX);
+  if (!m) return null;
+  const letter = m[1][0].toUpperCase();
+  const tier = parseInt(m[2], 10);
+  if ((letter !== "G" && letter !== "U") || !Number.isFinite(tier)) return null;
+  return { letter, tier };
+}
+
+function emptyQTierState() {
+  return { tier: -1, wfCount: 0, maxNInTier: 0, diffId: null };
+}
+
+function applyRatedPguWf(state, tier, n, wfCount, diffIdKey) {
+  if (tier > state.tier) {
+    return { tier, wfCount, maxNInTier: n, diffId: diffIdKey };
+  }
+  if (tier === state.tier) {
+    const next = { ...state, wfCount: state.wfCount + wfCount };
+    if (n > state.maxNInTier) {
+      next.maxNInTier = n;
+      next.diffId = diffIdKey;
+    }
+    return next;
+  }
+  return state;
+}
+
+function applyUnratedQWf(state, tier, wfCount, diffIdKey) {
+  if (tier > state.tier) {
+    return { tier, wfCount, maxNInTier: 0, diffId: diffIdKey };
+  }
+  if (tier === state.tier) {
+    const next = { ...state, wfCount: state.wfCount + wfCount };
+    if (state.diffId == null) next.diffId = diffIdKey;
+    return next;
+  }
+  return state;
+}
+
+/**
+ * World's firsts rolled into GQ0–4 / UQ0–4.
+ * Rated G/U levels use the same four-rank buckets as {@link pguNumberToQTier}.
+ * A pass still on GQ/UQ counts toward that tier until the level is rated onto G/U,
+ * so the tier total does not jump when rating finishes.
+ *
+ * @param {Record<string, number> | object | null | undefined} worldsFirstByDifficulty
+ * @param {Record<string, { name?: string; id?: number | string }>} difficultyDict
+ */
+function rollupQTierWorldsFirsts(worldsFirstByDifficulty, difficultyDict) {
+  const dict = difficultyDict && typeof difficultyDict === "object" ? difficultyDict : {};
+  const wfs =
+    worldsFirstByDifficulty && typeof worldsFirstByDifficulty === "object"
+      ? worldsFirstByDifficulty
+      : {};
+
+  /** @type {Record<"G" | "U", Record<number, number | string>>} */
+  const qIdByTier = { G: {}, U: {} };
+  for (const d of Object.values(dict)) {
+    if (!d || typeof d !== "object") continue;
+    const parsed = parseQDifficultyName(d.name);
+    if (!parsed || d.id == null) continue;
+    if (qIdByTier[parsed.letter][parsed.tier] == null) {
+      qIdByTier[parsed.letter][parsed.tier] = d.id;
+    }
+  }
+
+  let gqState = emptyQTierState();
+  let uqState = emptyQTierState();
+  /** @type {Record<string, number>} */
+  const countsByQDifficultyId = {};
+
+  const addTierCount = (letter, tier, wfCount) => {
+    const qId = qIdByTier[letter]?.[tier];
+    if (qId == null) return;
+    const key = String(qId);
+    countsByQDifficultyId[key] = (countsByQDifficultyId[key] || 0) + wfCount;
+  };
+
+  for (const [diffIdKey, rawCount] of Object.entries(wfs)) {
+    const wfCount = Number(rawCount) || 0;
+    if (wfCount <= 0) continue;
+    const name = getDifficultyEntry(dict, diffIdKey)?.name;
+
+    const parsed = parsePguDifficultyName(name);
+    if (parsed && (parsed.letter === "G" || parsed.letter === "U")) {
+      const tier = pguNumberToQTier(parsed.n);
+      if (tier == null) continue;
+      addTierCount(parsed.letter, tier, wfCount);
+      const apply = (state) => applyRatedPguWf(state, tier, parsed.n, wfCount, diffIdKey);
+      if (parsed.letter === "G") gqState = apply(gqState);
+      else uqState = apply(uqState);
+      continue;
+    }
+
+    const qParsed = parseQDifficultyName(name);
+    if (!qParsed) continue;
+    addTierCount(qParsed.letter, qParsed.tier, wfCount);
+    const apply = (state) => applyUnratedQWf(state, qParsed.tier, wfCount, diffIdKey);
+    if (qParsed.letter === "G") gqState = apply(gqState);
+    else uqState = apply(uqState);
+  }
+
+  return { gqState, uqState, countsByQDifficultyId };
+}
+
+/**
+ * P/G/U cells keep unique-level clears. GQ/UQ cells show world's firsts on
+ * already-rated G/U levels in that tier, plus world's firsts still on the
+ * GQ/UQ difficulty while the level is being rated.
+ *
+ * @param {Record<string, number> | object | null | undefined} clearsByDifficulty
+ * @param {Record<string, number> | object | null | undefined} worldsFirstByDifficulty
+ * @param {Record<string, { name?: string; id?: number | string }>} difficultyDict
+ * @returns {Record<string, number>}
+ */
+export function profileDifficultyClearCounts(clearsByDifficulty, worldsFirstByDifficulty, difficultyDict) {
+  const clears =
+    clearsByDifficulty && typeof clearsByDifficulty === "object"
+      ? { ...clearsByDifficulty }
+      : {};
+  const { countsByQDifficultyId } = rollupQTierWorldsFirsts(
+    worldsFirstByDifficulty,
+    difficultyDict,
+  );
+  for (const [diffId, count] of Object.entries(countsByQDifficultyId)) {
+    if (count > 0) clears[diffId] = count;
+  }
+  return clears;
 }
 
 function getDifficultyEntry(difficultyDict, diffId) {
@@ -60,7 +195,8 @@ function emptyQSlot(key, label) {
  * Build player PGU + GQ/UQ icon slots from pre-aggregated maps rather than
  * the raw passes array. Moving this off the client-side passes list means
  * the profile page can paginate passes server-side without losing the
- * summary icons.
+ * summary icons. GQ/UQ badges count world's firsts on rated G/U levels in the
+ * top tier and world's firsts still on that GQ/UQ difficulty.
  *
  * @param {{
  *   clearsByDifficulty?: Record<string, number> | null;
@@ -74,9 +210,6 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
   const clears = aggregates?.clearsByDifficulty && typeof aggregates.clearsByDifficulty === "object"
     ? aggregates.clearsByDifficulty
     : {};
-  const wfs = aggregates?.worldsFirstByDifficulty && typeof aggregates.worldsFirstByDifficulty === "object"
-    ? aggregates.worldsFirstByDifficulty
-    : {};
 
   /** @type {Record<"P"|"G"|"U", { maxN: number; clearsAtMax: number; diffId: number | string | null }>} */
   const pguStats = {
@@ -84,8 +217,10 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
     G: { maxN: 0, clearsAtMax: 0, diffId: null },
     U: { maxN: 0, clearsAtMax: 0, diffId: null },
   };
-  let gqState = { tier: -1, wfCount: 0, maxNInTier: 0, diffId: null };
-  let uqState = { tier: -1, wfCount: 0, maxNInTier: 0, diffId: null };
+  const { gqState, uqState } = rollupQTierWorldsFirsts(
+    aggregates?.worldsFirstByDifficulty,
+    dict,
+  );
 
   for (const [diffIdKey, rawCount] of Object.entries(clears)) {
     const count = Number(rawCount) || 0;
@@ -103,36 +238,6 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
     } else if (n === st.maxN) {
       st.clearsAtMax += count;
     }
-  }
-
-  for (const [diffIdKey, rawCount] of Object.entries(wfs)) {
-    const wfCount = Number(rawCount) || 0;
-    if (wfCount <= 0) continue;
-    const name = getDifficultyEntry(dict, diffIdKey)?.name;
-    const parsed = parsePguDifficultyName(name);
-    if (!parsed) continue;
-
-    const { letter, n } = parsed;
-    const tier = pguNumberToQTier(n);
-    if (tier == null) continue;
-
-    const applyTo = (state) => {
-      if (tier > state.tier) {
-        return { tier, wfCount, maxNInTier: n, diffId: diffIdKey };
-      }
-      if (tier === state.tier) {
-        const next = { ...state, wfCount: state.wfCount + wfCount };
-        if (n > state.maxNInTier) {
-          next.maxNInTier = n;
-          next.diffId = diffIdKey;
-        }
-        return next;
-      }
-      return state;
-    };
-
-    if (letter === "G") gqState = applyTo(gqState);
-    else if (letter === "U") uqState = applyTo(uqState);
   }
 
   const pSlot =
@@ -180,10 +285,10 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
           key: "gq",
           letter: "GQ",
           diffId: gqState.diffId,
-          iconUrl: difficultyIconUrl(dict, Object.values(dict).filter((d) => d.name.startsWith(`GQ${gqState.tier}`))[0].id),
+          iconUrl: difficultyIconUrl(dict, Object.values(dict).find((d) => d?.name?.startsWith(`GQ${gqState.tier}`))?.id),
           count: String(gqState.tier),
           badge: gqState.wfCount,
-          title: `Top GQ tier from WF G clears: GQ${gqState.tier} (${gqState.wfCount} WF pass(es) in that tier)`,
+          title: `Top GQ tier from WF clears: GQ${gqState.tier} (${gqState.wfCount} WF pass(es) in that tier)`,
         }
       : emptyQSlot("gq", "GQ");
 
@@ -193,10 +298,10 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
           key: "uq",
           letter: "UQ",
           diffId: uqState.diffId,
-          iconUrl: difficultyIconUrl(dict, Object.values(dict).filter((d) => d.name.startsWith(`UQ${uqState.tier}`))[0].id),
+          iconUrl: difficultyIconUrl(dict, Object.values(dict).find((d) => d?.name?.startsWith(`UQ${uqState.tier}`))?.id),
           count: String(uqState.tier),
           badge: uqState.wfCount,
-          title: `Top UQ tier from WF U clears: UQ${uqState.tier} (${uqState.wfCount} WF pass(es) in that tier)`,
+          title: `Top UQ tier from WF clears: UQ${uqState.tier} (${uqState.wfCount} WF pass(es) in that tier)`,
         }
       : emptyQSlot("uq", "UQ");
 
