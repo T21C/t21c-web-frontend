@@ -34,7 +34,7 @@ import { SettingsSaveField } from "@/components/account/SettingsSaveField/Settin
 import { SettingsStellarIconField } from "@/components/account/SettingsSaveField/SettingsStellarIconField";
 import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
-import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
+import { buildPlayerIconSlots, profileDifficultyClearCounts } from "@/utils/profileIconSlots";
 import {
   mergeOptimisticAliasRows,
   normalizeProfileAliasNames,
@@ -174,6 +174,15 @@ const SettingsPlayerPage = () => {
 
   const clearsByDifficultyForHeader =
     playerData?.funFacts?.clearsByDifficultyNoDupes ?? playerData?.funFacts?.clearsByDifficulty;
+
+  const difficultyPanelClearsByDifficulty = useMemo(
+    () => profileDifficultyClearCounts(
+      clearsByDifficultyForHeader,
+      playerData?.funFacts?.worldsFirstByDifficulty,
+      difficultyDict || {},
+    ),
+    [clearsByDifficultyForHeader, difficultyDict, playerData?.funFacts?.worldsFirstByDifficulty],
+  );
 
   const iconSlots = useMemo(
     () =>
@@ -481,7 +490,7 @@ const SettingsPlayerPage = () => {
           iconSlots={iconSlots}
           aliasNames={previewAliasNames}
           playerDifficultyPanelDifficulties={difficulties}
-          playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
+          playerDifficultyPanelClearsByDifficulty={difficultyPanelClearsByDifficulty}
           avatarSubject={playerData}
           avatarFrame={playerData?.equippedAvatarFrame?.frame ?? null}
           stellarIconVariant={previewStellarVariant}
@@ -608,7 +617,7 @@ const SettingsPlayerPage = () => {
             iconSlots,
             aliasNames: previewAliasNames,
             playerDifficultyPanelDifficulties: difficulties,
-            playerDifficultyPanelClearsByDifficulty: clearsByDifficultyForHeader,
+            playerDifficultyPanelClearsByDifficulty: difficultyPanelClearsByDifficulty,
             avatarSubject: playerData,
             avatarFrame: playerData?.equippedAvatarFrame?.frame ?? null,
             stellarIconVariant: previewStellarVariant,

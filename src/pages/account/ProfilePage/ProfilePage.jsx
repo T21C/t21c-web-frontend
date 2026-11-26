@@ -40,7 +40,7 @@ import {
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { normalizePassSearchQuery } from '@/utils/normalizeEntitySearchQuery';
-import { buildPlayerIconSlots, pguNumberToQTier } from "@/utils/profileIconSlots";
+import { buildPlayerIconSlots, profileDifficultyClearCounts } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
 import {
   getEffectiveProfileBannerUrl,
@@ -444,62 +444,17 @@ const ProfilePage = () => {
         playerData?.funFacts?.clearsByDifficultyNoDupes ?? playerData?.funFacts?.clearsByDifficulty;
 
       /**
-       * Derive "Q difficulty" counts (GQ0..4 / UQ0..4) from worlds-first passes on G1..20 / U1..20
-       * only — same tier bucketing as icon slots; non-WF clears do not contribute to Q.
-       * Merged into the panel clears map so SPECIAL Q rows light from WF aggregates.
+       * GQ/UQ grid cells count world's firsts on rated G/U levels in that tier,
+       * plus world's firsts still on the GQ/UQ difficulty while it is being rated.
        */
-      const difficultyPanelClearsByDifficulty = useMemo(() => {
-        const clears =
-          clearsByDifficultyForHeader && typeof clearsByDifficultyForHeader === "object"
-            ? clearsByDifficultyForHeader
-            : {};
-        const wfs =
-          playerData?.funFacts?.worldsFirstByDifficulty &&
-          typeof playerData.funFacts.worldsFirstByDifficulty === "object"
-            ? playerData.funFacts.worldsFirstByDifficulty
-            : {};
-        const dict = difficultyDict && typeof difficultyDict === "object" ? difficultyDict : {};
-
-        /** @type {Record<"G"|"U", Record<number, number | string>>} */
-        const qIdByTier = { G: {}, U: {} };
-        for (const d of Object.values(dict)) {
-          const nm = d?.name;
-          const id = d?.id;
-          if (id == null || typeof nm !== "string") continue;
-          const m = nm.match(/(GQ|UQ)([0-4])/);
-          if (!m) continue;
-          const letter = m[1][0]; // "G" | "U"
-          const tier = Number(m[2]);
-          if ((letter !== "G" && letter !== "U") || !Number.isFinite(tier)) continue;
-          if (qIdByTier[letter][tier] == null) {
-            qIdByTier[letter][tier] = id;
-          }
-        }
-
-        /** @type {Record<string, number>} */
-        const qDerived = {};
-        const pguRegex = /^([PGUpgu])(\d{1,2})$/;
-
-        for (const [diffIdKey, rawWf] of Object.entries(wfs)) {
-          const wfCount = Number(rawWf) || 0;
-          if (wfCount <= 0) continue;
-          const name = dict?.[diffIdKey]?.name ?? dict?.[String(diffIdKey)]?.name;
-          if (typeof name !== "string") continue;
-          const m = name.trim().match(pguRegex);
-          if (!m) continue;
-          const letter = String(m[1]).toUpperCase();
-          if (letter !== "G" && letter !== "U") continue;
-          const n = parseInt(m[2], 10);
-          const tier = pguNumberToQTier(n);
-          if (tier == null) continue;
-          const qId = qIdByTier[letter]?.[tier];
-          if (qId == null) continue;
-          const k = String(qId);
-          qDerived[k] = (Number(qDerived[k]) || 0) + wfCount;
-        }
-
-        return { ...clears, ...qDerived };
-      }, [clearsByDifficultyForHeader, difficultyDict, playerData?.funFacts?.worldsFirstByDifficulty]);
+      const difficultyPanelClearsByDifficulty = useMemo(
+        () => profileDifficultyClearCounts(
+          clearsByDifficultyForHeader,
+          playerData?.funFacts?.worldsFirstByDifficulty,
+          difficultyDict || {},
+        ),
+        [clearsByDifficultyForHeader, difficultyDict, playerData?.funFacts?.worldsFirstByDifficulty],
+      );
 
       const iconSlots = useMemo(
         () => buildPlayerIconSlots(

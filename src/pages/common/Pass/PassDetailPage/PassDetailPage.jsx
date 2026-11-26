@@ -222,7 +222,7 @@ const PassDetailPage = () => {
     <>
       {passMeta ? <MetaTags {...passMeta} /> : null}
       
-      <div className={`pass-detail${isAutoSubmittedPass(pass) ? ' pass-detail--replay' : ''}`}>
+      <div className="pass-detail">
         {pass?.isDeleted && (
           <StatusBanner dismissible tone="danger" placement="centered" icon={<TrashIcon color="#fff" size="24px" />}>
             {t('passDetail.banners.deleted')}
@@ -365,7 +365,6 @@ const PassDetailPage = () => {
                 )}
               </div>
             )}
-            {isAutoSubmittedPass(pass) && <PassMedia key={pass.id} pass={pass} />}
             <div className="info">
               <div className="pass-detail__like-bar">
                 <LikeButton
@@ -517,7 +516,7 @@ const PassDetailPage = () => {
               </div>
             </div>
 
-            {!isAutoSubmittedPass(pass) && <PassMedia key={pass.id} pass={pass} />}
+            <PassMedia key={pass.id} pass={pass} />
           </div>
 
           <div className="pass-actions">
