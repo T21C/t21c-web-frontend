@@ -55,7 +55,7 @@
   "feelingTooltip": "你的体感难度，例如 G1-G5、17~18+、U1 等。",
   "expectedTooltip": "你认为本关卡应评级的难度（选填），格式与体感难度相同。",
   "adofaiV2Tooltip": "如果本次通关是在v3更新前的游戏上完成的，请勾选此项。",
-  "adofaiVersionTooltip": "本次通关使用的游戏版本。3.4.0 为当前稳定版，适用于所有 v3 通关。根据视频时间自动选择；你可以手动更改。",
+  "adofaiVersionTooltip": "本次通关使用的游戏版本。",
   "xPerfectTooltip": "开启了X完美时的“-完美！”和“完美！+”判定数量。（仅限3.4.0及更新版本）",
   "adofaiVersion": {
     "latest": "3.4.0",

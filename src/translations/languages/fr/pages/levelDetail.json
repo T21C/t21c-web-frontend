@@ -47,6 +47,10 @@
       "label": "Total complétions",
       "value": "{{count}}"
     },
+    "lowestKeyCount": {
+      "label": "Minimum de touches",
+      "value": "{{player}} | {{count}}K"
+    },
     "waiting": "Chargement..."
   },
   "leaderboard": {
@@ -86,8 +90,15 @@
   "dialog": {
     "fullInfo": "Voir plus d'infos"
   },
+  "toCurationPending": {
+    "header": "Curation en cours...",
+    "number": "Numéro de curation",
+    "message": "Message de curation",
+    "noDetails": "Aucun détail de curation.",
+    "open": "Voir la curation"
+  },
   "toRatePending": {
-    "header": "Évaluation en cours...",
+    "header": "Reclassement en cours...",
     "rerateNumber": "Réévaluation",
     "requesterFR": "Evaluation estimée",
     "rerateMessage": "Message",

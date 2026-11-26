@@ -54,7 +54,7 @@
   "12kTooltip": "Zaznacz, jeśli użyłeś 12 lub mniej klawiszy",
   "16kTooltip": "Zaznacz, jeśli użyłeś 13 lub więcej klawiszy",
   "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-  "adofaiVersionTooltip": "Wersja gry użyta w tym clearze. 3.4.0 to aktualna stabilna wersja dla każdego clearu v3. Wypełniana z daty filmu; możesz ją zmienić.",
+  "adofaiVersionTooltip": "Wersja gry użyta w tym clearze.",
   "xPerfectTooltip": "Record Perfect− and Perfect+ counts from X-Perfect mode (3.4.0+ only).",
   "adofaiVersion": {
     "latest": "3.4.0",

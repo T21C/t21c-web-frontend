@@ -62,7 +62,7 @@
     "12kTooltip": "Variante 12 touches",
     "16kTooltip": "Variante 16 touches",
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-    "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion. 3.4.0 est la version stable actuelle pour tout clear v3.",
+    "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion.",
     "xPerfectTooltip": "Enregistrer les comptes Perfect− et Perfect+ du mode X-Perfect (3.4.0+ uniquement).",
     "duplicateGuessHint": "Marqué d'après une complétion plus élevée du même chart. Modifier cette case conserve la correction.",
     "midspinWarning": {

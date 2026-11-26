@@ -10,6 +10,7 @@ export const ADOFAI_V3_4_0_RELEASE_UTC = Date.UTC(2026, 8, 11, 8, 0, 0);
 
 export const ADOFAI_VERSION_SELECT_VALUES = [
   ADOFAI_VERSION.V3_4_0,
+  ADOFAI_VERSION.PRE_3_4_0,
   ADOFAI_VERSION.V2,
 ];
 
@@ -26,12 +27,12 @@ export function parseAdofaiVersion(raw, fallback = ADOFAI_VERSION.V3_4_0) {
   return isAdofaiVersion(n) ? n : fallback;
 }
 
-/** Stored <3.4.0 (id 2) is shown as 3.4.0. v2 stays v2. */
+/** Each stored era is shown as itself, so ≤3.3.1 stays distinct from 3.4.0. */
 export function visualAdofaiVersion(version) {
-  return version === ADOFAI_VERSION.PRE_3_4_0 ? ADOFAI_VERSION.V3_4_0 : version;
+  return isAdofaiVersion(version) ? version : parseAdofaiVersion(version);
 }
 
-/** Keep stored id 2 when the picker still shows 3.4.0. */
+/** Store the era the picker selected. The same era keeps its stored id. */
 export function keepStoredAdofaiVersion(selected, stored) {
   const next = parseAdofaiVersion(selected, ADOFAI_VERSION.V3_4_0);
   const current = parseAdofaiVersion(stored, next);
@@ -46,7 +47,7 @@ export function isLegacyAdofaiVersion(version) {
 }
 
 export function canUseXPerfectMode(version) {
-  return visualAdofaiVersion(version) === ADOFAI_VERSION.V3_4_0;
+  return version === ADOFAI_VERSION.V3_4_0;
 }
 
 export function isAdofaiV2FromVersion(version) {

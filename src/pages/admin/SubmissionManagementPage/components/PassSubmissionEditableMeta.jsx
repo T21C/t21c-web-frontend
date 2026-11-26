@@ -202,6 +202,7 @@ export default function PassSubmissionEditableMeta({
   const eraOptions = useMemo(
     () => [
       { value: ADOFAI_VERSION.V3_4_0, label: t('passSubmissions.details.flags.era.latest') },
+      { value: ADOFAI_VERSION.PRE_3_4_0, label: t('passSubmissions.details.flags.era.pre340') },
       { value: ADOFAI_VERSION.V2, label: t('passSubmissions.details.flags.era.v2') },
     ],
     [t],
@@ -270,7 +271,8 @@ export default function PassSubmissionEditableMeta({
     viewingFlags.adofaiVersion === ADOFAI_VERSION.V2
       ? 'v2'
       : viewingFlags.adofaiVersion === ADOFAI_VERSION.PRE_3_4_0
-        || viewingFlags.adofaiVersion === ADOFAI_VERSION.V3_4_0
+        ? 'pre340'
+        : viewingFlags.adofaiVersion === ADOFAI_VERSION.V3_4_0
           ? 'latest'
           : null;
 
@@ -819,6 +821,18 @@ export default function PassSubmissionEditableMeta({
                 />
                 <span>{t('passSubmissions.details.flags.types.nht')}</span>
               </label>
+              {showXPerfectToggle ? (
+                <label className="pass-submission-flag-field">
+                  <input
+                    type="checkbox"
+                    checked={!!draftFlags.isXPerfectMode}
+                    onChange={(e) =>
+                      setDraftFlags((f) => ({ ...f, isXPerfectMode: e.target.checked }))
+                    }
+                  />
+                  <span>{t('passSubmissions.details.flags.types.xPerfect')}</span>
+                </label>
+              ) : null}
               <label className="pass-submission-flag-field pass-submission-era-field">
                 <span>{t('passSubmissions.details.flags.types.adofaiVersion')}</span>
                 <div className="pass-submission-era-select">
@@ -835,23 +849,11 @@ export default function PassSubmissionEditableMeta({
                       }));
                     }}
                     placeholder={t('passSubmissions.details.flags.types.adofaiVersion')}
-                    width="10rem"
+                    width="12rem"
                     isSearchable={false}
                   />
                 </div>
               </label>
-              {showXPerfectToggle ? (
-                <label className="pass-submission-flag-field">
-                  <input
-                    type="checkbox"
-                    checked={!!draftFlags.isXPerfectMode}
-                    onChange={(e) =>
-                      setDraftFlags((f) => ({ ...f, isXPerfectMode: e.target.checked }))
-                    }
-                  />
-                  <span>{t('passSubmissions.details.flags.types.xPerfect')}</span>
-                </label>
-              ) : null}
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveFlags}>
                   {t('buttons.save', { ns: 'common' })}

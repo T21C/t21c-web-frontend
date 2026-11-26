@@ -564,6 +564,8 @@ export const routes = {
       byId: (id) => `/v2/database/difficulties/${enc(id)}`,
       directives: (id) => `/v2/database/difficulties/${enc(id)}/directives`,
       levelTags: (levelId) => `/v2/database/difficulties/levels/${enc(levelId)}/tags`,
+      levelCommunityTagVoteBlocks: (levelId) =>
+        `/v2/database/difficulties/levels/${enc(levelId)}/community-tag-vote-blocks`,
     },
   },
 

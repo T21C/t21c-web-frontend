@@ -7,19 +7,26 @@ import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { ItemPickManager } from '@/components/common/selectors';
+import { EyeIcon, EyeOffIcon } from '@/components/common/icons';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
+
+function isCommunityVotableCatalogTag(tag) {
+  return Boolean(tag?.isCommunity) && !tag?.isAutomatic;
+}
 
 export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, onSave, charterOnly = false }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const [allTags, setAllTags] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [voteBlockedTagIds, setVoteBlockedTagIds] = useState(() => new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const seededDraftSelection = useRef(false);
   const isDraft = levelId == null;
+  const voteBlockControls = !isDraft && !charterOnly && levelId != null;
 
   const catalogById = useMemo(() => new Map(allTags.map((tag) => [tag.id, tag])), [allTags]);
 
@@ -79,6 +86,31 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
   }, [t]);
 
   useEffect(() => {
+    if (!voteBlockControls) {
+      setVoteBlockedTagIds(new Set());
+      return undefined;
+    }
+    let cancelled = false;
+    const fetchVoteBlocks = async () => {
+      try {
+        const response = await api.get(routes.database.difficulties.levelCommunityTagVoteBlocks(levelId));
+        if (cancelled) return;
+        const ids = Array.isArray(response.data?.tagIds) ? response.data.tagIds : [];
+        setVoteBlockedTagIds(new Set(ids));
+      } catch (err) {
+        console.error('Error fetching community tag vote blocks:', err);
+        if (!cancelled) {
+          setError(t('levelPopups.edit.tags.errors.fetchTags'));
+        }
+      }
+    };
+    fetchVoteBlocks();
+    return () => {
+      cancelled = true;
+    };
+  }, [levelId, voteBlockControls, t]);
+
+  useEffect(() => {
     if (!isDraft) return;
     const blockedIds = new Set(
       allTags
@@ -120,7 +152,10 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
         : selectedIds;
       await api.post(
         `${routes.database.difficulties.root()}/levels/${levelId}/${charterOnly ? 'charter-tags' : 'tags'}`,
-        { tagIds: saveIds },
+        {
+          tagIds: saveIds,
+          ...(voteBlockControls ? { blockedCommunityTagIds: [...voteBlockedTagIds] } : {}),
+        },
       );
 
       const updatedTagsResponse = await api.get(
@@ -143,6 +178,39 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
       e.stopPropagation();
     }
     onClose();
+  };
+
+  const toggleVoteBlock = (tagId) => {
+    setVoteBlockedTagIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(tagId)) next.delete(tagId);
+      else next.add(tagId);
+      return next;
+    });
+  };
+
+  const renderVoteBlockEye = (item) => {
+    if (!voteBlockControls || !isCommunityVotableCatalogTag(item)) return null;
+    const blocked = voteBlockedTagIds.has(item.id);
+    return (
+      <button
+        type="button"
+        className="tag-management-chip-eye"
+        aria-label={blocked
+          ? t('levelPopups.edit.tags.unblockVote')
+          : t('levelPopups.edit.tags.blockVote')}
+        title={blocked
+          ? t('levelPopups.edit.tags.unblockVote')
+          : t('levelPopups.edit.tags.blockVote')}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleVoteBlock(item.id);
+        }}
+      >
+        {blocked ? <EyeOffIcon size="12px" /> : <EyeIcon size="12px" />}
+      </button>
+    );
   };
 
   const pickLabels = {
@@ -193,6 +261,11 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
             labels={pickLabels}
             isLoading={isLoading}
             resetSearchSignal={levelId ?? 'draft'}
+            renderChipCorner={(item) => renderVoteBlockEye(item)}
+            isAddDisabled={(item) => voteBlockedTagIds.has(item.id)}
+            getChipClassName={(item) => (
+              voteBlockedTagIds.has(item.id) ? 'item-pick-manager__chip--vote-blocked' : ''
+            )}
           />
 
           {communityWonTags.length > 0 && (
@@ -207,10 +280,12 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
                 {communityWonTags.map((tag) => {
                   const catalog = catalogById.get(tag.id) || tag;
                   const color = catalog.color || '#888';
+                  const blocked = voteBlockedTagIds.has(tag.id);
+                  const eye = renderVoteBlockEye(catalog);
                   return (
                     <div
                       key={tag.id}
-                      className="item-pick-manager__chip item-pick-manager__chip--readonly"
+                      className={`item-pick-manager__chip item-pick-manager__chip--readonly${blocked ? ' item-pick-manager__chip--vote-blocked' : ''}`}
                       style={{
                         '--ipm-bg': `${color}50`,
                         '--ipm-border': color,
@@ -218,10 +293,13 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
                       }}
                       title={catalog.name}
                     >
-                      {catalog.icon ? (
+                      {catalog.icon && (
                         <img src={selectIconSize(catalog.icon, ICON_SIZE.SMALL)} alt="" className="item-pick-manager__chip-icon" />
-                      ) : null}
+                      )}
                       <span className="item-pick-manager__chip-name">{catalog.name}</span>
+                      {eye && (
+                        <span className="item-pick-manager__chip-corner">{eye}</span>
+                      )}
                     </div>
                   );
                 })}

@@ -66,6 +66,10 @@
       "value": "{{count}}",
       "tooltip": "총 {{total}}개 클리어, {{unique}}명 클리어"
     },
+    "lowestKeyCount": {
+      "label": "최저 키 개수",
+      "value": "{{player}} | {{count}}K"
+    },
     "waiting": "로딩 중..."
   },
   "info": {
@@ -173,8 +177,15 @@
     "judgementLPerfect": "느림",
     "judgementLate": "느림!"
   },
+  "toCurationPending": {
+    "header": "큐레이션 진행 중...",
+    "number": "큐레이션 번호",
+    "message": "큐레이션 메시지",
+    "noDetails": "큐레이션 상세 정보가 없습니다.",
+    "open": "큐레이션 보기"
+  },
   "toRatePending": {
-    "header": "평가 진행 중...",
+    "header": "재평가 진행 중...",
     "rerateNumber": "재책정 난이도",
     "requesterFR": "요청 난이도",
     "rerateMessage": "메시지",

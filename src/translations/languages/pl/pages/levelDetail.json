@@ -51,6 +51,10 @@
       "label": "Łącznie przejść",
       "value": "{{count}}"
     },
+    "lowestKeyCount": {
+      "label": "Najmniej klawiszy",
+      "value": "{{player}} | {{count}}K"
+    },
     "waiting": "Ładowanie..."
   },
   "info": {
@@ -104,8 +108,15 @@
       "expected": "Oczekiwany poz. trudności:"
     }
   },
+  "toCurationPending": {
+    "header": "Kuracja w toku...",
+    "number": "Numer kuracji",
+    "message": "Wiadomość kuracji",
+    "noDetails": "Brak szczegółów kuracji.",
+    "open": "Zobacz kurację"
+  },
   "toRatePending": {
-    "header": "Ocena w toku...",
+    "header": "Rerate w toku...",
     "rerateNumber": "Numer rerate'u",
     "requesterFR": "Żądana ocena",
     "rerateMessage": "Wiadomość",

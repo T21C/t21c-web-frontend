@@ -66,6 +66,10 @@
       "value": "{{count}}",
       "tooltip": "合計{{total}}回のクリア、ユニークプレイヤー{{unique}}人"
     },
+    "lowestKeyCount": {
+      "label": "最少キー数",
+      "value": "{{player}} | {{count}}K"
+    },
     "waiting": "読み込み中..."
   },
   "info": {
@@ -173,8 +177,15 @@
     "judgementLPerfect": "LP",
     "judgementLate": "Late"
   },
+  "toCurationPending": {
+    "header": "キュレーション進行中...",
+    "number": "キュレーション番号",
+    "message": "キュレーションメッセージ",
+    "noDetails": "キュレーションの詳細は提供されていません。",
+    "open": "キュレーションを見る"
+  },
   "toRatePending": {
-    "header": "レーティング中...",
+    "header": "再レート進行中...",
     "rerateNumber": "再レート番号",
     "requesterFR": "希望のレーティング",
     "rerateMessage": "再レートメッセージ",

@@ -67,7 +67,7 @@ import {
   ReferenceIcon,
 } from "@/components/common/icons";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
-import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, ICON_SIZE, isCdnUrl, selectIconSize, sortLevelCredits } from "@/utils/Utility";
+import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, ICON_SIZE, isCdnUrl, normalizeKeyCount, selectIconSize, sortLevelCredits } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
   formatAutoTilecountTooltip,
@@ -85,7 +85,7 @@ import LevelRequestMenu from '@/components/requests/LevelRequestMenu';
 import { userCanEditLevel } from '@/components/requests/levelRequestShared';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
-import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { canUseCurationZen, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";
 import { resolveTournamentAppearanceHref } from "@/utils/tournamentPlacements";
 import {
@@ -122,6 +122,7 @@ const getHighScores = (players) => {
   if (!players?.length) return null;
   const sortedPlayers = [...players].sort((a, b) => 
     new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
+  const keyedPasses = sortedPlayers.filter((pass) => normalizeKeyCount(pass.keyCount) != null);
   return {
     firstClear: sortedPlayers[0],
     highestScore: sortedPlayers.reduce((a, b) => 
@@ -129,7 +130,11 @@ const getHighScores = (players) => {
     highestAcc: sortedPlayers.reduce((a, b) => 
       b.accuracy > a.accuracy ? b : a),
     highestSpeed: sortedPlayers.some(p => p.speed) ? 
-      sortedPlayers.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+      sortedPlayers.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null,
+    lowestKeyCount: keyedPasses.length
+      ? keyedPasses.reduce((a, b) =>
+          normalizeKeyCount(b.keyCount) < normalizeKeyCount(a.keyCount) ? b : a)
+      : null,
   };
 };
 
@@ -576,12 +581,55 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
   );
 };
 
-const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
+function pendingQueueText(value) {
+  if (value === undefined || value === null) return '';
+  return String(value).trim();
+}
+
+const PENDING_QUEUE = {
+  curation: {
+    isActive: (level) => Boolean(level?.toCuration),
+    zenMode: 'curation',
+    headerKey: 'levelDetail.toCurationPending.header',
+    numberKey: 'levelDetail.toCurationPending.number',
+    requesterKey: null,
+    messageKey: 'levelDetail.toCurationPending.message',
+    emptyKey: 'levelDetail.toCurationPending.noDetails',
+    openKey: 'levelDetail.toCurationPending.open',
+    number: (level) => level.curationRerateNum,
+    requester: () => '',
+    reason: (level) => level.curationRerateReason,
+    openPath: (levelId) => `/admin/curations/rating/${levelId}`,
+    zenPath: '/admin/curations/rating/zen',
+    zenLockedKey: 'rating.curationRating.zenLocked',
+    zenAllowed: canUseCurationZen,
+  },
+  rerate: {
+    isActive: (level) => Boolean(level?.toRate),
+    zenMode: 'difficulty',
+    headerKey: 'levelDetail.toRatePending.header',
+    numberKey: 'levelDetail.toRatePending.rerateNumber',
+    requesterKey: 'levelDetail.toRatePending.requesterFR',
+    messageKey: 'levelDetail.toRatePending.rerateMessage',
+    emptyKey: 'levelDetail.toRatePending.noDetails',
+    openKey: 'levelDetail.toRatePending.openRating',
+    number: (level) => level.rerateNum,
+    requester: (level) => level.requesterFR,
+    reason: (level) => level.rerateReason,
+    openPath: (levelId) => `/rating/${levelId}`,
+    zenPath: '/rating/zen',
+    zenLockedKey: 'rating.zen.errors.normalRatingLocked',
+    zenAllowed: (user) => Boolean(user?.id),
+  },
+};
+
+const PendingQueueDropdown = ({ show, onClose, level, containerRef, kind }) => {
+  const spec = PENDING_QUEUE[kind];
   const { t } = useTranslation(['pages', 'common']);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { hasUnfinishedDeck } = useZenMode();
-  const zenAllowed = Boolean(user?.id);
+  const { hasUnfinishedDeck } = useZenMode(spec.zenMode);
+  const zenAllowed = spec.zenAllowed(user);
 
   useEffect(() => {
     if (!show) return;
@@ -602,40 +650,36 @@ const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, [show, onClose]);
 
-  if (!show || !level?.toRate) return null;
+  if (!show || !spec.isActive(level)) return null;
 
-  const rerateNumRaw = level.rerateNum;
-  const rerateNum =
-    rerateNumRaw === undefined || rerateNumRaw === null ? '' : String(rerateNumRaw).trim();
-  const requesterFRRaw = level.requesterFR;
-  const requesterFR =
-    requesterFRRaw === undefined || requesterFRRaw === null ? '' : String(requesterFRRaw).trim();
-  const rerateReason = typeof level.rerateReason === 'string' ? level.rerateReason.trim() : '';
+  const number = pendingQueueText(spec.number(level));
+  const requester = spec.requesterKey ? pendingQueueText(spec.requester(level)) : '';
+  const reason = pendingQueueText(spec.reason(level));
 
   return (
     <div className="to-rate-pending-dropdown">
-      <div className="to-rate-pending-header">{t('levelDetail.toRatePending.header')}</div>
+      <div className="to-rate-pending-header">{t(spec.headerKey)}</div>
       <div className="to-rate-pending-body">
-        {rerateNum && (
+        {number && (
           <p>
-            <b>{t('levelDetail.toRatePending.rerateNumber')}</b>
-            <span>{rerateNum}</span>
+            <b>{t(spec.numberKey)}</b>
+            <span>{number}</span>
           </p>
         )}
-        {requesterFR && (
+        {requester && (
           <p>
-            <b>{t('levelDetail.toRatePending.requesterFR')}</b>
-            <span>{requesterFR}</span>
+            <b>{t(spec.requesterKey)}</b>
+            <span>{requester}</span>
           </p>
         )}
-        {rerateReason && (
+        {reason && (
           <p className="to-rate-pending-reason">
-            <b>{t('levelDetail.toRatePending.rerateMessage')}</b>
-            <CommentFormatter>{rerateReason}</CommentFormatter>
+            <b>{t(spec.messageKey)}</b>
+            <CommentFormatter>{reason}</CommentFormatter>
           </p>
         )}
-        {!rerateNum && !requesterFR && !rerateReason && (
-          <p className="to-rate-pending-empty">{t('levelDetail.toRatePending.noDetails')}</p>
+        {!number && !requester && !reason && (
+          <p className="to-rate-pending-empty">{t(spec.emptyKey)}</p>
         )}
         {level.id && (
           hasUnfinishedDeck && zenAllowed ? (
@@ -643,18 +687,18 @@ const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
               type="button"
               className="btn-fill-primary btn-block to-rate-pending-open"
               onClick={() => {
-                toast.error(t('rating.zen.errors.normalRatingLocked'));
-                navigate('/rating/zen');
+                toast.error(t(spec.zenLockedKey));
+                navigate(spec.zenPath);
               }}
             >
-              {t('levelDetail.toRatePending.openRating')}
+              {t(spec.openKey)}
             </button>
           ) : (
             <Link
               className="btn-fill-primary btn-block to-rate-pending-open"
-              to={`/rating/${level.id}`}
+              to={spec.openPath(level.id)}
             >
-              {t('levelDetail.toRatePending.openRating')}
+              {t(spec.openKey)}
             </Link>
           )
         )}
@@ -1249,6 +1293,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
   const [showPackAppearanceDropdown, setShowPackAppearanceDropdown] = useState(false);
   const [showTournamentAppearanceDropdown, setShowTournamentAppearanceDropdown] = useState(false);
+  const [showToCurationPendingDropdown, setShowToCurationPendingDropdown] = useState(false);
   const [showToRatePendingDropdown, setShowToRatePendingDropdown] = useState(false);
   const [publicPackAppearances, setPublicPackAppearances] = useState([]);
   const [publicTournamentAppearances, setPublicTournamentAppearances] = useState([]);
@@ -1261,6 +1306,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const weeklyHeaderCornerSlotRef = useRef(null);
   const packHeaderCornerSlotRef = useRef(null);
   const tournamentHeaderCornerSlotRef = useRef(null);
+  const toCurationHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
   const curationHistoryAnchorRef = useRef(null);
@@ -1290,6 +1336,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     () => setShowTournamentAppearanceDropdown(false),
     [],
   );
+  const closeToCurationPendingDropdown = useCallback(() => setShowToCurationPendingDropdown(false), []);
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
   const inclusiveSource = inclusivePasses && String(inclusivePasses.levelId) === String(effectiveId)
@@ -2903,7 +2950,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
               <div className="level-detail-header-mobile-bar">
                 <div className="level-id mobile">ID #{effectiveId}</div>
-                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate || publicPackAppearances.length > 0 || publicTournamentAppearances.length > 0) && (
+                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toCuration || res?.level?.toRate || publicPackAppearances.length > 0 || publicTournamentAppearances.length > 0) && (
                   <div className="level-detail-header-corner-icons">
                     {res?.level?.curationSchedules?.length > 0 && (
                       <div ref={weeklyHeaderCornerSlotRef} className="header-corner-icon-slot">
@@ -3006,6 +3053,38 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                         />
                       </div>
                     )}
+                    {res?.level?.toCuration && (
+                      <div ref={toCurationHeaderCornerSlotRef} className="header-corner-icon-slot">
+                        <div
+                          className="header-corner-icon"
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={showToCurationPendingDropdown}
+                          aria-haspopup="dialog"
+                          aria-label={t('levelDetail.toCurationPending.header')}
+                          title={t('levelDetail.toCurationPending.header')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowToCurationPendingDropdown((open) => !open);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setShowToCurationPendingDropdown((open) => !open);
+                            }
+                          }}
+                        >
+                          <SparkleIcon color="#fff" size={"20px"} />
+                        </div>
+                        <PendingQueueDropdown
+                          kind="curation"
+                          level={res.level}
+                          show={showToCurationPendingDropdown}
+                          onClose={closeToCurationPendingDropdown}
+                          containerRef={toCurationHeaderCornerSlotRef}
+                        />
+                      </div>
+                    )}
                     {res?.level?.toRate && (
                       <div ref={toRateHeaderCornerSlotRef} className="header-corner-icon-slot">
                         <div
@@ -3029,7 +3108,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                         >
                           <ShuffleIcon color="#fff" size={"20px"} />
                         </div>
-                        <ToRatePendingDropdown
+                        <PendingQueueDropdown
+                          kind="rerate"
                           level={res.level}
                           show={showToRatePendingDropdown}
                           onClose={closeToRatePendingDropdown}
@@ -3732,6 +3812,20 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 </span>
                 {hasRepeatedClears && <LevelDetailTooltip id="total-clears-tooltip" place="left" noArrow />}
               </div>
+
+              {highScores?.lowestKeyCount && (
+                <div className="info-item">
+                  <p>{t('levelDetail.stats.lowestKeyCount.label')}</p>
+                  <StatPlayerValue
+                    pass={highScores.lowestKeyCount}
+                    player={highScores.lowestKeyCount.player.name}
+                    text={t('levelDetail.stats.lowestKeyCount.value', {
+                      player: highScores.lowestKeyCount.player.name,
+                      count: normalizeKeyCount(highScores.lowestKeyCount.keyCount),
+                    })}
+                  />
+                </div>
+              )}
               </>
               ) : (
                 <div className="not-beaten-container">

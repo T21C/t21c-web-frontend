@@ -55,7 +55,7 @@
   "feelingTooltip": "あなた自身が感じた難易度です。有効な入力例：G1～G5、17～18+、U1など。",
   "expectedTooltip": "このレベルに付けるべきと考えるレーティング（任意）です。体感レーティングと同じ形式で入力してください。",
   "adofaiV2Tooltip": "ADOFAI v2で記録されたクリアの場合にチェックしてください",
-  "adofaiVersionTooltip": "このクリアで使用したゲームのバージョンです。v3のクリアでは3.4.0が現在の安定版です。動画の日付から自動入力されますが、変更できます。",
+  "adofaiVersionTooltip": "このクリアで使用したゲームのバージョンです。",
   "xPerfectTooltip": "X-PerfectモードでのPerfect−とPerfect+の回数を記録します（3.4.0以降のみ）。",
   "adofaiVersion": {
     "latest": "3.4.0",

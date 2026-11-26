@@ -416,7 +416,7 @@
 .pass-core-form .pass-core-form__era-select {
   display: flex;
   align-items: center;
-  min-width: 11rem;
+  min-width: 12rem;
 }
 
 .pass-core-form .checkbox-row .hold-checkbox,

@@ -119,8 +119,9 @@
 
 .profile-header__difficulty-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(2.25rem, 1fr));
-  width: 100%;
+  grid-template-columns: repeat(10, 2.25rem);
+  width: calc(10 * 2.25rem);
+  justify-content: start;
 }
 
 .profile-header__difficulty-cell {
