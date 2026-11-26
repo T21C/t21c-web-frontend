@@ -92,6 +92,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   min-width: 0;
+  position: relative;
 }
 
 .item-pick-manager__chip--addable,
@@ -107,6 +108,18 @@
 
 .item-pick-manager__chip--readonly {
   cursor: default;
+}
+
+.item-pick-manager__chip--add-disabled {
+  cursor: default;
+}
+
+.item-pick-manager__chip--addable.item-pick-manager__chip--add-disabled:hover {
+  box-shadow: var(--ipm-shadow, none);
+}
+
+.item-pick-manager__chip-corner {
+  pointer-events: auto;
 }
 
 .item-pick-manager__chip-icon {

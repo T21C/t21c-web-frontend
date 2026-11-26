@@ -62,7 +62,7 @@
     "12kTooltip": "Wariant 12K",
     "16kTooltip": "Wariant 16K",
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-    "adofaiVersionTooltip": "Wersja gry użyta w tym clearze. 3.4.0 to aktualna stabilna wersja dla każdego clearu v3.",
+    "adofaiVersionTooltip": "Wersja gry użyta w tym clearze.",
     "xPerfectTooltip": "Record Perfect− and Perfect+ counts from X-Perfect mode (3.4.0+ only).",
     "duplicateGuessHint": "Oznaczone na podstawie lepszego wyniku na tej samej nucie. Zmiana tego pola zachowa korektę.",
     "midspinWarning": {

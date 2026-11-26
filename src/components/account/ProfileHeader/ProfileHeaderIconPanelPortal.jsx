@@ -20,6 +20,27 @@ const filterSpecialDiffs = (d) => {
   return nameCheck && typeCheck;
 };
 
+function difficultyNameToken(name) {
+  const raw = String(name || "").trim();
+  const cut = raw.search(/[\s(]/);
+  return (cut === -1 ? raw : raw.slice(0, cut)).toUpperCase();
+}
+
+/** PGU first, then GQ, then UQ, then every other cleared difficulty. */
+function clearedDifficultyBand(d) {
+  const token = difficultyNameToken(d?.name);
+  if (d?.type === "PGU") return 0;
+  if (token.startsWith("GQ")) return 1;
+  if (token.startsWith("UQ")) return 2;
+  return 3;
+}
+
+function sortClearedDifficulties(a, b) {
+  const band = clearedDifficultyBand(a) - clearedDifficultyBand(b);
+  if (band !== 0) return band;
+  return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+}
+
 /**
  * Portal dropdown for ProfileHeader icon row.
  * Handles creator curation panel and player difficulty grid.
@@ -43,7 +64,7 @@ export default function ProfileHeaderIconPanelPortal({
 
   const renderDifficultyGrid = ({ filter, tooltipId }) => (
     <div className="profile-header__difficulty-grid">
-      {(playerDifficultyPanelDifficulties || []).filter(filter).sort((a, b) => a.sortOrder - b.sortOrder).map((d) => {
+      {(playerDifficultyPanelDifficulties || []).filter(filter).sort(sortClearedDifficulties).map((d) => {
         const id = d?.id;
         const icon = d?.icon;
         const name = d?.name ?? `#${id}`;

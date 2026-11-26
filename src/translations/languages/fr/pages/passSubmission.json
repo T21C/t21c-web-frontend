@@ -54,7 +54,7 @@
   "12kTooltip": "Cochez ceci si vous avez utilisé 12 touches",
   "16kTooltip": "Cochez ceci si vous avez utilisé 16 touches",
   "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-  "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion. 3.4.0 est la version stable actuelle pour tout clear v3. Remplie depuis la date de la vidéo ; vous pouvez la modifier.",
+  "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion.",
   "xPerfectTooltip": "Enregistrer les comptes Perfect− et Perfect+ du mode X-Perfect (3.4.0+ uniquement).",
   "adofaiVersion": {
     "latest": "3.4.0",

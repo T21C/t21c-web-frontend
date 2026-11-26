@@ -8,6 +8,7 @@ import { formatDate } from '@/utils/Utility';
 import { CustomSelect } from '@/components/common/selectors';
 import {
   ADOFAI_VERSION,
+  ADOFAI_VERSION_SELECT_VALUES,
   canUseXPerfectMode,
   visualAdofaiVersion,
   parseAdofaiVersion,
@@ -254,10 +255,15 @@ export function PassCoreForm({
   const showXPerfectToggle = canUseXPerfectMode(adofaiVersion);
   const showXPerfectFields = showXPerfectToggle && !!form.isXPerfectMode;
   const purePerfectCount = getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount);
-  const eraOptions = [
-    { value: ADOFAI_VERSION.V3_4_0, label: t(copy.adofaiVersionLatest, { ns: copy.ns }) },
-    { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
-  ];
+  const eraLabelKey = {
+    [ADOFAI_VERSION.V3_4_0]: copy.adofaiVersionLatest,
+    [ADOFAI_VERSION.PRE_3_4_0]: copy.adofaiVersionPre340,
+    [ADOFAI_VERSION.V2]: copy.adofaiVersionV2,
+  };
+  const eraOptions = ADOFAI_VERSION_SELECT_VALUES.map((value) => ({
+    value,
+    label: t(eraLabelKey[value], { ns: copy.ns }),
+  }));
   const perfectCount = parseInt(form.perfect, 10);
   const derivedPreview = applyDerivedPerfects({
     judgements: formToScoringJudgements(form),
@@ -621,27 +627,6 @@ export function PassCoreForm({
 
           <div className="gameplay-checkboxes">
             <div
-              className="pass-core-form__era-select"
-              data-tooltip-id="adofaiVersionTooltip"
-              data-tooltip-content={t(copy.adofaiVersionTooltip, { ns: copy.ns })}
-            >
-              <CustomSelect
-                options={eraOptions}
-                value={eraOptions.find((o) => o.value === visualAdofaiVersion(adofaiVersion)) ?? eraOptions[0]}
-                onChange={(opt) => onAdofaiVersionChange?.(opt?.value)}
-                placeholder={t(copy.adofaiVersionLabel, { ns: copy.ns })}
-                width="11rem"
-              />
-              <Tooltip
-                className="tooltip"
-                id="adofaiVersionTooltip"
-                place="bottom-end"
-                effect="solid"
-                style={{ maxWidth: '300px', whiteSpace: 'normal' }}
-              />
-            </div>
-
-            <div
               className="hold-checkbox"
               data-tooltip-id="holdTooltip"
               data-tooltip-content={t(copy.holdTooltip, { ns: copy.ns })}
@@ -675,6 +660,27 @@ export function PassCoreForm({
                 <Tooltip className="tooltip" id="xPerfectTooltip" place="bottom-end" effect="solid" />
               </div>
             ) : null}
+
+            <div
+              className="pass-core-form__era-select"
+              data-tooltip-id="adofaiVersionTooltip"
+              data-tooltip-content={t(copy.adofaiVersionTooltip, { ns: copy.ns })}
+            >
+              <CustomSelect
+                options={eraOptions}
+                value={eraOptions.find((o) => o.value === visualAdofaiVersion(adofaiVersion)) ?? eraOptions[0]}
+                onChange={(opt) => onAdofaiVersionChange?.(opt?.value)}
+                placeholder={t(copy.adofaiVersionLabel, { ns: copy.ns })}
+                width="12rem"
+              />
+              <Tooltip
+                className="tooltip"
+                id="adofaiVersionTooltip"
+                place="bottom-end"
+                effect="solid"
+                style={{ maxWidth: '300px', whiteSpace: 'normal' }}
+              />
+            </div>
           </div>
         </div>
 

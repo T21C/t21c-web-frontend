@@ -1059,6 +1059,44 @@
   cursor: default;
 }
 
+.tag-management-popup .item-pick-manager__chip-row {
+  padding: 0.4rem 0 0.4rem 0.4rem;
+}
+
+.tag-management-popup .item-pick-manager__chip-corner {
+  position: absolute;
+  left: -6px;
+  bottom: -6px;
+  z-index: 1;
+  display: flex;
+}
+
+.tag-management-popup .tag-management-chip-eye {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  cursor: pointer;
+}
+
+.tag-management-popup .tag-management-chip-eye:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.tag-management-popup .item-pick-manager__chip--vote-blocked {
+  opacity: 0.7;
+}
+
+.tag-management-popup .item-pick-manager__chip--add-disabled:hover {
+  box-shadow: var(--ipm-shadow, none);
+}
+
 .tag-management-actions {
   display: flex;
   justify-content: flex-end;

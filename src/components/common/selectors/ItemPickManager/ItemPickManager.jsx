@@ -89,6 +89,9 @@ function buildGroupedSelected(selectedIds, itemById, fallbackGroupLabel) {
  * @param {string} [props.className='']
  * @param {unknown} [props.resetSearchSignal] - When this value changes, internal search is cleared
  * @param {boolean} [props.readOnly=false] - Selected chips only; no add pool or remove actions
+ * @param {(item: PickableItem, ctx: { addable: boolean }) => import('react').ReactNode} [props.renderChipCorner]
+ * @param {(item: PickableItem) => boolean} [props.isAddDisabled]
+ * @param {(item: PickableItem) => string} [props.getChipClassName]
  */
 const ItemPickManager = ({
   items = [],
@@ -103,6 +106,9 @@ const ItemPickManager = ({
   className = '',
   resetSearchSignal,
   readOnly = false,
+  renderChipCorner,
+  isAddDisabled,
+  getChipClassName,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -182,12 +188,38 @@ const ItemPickManager = ({
     [colorFallback]
   );
 
+  const stopCornerEvent = (e) => {
+    e.stopPropagation();
+  };
+
+  const renderCorner = (item, addable) => {
+    if (typeof renderChipCorner !== 'function') return null;
+    const corner = renderChipCorner(item, { addable });
+    if (!corner) return null;
+    return (
+      <span
+        className="item-pick-manager__chip-corner"
+        onClick={stopCornerEvent}
+        onMouseDown={stopCornerEvent}
+        onKeyDown={stopCornerEvent}
+      >
+        {corner}
+      </span>
+    );
+  };
+
+  const extraChipClass = (item) => {
+    if (typeof getChipClassName !== 'function') return '';
+    return getChipClassName(item) || '';
+  };
+
   const renderChip = (item, { addable = false } = {}) => {
+    const extraClass = extraChipClass(item);
     if (readOnly) {
       return (
         <div
           key={`s-${item.id}`}
-          className="item-pick-manager__chip item-pick-manager__chip--readonly"
+          className={`item-pick-manager__chip item-pick-manager__chip--readonly ${extraClass}`.trim()}
           style={chipStyle(item)}
           title={item.name}
         >
@@ -195,25 +227,35 @@ const ItemPickManager = ({
             <img src={selectIconSize(item.icon, ICON_SIZE.SMALL)} alt="" className="item-pick-manager__chip-icon" />
           )}
           <span className="item-pick-manager__chip-name">{item.name}</span>
+          {renderCorner(item, false)}
         </div>
       );
     }
+    const addDisabled = Boolean(addable && isAddDisabled?.(item));
     const actionLabel = addable ? labels.addItem : labels.removeItem;
+    const activate = () => {
+      if (addable) {
+        if (addDisabled) return;
+        addId(item.id);
+        return;
+      }
+      removeId(item.id);
+    };
     return (
     <div
       key={`${addable ? 'a' : 's'}-${item.id}`}
       role="button"
-      tabIndex={0}
-      className={`item-pick-manager__chip ${addable ? 'item-pick-manager__chip--addable' : 'item-pick-manager__chip--removable'}`}
+      tabIndex={addDisabled ? -1 : 0}
+      className={`item-pick-manager__chip ${addable ? 'item-pick-manager__chip--addable' : 'item-pick-manager__chip--removable'}${addDisabled ? ' item-pick-manager__chip--add-disabled' : ''}${extraClass ? ` ${extraClass}` : ''}`}
       style={chipStyle(item)}
       title={actionLabel}
       aria-label={`${actionLabel}: ${item.name}`}
-      onClick={() => (addable ? addId(item.id) : removeId(item.id))}
+      aria-disabled={addDisabled || undefined}
+      onClick={activate}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          if (addable) addId(item.id);
-          else removeId(item.id);
+          activate();
         }
       }}
     >
@@ -230,6 +272,7 @@ const ItemPickManager = ({
           <TrashIcon color="currentColor" size="16px" />
         </span>
       )}
+      {renderCorner(item, addable)}
     </div>
     );
   };

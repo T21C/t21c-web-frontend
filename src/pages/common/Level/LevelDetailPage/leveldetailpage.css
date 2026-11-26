@@ -581,7 +581,7 @@
   color: #ddd;
 }
 
-/* Top-left: level id (mobile) + header badges (weekly lists, pending rerate, …) */
+/* Top-left: level id (mobile) + header badges (weekly lists, pending curation, pending rerate, …) */
 .level-detail .level-detail-header-mobile-bar {
   position: absolute;
   top: var(--spacing-sm);

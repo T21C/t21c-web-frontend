@@ -66,6 +66,10 @@
       "value": "{{count}}",
       "tooltip": "共 {{total}} 次，共 {{unique}} 人"
     },
+    "lowestKeyCount": {
+      "label": "最少键数",
+      "value": "{{player}} | {{count}}K"
+    },
     "waiting": "加载中……"
   },
   "info": {
@@ -173,8 +177,15 @@
     "judgementLPerfect": "稍慢",
     "judgementLate": "太慢"
   },
+  "toCurationPending": {
+    "header": "精选进行中……",
+    "number": "精选编号",
+    "message": "精选信息",
+    "noDetails": "未填写精选详情。",
+    "open": "查看精选"
+  },
   "toRatePending": {
-    "header": "正在评级中……",
+    "header": "重评进行中……",
     "rerateNumber": "请求评级",
     "requesterFR": "请求评级",
     "rerateMessage": "重评信息",

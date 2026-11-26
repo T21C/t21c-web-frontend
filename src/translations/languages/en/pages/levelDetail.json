@@ -66,6 +66,10 @@
       "value": "{{count}}",
       "tooltip": "{{total}} total clears, {{unique}} unique"
     },
+    "lowestKeyCount": {
+      "label": "Lowest Keycount",
+      "value": "{{player}} | {{count}}K"
+    },
     "waiting": "Loading..."
   },
   "info": {
@@ -173,8 +177,15 @@
     "judgementLPerfect": "LP",
     "judgementLate": "LATE"
   },
+  "toCurationPending": {
+    "header": "Curation in progress...",
+    "number": "Curation number",
+    "message": "Curation message",
+    "noDetails": "No curation details were provided.",
+    "open": "View curation"
+  },
   "toRatePending": {
-    "header": "Rating in progress...",
+    "header": "Rerate in progress...",
     "rerateNumber": "Rerate number",
     "requesterFR": "Requested rating",
     "rerateMessage": "Rerate message",

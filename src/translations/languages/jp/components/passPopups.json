@@ -63,7 +63,7 @@
     "feelingTooltip": "あなた個人にとって、どれくらい難しかったか。具体的な例：G1～G5、17～18+、U1など。",
     "expectedTooltip": "そのレベルがどの難易度に相当するべきか（任意）。体感レーティングと同じ形式です。",
     "adofaiV2Tooltip": "クリアがADOFAI v2で録画されている場合は、ここをチェックしてください",
-    "adofaiVersionTooltip": "このクリアに使用したゲームのバージョンは、Alpha 3.4.0以上です。",
+    "adofaiVersionTooltip": "このクリアで使用したゲームのバージョンです。",
     "xPerfectTooltip": "X-PerfectモードでのPerfect-およびPerfect+の回数を記録します（バージョン3.4.0以降のみ）。",
     "duplicateGuessHint": "同じチャートでより高得点を記録したクリア結果から推測しました。このチェックボックスの設定を変更しても、補正は維持されます。",
     "midspinWarning": {
